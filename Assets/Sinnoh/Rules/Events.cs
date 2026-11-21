@@ -62,7 +62,8 @@ namespace Sinnoh.Rules
 
     public enum RetributionCause { Fainted, PlanB }
 
-    public enum DiceKind { Attack }
+    /// <summary>굴림 종류: 공격 굴림 · 포획 굴림(굴린 뒤 창이 열릴 때만 판정 앞에 먼저 드러낸다 — 결정 188, 판정은 CaptureAttempt).</summary>
+    public enum DiceKind { Attack, Capture }
 
     /// <summary>이벤트를 받는 곳(01 §3-1). Submit의 sink가 null이면 이벤트 객체를 만들지 않는다(AI 탐색).</summary>
     public interface IEventSink
@@ -748,6 +749,8 @@ namespace Sinnoh.Rules
         public Mod[] PowerMods;
         public int FatigueBefore = U;
         public int FatigueAfter = U;
+        /// <summary>포획 굴림(Kind = Capture — 결정 188)이면 던진 볼 등급, 아니면 U.</summary>
+        public int BallKey = U;
     }
 
     /// <summary>면 바꾸기. SrcBefore·SrcAfter = (s, r, c) 개수 3칸. 지운 주사위는 After = None, 더한 주사위는 Before = None(G14). 바꿀 면이 없었으면 Changes가 빈다(0 결과).</summary>

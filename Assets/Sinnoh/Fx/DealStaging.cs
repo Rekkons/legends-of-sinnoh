@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Rekkon.UiKit;
 using Sinnoh.Rules;
 
@@ -7,7 +8,7 @@ namespace Sinnoh.Fx
     /// <summary>
     /// 스탬프·도전·거래 화면 묶음(M5)의 연출 행(04 §8-8 47·51·52행): 여행 스탬프(470) · 트레이너 도전 VS(510) · 거래(520 — 주고받기 TradeDone).
     /// 길이는 방장과 같은 <c>PlayTiming</c>(470 = 1500 + 보상 줄마다 250 · 510 = 2800 · 520 = 2500)이고 여기 값은 그 안에서 화면이 나누는 박자다 [가정 — plan §5 #125·#126].
-    /// 셋 다 무대의 맨 위 층(<c>UiStage.Over</c> — 창·배틀 화면 위)의 덮개 <c>DealFx</c>가 그린다: 스탬프는 받은 좌석의 화면에만(남의 것은 기록 줄만 — 대기열에서 덜어 낸다),
+    /// 셋 다 무대의 맨 위 층(<c>UiStage.Over</c> — 창·배틀 화면 위)의 덮개 <c>DealFx</c>가 그린다: 스탬프는 받은 좌석의 화면에만(남의 것은 그 좌석 칩 꼬리표 「스탬프 n/7」 · 기록 줄 — 결정 178, 배틀 끝 항목에 실려 오면 <see cref="SplitOthers"/>가 보드로 뗀다),
     /// 도전 VS와 거래는 모든 좌석에(거래의 운명 카드는 남에게 장수만 온다 — 이벤트가 이미 가려서 온다).
     /// 거래 제안·응답(TradeProposed · TradeAnswered)과 도전 응답은 창(98행 — 대기열 밖)과 기록 줄이다.
     /// </summary>
@@ -34,6 +35,32 @@ namespace Sinnoh.Fx
         }
 
         public static T First<T>(FxStep step) where T : GameEvent => WorkRows.EventOf<T>(step);
+
+        /// <summary>
+        /// 남 좌석(me 밖)의 스탬프 단계가 배틀 끝 항목에 실려 오면 바로 뒤의 새 항목으로 뗀다(결정 178 — 결과 창 [확인] 뒤 보드에서 그 좌석 칩 꼬리표로 보인다, 길이의 합은 그대로 — P5).
+        /// 뒤의 것부터 떼므로 새 항목은 받은 차례대로 선다. 내 스탬프는 결과 창 위에 찍으므로 떼지 않는다. 뗀 수를 돌려준다.
+        /// </summary>
+        public static int SplitOthers(List<FxEntry> entries, int me)
+        {
+            int made = 0, n;
+            do
+            {
+                n = GodBeats.SplitOff(entries, e => LastOther(e, me));
+                made += n;
+            } while (n > 0);
+            return made;
+        }
+
+        static FxStep LastOther(FxEntry entry, int me)
+        {
+            if (entry == null) return null;
+            for (int i = entry.Steps.Count - 1; i >= 0; i--)
+            {
+                var st = entry.Steps[i];
+                if (st.Row == Stamp && StampBeats.Event(st) is StampGained g && g.Seat >= 0 && g.Seat != me) return st;
+            }
+            return null;
+        }
     }
 
     /// <summary>여행 스탬프 한 순간(<see cref="StampBeats.At"/>).</summary>

@@ -47,11 +47,20 @@ namespace Sinnoh.Editor
             foreach (var kv in Polish8Screens) OverBoard.Add(kv.Key); // M9 다듬기 8(UiShots.Polish8.cs) — P14 조우 전환 무늬 · P39 공간 일그러짐(보드 위)
             foreach (var kv in ConsentScreens) OverBoard.Add(kv.Key);   // 플레이 기록 동의(UiShots.Consent.cs — 결정 126 ④, 모두 보드 위)
             foreach (var kv in BugScreens) OverBoard.Add(kv.Key);       // 버그 신고(UiShots.Bug.cs — 결정 132 ①, 모두 보드 위)
-            foreach (var kv in ChatScreens) OverBoard.Add(kv.Key);      // 방 채팅(UiShots.Chat.cs — 결정 140 ②, 모두 보드 위)
+            foreach (var kv in ChatScreens) OverBoard.Add(kv.Key);
+            foreach (var kv in DiscardScreens) OverBoard.Add(kv.Key);   // 버림 더미 보기 창(UiShots.Discards.cs — 결정 196, 보드 위)      // 방 채팅(UiShots.Chat.cs — 결정 140 ②, 모두 보드 위)
             foreach (var kv in Tempo143Screens) OverBoard.Add(kv.Key);  // 결정 143 ⑤ 선출 중 DS · ⑦ 준비 동작(UiShots.Tempo143.cs — 배틀 화면, 보드 위)
             foreach (var kv in AuditMemoScreens) OverBoard.Add(kv.Key); // M8 · M9 마감 감사 2차 메모(UiShots.AuditMemo.cs — 턴 배지 · 시간 초과 뒤 창, 보드 위)
             foreach (var kv in AuditGapScreens) OverBoard.Add(kv.Key);  // M8 · M9 마감 감사가 못 본 장면(UiShots.AuditGaps.cs — 결정 123 · 128 · 121, 모두 보드 위)
             foreach (var kv in UndoScreens) OverBoard.Add(kv.Key);      // 무르기 · 되돌리기(UiShots.Undo.cs — 결정 149 · 154, 모두 보드 위)
+            foreach (var kv in RotateScreens) OverBoard.Add(kv.Key);    // 보드 돌리기 단추 · 배틀 단축키(UiShots.Rotate.cs — 결정 164, 모두 보드 위)
+            foreach (var kv in BattleUiScreens) OverBoard.Add(kv.Key);  // 배틀 화면 묶음(UiShots.BattleUi.cs — 결정 169 · 170 · 171, 배틀 화면 · 보드 위)
+            foreach (var kv in FlyPathScreens) OverBoard.Add(kv.Key);   // 공중날기 컷인 · 길 육각형(UiShots.FlyPath.cs — 결정 167 · 168, 모두 보드 위)
+            foreach (var kv in UbHoverScreens) OverBoard.Add(kv.Key);   // UB 이름 · 시련 마우스 오버(UiShots.UbHover.cs — 결정 179, 모두 보드 위)
+            foreach (var kv in BeastBoostScreens) OverBoard.Add(kv.Key);   // 비스트 부스트 빛 알갱이(UiShots.BeastBoost.cs — 결정 184, 배틀 화면 · 보드 위)
+            foreach (var kv in RecipeGradeScreens) OverBoard.Add(kv.Key);   // 조합표 · 등급 색(UiShots.RecipeGrade.cs — 결정 191 · 192, 보드 · 배틀 화면 위)
+            foreach (var kv in GodAgainScreens) OverBoard.Add(kv.Key);   // 신 격파 「한 번 더!」는 추가 턴이 올 때만(UiShots.GodAgain.cs — 결정 198, 보드 위)
+            foreach (var kv in SwarmAlphaScreens) OverBoard.Add(kv.Key);   // 무리 줄 카드 · 알파 타입 ±0(UiShots.SwarmAlpha.cs — 결정 199, 배틀 화면)
         }
 
         /// <summary><see cref="Screens"/> + 이 묶음의 장면(이름으로 찾는 곳은 이 목록을 쓴다).</summary>
@@ -91,10 +100,19 @@ namespace Sinnoh.Editor
                 foreach (var s in ConsentScreens) yield return s;
                 foreach (var s in BugScreens) yield return s;
                 foreach (var s in ChatScreens) yield return s;
+                foreach (var s in DiscardScreens) yield return s;
                 foreach (var s in Tempo143Screens) yield return s;
                 foreach (var s in AuditMemoScreens) yield return s;
                 foreach (var s in AuditGapScreens) yield return s;
                 foreach (var s in UndoScreens) yield return s;
+                foreach (var s in RotateScreens) yield return s;
+                foreach (var s in BattleUiScreens) yield return s;
+                foreach (var s in FlyPathScreens) yield return s;
+                foreach (var s in UbHoverScreens) yield return s;
+                foreach (var s in BeastBoostScreens) yield return s;
+                foreach (var s in RecipeGradeScreens) yield return s;
+                foreach (var s in GodAgainScreens) yield return s;
+                foreach (var s in SwarmAlphaScreens) yield return s;
             }
         }
 
@@ -190,8 +208,9 @@ namespace Sinnoh.Editor
             Screen("watch-encounter", s => WatchedEncounter(s)),
             Screen("board-road-mine", s => Road(s, true)),     // worker B 도로 켬: 내 HUD 「행동」 머리 줄 칩 + 내 좌석 칩 배지 + 기록 줄(한 칸 걸은 뒤)
             Screen("board-road-other", s => Road(s, false)),   // 남(좌석 2)의 도로 켬: 그 좌석 칩 배지(+ 툴팁)
-            Screen("watch-maint", s => WatchedMaint(s)),
-            Screen("watch-shrine-gift", s => WatchedGift(s)),     // 남(좌석 2)의 사당 뜻밖의 선물 → 고른 규토리: 그 좌석의 판 보기(제목 「사당 보상」 · 가방의 규토리 수 — 결정 120)          // 남(좌석 2)의 정비(지닌물건 지니기) = 그 좌석의 정비 판 보기 창 — 바뀐 카드에 좌석 색 테두리(결정 120)
+            Screen("watch-maint", s => WatchedMaint(s)),          // 남(좌석 2)의 정비(지닌물건 지니기): 보기 창 없이 그 좌석 칩 꼬리표 「정비」 · 기록 줄만(결정 177)
+            Screen("board-hud-did-stamp", s => OtherStamp(s)),    // 6인 판 남(좌석 2)의 스탬프: 도장 덮개 없이 그 좌석 칩 꼬리표 「스탬프 1/7」(결정 178 — 칩 폭 안)
+            Screen("watch-shrine-gift", s => WatchedGift(s)),     // 남(좌석 2)의 사당 뜻밖의 선물 → 고른 규토리: 그 좌석의 판 보기(제목 「사당 보상」 · 가방의 규토리 수 — 결정 120)
             Screen("board-reach-other", s => Reach(s)),         // 남(좌석 2)이 염력(psychic B)으로 고른 떨어진 칸: 능력 사용 50행 300ms에 그 칸 위 좌석 색 표시
             // ── 남 좌석 창 · 덮개 머리의 「누구」(결정 120 — #707): 그 좌석 얼굴 상자(좌석 색 · 번호 · 주인공) + 「○○의 …」 ──
             Screen("owner-ability", s => Reach(s, AbilityBeats.BounceAt + AbilityBeats.BounceMs / 2)),   // 남(좌석 2)의 능력 사용 작은 카드: 얼굴 상자 + 「○○의 염력」
@@ -378,7 +397,7 @@ namespace Sinnoh.Editor
             OwnerCheck(flow, flow.Stage.Root.Q(FaceBox.OwnerName), 1, flow.Stage.Current.Name);
         }
 
-        // 좌석 둘 판(좌석 2 가방에 구애머리띠): 좌석 2의 턴에 첫 포켓몬에게 지니게 한 정비 단계 600ms — 보기 창 · 바뀐 카드 테두리 · 단추 없음 단정
+        // 좌석 둘 판(좌석 2 가방에 구애머리띠): 좌석 2의 턴에 첫 포켓몬에게 지니게 한 정비 단계 600ms — 보기 창은 없고(결정 177) 좌석 2 칩 꼬리표 「정비」 · 기록 줄만 단정
         static void WatchedMaint(UiShot s)
         {
             var ctx = s.Board.Ctx;
@@ -388,8 +407,46 @@ namespace Sinnoh.Editor
             int mon = flow.Client.View.Seats[1].Party[0];
             if (!flow.MaintainSeat(1, new Maintenance { Kind = MaintKind.HoldItem, Pokemon = mon, Value = band })) throw new InvalidOperationException("좌석 2의 지니게 하기가 거절됐다");
             ShrineInto(s, WorkRows.Maint, 600);
-            WatchCheck(s, flow, typeof(PartyScreen));
-            if (flow.Stage.Root.Q("board-watch").Q(className: PartyScreen.DidClass) == null) throw new InvalidOperationException("바뀐 카드에 테두리가 없다");
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+            if (flow.Watch != null || flow.WatchShown || flow.Stage.Root.Q("board-watch") != null) throw new InvalidOperationException("남의 정비에 보기 창이 떴다: " + (flow.Watch != null ? flow.Watch.Name : "board-watch"));
+            if (flow.Stage.Current != null) throw new InvalidOperationException("남의 정비에 창이 열렸다: " + flow.Stage.Current.Name);
+            var tag = flow.Stage.Root.Q<Label>(BoardHud.DidName(1));
+            if (tag == null || flow.Hud.DidSeat != 1 || flow.Hud.DidKey != "maint") throw new InvalidOperationException("좌석 2 칩의 「정비」 꼬리표가 없다: " + flow.Hud.DidKey);
+            if (tag.text != flow.Stage.T("screen.board.did.maint")) throw new InvalidOperationException("꼬리표 글이 아니다: " + tag.text);
+        }
+
+        // 6인 판(좌석 2만 규토리 일곱 색): 좌석 2의 [턴 종료] 끝에 받은 스탬프 단계 600ms — 도장 덮개 · 보기 창 없이 좌석 2 칩 꼬리표 「스탬프 n/7」, 칩 폭 안 · 글 안 잘림 단정
+        static void OtherStamp(UiShot s)
+        {
+            var flow = Seats(s, 6, st =>
+            {
+                for (int c = 0; c < st.Seats[1].Apricorns.Length; c++) st.Seats[1].Apricorns[c] = Math.Max(1, st.Seats[1].Apricorns[c]);
+            });
+            for (int k = 0; k < 12 && flow.Client.View.ActiveSeat != 1; k++)
+            {
+                EndActive(flow);
+                Pass(flow, BoardReadyMs * 8);
+            }
+            DealSettle(s, flow, f => f.BoardOpen && f.Hud != null && f.Client.View.ActiveSeat == 1);
+            EndActive(flow);
+            ShrineInto(s, DealRows.Stamp, 600);
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+            var step = DealRows.Playing(flow.Fx.Sequencer, DealRows.Stamp, out _);
+            var e = StampBeats.Event(step);
+            if (e == null || e.Seat != 1) throw new InvalidOperationException("좌석 2의 스탬프 단계가 아니다");
+            if (flow.Deals != null && flow.Deals.StampShown) throw new InvalidOperationException("남의 스탬프에 도장 덮개가 떴다");
+            if (flow.Watch != null || flow.Stage.Current != null) throw new InvalidOperationException("남의 스탬프에 창이 열렸다");
+            var tag = flow.Stage.Root.Q<Label>(BoardHud.DidName(1));
+            string want = flow.Stage.T("screen.board.did.stamp").Replace("{n}", e.CountAfter.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (tag == null || flow.Hud.DidSeat != 1 || flow.Hud.DidKey != "stamp") throw new InvalidOperationException("좌석 2 칩의 스탬프 꼬리표가 없다: " + flow.Hud.DidKey);
+            if (tag.text != want) throw new InvalidOperationException("꼬리표 글이 아니다: " + tag.text + " ≠ " + want);
+            var need = tag.MeasureTextSize(tag.text, 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined);
+            if (need.x > tag.contentRect.width + 1f) throw new InvalidOperationException("꼬리표 글이 잘린다: 칸 " + tag.contentRect.width + " < 글 " + need.x);
+            var chip = flow.Stage.Root.Q("board-hud-seat-2").worldBound;
+            if (tag.worldBound.xMax > chip.xMax + 0.5f || tag.worldBound.xMin < chip.xMin - 0.5f) throw new InvalidOperationException("꼬리표가 칩 폭 밖이다: " + tag.worldBound + " · 칩 " + chip);
+            UnityEngine.Debug.Log($"[UiShots] board-hud-did-stamp {s.Grade.Height}: 「{tag.text}」 칸 {tag.contentRect.width} · 칩 {chip.width}");
         }
 
         // 좌석 2가 사당에서 뜻밖의 선물(덱 맨 위)을 골라 규토리를 받은 뒤 380행 600ms — 보기 창 · 제목 · 꼬리표 「축복」 단정

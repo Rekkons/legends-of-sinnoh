@@ -9,7 +9,7 @@
     "cards": {
       "file": "cards.json",
       "rows": 54,
-      "sha256": "b5de054687e2186ff23f71d8c86fdbef7437ca5c8da8b5b04f3cf6347d73a4d6"
+      "sha256": "800e7b364ecca33a320adedf292cb39f4d525f268cf384e214f866614e9a4be9"
     },
     "decks": {
       "file": "decks.json",
@@ -48,13 +48,13 @@
     },
     "strings.en": {
       "file": "strings.en.json",
-      "rows": 4254,
-      "sha256": "9a257d85af0a0cfe80aee8aedd2ad6311e02d65ec506b12f2d6132addba4a9f1"
+      "rows": 4302,
+      "sha256": "f35cff8ed1a66e961e315efab82286e09907b663e66b047389f0801f5e501ded"
     },
     "strings.ko": {
       "file": "strings.ko.json",
-      "rows": 4254,
-      "sha256": "fd74e7ca038638b873f9fd3dd033396b23352bbb17f7abf4fdc339c0fc8e8d6c"
+      "rows": 4302,
+      "sha256": "c487cae833aeb2ff7b410c5844aad627b718a862ce1f5f0d79117cf1794f6946"
     },
     "tutorial.e01": {
       "file": "tutorial/e01.json",
@@ -154,17 +154,17 @@
     "rulebook.ko": {
       "file": "rulebook.ko.json",
       "rows": 81,
-      "sha256": "4c27de34e3ecde849cd453c0fa58d477f0c50eafcb322275a238bcfc5b843210"
+      "sha256": "d656d88382cce8738d9cea6dddcc744652934b6ada8e6a956d9b6c193c5faf4c"
     },
     "rulebook.en": {
       "file": "rulebook.en.json",
       "rows": 81,
-      "sha256": "57dbe4d332d71073d8dade236d3a9da6bf6f2948c1e9516fbeba18b9f3d486fe"
+      "sha256": "c2530cf5b31d3910f9352642b26b173af67508d707ff61f9fe84bb492f28de8e"
     },
     "credits": {
       "file": "credits.json",
-      "rows": 6,
-      "sha256": "59e6b1cf4f8f19a5661b6d54519738a34234980a20a9b1340fb4b2b5a912d26f"
+      "rows": 5,
+      "sha256": "9011c829f639acdfe001451b0f4e88a0aad35716127187ba631d2779cd26c6f1"
     }
   },
   "contentTables": [
@@ -178,7 +178,7 @@
     "pokemon",
     "trainer_cards"
   ],
-  "contentHash": "bd7e60479baef8a40c5af09fc657f534e53b139dcafbc55a7c515cf7a20b1348",
+  "contentHash": "7aaea1bf5784478d0457f1caf653c32874a8a43498014985b5e99d252fdf4210",
   "inputs": {
     "Research/map_cells.csv": "dd534e0b931f8b2a5a64df10aa66df689278a18c",
     "Research/raw/original-gh/sinnoh_cube-master.xlsx": "c1764da462db5a81ac3a24153f6ebade3e5af32f",

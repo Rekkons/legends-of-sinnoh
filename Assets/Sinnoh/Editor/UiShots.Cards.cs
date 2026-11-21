@@ -46,7 +46,13 @@ namespace Sinnoh.Editor
             // 묶음 2c — 답 나머지
             Screen("tc-enc-retry", Fit(s => CardRest(s, "ace_trainer", 0))),        // ace_trainer B: 조우 창 아래 줄 [다시 찾아보기](마우스 오버 = 카드 — 능력)
             Screen("tc-enc-again", Fit(s => CardRest(s, "ace_trainer", 1))),        // [다시 찾아보기] 뒤: 새 카드 공개 때 조우 창을 다시 그린다(조우당 한 번 — 단추 없음)
-            Screen("tc-evolve-egg", Fit(s => CardRest(s, "pokemon_breeder", 2))),   // pokemon_breeder B: 진화 창 [교배 기술] → 진화형의 기술 + 넣을 칸
+            Screen("tc-evolve-egg", Fit(s => CardRest(s, "pokemon_breeder", 2))),
+            Screen("tc-evolve-egg-tip", Fit(s =>                                    // 결정 186: 칸 1에 기술이 든 교배 기술 칸에 마우스 — 기술 이름 + 효과 + 안내 한 줄(칸 하나에 툴팁 하나)
+            {
+                var flow = CardRest(s, "pokemon_breeder", 11);
+                var p = flow.Client.View.Pokemon[((EvolveScreen)flow.Stage.Current).EggFor];
+                MoveTipShown(s, flow.Stage.Root.Q("board-evolve-egg-0-0"), p.Moves[0], flow.Stage.Root.Q("board-evolve-panel"));
+            })),   // pokemon_breeder B: 진화 창 [교배 기술] → 진화형의 기술 + 넣을 칸
             Screen("tc-board-swap", Clean(s => CardRest(s, "youngster", 3), "board-hud-actions")),   // youngster R 「When unlocked」 카드 바꾸기: 카드 이름 단추(마우스 오버 = 두 능력)
             Screen("tc-card-release", Fit(s => CardRest(s, "youngster", 4))),       // 파티가 가득 찬 채 카드로 얻은 포켓몬: 놓아줄 포켓몬(보드 위 창)
             Screen("tc-card-teach", Fit(s => CardRest(s, "scientist", 5))),         // scientist B 현장 관찰: 찾은 포켓몬의 기술 가르치기(보드 위 창)
@@ -365,7 +371,8 @@ namespace Sinnoh.Editor
                         int t = MapActions.EncounterTokenAt(state, c);
                         if (t >= 0 && state.Tokens[t].Kind == TokenKind.ApricornTree) { st.Cell = c; break; }
                     }
-                if (stage == 2) st.Jp = Math.Max(st.Jp, 30);
+                if (stage == 2 || stage == 11) st.Jp = Math.Max(st.Jp, 30);
+                if (stage == 11) state.Pokemon[st.Party[0]].Moves[0] = water;   // 결정 186: 교배 기술 칸 1에 지금 기술
                 if (stage == 3)
                 {
                     st.TrainerCardOffer.Clear();
@@ -409,6 +416,7 @@ namespace Sinnoh.Editor
                     break;
                 }
                 case 2:
+                case 11:
                 {
                     if (!flow.OpenEvolve() || !(flow.Stage.Current is EvolveScreen evolve)) throw new InvalidOperationException("진화 창이 열리지 않았다");
                     int mon = evolve.Listed.Count > 0 ? evolve.Listed[0] : -1;

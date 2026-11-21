@@ -2,7 +2,7 @@
 
 # Third-Party Notices — Pokémon: Legends of Sinnoh Digital Edition
 
-This file lists the open-source and third-party software included in the release build of this game (Pokémon: Legends of Sinnoh Digital Edition, an unofficial Pokémon fan game), with their notices and full license texts. The license for the game itself is in `LICENSE.md`; the sources and artists of the graphics, sound and translation are in `CREDITS.md`.
+This file lists the open-source and third-party software included in the release build of this game (Pokémon: Legends of Sinnoh Digital Edition, an unofficial Pokémon fan game), with their notices and full license texts. The license for the game itself is in `LICENSE.md`; the sources and artists of the graphics and sound are in `CREDITS.md`.
 
 Each full text is reproduced unchanged from the source file named in its section.
 

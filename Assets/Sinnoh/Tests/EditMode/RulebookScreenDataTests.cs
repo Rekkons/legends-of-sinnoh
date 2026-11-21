@@ -94,7 +94,7 @@ namespace Sinnoh.Tests.EditMode
         {
             string json = TestData.ReadText("credits.json");
             var table = CreditsTable.Load(json);
-            CollectionAssert.AreEqual(new[] { "original", "korean", "pokemon", "art", "sound", "program" }, table.Sections.Select(s => s.Id), "CREDITS.md의 절 순서");
+            CollectionAssert.AreEqual(new[] { "original", "pokemon", "art", "sound", "program" }, table.Sections.Select(s => s.Id), "CREDITS.md의 절 순서");
             var manifest = ContentManifest.Load(TestData.ReadText("manifest.json"));
             Assert.AreEqual(table.Sections.Count, manifest.Find("credits").Rows);
             CollectionAssert.DoesNotContain(manifest.ContentTables, "credits", "엔진은 크레딧을 읽지 않는다");
@@ -128,8 +128,9 @@ namespace Sinnoh.Tests.EditMode
                     foreach (string t in new[] { e.Who, e.Role, e.RoleEn }.Concat(e.Names ?? new List<string>()))
                         Assert.IsFalse(dev.IsMatch(t), $"{s.Id}: {t}");
             }
-            Assert.AreEqual("Korean translation", all.Single(e => e.Who == "3JA2").RoleIn("en"));
-            Assert.AreEqual("한국어 번역", all.Single(e => e.Who == "3JA2").RoleIn("ko"));
+            // 결정 172: 한국어는 우리 번역 — 참고한 한국어판(번역자)은 크레딧에 적지 않는다
+            foreach (string gone in new[] { "3JA2", "로씨온" }) Assert.IsFalse(all.Any(e => e.Who == gone), gone);
+            Assert.IsFalse(all.Any(e => e.Role.Contains("한국어판") || e.RoleEn.Contains("Korean edition")), "한국어판 역할 줄");
             // 엄격: 빈 이름 목록 · 빈 탭 · 겹친 id · 빠진 who · 빠진 영어 제목
             const string entry = "{\"who\":\"w\",\"role\":\"r\",\"roleEn\":\"r\",\"names\":null}";
             Assert.Throws<FormatException>(() => CreditsTable.Load(json.Replace("\"names\":null", "\"names\":[]")));

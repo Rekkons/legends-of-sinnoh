@@ -243,22 +243,33 @@ namespace Sinnoh.Tests.EditorAssets
                 Assert.AreEqual(rolled.Faces.Length, root.Query(className: "sn-battle-rollface").ToList().Count, "면 그림 수");
 
                 // 기술(59행) · 상성(60행): 메시지 창의 문장이 그 단계에 뜬다
+                if (move.StartMs - 1 >= roll.EndMs)
+                {
+                    seek(move.StartMs - 1);
+                    Assert.AreEqual(0, screen.CalcLit, "맞기 전에는 이 공격의 계산이 없다(결과는 59행 뒤에만 — 결정 143 ⑦)");
+                }
                 seek(move.StartMs + 1);
                 StringAssert.Contains(moveName + "!", screen.Message, "「○○의 △△!」");
                 Assert.AreEqual(BattleBeats.LungeHitPx, screen.Painted.Player.Dx, "맞는 순간: 당긴 자세에서 돌진");
                 Assert.AreEqual(hit.Before, screen.ShownMon(foe).Hp);
 
-                // 계산 줄(61행): 칸이 왼쪽부터 켜지고 총합이 350에 켜진다. 체력 줄은 아직 없다
-                seek(calc.StartMs);
-                Assert.AreEqual(1, screen.CalcLit, "주사위 칸");
+                // 계산 줄(결정 171 ①): 맞는 순간(59행 시작)부터 칸이 왼쪽부터 켜지고 총합이 350에 켜진다 — 상성(60행)을 기다리지 않는다. 체력 줄은 아직 없다
+                Assert.AreEqual(move.StartMs, screen.CalcFromMs, "계산 줄은 59행 시작부터 잰다");
+                Assert.AreEqual(1, screen.CalcLit, "주사위 칸(맞는 순간 + 1)");
                 Assert.AreEqual(Visibility.Hidden, root.Q("battle-calc-total").style.visibility.value);
-                seek(calc.StartMs + 150);
+                seek(move.StartMs + 150);
                 Assert.AreEqual(2, screen.CalcLit, "+ 효과 칸");
-                seek(calc.StartMs + 350);
+                seek(move.StartMs + PlayTiming.DamageCalcMs.Value);
+                Assert.Less(move.StartMs + PlayTiming.DamageCalcMs.Value, calc.StartMs, "총합은 계산 단계(61행)보다 먼저 선다");
                 Assert.AreEqual(4, screen.CalcLit, "+ 상성 칸 + 총합");
                 Assert.AreNotEqual(Visibility.Hidden, root.Q("battle-calc-total").style.visibility.value);
                 Assert.AreEqual(dmg.Final.ToString(), root.Q("battle-calc-total").Query<Label>().ToList()[1].text);
+                Assert.IsFalse(screen.CalcTaken, "내가 준 피해(상대가 맞았다)");
+                Assert.IsTrue(root.Q("battle-calc-target").ClassListContains("sn-battle-calc-tag-foe"), "상대 이름표 = 붉은 바탕");
+                Assert.IsNotNull(root.Q("battle-calc-face").Q(className: "sn-mon"), "맞은 포켓몬의 작은 도트");
                 Assert.IsFalse(screen.CalcHpShown);
+                seek(calc.StartMs);
+                Assert.AreEqual(4, screen.CalcLit, "계산 단계 동안에도 다 켜진 채");
 
                 // 체력(61행): 깎이는 동안 숫자는 옛 값이고 막대만 움직인다 → 착지에 새 값
                 seek(drain.StartMs + drain.Ms / 2);

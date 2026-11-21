@@ -8,7 +8,7 @@
 
 ## 1. 이 프로젝트가 만든 것
 
-대상: 이 프로젝트의 코드(`Assets/Sinnoh/` 중 `Gen/` 밖 · `Tools/` · 공용 UI 키트 `com.rekkon.uikit`) · 화면 글 · 문서 · 직접 만든 그림 · 셰이더 · 효과음 레시피.
+대상: 이 프로젝트의 코드(`Assets/Sinnoh/` 중 `Gen/` 밖 · `Tools/` · 공용 UI 키트 `com.rekkon.uikit`) · 화면 글 · 한국어 번역(원작의 영문 게임 글 · 카드 · 룰북을 옮긴 글) · 문서 · 직접 만든 그림 · 셰이더 · 효과음 레시피.
 
 Copyright © 2026 Rekkons
 
@@ -20,9 +20,9 @@ Copyright © 2026 Rekkons
 
 있는 그대로 주며 보증은 없습니다. 쓰다가 생긴 일에 만든 사람은 책임지지 않습니다. 오픈소스 표준 라이선스(OSI 승인)가 아닙니다.
 
-## 2. 원작 팬 게임과 한국어 번역
+## 2. 원작 팬 게임
 
-대상: 규칙 · 게임 데이터 · 영문 게임 글 · 카드 · 보드 그림 · 룰북(Levatius — Steam 창작마당 2652573878 · https://github.com/Levatius/pokemon-legends), 한국어 번역(3JA2 · 로씨온 — Steam 창작마당 2679162224), 원작이 쓴 제3자 자산(3D 피규어 PTU Models 등 — 목록은 `CREDITS.ko.md`).
+대상: 규칙 · 게임 데이터 · 영문 게임 글 · 카드 · 보드 그림 · 룰북(Levatius — Steam 창작마당 2652573878 · https://github.com/Levatius/pokemon-legends), 원작이 쓴 제3자 자산(3D 피규어 PTU Models 등 — 목록은 `CREDITS.ko.md`).
 
 권리는 각 작가에게 있고, 이 파일은 이것들에 대한 허락을 주지 않습니다. 원작 저장소와 창작마당 페이지에 라이선스 표시가 없어, 원작자가 원작 창작마당 페이지 댓글에서 밝힌 조건을 따릅니다.
 
@@ -32,7 +32,7 @@ Copyright © 2026 Rekkons
 >
 > "Just make sure to give credit if assets or code from the original are used"
 
-한국어 번역도 같은 조건(비영리 · 출처 표기)으로 씁니다. 원작자 · 번역자 · 각 작가가 고치거나 내려 달라고 하면 따릅니다.
+한국어 번역도 이 조건(비영리 · 출처 표기)을 따릅니다. 원작자 · 각 작가가 고치거나 내려 달라고 하면 따릅니다.
 
 이 파일은 2절의 것에 대한 허락을 주지 않습니다. 이 프로젝트를 고쳐 나누면서 2절의 것을 함께 쓰려면 원작자에게 직접 문의해 허락을 받으십시오. 원작자가 고치거나 내려 달라고 하면 따라야 합니다.
 

@@ -271,7 +271,12 @@ namespace Sinnoh.Client
             VisualElement chip;
             if (card >= 0) chip = MonParts.BreachRow(stage, flow.Ctx, card, TipSide.Below);
             else if (move >= 0) chip = MonParts.MoveRow(stage, flow.Ctx, move, false, TipSide.Below, panel);
-            else { chip = new VisualElement(); chip.Add(Kit.Text(stage.T("screen.breach.empty"), Kit.F2)); }
+            else chip = MonParts.TacticRow(stage, flow.Ctx, mon, slot, TipSide.Below, panel);   // 전설 특수기술이 차지한 빈 칸(결정 195) — 붙이면 덮인다
+            if (chip == null)
+            {
+                chip = new VisualElement();
+                chip.Add(Kit.Text(stage.T("screen.breach.empty"), Kit.F2));
+            }
             chip.name = SlotName(p, slot);
             chip.AddToClassList("sn-breach-chip");
             parent.Add(chip);

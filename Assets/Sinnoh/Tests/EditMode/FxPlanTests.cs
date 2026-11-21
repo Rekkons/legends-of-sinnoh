@@ -273,8 +273,8 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual(150 + 100 + 100 + 300 + 400, PlayTiming.RowMs(new DamageBreakdown { Steps = new DamageStep[7] }, 611), "61행: 계산 줄 350 + 300 뒤 숫자 비행 400(단계 수와 무관)");
             Assert.AreEqual(800, PlayTiming.RowMs(new HpChanged(), 612), "61행: HP 감소 800");
 
-            Assert.AreEqual(600 + 200 + 200, PlayTiming.RerollMs(1), "43행: 글리치 600 + 다시 세기 200 + 데미지 갱신 200");
-            Assert.AreEqual(600 * 3 + 400, PlayTiming.RerollMs(3), "여러 개면 주사위당 600");
+            Assert.AreEqual(1500 + 500 + 500, PlayTiming.RerollMs(1), "43행: 글리치 1500 + 다시 세기 500 + 데미지 갱신 500(결정 190)");
+            Assert.AreEqual(1500 * 3 + 1000, PlayTiming.RerollMs(3), "여러 개면 주사위당 1500");
 
             // 한 항목: 굴림 → 면 바꾸기 두 번(이벤트마다 한 박자) → 동시 피해 둘(같은 박자) → HP
             var ev = new List<GameEvent>

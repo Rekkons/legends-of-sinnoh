@@ -61,7 +61,7 @@ namespace Sinnoh.Client
         /// <summary>그 선택의 그 답을 화면으로 누른다: 보드 HUD(칸 · 단추) · 마을 창 · 조우 창 · 배틀 화면.</summary>
         public static bool Press(GameFlow flow, PendingChoice choice, ChoiceAnswer answer)
         {
-            if (flow.Stage.Current is CardRewardScreen reward && CardRewardScreen.Owns(choice)) return reward.Press(answer);   // 카드가 연 놓아주기·가르치기
+            if (flow.Stage.Current is CardRewardScreen reward && CardRewardScreen.Takes(flow, choice)) return reward.Press(answer);   // 카드가 연 놓아주기·가르치기
             if (flow.Stage.Current is CardSwapScreen swap && CardSwapScreen.Owns(flow.Ctx, choice)) return swap.Press(answer);   // 카드 바꾸기(부채꼴 창)
             switch (choice.Kind)
             {

@@ -293,9 +293,14 @@ namespace Sinnoh.Fx
                 case TradeDone td:
                     Add(e, td.B, new BattleLine { Key = K + "trade.done" }.WithValue("to", td.A + 1));
                     break;
+                case UsageMarked um when um.Kind == UsageKind.GodVictory:
+                    // 신 격파 뒤 추가 턴(결정 198 — 엔진의 「한 턴 더」 표): 바로 앞의 그 좌석 신 격파 줄을 「한 번 더」 꼴로
+                    for (int i = lines.Count - 1; i >= 0; i--)
+                        if (lines[i].Seat == um.Seat && lines[i].Line != null && lines[i].Line.Key == K + "god.done") { lines[i].Line.Key = K + "god"; break; }
+                    break;
                 case TokenRemoved tr:
                     if (tr.TokenKind == TokenKind.Grunt) Freed(e, tr.Cell);
-                    else if (tr.TokenKind == TokenKind.God) Add(e, tr.Seat, new BattleLine { Key = K + "god" });   // 신 격파(80행)
+                    else if (tr.TokenKind == TokenKind.God) Add(e, tr.Seat, new BattleLine { Key = K + "god.done" });   // 신 격파(80행) — 추가 턴 표가 뒤따르면 「한 번 더」 줄로(결정 198)
                     break;
                 case MoveTaught mt:
                     if (species.TryGetValue(mt.PokemonId, out int sp) && mt.MoveKey >= 0)

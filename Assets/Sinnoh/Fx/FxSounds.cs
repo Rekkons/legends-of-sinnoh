@@ -77,6 +77,8 @@ namespace Sinnoh.Fx
             // 보드
             new SoundCueRow(110, "land", SoundKeys.Land, SameAsMe, Se, "마지막 걸음이 닿는 프레임(걸음마다 무음 · 단차 DANSA는 M9)"),
             new SoundCueRow(110, "meet", SoundKeys.Meet, SameAsMe, SoundLayer.Jingle, "같은 칸의 말을 만남(13행 — 걷기 단계 끝에 붙는 대기열 밖 행): 걸어 들어간 칸에 다른 좌석의 말이 있으면 마지막 걸음이 닿을 때(「!」가 뜨는 때). 결정 73 ⑤ — 원작 시선 곡 SEQ_EYE_BOY의 도입부 + BGM 더킹(M9 소리 ②)"),
+            new SoundCueRow(FlyBeats.Row, "cry", SoundKeys.Cry, SameAsMe, Cry, "컷인(결정 167): 찌르호크가 띠 가운데에 닿는 때 — 찌르호크 울음(원작 hm_cut_in도 가운데에서 운다)"),
+            new SoundCueRow(FlyBeats.Row, "cutin", SoundKeys.FlyCutin, SameAsMe, Se, "컷인(결정 167): 찌르호크가 왼쪽으로 빠져나가기 시작하는 때(휙 — 원작 자산 DP_FW019 [가정])"),
             new SoundCueRow(FlyBeats.Row, "land", SoundKeys.Land, SameAsMe, Se, "도착 마을에 내려앉는 프레임"),
             new SoundCueRow(SpotBeats.Row, "flip", SoundKeys.CardFlip, SameAsMe, Se, "[공개] 토큰이 앞면으로 바뀌는 가운데"),
             new SoundCueRow(SpotBeats.Row, "pass", Silent, Silent, Se, "[지나가기]는 내려앉기만"),
@@ -92,7 +94,7 @@ namespace Sinnoh.Fx
             new SoundCueRow(BankBeats.Row, "flip", SoundKeys.CardFlip, SameAsMe, Se, "섞은 덱의 새 맨 위 카드가 뒤집히는 가운데"),
             new SoundCueRow(CraftBeats.Row, "pop", SoundKeys.BallOpen, SameAsMe, Se, "완성품 둘레가 펑(PL_BOWABOWA는 M9)"),
             new SoundCueRow(StewBeats.Row, "bounce", SoundKeys.Select, SameAsMe, Se, "스튜 그릇이 처음 튀는 때(작은 톡 — 회복스튜의 징글은 17행)"),
-            new SoundCueRow(WorkRows.Maint, "show", SoundKeys.Select, SameAsMe, Se, "정비(38·40·41행 — 지닌물건 · 기술 · 놓아주기 · 순서): 내 화면은 끌어 놓기 · 고르기의 select(내 정비는 단계가 없다 — 누르는 소리), 남 화면은 그 좌석의 정비 판 보기가 뜨는 때 작은 톡(결정 120)"),
+            new SoundCueRow(WorkRows.Maint, "show", SoundKeys.Select, SameAsMe, Se, "정비(38·40·41행 — 지닌물건 · 기술 · 놓아주기 · 순서): 내 화면은 끌어 놓기 · 고르기의 select(내 정비는 단계가 없다 — 누르는 소리), 남 화면은 그 좌석 칩에 「정비」 꼬리표가 뜨는 때 작은 톡(결정 177 — 사당 보상은 판 보기가 뜨는 때)"),
             new SoundCueRow(EvolveBeats.Row, "song", SoundKeys.Evolve, Silent, SoundLayer.Jingle, "단계 처음 — 진화 곡 SEQ_SHINKA의 앞머리(빛이 터질 때까지 3.4초 · BGM 더킹). 남 화면은 2초짜리 알림이라 무음(M9 소리 ② [가정 plan §5 #522])"),
             new SoundCueRow(EvolveBeats.Row, "flash", SoundKeys.BallOpen, SameAsMe, Se, "화면이 하얗게 터지는 때"),
             new SoundCueRow(EvolveBeats.Row, "fanfare", SoundKeys.Fanfare, SameAsMe, SoundLayer.Jingle, "흰 빛이 걷힌 때(ClearPermille) — 팡파르 SEQ_FANFA5(원작 진화 끝, M9 소리 ②)"),
@@ -221,7 +223,7 @@ namespace Sinnoh.Fx
             new SoundCueRow(FateRows.Reroll, "lock", SoundKeys.Dice, SameAsMe, Se, "다시 굴린 주사위가 새 면으로 고정되는 때(주사위마다 — 글리치 지직 SE는 M9)"),
             new SoundCueRow(FateRows.Sacrifice, "hit", SoundKeys.Hit, SameAsMe, Se, "그림자가 다 감싸 체력이 빠지기 시작하는 때"),
             // M5 「사당·균열 화면」(31~34행) — 임시 효과음(DP_KIRAKIRA · EV_LEGEND · D_AGITO 곡과 울음은 M9) [가정]
-            new SoundCueRow(OfferBeats.Row, "pillar", SoundKeys.Heal, SameAsMe, Se, "바친 규토리가 사라지고 빛기둥이 서는 때"),
+            new SoundCueRow(OfferBeats.Row, "pillar", SoundKeys.ShrineLight, SameAsMe, Se, "바친 규토리가 사라지고 빛기둥이 서는 때(결정 174 — 원작 자산 DP_W361)"),
             new SoundCueRow(OfferBeats.Row, "flip", SoundKeys.CardFlip, SameAsMe, Se, "뽑은 카드가 앞면으로 뒤집히는 가운데(장마다)"),
             new SoundCueRow(BlessBeats.Row, "get", SoundKeys.Shine, SameAsMe, Se, "받은 것 꼬리표가 뜨는 때(축복 — 반짝, M9 소리 ③)"),
             new SoundCueRow(LegendBeats.Row, "land", SoundKeys.Land, SameAsMe, Se, "전설 피규어가 사당에 내려앉는 프레임(놓지 않는 카드면 무음 — 울음은 M9)"),
@@ -335,7 +337,13 @@ namespace Sinnoh.Fx
                         }
                     return;
                 case FlyBeats.Row:
-                    if (FlyBeats.Flight(s) != null) Emit(entry, s.Row, "land", s.EndMs, mine);
+                    if (FlyBeats.Flight(s) == null) return;
+                    if (FlyBeats.CutinOf(total) > 0)   // 결정 167: 앞의 컷인 — 가운데에서 울음 · 빠져나가며 휙
+                    {
+                        EmitDexCry(entry, s.Row, at + FlyCutinBeats.CryMs, mine, dexOf, FlyCutinBeats.TaxiDex);
+                        Emit(entry, s.Row, "cutin", at + FlyCutinBeats.SwooshMs, mine);
+                    }
+                    Emit(entry, s.Row, "land", s.EndMs, mine);
                     return;
                 case SpotBeats.Row:
                     if (SpotBeats.Cell(s, out bool reveal) >= 0) Emit(entry, s.Row, reveal ? "flip" : "pass", at + (reveal ? total * SpotBeats.FlipPermille / 1000 / 2 : 0), mine);
@@ -751,6 +759,21 @@ namespace Sinnoh.Fx
             if (key == Silent) return;
             int dex = dexOf(pokemonId, species);
             if (dex <= 0) return;
+            string cue = SoundKeys.CryKey(dex, key == SoundKeys.CryLow);
+            if (atMs < 0) atMs = 0;
+            foreach (var c in entry.Cues)
+                if (c.IsSound && c.AtMs == atMs && c.Sound == cue) return;
+            entry.AddSound(atMs, cue, row);
+        }
+
+        // 종 번호를 이미 아는 울음(공중날기 컷인의 찌르호크 — 판의 포켓몬이 아니다). 울음을 다는 호출(dexOf 있음)에서만 단다
+        static void EmitDexCry(FxEntry entry, int row, int atMs, bool mine, Func<int, int, int> dexOf, int dex)
+        {
+            if (dexOf == null || dex <= 0) return;
+            var line = Find(row, "cry");
+            if (line == null) throw new InvalidOperationException("소리 표에 " + row + "행 「cry」 박자가 없다");
+            string key = mine || line.Others == SameAsMe ? line.Me : line.Others;
+            if (key == Silent) return;
             string cue = SoundKeys.CryKey(dex, key == SoundKeys.CryLow);
             if (atMs < 0) atMs = 0;
             foreach (var c in entry.Cues)

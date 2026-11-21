@@ -245,6 +245,12 @@ namespace Sinnoh.Client
         public bool BattleOver => Battle != null && Battle.Ended && battleHeld;
 
         /// <summary>
+        /// 내 배틀(UB 격파) 뒤의 균열 카드 버리기·옮기기 묶음이 아직 열려 있나 — 남이 다 답하면 배틀 뒤 선택(UB 기술 가르치기)이 이어서 결과 창으로 온다.
+        /// 그동안 결과 창 [확인]은 닫지 않는다: 내가 먼저 답하고 [확인]으로 닫으면 가르치기를 받을 창이 없어 내 턴이 멈췄다(결정 185 — 11-21 실제 방 플레이).
+        /// </summary>
+        public bool ReleasePending => Battle != null && Battle.Mine && Client != null && BreachScreen.Active(Client.View) && BreachScreen.Releasing(Client.View);
+
+        /// <summary>
         /// 화면 대기열이 방장 시각을 따르는 판인가(방 판은 늘 — 확인용 판은 값을 넣는다, 플레이 시험 T4 · 결정 126): 결과 창 · 게임 메뉴가 떠 있어도 대기열을 세우지 않고,
         /// 늦으면 방장 멈춤 끝에 맞춰 따라잡는다(<see cref="FxSequencer.CatchUpMs"/>). 남의 배틀 결과 창은 그 뒤 연출이 시작되면 저절로 닫힌다(내가 [확인]을 누르지 않아도 된다 — T8 · T16).
         /// 혼자 하는 판은 지금처럼 결과 창이 [확인]까지 대기열을 세운다(기다릴 남이 없다).
@@ -514,7 +520,7 @@ namespace Sinnoh.Client
                 list.Count > 0 ? OpenSaves : (Action)null, line, Tutorial.Available ? Tutorial.Open : (Action)null, Tutorial.FirstTime,
                 Ctx != null ? Room.OpenCreate : (Action)null, Ctx != null ? Room.OpenJoin : (Action)null, Ctx != null ? OpenTitleDex : (Action)null,
                 rulebook: OpenTitleRulebook, credits: OpenCredits, notice: PlayNoticeDue ? AnswerPlayNotice : (Action<bool>)null,
-                update: NewVersion, download: NewVersion != null ? DownloadRelease : (Action)null));
+                updates: UpdateViewOrNull));
             Restage();
         }
 
@@ -1285,6 +1291,7 @@ namespace Sinnoh.Client
             GodBeats.SplitOff(entries, LiberateBeats.StepOf);   // 1막 해방의 조무래기 토큰 날아감(94행 941 — M9 다듬기 P18)도
             UbBattleRows.SplitPhase(entries);   // 네크로즈마 페이즈 격파(90행)도(M6 「UB 배틀 화면 묶음」)
             UbBattleRows.SplitSilvally(entries);   // 실버디 → 축복 +1(93행)도(M6 「연출 목록 채우기」)
+            DealRows.SplitOthers(entries, Client.Seat);   // 남 좌석의 스탬프(47행 — 결정 178)도: 결과 창 [확인] 뒤 보드에서 그 좌석 칩 꼬리표로
             WhiteoutBeats.SplitOff(entries, ResultBeats.StepOf, ResultBeats.Ended);   // 게임 끝(97행)도 — 배신자 연전의 마지막 배틀 뒤 결과 창 [확인] 다음에
             WhiteoutBeats.SplitOff(entries, FallRows.StepOf, FallRows.Event);   // 탈락(91행 — 네크로즈마에게 진 배틀 끝 항목에 실린다)도 결과 창 [확인] 뒤 보드에서
             unlockHold.Defer(entries);   // 트레이너 카드 해금(48행 — 결정 84 M5 가)도: 배틀 중에 오른 등급은 배틀 끝 항목 뒤 새 항목으로(결과 창 [확인] 다음 보드에서 카드 뒤집기)
@@ -1666,8 +1673,8 @@ namespace Sinnoh.Client
                 if (Battle == null && Stage.Current == null && !menu && EvolveScreen.Waits(Client)) Stage.Open(new EvolveScreen(this));
                 // 보드에서 카드가 연 놓아주기·기술 가르치기(M6 — 출처 = 카드): HUD 위 창. 답하면(다른 선택이 오면) 닫는다
                 var first = Client.FirstChoice();
-                if (Battle == null && Stage.Current == null && !menu && CardRewardScreen.Owns(first)) Stage.Open(new CardRewardScreen(this));
-                else if (Stage.Current is CardRewardScreen && !CardRewardScreen.Owns(first)) Stage.Shut();
+                if (Battle == null && Stage.Current == null && !menu && CardRewardScreen.Takes(this, first)) Stage.Open(new CardRewardScreen(this));   // 결과 창 없이 남은 배틀 뒤 선택도(결정 185)
+                else if (Stage.Current is CardRewardScreen && !CardRewardScreen.Takes(this, first)) Stage.Shut();
                 // 반바지 꼬마 빨강의 카드 바꾸기(결정 87 V6 나): 뽑은 카드를 부채꼴로 펼친 창
                 if (Battle == null && Stage.Current == null && !menu && CardSwapScreen.Owns(Ctx, first))
                 {
@@ -1727,6 +1734,8 @@ namespace Sinnoh.Client
             (Stage.Info as PartyScreen)?.Refresh();   // 정보 창 층(결정 125)
             (Stage.Info as MonScreen)?.Refresh();
             (Stage.Info as TrainerScreen)?.Refresh();
+            (Stage.Current as DiscardScreen)?.Refresh();   // 버림 더미 창(결정 196) — 판이 흐르면 더미가 바뀐다
+            (Stage.Info as DiscardScreen)?.Refresh();
             (Stage.Info as FateScreen)?.Refresh();
             SyncWatch();   // 남의 행동 보기 창(결정 120 ① — GameFlow.Watch.cs)
             watch?.Refresh();
@@ -1761,10 +1770,11 @@ namespace Sinnoh.Client
         /// <summary>
         /// 결과 창의 [확인]: 배틀 화면을 닫고 보드로 돌아간다. 세워 둔 화면 대기열을 풀어 턴 넘김(요약 → 띠 → 내 턴 컷신)이 이어지고, 그 뒤에 입력이 열린다.
         /// 배틀이 아직 끝나지 않았거나 배틀 뒤 선택(놓아주기·기술 가르치기)이 아직 열려 있으면 아무것도 하지 않는다.
+        /// 내가 쓰러뜨린 UB 뒤의 균열 카드 버리기·옮기기 묶음이 아직 열려 있어도(<see cref="ReleasePending"/>) 닫지 않는다.
         /// </summary>
         public void CloseBattle()
         {
-            if (!BattleOver || Client.Choice(ChoiceKind.Reward) != null) return;
+            if (!BattleOver || Client.Choice(ChoiceKind.Reward) != null || ReleasePending) return;
             WatchingWild = false;
             Battle = null;
             battleEnd = null;
@@ -1905,6 +1915,7 @@ namespace Sinnoh.Client
             if (hud == null) return;
             hud.ShowFx(seq);
             (Results ?? (Results = new ResultFx(this))).Show(seq, Stage.Root != null ? Stage.Root.Q("board-hud") : null);   // 맵 결과(23·26~30·80행 — M5 「맵 결과·배틀 안 연출」)
+            (FlyFx ?? (FlyFx = new FlyCutin(this))).Show(seq, Stage.Root != null ? Stage.Root.Q("board-hud") : null);   // 공중날기 앞 컷인(16행 — 결정 167)
             hud.ShowStacks();   // 걷는 말이 묶음에서 빠지고 닿아 묶이는 것 · 따라가는 카메라에 맞춘다
             bool open = InputOpen;
             // 막 안내 창(결정 101 ②): 막 카드 연출 · 막 목표 달성의 연출이 다 지나 보드 입력이 열리면 저절로 뜬다(사람이 하는 판만 — ActNotice, 튜토리얼 판은 마박사가 말한다)
@@ -1948,6 +1959,9 @@ namespace Sinnoh.Client
 
         /// <summary>맵 결과 연출 층(숨겨진 장소 결과 26~30 · 전설 장소 23 · 신 격파 80행 — HUD 판 위). 연출이 한 번도 돌지 않았으면 null.</summary>
         public ResultFx Results { get; private set; }
+
+        /// <summary>공중날기 앞의 비전기술 컷인 층(16행 — 결정 167, HUD 판 위). 연출이 한 번도 돌지 않았으면 null.</summary>
+        public FlyCutin FlyFx { get; private set; }
 
         /// <summary>보드 위 도트 이펙트 판(결정 69 — 착지 먼지 · 숨겨진 장소 공개 반짝임): 화면 뿌리의 가장 아래 층(<see cref="UiStage.Under"/> — HUD 판·창이 덮는다). 연출이 한 번도 돌지 않았으면 null.</summary>
         public SheetLayer Sheets { get; private set; }
@@ -2066,9 +2080,10 @@ namespace Sinnoh.Client
             else board.Pieces.Move(f.Seat, ground + Vector3.up * (pose.Height * peak));
             Follow(step, ground, local);
             var bird = TaxiFigure();
-            if (bird == null || local >= step.Ms) return;
-            int lift = step.Ms / FlyBeats.LiftPart, land = step.Ms / FlyBeats.LandPart;
-            float swoop = local < lift ? 1f - Tween.At(local, 0, lift, 0f, 1f, Ease.OutQuad) : local > step.Ms - land ? Tween.At(local, step.Ms - land, land, 0f, 1f, Ease.InQuad) : 0f;
+            int cut = FlyBeats.CutinOf(step.Ms), taxi = FlyBeats.TaxiMs(step.Ms), t = local - cut;
+            if (bird == null || local >= step.Ms || t < 0) return;   // 결정 167: 앞의 컷인 동안 택시는 아직 내려오지 않는다
+            int lift = taxi / FlyBeats.LiftPart, land = taxi / FlyBeats.LandPart;
+            float swoop = t < lift ? 1f - Tween.At(t, 0, lift, 0f, 1f, Ease.OutQuad) : t > taxi - land ? Tween.At(t, taxi - land, land, 0f, 1f, Ease.InQuad) : 0f;
             taxiFlying = true;
             var carried = ground + Vector3.up * (pose.Height * peak);
             BoardFigures.PlaceAt(bird, carried + Vector3.up * (HeadHeight(f.Seat, carried) + BirdAbove + swoop * BirdSwoop));
@@ -2492,6 +2507,10 @@ namespace Sinnoh.Client
             // 신 격파(80행 — P28): 그 단계가 대기열에 남은 동안 쓰러진 신의 피규어는 선 채였다가 단계가 시작되면 빛으로 흩어진다
             int goneMs = -1;
             var gone = game ? GodBeats.Pending(seq, out goneMs) : null;
+            var rings = board.Rings;   // UB 바닥 고리(결정 189) — PlaceBeast가 선 UB마다 하나
+            rings?.Begin();
+            beastDefs.Clear();
+            beastGrounds.Clear();
             foreach (var f in board.Figures.Figures)
             {
                 if (f.Group == BeastFigures || f.Group == NecrozmaFigures)
@@ -2579,6 +2598,7 @@ namespace Sinnoh.Client
                 }
                 BoardFigures.Place(f, on, fall * BoardFigures.DescendHeight, squash, size);
             }
+            rings?.Commit();
         }
 
         // 23행에서 솟게 한 전설 장소 피규어(끝나면 제자리로) · 마지막으로 선 신 피규어(80행 — 토큰이 빠진 뒤 흩어질 것)
@@ -2697,6 +2717,107 @@ namespace Sinnoh.Client
             }
             var ground = Vector3.Lerp(board.CellTop(at.From), board.CellTop(at.To), at.T);
             BoardFigures.PlaceAt(shown, ground + Vector3.up * at.Hop, at.Clip, at.ClipMs, at.Squash);
+            // 결정 189: 발밑 붉은 바닥 고리(뛰는 동안도 땅에 — 피규어를 따라 칸 사이를 옮긴다). 숨은 깨어진 세계의 피규어는 고리도 없다
+            if (shown.Root == null || !shown.Root.activeInHierarchy) return;
+            beastDefs.Add(def);
+            beastGrounds.Add(ground);
+            board.Rings?.Add(ground, FindLit(def));
+        }
+
+        /// <summary>
+        /// 결정 179: 그 UB · 네크로즈마(토큰의 Def)가 지금 보이는 칸 — 피규어와 같은 셈(<see cref="UbBoard.Of"/> — 대기열에 남은 이동을 되돌려 센 칸, 칸 사이를 뛰는 동안은 반을 넘기 전 출발 칸 · 넘은 뒤 도착 칸). 맵에 없으면 −1.
+        /// </summary>
+        public int BeastCell(int def)
+        {
+            var view = Client != null ? Client.View : null;
+            if (view == null || Ctx == null || def < 0 || def >= Ctx.Cards.Pokemon.Count) return -1;
+            var seq = Fx != null ? Fx.Sequencer : null;
+            var at = UbBoard.Of(view.Tokens, def, seq != null ? seq.Queued : null, seq != null ? seq.Current : null, seq != null ? seq.LocalMs : 0, UbMoveBeats.Heavy(Ctx.Cards.Pokemon[def].Key));
+            return !at.Shown ? -1 : at.T < 0.5f ? at.From : at.To;
+        }
+
+        /// <summary>결정 179: 그 칸에 지금 보이는 UB · 네크로즈마의 포켓몬 표 키(네크로즈마는 지금 선 폼 — <see cref="UbBoard.NecrozmaForm"/>)를 keys에 담는다. 칸 정보 줄 · 공개 정보 카드가 적는다.</summary>
+        public void BeastsAt(int cell, List<string> keys)
+        {
+            keys.Clear();
+            var view = Client != null ? Client.View : null;
+            if (view == null || view.Ub == null || Ctx == null || cell < 0) return;
+            var seq = Fx != null ? Fx.Sequencer : null;
+            foreach (var t in view.Tokens)
+            {
+                if ((t.Kind != TokenKind.UltraBeast && t.Kind != TokenKind.Necrozma) || t.Def < 0 || t.Def >= Ctx.Cards.Pokemon.Count || BeastCell(t.Def) != cell) continue;
+                keys.Add(t.Kind == TokenKind.Necrozma ? UbBoard.NecrozmaForm(view.Ub, seq != null ? seq.Queued : null) : Ctx.Cards.Pokemon[t.Def].Key);
+            }
+        }
+
+        /// <summary>결정 179: 그 칸에 서 있는 호수 수호신 피규어의 카드(포켓몬 표 색인 — 울트라 버스트 판에서 그 피규어가 지금 보일 때, 결정 128). 없으면 −1.</summary>
+        public int GuardianAt(int cell)
+        {
+            var view = Client != null ? Client.View : null;
+            if (view == null || view.Ub == null || board == null || board.Figures == null || cell < 0) return -1;
+            foreach (var f in board.Figures.Figures)
+                if (f.Group == SiteFigures && f.Spot.Cell == cell && f.Root != null && f.Root.activeSelf && Ctx.Cards.PokemonIds.TryIndexOf(f.Key, out int def) && UbTrial.LakeOf(Ctx, def) >= 0) return def;
+            return -1;
+        }
+
+        /// <summary>칸 정보 줄 · 공개 정보 카드가 적는 피규어(UB가 보이는 칸 · 네크로즈마 폼 · 서 있는 수호신 · 넘긴 시련)의 지문 — 연출로 바뀌면 HUD가 다시 적는다(결정 179).</summary>
+        public int FigureLook()
+        {
+            var view = Client != null ? Client.View : null;
+            if (view == null || view.Ub == null || Ctx == null) return 0;
+            var seq = Fx != null ? Fx.Sequencer : null;
+            unchecked
+            {
+                int h = 17;
+                foreach (var t in view.Tokens)
+                    if ((t.Kind == TokenKind.UltraBeast || t.Kind == TokenKind.Necrozma) && t.Def >= 0) h = h * 31 + BeastCell(t.Def);
+                h = h * 31 + UbBoard.NecrozmaForm(view.Ub, seq != null ? seq.Queued : null).GetHashCode();
+                foreach (bool over in view.Ub.TrialsOvercome) h = h * 31 + (over ? 1 : 0);
+                if (board != null && board.Figures != null)
+                    foreach (var f in board.Figures.Figures)
+                        if (f.Group == SiteFigures) h = h * 31 + (f.Root != null && f.Root.activeSelf ? 1 : 0);
+                return h;
+            }
+        }
+
+        /// <summary>
+        /// 결정 179: 그 화면 점(물리 px, 왼쪽 아래가 (0, 0))을 지나는 광선이 맞는 UB · 네크로즈마 · 호수 수호신 피규어의 칸(가장 가까운 것, 없으면 −1) — 칸 정보 줄 · 공개 정보 카드만 이 칸을 적는다
+        /// (칸 고르기 · 누르기는 땅의 칸 그대로). 피규어 상자 = 그 피규어 렌더러들의 경계(떠 있는 수호신 · 네크로즈마 폼도 그린 자리 그대로).
+        /// </summary>
+        readonly List<Renderer> figureParts = new List<Renderer>();
+
+        int FigureCell(float x, float y)
+        {
+            var view = Client != null ? Client.View : null;
+            if (view == null || view.Ub == null || board == null || board.Figures == null || rig == null || laidFor.x <= 0 || laidFor.y <= 0) return -1;
+            var cam = rig.GetComponent<Camera>();
+            var ray = new Ray(cam.transform.position, BoardPick.Ray(cam, x, y, laidFor.x, laidFor.y));
+            int best = -1, necrozma = -1;
+            float near = float.MaxValue;
+            foreach (var t in view.Tokens)
+                if (t.Kind == TokenKind.Necrozma) necrozma = t.Def;
+            void Try(BoardFigures.Figure f)
+            {
+                if (f.Root == null || !f.Root.activeInHierarchy) return;
+                int cell = -1;
+                if (f.Group == NecrozmaFigures) cell = necrozma >= 0 ? BeastCell(necrozma) : -1;
+                else if (f.Group == BeastFigures) cell = Ctx.Cards.PokemonIds.TryIndexOf(f.Key, out int def) ? BeastCell(def) : -1;
+                else if (f.Group == SiteFigures && GuardianAt(f.Spot.Cell) >= 0) cell = f.Spot.Cell;
+                if (cell < 0) return;
+                f.Root.GetComponentsInChildren(false, figureParts);
+                bool any = false;
+                var box = new Bounds();
+                foreach (var r in figureParts)
+                {
+                    if (!r.enabled) continue;
+                    if (!any) { box = r.bounds; any = true; }
+                    else box.Encapsulate(r.bounds);
+                }
+                if (any && box.IntersectRay(ray, out float d) && d < near) { near = d; best = cell; }
+            }
+            foreach (var f in board.Figures.Figures) Try(f);
+            foreach (var f in board.Figures.Forms) Try(f);
+            return best;
         }
 
         /// <summary>네크로즈마 피규어가 지금 선 폼(피규어 키 — 2·3페이즈 폼 확인용). 판에 서 있지 않으면 null.</summary>
@@ -3517,6 +3638,36 @@ namespace Sinnoh.Client
             Sync();
         }
 
+        // ── 버림 더미 보기(결정 196) ──
+
+        /// <summary>버림 더미 창이 포켓몬 카드를 기술 면(카드 뒷면 = 고유 기술)으로 보나 — 창을 다시 열어도 마지막 면(결정 196 덧 [가정]). 앱을 켜 둔 동안만.</summary>
+        public bool DiscardMoves { get; set; }
+
+        /// <summary>
+        /// 위 띠의 [버림 더미]: 덱마다 버려진 카드를 보는 창(<see cref="DiscardScreen"/>)을 연다 — 상성 창과 같은 자리(보드에 창이 없으면 HUD 위, 창 · 배틀이 떠 있으면 그 위 정보 창 층).
+        /// 이미 떠 있으면 닫는다(결정 176). 화면 대기열은 멈추지 않는다. 열었으면 true.
+        /// </summary>
+        public bool ToggleDiscards()
+        {
+            if (Front is DiscardScreen)
+            {
+                CloseDiscards();
+                return false;
+            }
+            if (!CanPeek) return false;
+            ShowInfo(new DiscardScreen(this), Stage.Current == null);
+            return true;
+        }
+
+        /// <summary>버림 더미 창의 [닫기](= 창 밖 누르기 · Esc): 보드로(정보 창 층이면 아래 창으로) 돌아간다.</summary>
+        public void CloseDiscards()
+        {
+            if (ShutInfo(Stage.Info is DiscardScreen)) return;
+            if (!(Stage.Current is DiscardScreen)) return;
+            Stage.Shut();
+            Sync();
+        }
+
         /// <summary>기록 창을 닫고 보드로 돌아간다.</summary>
         public void CloseLog()
         {
@@ -3623,12 +3774,48 @@ namespace Sinnoh.Client
             Sync();
         }
 
-        /// <summary>단축키 T: 정비 판을 열거나 닫는다.</summary>
+        /// <summary>단축키 T · 보드 HUD와 배틀 독의 [정비](결정 176 — 다시 누르면 닫힌다): 정비 판을 열거나 닫는다.</summary>
         public void ToggleParty()
         {
             if (Front is PartyScreen) CloseParty();
             else OpenParty();
         }
+
+        /// <summary>보드 HUD [트레이너 카드](결정 176): 내 트레이너 카드 판이 맨 앞이면 닫고(<see cref="CloseTrainer"/>), 아니면 연다. 열었으면 true.</summary>
+        public bool ToggleTrainer()
+        {
+            if (Front is TrainerScreen open && Client != null && open.Seat == Client.Seat)
+            {
+                CloseTrainer();
+                return false;
+            }
+            return OpenTrainer();
+        }
+
+        /// <summary>보드 HUD · 배틀 독 [운명의 변화](결정 176): 손패 창이 맨 앞이면 닫고(<see cref="CloseFate"/> — 버리는 중에는 닫지 않는다), 아니면 연다. 열었으면 true.</summary>
+        public bool ToggleFate()
+        {
+            if (Front is FateScreen)
+            {
+                CloseFate();
+                return false;
+            }
+            return OpenFate();
+        }
+
+        /// <summary>보드 HUD [스탬프](결정 176): 내 스탬프 판이 떠 있으면 닫고(<see cref="CloseStamp"/>), 아니면 연다. 열었으면 true.</summary>
+        public bool ToggleStamp()
+        {
+            if (StampOpen)
+            {
+                CloseStamp();
+                return false;
+            }
+            return OpenStamp();
+        }
+
+        /// <summary>내 스탬프 판이 떠 있나(보드 HUD가 [스탬프]를 켜 둔다 — 다시 누르면 닫히게, 결정 176).</summary>
+        public bool StampOpen => Stage.Current is StampScreen open && Client != null && open.Seat == Client.Seat;
 
         /// <summary>맨 위의 창: 배틀 화면 위에 띄운 창(배틀 중 정비 판 · 그 카드 확대)이 있으면 그것, 아니면 열린 화면(없으면 null). 정보 창 층은 보지 않는다(<see cref="Front"/>).</summary>
         public IUiScreen Top => Stage.Current is BattleScreen battle && battle.Over != null ? battle.Over : Stage.Current;
@@ -3875,9 +4062,9 @@ namespace Sinnoh.Client
             }
         }
 
-        // 스탬프(47행)는 받은 좌석의 화면에만 그린다(남의 것은 기록 줄만). 도전 VS · 거래는 모든 좌석에
-        // 스탬프(47행)는 받은 좌석의 화면에 — 방장 시각 판은 남의 스탬프도 그 사람 화면과 같게 찍는다(T16 · 결정 120 — 내 창이 떠 있으면 DealFx가 그리지 않는다)
-        bool DealDraws(FxStep step) => step.Row != DealRows.Stamp || (StampBeats.Event(step) is StampGained g && (g.Seat == Client.Seat || HostPaced));
+        // 도전 VS · 거래는 모든 좌석에. 스탬프(47행)는 받은 좌석의 화면에 — 방장 시각 판은 남의 스탬프도 그 사람 화면과 같게 찍는다(T16 · 결정 120 — 내 창이 떠 있으면 DealFx가 그리지 않는다)
+        // 남의 스탬프는 덮개 대신 그 좌석 칩 꼬리표 「스탬프 n/7」로 단계를 남긴다(결정 178 — OtherActs, 방장 시각 판이 아니면 DealFx는 그리지 않는다)
+        bool DealDraws(FxStep step) => step.Row != DealRows.Stamp || (StampBeats.Event(step) is StampGained g && (g.Seat == Client.Seat || HostPaced || OtherActs.Shows(step, Client.Seat, Client.View.Seats.Length)));
 
         /// <summary>보드 HUD의 [스탬프 n/7]: 스탬프 판(seat &lt; 0 = 내 좌석)을 HUD 위에 연다. 여는 조건은 정비 판과 같다(보드에서만).</summary>
         public bool OpenStamp(int seat = -1)
@@ -4368,6 +4555,8 @@ namespace Sinnoh.Client
         /// <summary>세션 시각을 dtMs만큼 흘리고 정해진 일(AI 답·시간 초과)을 처리한다. 프레임마다.</summary>
         public void Tick(int dtMs)
         {
+            TickUpdate(dtMs);   // 자동 업데이트(결정 161 — 타이틀의 견주기 · 받기 · 다시 시작)
+            if (rig != null) rig.KeysEnabled = !Typing;   // 글 칸 포커스(결정 175 — Typing 한 곳)면 카메라 Q · E를 끈다
             Tutorial.Tick();   // 튜토리얼: 떠난 판 놓기 · 장 경계(기록) · 각본 끝 → 끝 창(M6.5)
             Room.Tick();       // 방(M7 화면 ①): 접속 · 로비 · 게임 시작 · 실패를 화면에
             if (Room.InGame || roomLayer != null) (roomLayer ??= new RoomLayer(this)).Tick();   // 방 판(화면 ②): 응답 시계 · 일시정지 · 투표 · 알림 · 재접속 덮개
@@ -4397,6 +4586,7 @@ namespace Sinnoh.Client
             else if (Client != null && ((BreachScreen.ChoiceOf(Client) != null && !(Top is BreachScreen)) || (BlessScreen.ChoiceOf(Client) != null && !(Top is BlessScreen) && Stage.Current == null)) && BoardOpen && !MenuUp) Sync();
             Hud?.TickPrompt();   // S41 응답 프롬프트의 남은 시간 막대 · 시간 초과 표시(98행 — 대기열 밖)
             if (sitesBusy && (Fx == null || Fx.Sequencer.IsEmpty)) SyncFigures();   // 전설 장소 피규어의 나타남 · 사라짐(결정 123 — 대기열이 빈 뒤, 대기열이 도는 동안은 ShowFx가 부른다)
+            FindTick();   // UB 찾기(결정 189 ② — 대기열 밖, 흐름 시계)
             (Top as BreachScreen)?.Tick();   // 균열 카드 창 · 축복 물음의 남은 시간
             (Top as BlessScreen)?.Tick();
             Ripple();   // 깨어진 세계의 잔물결은 대기열이 비어 있어도 돈다(M9 다듬기 P39)
@@ -4520,18 +4710,62 @@ namespace Sinnoh.Client
         public int Pointer(float x, float y, bool left, bool other) => Point(x, y, left, other, true);
 
         /// <summary>
-        /// 보드 위 판의 글 칸에 글을 치는 중인가(사당 판의 야생 카드 찾기 — M9 다듬기 P22): 그동안 글쇠가 단축키(카메라 Q · E · 정비 T · 스페이스 바)로 새지 않는다. 칸의 포커스가 켜고 끈다.
+        /// 글 칸에 글을 치는 중인가(M9 다듬기 P22 · 결정 175): 그동안 글쇠가 단축키(카메라 Q · E · 정비 T · 상성 Y · 스페이스 바 · Ctrl+Z · 배틀 독 1~3 · Q · E)로 새지 않는다.
+        /// 한 곳에서 본다 — 무대 패널의 포커스가 글 칸(<see cref="TextField"/> 안)에 있거나 웹 손님판의 HTML 입력이 떠 있으면(<see cref="WebTextInput.Current"/>) 참이라 새 글 칸이 따로 걸지 않아도 된다.
+        /// 넣는 값은 확인용 · 옛 길(채팅 · 사당 찾기 · 버그 신고의 포커스 알림)이 켜는 표시다. 카메라는 프레임마다 <see cref="Tick"/>이 맞춘다.
         /// </summary>
         public bool Typing
         {
-            get => typing;
+            get => typing || TextFocused;
             set
             {
                 typing = value;
-                if (rig != null) rig.KeysEnabled = !value;
+                if (rig != null) rig.KeysEnabled = !Typing;
             }
         }
         bool typing;
+
+        /// <summary>무대 패널의 포커스가 패널에 붙은 글 칸 안에 있나 · 웹 손님판의 HTML 입력이 떠 있나(결정 175).</summary>
+        bool TextFocused
+        {
+            get
+            {
+                if (WebTextInput.Current != null) return true;
+                var focused = Stage.Root?.panel?.focusController?.focusedElement as VisualElement;
+                for (var v = focused; v != null; v = v.parent)
+                    if (v is TextField) return v.panel != null;
+                return false;
+            }
+        }
+
+        /// <summary>보드를 돌릴 수 있나(결정 164): 카메라가 Q · E를 받는 때와 같다 — 보드에 있고 위에 창 · 메뉴 · 배틀 화면 · 정보 창이 없고 글 칸에 글을 치지 않는다.</summary>
+        public bool CanTurn => rig != null && rig.InputEnabled && rig.KeysEnabled;
+
+        /// <summary>보드 HUD 돌리기 단추(결정 164 — ↺ = Q = −1 · ↻ = E = +1): Q · E와 같은 <see cref="BoardCameraRig.Turn"/>. 돌렸으면 true.</summary>
+        public bool Turn(int step)
+        {
+            if (!CanTurn) return false;
+            rig.Turn(step);
+            return true;
+        }
+
+        /// <summary>
+        /// 키로 누르는 화면 요소를 각본 튜토리얼 층이 받나(결정 164 — 배틀 독 단축키): 층이 그 요소의 클릭을 받을 때만 true(안 받으면 층이 hint를 띄운다). 층이 없으면 null.
+        /// </summary>
+        public Func<VisualElement, bool> KeyGate { get; set; }
+
+        /// <summary>
+        /// 배틀 독의 단축키(04 §4 입력 · 결정 164 — 단추 오른쪽 위 글자와 같다): 1~3 = 기술 줄(효과 순서를 묻는 중이면 순서 줄) · Q = [가방](다시 누르면 기술 줄로) · E = [기권].
+        /// 배틀 화면이 맨 위(<see cref="Top"/>)이고 그 단추가 켜져 있을 때만, 단추를 누른 것과 같은 함수로. 튜토리얼 판은 층이 그 단추를 받을 때만(<see cref="KeyGate"/>). 눌렀으면 true.
+        /// T(정비)는 <see cref="ToggleParty"/>, 배틀 중의 Q · E는 카메라로 가지 않는다(배틀 화면이 떠 있으면 <see cref="CanTurn"/> 거짓).
+        /// </summary>
+        public bool BattleKey(char key)
+        {
+            if (Typing || Stage.Info != null || !(Top is BattleScreen battle)) return false;   // 위에 정비 판 · 정보 창(상성표 · 도감)이 있으면 받지 않는다
+            var target = battle.KeyTarget(key);
+            if (target == null || (KeyGate != null && !KeyGate(target))) return false;
+            return battle.PressKey(key);
+        }
 
         /// <summary>Esc: 걷기 전 확인을 한 단계 물린다(결정 70 ⑱ · 결정 71 ② — 마지막 경유 칸을 빼고, 없으면 고른 칸을 푼다, <see cref="BoardHud.Back"/>). 보드에 있고 위에 창이 없을 때만 — 물렸으면 true.</summary>
         public bool CancelPick() => OnBoard && Stage.Current == null && Hud != null && Hud.Back();
@@ -4585,6 +4819,7 @@ namespace Sinnoh.Client
                 case EvolveScreen _: CloseEvolve(); break;
                 case ShrineScreen _: CloseShrine(); break;
                 case MonScreen _: CloseMon(); break;
+                case PartyScreen party when party.RecipesOpen: party.CloseRecipes(); return true;   // 조합표(결정 191) = 조합표만 닫는다
                 case PartyScreen _: CloseParty(); break;
                 case TrainerScreen _: CloseTrainer(); break;
                 case VillageScreen village when village.EndMap(): return true;   // 보드에서 고르는 중(T18 ①)이면 창 꼴로 돌아온다(창은 그대로)
@@ -4592,6 +4827,7 @@ namespace Sinnoh.Client
                 case LogScreen _: CloseLog(); break;
                 case ActScreen _: CloseAct(); break;
                 case TypeChartScreen _: CloseTypes(); break;
+                case DiscardScreen _: CloseDiscards(); break;
                 case BattleScreen battle when !Tutorial.Running && battle.CloseRow(): return true;   // 독의 가방 줄 등 = [뒤로](P23 — 배틀 화면은 그대로)
                 case BattleScreen _ when WatchingWild: CloseWildWatch(); break;   // 열어 본 남의 야생 배틀(결정 114) = [보드로]
                 default: return false;
@@ -4655,6 +4891,7 @@ namespace Sinnoh.Client
                 e = drag.Step(x, y, left, other, overUi || !ready, BoardDrag.Threshold(laidFor.y));
             }
             bool pressed = held ? e == DragEvent.Began && drag.ByLeft : left;
+            if (pressed && OnBoard && hud != null && picked == null && TextFocused) Stage.Root?.panel?.focusController?.focusedElement?.Blur();   // 보드를 누르면 글 칸이 포커스를 놓는다(결정 175 — 패널이 받지 않는 누름이라 엔진은 놓지 않는다)
             if (pressed && OnBoard && hud != null && Stage.Current == null && (picked == null || !Gated(x, y))) hud.ClickUi(picked);
             if (!ready)
             {
@@ -4672,7 +4909,7 @@ namespace Sinnoh.Client
             hud.ShowStacks();
             float panelScale = Stage.Grade.PanelScale;
             int stack = overUi || drag.Panning || hud.Stacks == null ? -1 : hud.Stacks.CellAt(new Vector2(x / panelScale, (laidFor.y - y) / panelScale));
-            hud.Hover(cell, stack);
+            hud.Hover(cell, stack, overUi || drag.Panning ? -1 : FigureCell(x, y));   // UB · 수호신 피규어 위면 그 피규어의 칸을 적는다(결정 179)
             // 걷기 전 확인(결정 70 ⑱): 갈 수 있는 칸을 누르면 고르고(고르기 소리), 고른 칸을 다시 누르면 걷는다(확정 소리). 고른 뒤 다른 갈 수 있는 칸을 누르면 그 칸을 거쳐 가는 길(경유 칸 — 결정 71 ②, 고르기 소리).
             // 갈 수 없는 칸·보드 밖을 누르면 고른 칸이 풀리고, 가운데·오른쪽 단추를 끌지 않고 떼면 한 단계 물린다(마지막 경유 칸 → 고른 칸, 소리 없음). HUD·창 위의 누름은 보드로 새지 않는다
             if (flyPick != null)
@@ -4746,6 +4983,7 @@ namespace Sinnoh.Client
             {
                 Rewide();
                 Hud?.ShowStacks();   // 묶음 표지는 프레임마다 카메라(Q·E·휠·따라가기)와 시각에 맞춘다
+                Hud?.SyncTurn();     // 돌리기 단추는 Q · E를 받는 때만(결정 164)
                 return;
             }
             laid = true;
@@ -4755,6 +4993,7 @@ namespace Sinnoh.Client
             LayCamera(width, height);
             Rewide();
             Hud?.ShowStacks();
+            Hud?.SyncTurn();
         }
 
         void LayCamera(int width, int height)

@@ -17,7 +17,7 @@ namespace Sinnoh.Client
     /// 블록(<see cref="RulebookBlockKind"/>)마다: 문단 · 작은 제목 · 목록(두 단계) · 번호 목록 · 표 · 그림(Gen <c>Rulebook/</c> — 웹 손님판은 나눠 받기라 오기 전에는 자리표시, 오면 다시 그린다) ·
     /// 묻고 답 · 「디지털판」 꼬리표(배지 + 글 — plan §5 #307) · cards 블록(게임 문자열 표의 이름 · 문구 · 아이템 그림 · 레시피 규토리 — #315).
     /// 글 안 링크 <c>[[절 키|글]]</c>는 원본처럼 「[글]」에 밑줄을 그어 누르면 그 절로 간다(UI Toolkit 링크 태그 — <c>UnityEngine.UIElements.Experimental.PointerUpLinkTagEvent</c>).
-    /// 「고침」 배지(#310): 고친 글(<see cref="RulebookFix.Now"/>)이 든 줄 끝에 — 마우스 오버 = 근거 · 영문 원본 · 한국어판 원문. 찾는 말은 칠한다(#303).
+    /// 찾는 말은 칠한다(#303).
     /// 링크 · 칠하기 색은 화면 USS의 <c>--sn-book-link</c> · <c>--sn-book-mark</c>(<c>sn-book</c> 클래스 요소에서 읽는다 — 코드에 색을 적지 않는다).
     /// </summary>
     public sealed class RulebookView
@@ -51,9 +51,6 @@ namespace Sinnoh.Client
         /// <summary>칠할 말(빈 글 = 칠하지 않는다).</summary>
         public string Query { get; set; } = "";
 
-        /// <summary>마지막으로 그린 절의 「고침」 배지(고친 곳 번호 → 배지).</summary>
-        public Dictionary<int, VisualElement> Fixes { get; } = new Dictionary<int, VisualElement>();
-
         /// <summary>마지막으로 그린 절의 링크(절 키, 나온 순서).</summary>
         public List<string> Links { get; } = new List<string>();
 
@@ -81,7 +78,6 @@ namespace Sinnoh.Client
         /// <summary>절의 블록을 <paramref name="into"/>에 그린다(제목은 부르는 쪽이).</summary>
         public void Blocks(VisualElement into, RulebookSection s)
         {
-            Fixes.Clear();
             Links.Clear();
             Figures.Clear();
             Waiting = 0;
@@ -130,28 +126,13 @@ namespace Sinnoh.Client
             return row;
         }
 
-        /// <summary>글 한 줄(감기는 글 — 링크 · 칠하기) + 그 줄에 든 고친 곳의 「고침」 배지.</summary>
+        /// <summary>글 한 줄(감기는 글 — 링크 · 칠하기).</summary>
         VisualElement Line(VisualElement into, RulebookSection s, string raw, string cls)
         {
-            string plain = Rulebook.Plain(raw);
-            List<RulebookFix> fixes = null;
-            foreach (var f in s.Fixes)
-                if (plain.IndexOf(f.Now, StringComparison.Ordinal) >= 0 && !Fixes.ContainsKey(f.No)) (fixes ??= new List<RulebookFix>()).Add(f);
             var label = Kit.Wrapped(Rich(raw), Kit.F2);
             foreach (var (key, _) in Rulebook.LinksIn(raw)) if (!Links.Contains(key)) Links.Add(key);
             if (follow != null) label.RegisterCallback<UnityEngine.UIElements.Experimental.PointerUpLinkTagEvent>(e => { stage.Tap(SoundKeys.Select); follow(e.linkID); });
-            if (fixes == null) return Add(into, label, null, cls);
-            var row = Add(into, new VisualElement(), null, "sn-book-fixrow");
-            row.AddToClassList(cls);
-            Add(row, label, null, "sn-book-fixtext");
-            foreach (var f in fixes)
-            {
-                var badge = Add(row, Kit.Badge(stage.T("screen.rulebook.fix"), KitBadgeKind.Gold, Kit.F2), "rulebook-fix-" + f.No.ToString(CultureInfo.InvariantCulture), "sn-book-fixbadge");
-                stage.Tips.Hook(badge, stage.T("screen.rulebook.fix.title"),
-                    stage.T("screen.rulebook.fix.en").Replace("{en}", f.En) + "\n" + stage.T("screen.rulebook.fix.ko").Replace("{ko}", f.Ko), TipSide.Below, reading: true);
-                Fixes[f.No] = badge;
-            }
-            return row;
+            return Add(into, label, null, cls);
         }
 
         /// <summary>보이는 리치 글: 링크 → 밑줄 「[글]」(색 · 링크 태그), 찾는 말 → 칠하기(태그 밖 글에서만).</summary>

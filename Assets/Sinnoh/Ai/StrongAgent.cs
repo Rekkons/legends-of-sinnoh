@@ -217,12 +217,15 @@ namespace Sinnoh.Ai
             var sum = new long[legal.Count];
             var count = new int[legal.Count];
             var wins = new long[legal.Count];
+            // 결정 197: 원칙 답과 짝지은 차이(같은 표본 · 같은 굴리기 번호 — 공통 난수)의 합 · 제곱합 · 수 — 차이가 잡음보다 확실히 클 때만 원칙 답에서 벗어난다(Pick)
+            int same = legal.FindIndex(a => a.SameAs(principle.Answer));
+            var pair = new Paired(legal.Count, same);
             // 자막(M8 「연결」): 배틀 안의 선택만 — 명단은 배틀 화면이 뜨기 전이라 그릴 곳이 없다
             bool told = c.Kind != ChoiceKind.Lineup;
             if (Search != SearchKind.Flat)
             {
-                Searched(view, ctx, c, legal, my, cap, budget, sum, count, wins);
-                return Pick(legal, principle, sum, count, wins, told);
+                Searched(view, ctx, c, legal, my, cap, budget, sum, count, wins, pair);
+                return Pick(legal, principle, sum, count, wins, pair, MarginFor(c), told);
             }
             int samples = SampleCount(cap, legal.Count, SearchKind.Flat, MaxSamples);
             var part = new long[legal.Count];
@@ -275,16 +278,69 @@ namespace Sinnoh.Ai
                         sum[i] += part[i];
                         count[i] += partN[i];
                         wins[i] += partW[i];
+                        if (partN[i] == 1 && same >= 0 && partN[same] == 1) pair.Add(i, part[i] - part[same]);   // 같은 표본 = 같은 판 · 같은 주사위 수열
                     }
                     if (cut) break;
                 }
             }
 
-            return Pick(legal, principle, sum, count, wins, told);
+            return Pick(legal, principle, sum, count, wins, pair, MarginFor(c), told);
+        }
+
+        /// <summary>
+        /// 그 선택의 문턱: 명단 고르기는 문턱 없음 — 원칙 값 빠른 점수로 후보를 먼저 좁히고(<see cref="ScreenLineup"/>) 남은 후보마다 표본이 몇 개뿐이라(<see cref="LineupSamples"/>)
+        /// 표준오차 문턱이 뚜렷한 명단 차이도 막는다. 원칙 답에서 잡음으로 벗어나던 것은 배틀 안의 선택(기술 · 알파 스트라이크 타입 …)이다.
+        /// </summary>
+        int MarginFor(PendingChoice c) => c.Kind == ChoiceKind.Lineup ? 0 : Margin;
+
+        /// <summary>
+        /// 원칙 답에서 벗어나는 문턱(결정 197): 고른 답과 원칙 답의 짝지은 점수 차 평균이 그 표준오차의 이 배수를 넘어야 벗어난다(0 이하 = 문턱 없음 — 평균이 조금이라도 높으면 벗어나던 옛 셈).
+        /// 굴리기 수가 작아 표본 잡음이 후보끼리 차이보다 크면 시드에 따라 답이 바뀌었다(실제 방 판 — 철화구야 · 페로코체) — 그런 차이로는 원칙 답(고유 기술 · 최고 값)을 지킨다.
+        /// </summary>
+        public int Margin = DefaultMargin;
+        public const int DefaultMargin = 2;
+        /// <summary>탐색(Tree · Expect)의 트리 밖 주사위를 공통 난수로(결정 197 — 기본 켬). 끄면 옛 셈(표본의 AI 난수를 반복마다 이어 쓴다) — 전후 재기용.</summary>
+        public bool CommonDice = true;
+
+        /// <summary>
+        /// 원칙 답(same)과 짝지은 점수 차(같은 표본 · 같은 굴리기 번호 — 평평하면 같은 판의 같은 주사위, 탐색이면 공통 난수의 같은 수열)의 답마다 합 · 제곱합 · 수(결정 197).
+        /// </summary>
+        internal sealed class Paired
+        {
+            public readonly long[] Sum, Sq;
+            public readonly int[] N;
+            public readonly int Same;
+
+            public Paired(int answers, int same)
+            {
+                Sum = new long[answers];
+                Sq = new long[answers];
+                N = new int[answers];
+                Same = same;
+            }
+
+            public void Add(int i, long d)
+            {
+                Sum[i] += d;
+                Sq[i] += d * d;
+                N[i]++;
+            }
+
+            /// <summary>
+            /// 답 i가 원칙 답보다 확실히 나은가: 짝지은 차의 평균 &gt; margin × 표준오차(정수 셈 — S²(n−1) &gt; m²(nQ − S²), S = 합 · Q = 제곱합 · n = 수 ≥ 2, S &gt; 0).
+            /// 원칙 답이 후보에 없거나(명단 거르기) margin이 0 이하면 늘 true.
+            /// </summary>
+            public bool Clear(int i, int margin)
+            {
+                if (Same < 0 || margin <= 0 || i == Same) return true;
+                long n = N[i], s = Sum[i], q = Sq[i];
+                if (n < 2 || s <= 0) return false;
+                return s * s * (n - 1) > (long)margin * margin * (n * q - s * s);
+            }
         }
 
         /// <summary>탐색(Expect · Tree): 표본마다 채운 판에서 트리 하나(<see cref="SearchTree.Run"/>) — 트리 안 굴림은 트리가 정해 넣고 밖은 표본의 AI 난수로 굴린다.</summary>
-        void Searched(GameState view, Ctx ctx, PendingChoice c, List<ChoiceAnswer> legal, int my, int cap, AgentBudget budget, long[] sum, int[] count, long[] wins)
+        void Searched(GameState view, Ctx ctx, PendingChoice c, List<ChoiceAnswer> legal, int my, int cap, AgentBudget budget, long[] sum, int[] count, long[] wins, Paired pair)
         {
             int per = Math.Max(1, cap / legal.Count);
             int samples = SampleCount(cap, legal.Count, Search, MaxSamples);
@@ -299,15 +355,18 @@ namespace Sinnoh.Ai
             tree.Score = weights;
             tree.Simulations = tree.Stuck = tree.Cuts = tree.Mismatch = tree.Nodes = 0;
             tree.Wins = wins;
+            tree.Pair = pair;
             using (Rig.Use(tree))
                 for (int k = 0; k < samples && !Over(); k++)
                 {
                     LastSamples++;
                     var rng = SampledRng.ForSample(budget.Seed, k);
                     Determinizer.FillInto(root, view, ctx, rng);
+                    tree.Common = CommonDice ? SampledRng.Mix(unchecked(budget.Seed ^ CommonSalt * (ulong)(k + 1))) : 0;   // 결정 197: 같은 굴리기 번호의 답들이 같은 주사위 수열(공통 난수)
                     if (!tree.Run(root, sim, ctx, c, legal, each, rng, sum, count)) break; // 마감 — 끊긴 트리도 쓴다(뿌리 답은 고루 돌아 답마다 한 번 차이뿐)
                 }
             tree.Wins = null;
+            tree.Pair = null;
             Simulations += tree.Simulations;
             Stuck += tree.Stuck;
             Cuts += tree.Cuts;
@@ -320,7 +379,7 @@ namespace Sinnoh.Ai
         /// 자막(told — M8 「연결」, 01 §13-1 M8-33): 「수읽기」(<see cref="AiRule.Lookahead"/>) — Power = 고른 답의 승산 %(이김 몫 평균), Bonus = 원칙 답보다 높은 승산 %p(낮거나 같으면 0).
         /// told가 아니면(명단) 원칙 답의 사유 · 사유 없음. 답은 자막과 무관하다(결정 지문 그대로).
         /// </summary>
-        static AgentDecision Pick(List<ChoiceAnswer> legal, AgentDecision principle, long[] sum, int[] count, long[] wins, bool told)
+        static AgentDecision Pick(List<ChoiceAnswer> legal, AgentDecision principle, long[] sum, int[] count, long[] wins, Paired pair, int margin, bool told)
         {
             int best = -1, same = -1;
             for (int i = 0; i < legal.Count; i++)
@@ -332,11 +391,16 @@ namespace Sinnoh.Ai
             if (best < 0) return principle;
             // 비기면 원칙 답, 그다음 Legal 순서
             if (same >= 0 && sum[same] * count[best] >= sum[best] * count[same]) best = same;
+            // 결정 197: 원칙 답보다 높아도 짝지은 차이가 잡음(표준오차 × margin)보다 확실히 크지 않으면 원칙 답
+            if (same >= 0 && best != same && !pair.Clear(best, margin)) best = same;
             if (!told) return best == same ? principle : new AgentDecision(legal[best].Clone(), new AiReason(AiRule.None, 0, 0));
             int odds = Odds(wins[best], count[best]);
             int over = same >= 0 && same != best ? Math.Max(0, odds - Odds(wins[same], count[same])) : 0;
             return new AgentDecision((best == same ? principle.Answer : legal[best]).Clone(), new AiReason(AiRule.Lookahead, odds, over));
         }
+
+        /// <summary>공통 난수의 표본 씨를 가르는 소금(결정 197 — 표본 채우기 난수와 다른 수열).</summary>
+        const ulong CommonSalt = 0xC2B2AE3D27D4EB4FUL;
 
         /// <summary>이김 몫 합(‰) ÷ 굴린 수 → 승산 %(반올림, 0~100).</summary>
         static int Odds(long wins, int count) => count <= 0 ? 0 : (int)Math.Max(0, Math.Min(100, (wins + 5L * count) / (10L * count)));

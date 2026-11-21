@@ -241,7 +241,7 @@ namespace Sinnoh.Tests.EditMode
         }
 
         /// <summary>트리 탐색의 결정 지문(합성 장면 셋 × 시드 3, 갤럭시단 선택마다 굴리기 96 · 깊이 8): 선택 종류 · 답 · 굴리기 수 · 노드 수를 섞은 값 — dotnet · Unity Mono가 같아야 한다. 탐색을 일부러 바꾸는 묶음은 새로 재어 고친다.</summary>
-        const ulong TreeDigest = 0x6617EE46A9334EAAUL;
+        const ulong TreeDigest = 0x382FEAA9936121C9UL;   // 결정 197: 공통 난수 · 원칙 답 문턱(옛 값 0x6617EE46A9334EAA)
 
         [Test]
         public void M8_탐색_트리결정지문()

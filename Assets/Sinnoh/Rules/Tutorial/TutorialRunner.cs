@@ -198,7 +198,7 @@ namespace Sinnoh.Rules.Tutorial
             }
             foreach (var e in u.Events)
             {
-                if (e is DiceRolled d)
+                if (e is DiceRolled d && d.Kind == DiceKind.Attack)   // 판정 앞 포획 굴림(결정 188)은 공격 굴림이 아니다
                 {
                     myRoll = d.Side == 0;
                     if (myRoll)

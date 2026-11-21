@@ -91,18 +91,20 @@ namespace Sinnoh.Fx
     /// <list type="bullet">
     /// <item>엔진의 k번째 주사위 = 멈췄을 때 왼쪽에서 k번째 주사위(<see cref="Order"/>). 면은 정육면체 대칭 24개 중 목표 면이 위로 오고 그림이 가장 바로 서는 것을 붙인다.</item>
     /// <item>면 바꾸기(57행): 그 주사위가 제자리에서 90° 넘어가며 0.6칸 떴다 내려오고 회색이 된다. 맞은편 면으로 바뀌면(급소 ↔ 심볼) 180° [가정]. 지워진 주사위(After = None)는 넘어가지 않고 회색만 된다 [가정].</item>
-    /// <item>재굴림(43행): 제자리 글리치 600ms — 0~80 들어옴 · 80~480 지직(면 50ms · 자리 30ms마다) · 480 새 면으로 고정 + 번쩍 90 · 600까지 고리.
-    /// 지직 동안 주사위는 입체로 일그러진다(M9 다듬기 P38 — 결정 116): 살짝 떠서(<see cref="GlitchLift"/>칸) 녹화본의 구르던 자세를 30ms씩 끊어 거꾸로 되감고(<see cref="RewindSec"/>초 분량),
-    /// 30ms마다 몸의 한 축이 늘어나고 나머지가 줄어든다(<see cref="DiePose.Stretch"/>). 자리(가로·깊이)는 그대로 제자리다(결정 48 ② — 굴림판을 다시 구르지 않는다).</item>
+    /// <item>재굴림(43행): 제자리 글리치 1500ms — 0~200 들어옴 · 200~1200 지직(면 125ms · 자리 75ms마다) · 1200 새 면으로 고정 + 번쩍 225 · 1500까지 고리(결정 190 — 옛 600의 2.5배, 박자가 모두 같이 느려진다).
+    /// 지직 동안 주사위는 입체로 일그러진다(M9 다듬기 P38 — 결정 116): 살짝 떠서(<see cref="GlitchLift"/>칸) 녹화본의 구르던 자세를 75ms씩 끊어 거꾸로 되감고(<see cref="RewindSec"/>초 분량),
+    /// 75ms마다 몸의 한 축이 늘어나고 나머지가 줄어든다(<see cref="DiePose.Stretch"/>). 자리(가로·깊이)는 그대로 제자리다(결정 48 ② — 굴림판을 다시 구르지 않는다).</item>
     /// </list>
     /// 시각은 모두 항목 시각(ms)이다.
     /// </summary>
     public sealed class DiceRollScene
     {
-        public const int FlipMs = 280, GlitchMs = 600;
+        public const int FlipMs = 280, GlitchMs = 1500;
         /// <summary>면 바꾸기 한 박자(730) 안에서 넘김이 시작하는 때: 꼬리표·고리 300 + 150.</summary>
         public const int FlipLeadMs = 450;
-        const int GlitchInMs = 80, GlitchLockMs = 480, FlashMs = 90;
+        const int GlitchInMs = 200, GlitchLockMs = 1200, FlashMs = 225;
+        /// <summary>지직의 자리 · 면이 바뀌는 간격(ms — 결정 190으로 옛 30 · 50의 2.5배).</summary>
+        const int GlitchStepMs = 75, GlitchFaceMs = 125;
         /// <summary>재굴림 글리치의 입체 일그러짐(M9 다듬기 P38): 떠오르는 높이(칸) · 되감는 녹화본 분량(초 — 녹화본이 짧으면 그 0.8배) · 한 축이 늘어나는 가장 큰 몫.</summary>
         public const float GlitchLift = 0.45f, RewindSec = 1.1f, GlitchStretch = 0.35f;
 
@@ -311,13 +313,13 @@ namespace Sinnoh.Fx
                     if (u < GlitchLockMs)
                     {
                         float k01 = Math.Min(1f, u / (float)GlitchInMs);
-                        int sd = u / 30;
+                        int sd = u / GlitchStepMs;
                         if (u >= GlitchInMs)
                         {
-                            lab = DiceCube.Syms[((u / 50 + 3) * 7919 + 13) % DiceCube.Syms.Length];
+                            lab = DiceCube.Syms[((u / GlitchFaceMs + 3) * 7919 + 13) % DiceCube.Syms.Length];
                             pos = new V3(rest.X + (sd * 37 % 5 - 2) * 0.02f, rest.Y + GlitchLift, rest.Z + (sd * 53 % 5 - 2) * 0.015f);
                             // 시간이 되감긴다: 멈춘 때에서 거꾸로 — 구르던 자세를 30ms씩 끊어 되짚는다(자리는 제자리, 자세만)
-                            float len = Clip.LengthMs / 1000f, back = (sd * 30 - GlitchInMs) / (float)(GlitchLockMs - GlitchInMs);
+                            float len = Clip.LengthMs / 1000f, back = (sd * GlitchStepMs - GlitchInMs) / (float)(GlitchLockMs - GlitchInMs);
                             if (Clip.Sample(die, Math.Max(0f, len - Math.Min(RewindSec, len * 0.8f) * Math.Max(0f, back)), out _, out var spun)) rot = Flip(spun);
                             // 몸이 일그러진다: 30ms마다 한 축이 늘고 나머지 둘이 그 절반만큼 준다
                             float grow = GlitchStretch * (1 + sd * 53 % 4) / 4f;
@@ -328,7 +330,7 @@ namespace Sinnoh.Fx
                         glitch = new DiceGlitch
                         {
                             On = true, Die = die, Center = rest, Amt = u < GlitchInMs ? 0.06f * k01 : 0.24f, Split = 0.02f + 0.06f * k01, Tint = 0.3f * k01,
-                            Ghost = u >= GlitchInMs ? 0.36f : 0f, Clock = k01, Angle = -u * 0.025f, Seed = sd, ClockR = 0.95f,
+                            Ghost = u >= GlitchInMs ? 0.36f : 0f, Clock = k01, Angle = -u * 0.01f, Seed = sd, ClockR = 0.95f,
                         };
                     }
                     else
@@ -340,7 +342,7 @@ namespace Sinnoh.Fx
                             float e = (u - GlitchLockMs) / (float)(GlitchMs - GlitchLockMs);
                             glitch = new DiceGlitch
                             {
-                                On = true, Die = die, Center = rest, Split = 0.03f * (1 - e), Tint = 0.25f * (1 - e), Clock = 1 - e, Angle = -GlitchLockMs * 0.025f, ClockR = 0.95f + 0.6f * e,
+                                On = true, Die = die, Center = rest, Split = 0.03f * (1 - e), Tint = 0.25f * (1 - e), Clock = 1 - e, Angle = -GlitchLockMs * 0.01f, ClockR = 0.95f + 0.6f * e,
                             };
                         }
                     }

@@ -17,6 +17,8 @@
 //   item.·hidden_spot.<snake>   아이템 이름(키 = items 키): 한국어판 세이브 / 원작 영문 세이브
 //   item.<snake>.text · stamp.<n>[.text] · <카드 키>[.text.<n>]   볼·스튜·배틀 아이템 효과, 스탬프 조건, 이미지 전용 카드 이름·본문: authored/items.json · authored/cards/(lib/authored.mjs, M5)
 // 한국어 값(authored 제외)에는 korean.md §9 권장 용어(authored/terms-ko.json)를 적용한다(결정 14 ⑤).
+// 다시 옮김(결정 163): 위 한국어 가운데 3JA2 · 로씨온 글은 authored/ko/<묶음>.json(영문에서 새로 옮긴 우리 번역)이 덮는다 — 범위 · 꼴 · 검사는 lib/retranslate.mjs.
+//   범위 안에서 아직 옮기지 않은 키는 빌드 오류다(옛 원천으로 떨어지지 않는다).
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
@@ -27,6 +29,7 @@ import { buildRoster } from './roster.mjs';
 import { walkPokemonCards } from './save.mjs';
 import { snakeKey, BAD_TEXT } from './cube.mjs';
 import { officialMoveNames } from './move-names.mjs';
+import { readRetranslation, readKeep, retranslateScope, checkRetranslation, newShort } from './retranslate.mjs';
 
 const HANGUL = /[가-힣]/;
 const SHORT_MAX = 48; // 해금 카드 능력 칸에 싣는 글자 수(CardFx.BodyMax와 같다)
@@ -118,7 +121,7 @@ const tsv = (head, rows) => [head, ...rows].map(r => r.join('\t')).join('\n') + 
  * src: Tools/sources.json data(경로는 저장소 기준), cube: buildCube 결과, board: board 행, save·saveEn: 한국어판·원작 영문 세이브,
  * extra: 세이브에서 뽑은 고정물·아이템 이름 [{key, en, ko}](lib/save.mjs) + 손으로 옮긴 카드·아이템 이름·문구 [{key, en, ko, review?, src?, note?}] · 여러 줄 카드의 검토 행 {reviewOf: 키들, label, src, note}(lib/authored.mjs).
  * → { ko: {키: 문장}, en: {키: 문장}, reports: {파일 이름: 내용}, cards: 카드 Lua 배열, byKey: pokemon 키 → 카드 Lua 객체들,
- *     rosterCsv: Research/roster.csv 내용(lib/roster.mjs), moveNamesSummary: 공식 기술명 한 줄(lib/move-names.mjs) }
+ *     rosterCsv: Research/roster.csv 내용(lib/roster.mjs), moveNamesSummary: 공식 기술명 한 줄(lib/move-names.mjs), retranslateSummary: 다시 옮김 한 줄 }
  */
 export function buildStrings(root, src, cube, board, save, saveEn, extra, errors) {
   const P = p => path.join(root, p);
@@ -126,6 +129,8 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
 
   const authored = readAuthored(root, 'Tools/data/authored/strings-ko.json', errors);
   const terms = readTerms(root, 'Tools/data/authored/terms-ko.json', errors);
+  const retranslated = readRetranslation(root, errors);
+  const keep = readKeep(root, errors);
   const cards = JSON.parse(read('cards'));
   const { rows: roster, csv: rosterCsv } = buildRoster(cards, readJson(P('Tools/data/authored/dex-ko.json')), errors);
   const romNames = JSON.parse(read('romNamesKo'));
@@ -194,6 +199,7 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
 
   // ── 트레이너 카드 직업·갤럭시단 인물(결정 33) ──
   const nameRows = [];
+  const classStatus = new Map();   // trainer_card 키 → 대조표 판정(다시 옮길 범위 — 원작 자산에 없는 직업)
   const ccByEn = new Map(classes.classes.map(c => [c.en, c]));
   if (classes.classes.length !== cube.trainerCards.length) errors.push(`직업 대조표 ${classes.classes.length}종 ≠ trainer_cards ${cube.trainerCards.length}`);
   for (const t of cube.trainerCards) {
@@ -202,6 +208,7 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
     const { ko: name, rule } = trainerClassKo(cc);
     if (!name) errors.push(`trainer_card.${t.key}: ${rule}`);
     set(`trainer_card.${t.key}`, t.class, name);
+    classStatus.set(`trainer_card.${t.key}`, cc.status);
     nameRows.push([`trainer_card.${t.key}`, t.class, name, cc.cardKo, cc.officialKo.join(' / ') || '—', rule]);
   }
   if (gruntSuffixes.length !== 1) errors.push(`조무래기 카드 꼬리가 하나가 아니다: ${gruntSuffixes}`);
@@ -269,6 +276,17 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
     if (x.reviewOf) reviewRows.push([x.label, x.reviewOf.map(k => en[k]).join(' ⏎ '), x.reviewOf.map(k => ko[k]).join(' ⏎ '), x.src, x.note]);
   }
 
+  // ── 다시 옮김(결정 163, lib/retranslate.mjs): 범위는 옛 한국어로 가른다(종 이름과 같은 카드 이름 등). 짧은 문구(.short)는 아래 짧은 문구 칸에서 ──
+  const scope = retranslateScope({ en, ko, speciesKo: new Set(speciesKo.values()), officialMoves: moveNames.official, classStatus, authored, keep }, errors);
+  for (const [key, r] of retranslated) if (key in ko && !key.endsWith('.short')) ko[key] = r.ko;
+  // 이 게임만의 기술 이름은 다시 옮긴 이름이 최종 — 기술 이름 보고서도 그 이름으로(원천 ours, ko_3ja2 칸은 대조용으로 남김)
+  moveNames.report = moveNames.report.split('\n').map(line => {
+    const f = line.split('\t'), r = retranslated.get(f[0]);
+    if (!r || f[6] !== '3ja2') return line;
+    f[4] = r.ko; f[5] = f[3] === r.ko ? 'same' : 'changed'; f[6] = 'ours'; f[7] = '이 게임만의 기술 · 영문에서 옮김(결정 163)';
+    return f.join('\t');
+  }).join('\n');
+
   // ── 트레이너 카드 능력의 짧은 문구(authored/trainer-short-ko.json — 사용자 결정 87 V11 라: 해금 카드의 능력 칸. 전체 문구가 정해진 뒤라 용어 규칙을 거치지 않는다) ──
   // 영어 짝은 trainer-short-en.json(M9 언어 ① — 전체 영문이 48자를 넘으면 적는다)
   const readShorts = file => {
@@ -286,7 +304,10 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
   };
   for (const t of cube.trainerCards) for (const a of t.abilities) {
     const id = `${t.key}.${a.slot}`, key = `trainer_ability.${id}`;
-    set(`${key}.short`, pickShort(shortEn, id, en[`${key}.text`]), pickShort(shortKo, id, ko[`${key}.text`]));
+    // 다시 옮긴 능력은 새 .short ?? 새 전체 문구(옛 trainer-short-ko.json은 쓰지 않는다)
+    const shortNew = newShort(retranslated, key, errors);
+    if (shortNew !== null) shortKo.map.delete(id);
+    set(`${key}.short`, pickShort(shortEn, id, en[`${key}.text`]), shortNew ?? pickShort(shortKo, id, ko[`${key}.text`]));
   }
   for (const { file, map } of [shortKo, shortEn]) for (const id of map.keys()) errors.push(`${file} ${id}: 그런 능력이 없다`);
 
@@ -294,6 +315,9 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
   for (const [key, e] of readScreens(root, 'Tools/data/authored/screens.json', errors)) set(key, e.en, e.ko);
   // ── 마박사 대사(extra의 direct — authored/tutorial-ko.json, lib/tutorial.mjs: 화면 문구처럼 용어 규칙·검토 목록 밖) ──
   for (const x of extra) if (x.direct) set(x.key, x.en, x.ko);
+
+  // ── 다시 옮김 검사(범위 · en 대조 · 용어 규칙 · 빠진 키) ──
+  const retranslate = checkRetranslation(retranslated, scope, en, ko, terms, true, errors);
 
   // ── 검증: 두 언어 키가 같고, 빈 값·제어 문자 없음, 한국어에 한글 ──
   for (const key of Object.keys(en)) {
@@ -313,9 +337,10 @@ export function buildStrings(root, src, cube, board, save, saveEn, extra, errors
     'names-ko.tsv': tsv(['key', 'en', 'ko', 'card', 'rom', 'rule'], nameRows),
     'terms-ko.tsv': tsv(['key', 'ref', 'before', 'after'], termRows),
     'move-names-ko.tsv': moveNames.report,
+    'retranslate-ko.tsv': tsv(['key', 'family', 'state', 'flag', 'en', 'ko'], retranslate.rows),
     'xlsx-cards.md': xlsxCardsReport(cube, cards, mismatches, causes),
   };
-  return { ko, en, reports, cards, byKey, rosterCsv, moveNamesSummary: moveNames.summary };
+  return { ko, en, reports, cards, byKey, rosterCsv, moveNamesSummary: moveNames.summary, retranslateSummary: retranslate.summary };
 }
 
 const HANGUL_ANY = /[ᄀ-ᇿ㄰-㆏ꥠ-꥿가-힯ힰ-퟿]/; // 한글 음절 · 자모(호환 · 확장 포함)

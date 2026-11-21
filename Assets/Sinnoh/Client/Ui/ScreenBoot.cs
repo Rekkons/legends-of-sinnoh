@@ -54,7 +54,7 @@ namespace Sinnoh.Client
         public static SoundPrefs DefaultSoundPrefs()
         {
             var args = Environment.GetCommandLineArgs();
-            if (Application.isEditor || Array.IndexOf(args, ScreenProbe.Arg) >= 0 || Array.IndexOf(args, MouseProbe.Arg) >= 0) return new SoundPrefs();
+            if (Application.isEditor || Array.IndexOf(args, ScreenProbe.Arg) >= 0 || Array.IndexOf(args, MouseProbe.Arg) >= 0 || Array.IndexOf(args, UpdateProbe.Arg) >= 0) return new SoundPrefs();
             return new StoredSoundPrefs();
         }
 
@@ -149,7 +149,7 @@ namespace Sinnoh.Client
             {
                 var prefs = soundPrefs;
                 var args = Environment.GetCommandLineArgs();
-                if (Array.IndexOf(args, ScreenProbe.Arg) >= 0 || Array.IndexOf(args, MouseProbe.Arg) >= 0)
+                if (Array.IndexOf(args, ScreenProbe.Arg) >= 0 || Array.IndexOf(args, MouseProbe.Arg) >= 0 || Array.IndexOf(args, UpdateProbe.Arg) >= 0)
                 {
                     prefs.PlayNotice = true;   // 확인용 실행은 첫 실행 알림을 띄우지 않는다(실행하는 동안만 쥐는 값 — DefaultSoundPrefs)
                     flow.Uploads = PlayUploads.Quiet(() => false);   // 확인용 창구: 서버를 부르지 않는다(설정 줄 · 지우기만 지난다)
@@ -221,9 +221,32 @@ namespace Sinnoh.Client
             Sound = SoundPlayer.Create(transform);
             Flow = MakeFlow(SaveFolder ?? DefaultSaves(), null);
             if (board != null) board.MayRefill = () => Flow == null || (Flow.Session == null && !Flow.InRoomGame);
+            // 자동 업데이트(결정 161): 사람이 하는 PC 플레이어만 — 도우미가 바꾸는 중이면 바로 끝, 도우미 결과(result.json)를 읽어 정리 · 실패면 타이틀에 알림
+            bool pc = HumanPlayer && Application.platform != RuntimePlatform.WebGLPlayer;
+            var probe = pc ? UpdateProbe.Open(out bool refused) : null;
+            if (pc && probe == null && UpdateProbe.On)
+            {
+                Application.Quit();
+                return;
+            }
+            UpdateResult result = null;
+            if (pc && !UpdateBoot(probe, out result)) return;
             Flow.OpenTitle();
+            if (result != null && !(result.Ok && result.Version == Application.version)) Flow.UpdateFailedBefore(result);
             // 새 판 알림(결정 148 ①): 사람이 하는 PC 플레이어만(에디터 · 확인용 프로브 · 웹 손님판은 안 함), 판 정보 주소가 정해졌을 때 한 번 — 실패는 조용히
-            if (HumanPlayer && Application.platform != RuntimePlatform.WebGLPlayer && !string.IsNullOrEmpty(Sinnoh.Data.ReleaseFeed.Url)) StartCoroutine(CheckRelease(Sinnoh.Data.ReleaseFeed.Url));
+            // 끝에서 끝 프로브(4-4)는 -sinnohFeed의 loopback 주소 + 시험 키로 읽는다
+            string feed = probe != null ? UpdateProbe.Feed() ?? Sinnoh.Data.ReleaseFeed.Url : Sinnoh.Data.ReleaseFeed.Url;
+            if (probe != null)
+            {
+                probe.Attach(Flow);
+                if (UpdateProbe.Feed() != null)
+                {
+                    Flow.FeedKey = UpdateProbe.TestKey();
+                    Flow.FeedLoopback = true;
+                }
+            }
+            Flow.FeedUrl = feed;
+            if (pc && !string.IsNullOrEmpty(feed)) StartCoroutine(CheckRelease(feed, probe));
             // 웹 손님판(02 §8): 페이지 주소가 참가 대상(?code= · ?join= · 직접 연결 주소)이면 참가 칸을 채운 S06으로
             if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
@@ -234,7 +257,7 @@ namespace Sinnoh.Client
         }
 
         // 판 정보 파일(latest.json)을 받아 흐름에 넘긴다 — 서명 · 판 견주기는 GameFlow.TakeRelease(ReleaseFeed). 받지 못하면 로그 한 줄
-        System.Collections.IEnumerator CheckRelease(string url)
+        System.Collections.IEnumerator CheckRelease(string url, UpdateProbe probe)
         {
             using (var req = UnityEngine.Networking.UnityWebRequest.Get(url))
             {
@@ -243,9 +266,57 @@ namespace Sinnoh.Client
                 if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
                 {
                     Debug.Log("[Release] 판 정보를 받지 못함 — " + req.result);
+                    probe?.Released(Flow, "get");
                     yield break;
                 }
                 Flow?.TakeRelease(req.downloadHandler.text);
+                probe?.Released(Flow, Flow?.NewVersion == null ? "none" : null);
+            }
+        }
+
+        // 켤 때 자동 업데이트 몫(결정 161 4-2 ① ②): 도우미가 이 설치를 바꾸는 중이면(뮤텍스) 로그 한 줄 + 바로 끝(false). 도우미 결과를 읽어 정리한다(UpdateHandoff.Tidy) — 프로브면 그것을 적고 끝
+        bool UpdateBoot(UpdateProbe probe, out UpdateResult result)
+        {
+            result = null;
+            string install = Flow.InstallDir;
+            if (install == null) return true;
+            if (HelperRunning(install))
+            {
+                Debug.Log("[Update] 업데이트 도우미가 이 설치를 바꾸는 중 — 끝낸다");
+                Application.Quit();
+                return false;
+            }
+            try
+            {
+                result = UpdateHandoff.ReadResult(install);
+                UpdateHandoff.Tidy(install, Application.version, result);
+            }
+            catch (Exception e) when (e is System.IO.IOException || e is UnauthorizedAccessException)
+            {
+                Debug.Log("[Update] 정리 실패 — " + e.Message);
+            }
+            if (result != null) Debug.Log("[Update] 도우미 결과 " + result.Version + " ok=" + result.Ok + " " + result.Why + " (지금 " + Application.version + ")");
+            if (probe != null && result != null)
+            {
+                probe.Note("result", result.Ok && result.Version == Application.version, result.Ok ? result.Version : result.Why);
+                probe.Saves(Flow);
+                Application.Quit();
+                return false;
+            }
+            return true;
+        }
+
+        static bool HelperRunning(string install)
+        {
+            try
+            {
+                if (!System.Threading.Mutex.TryOpenExisting(UpdateHandoff.MutexName(install), out var m)) return false;
+                m.Dispose();
+                return true;
+            }
+            catch (Exception e) when (e is UnauthorizedAccessException || e is System.IO.IOException || e is NotSupportedException || e is ArgumentException)
+            {
+                return e is UnauthorizedAccessException;   // 있지만 열 권한이 없다 = 잡혀 있다
             }
         }
 
@@ -273,12 +344,14 @@ namespace Sinnoh.Client
             if (keys != null && keys.spaceKey.wasPressedThisFrame && !Flow.Typing) Flow.SkipKey();
             // Ctrl+Z: 한 수 무르기(결정 149 — 보드 HUD [무르기]가 켜져 있고 창이 없을 때만)
             if (keys != null && keys.zKey.wasPressedThisFrame && (keys.leftCtrlKey.isPressed || keys.rightCtrlKey.isPressed) && !Flow.Typing) Flow.UndoKey();
-            // 숫자 1~3: 배틀의 효과 순서 줄(결정 72) — 배틀 화면이 맨 위일 때만
-            if (keys != null && !Flow.Typing && Flow.Top is BattleScreen battle && battle.AskingOrder)
+            // 배틀 독의 단축키(결정 164 — 단추 글자와 같다): 숫자 1~3 = 기술 줄(효과 순서 줄 — 결정 72) · Q = [가방] · E = [기권]. 배틀 화면이 맨 위일 때만(GameFlow.BattleKey)
+            if (keys != null)
             {
-                if (keys.digit1Key.wasPressedThisFrame) battle.PressOrder(0);
-                else if (keys.digit2Key.wasPressedThisFrame) battle.PressOrder(1);
-                else if (keys.digit3Key.wasPressedThisFrame) battle.PressOrder(2);
+                if (keys.digit1Key.wasPressedThisFrame) Flow.BattleKey('1');
+                else if (keys.digit2Key.wasPressedThisFrame) Flow.BattleKey('2');
+                else if (keys.digit3Key.wasPressedThisFrame) Flow.BattleKey('3');
+                if (keys.qKey.wasPressedThisFrame) Flow.BattleKey('Q');
+                if (keys.eKey.wasPressedThisFrame) Flow.BattleKey('E');
             }
             var mouse = Mouse.current;
             if (PointerFromMouse && mouse != null)

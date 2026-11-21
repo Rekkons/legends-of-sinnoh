@@ -48,7 +48,7 @@ function parseCsv(text) {
 
 /**
  * src: Tools/sources.json data(moveNamesPt·moveNamesB2w2·moveNamesPokeapi), moves: xlsx 기술 행, ko: 지금 한국어 값(3JA2, 용어 통일 뒤).
- * → { names: Map(문자열 키 → 공식 이름), report: TSV 내용, summary: 한 줄 }
+ * → { names: Map(문자열 키 → 공식 이름), official: Set(현행 공식 이름인 키 — 이 게임만의 기술은 빠진다), report: TSV 내용, summary: 한 줄 }
  */
 export function officialMoveNames(root, src, moves, ko, errors) {
   const readJson = key => JSON.parse(readFileSync(srcPath(root, src[key]), 'utf8'));
@@ -69,7 +69,7 @@ export function officialMoveNames(root, src, moves, ko, errors) {
   for (let i = 1; i <= PT_LAST; i++) if (pt[i] !== b2[i]) errors.push(`원작 자산 기술 ${i}: Pt 「${pt[i]}」 ≠ B2W2 「${b2[i]}」`);
   if (pt[1] !== koById.get(1)) errors.push(`원작 자산 기술 1 「${pt[1]}」 ≠ PokeAPI 「${koById.get(1)}」(기술 이름 표가 아니다?)`);
 
-  const names = new Map(), rows = [], tally = { official: 0, romSame: 0, romDiff: 0, game: 0, changed: 0 };
+  const names = new Map(), official = new Set(), rows = [], tally = { official: 0, romSame: 0, romDiff: 0, game: 0, changed: 0 };
   for (const m of moves) {
     const key = `move.${m.key}`, old = ko[key];
     const id = idByEn.get(norm(ALIAS[m.name] || m.name));
@@ -94,11 +94,12 @@ export function officialMoveNames(root, src, moves, ko, errors) {
       if (rom === name) tally.romSame++;
       else if (rom !== undefined) { tally.romDiff++; note = [note, `원작 자산(${id <= PT_LAST ? 'Pt' : 'B2W2'}) 「${rom}」`].filter(Boolean).join(', '); }
       names.set(key, name);
+      official.add(key);
     }
     if (name !== old) tally.changed++;
     rows.push([key, m.name, id === undefined ? '' : String(id), old, name, name === old ? 'same' : 'changed', from, note]);
   }
   const report = [['key', 'en', 'id', 'ko_3ja2', 'ko', 'diff', 'src', 'note'], ...rows].map(r => r.join('\t')).join('\n') + '\n';
   const summary = `기술 이름 ${moves.length}: 현행 공식(PokeAPI) ${tally.official}(원작 자산과 같음 ${tally.romSame}·다름 ${tally.romDiff}·원작 자산에 없음 ${tally.official - tally.romSame - tally.romDiff}) · 이 게임만 ${tally.game}(3JA2), 3JA2와 다름 ${tally.changed} → reports/move-names-ko.tsv`;
-  return { names, report, summary };
+  return { names, official, report, summary };
 }

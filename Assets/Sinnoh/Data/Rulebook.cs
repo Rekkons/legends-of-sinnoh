@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
@@ -49,15 +48,6 @@ namespace Sinnoh.Data
         }
     }
 
-    /// <summary>
-    /// 고친 곳(결정 111 ③): rulings 근거 ID · 고친 글(<see cref="Now"/> — 그 절 글에 있다) · 한국어판 원문 · 영문 원본. 화면은 Now에 「고침」 배지, 마우스 오버 = 근거와 두 원문.
-    /// </summary>
-    public sealed class RulebookFix
-    {
-        public int No;
-        public string Ruling, Now, Ko, En;
-    }
-
     /// <summary>찾기 결과 한 절(plan §5 #303): 그 절 · 맞은 곳 수 · 첫 맞은 곳 둘레 글 조각.</summary>
     public sealed class RulebookHit
     {
@@ -76,7 +66,6 @@ namespace Sinnoh.Data
         /// <summary>원천의 쪽(룰북 v1.4a — 한국어판·영문 원본이 같은 쪽).</summary>
         public IReadOnlyList<int> Pages;
         public IReadOnlyList<RulebookBlock> Blocks;
-        public IReadOnlyList<RulebookFix> Fixes;
         /// <summary>이 절 글이 가리키는 절 키(나온 순서, 겹침 없음).</summary>
         public IReadOnlyList<string> Links;
 
@@ -86,14 +75,13 @@ namespace Sinnoh.Data
     /// <summary>
     /// 룰 설명서 한 언어(`Data/Json/rulebook.&lt;lang&gt;.json` — build.mjs가 `Tools/data/authored/rulebook/`에서 만든다, M9 「설명서 글 ①②」 — 두 언어의 절 키 · 그림 키 · 카드 키가 같다). 엄격하다:
     /// 빠진·모르는 필드 · 모르는 kind · kind에 맞지 않는 칸 · 절 키 문법(`&lt;장&gt;.&lt;이름&gt;`, 장 = chapter) · 절 키 겹침 · 링크 대상 없음 · 그림 키(`&lt;절 키&gt;/&lt;이름&gt;`) 겹침 ·
-    /// 고친 곳의 근거 문법(`A&lt;n&gt;` · `A&lt;n&gt;-&lt;m&gt;` · `G&lt;n&gt;`) · 고친 글이 절 글에 없음 · 원천이 빔 · 쪽이 1보다 작음 · 카드 키 문법 · 겹침 = FormatException. 순서는 표 그대로(장 → 절).
+    /// 원천이 빔 · 쪽이 1보다 작음 · 카드 키 문법 · 겹침 = FormatException. 순서는 표 그대로(장 → 절).
     /// 카드 키가 strings 표에 있는지는 표를 함께 읽는 쪽(시험 · 화면)이 본다 — 이 로더는 strings를 모른다.
     /// </summary>
     public sealed class Rulebook
     {
         static readonly Regex SectionKey = new Regex(@"^([a-z]+(?:_[a-z]+)*)\.[a-z0-9]+(?:_[a-z0-9]+)*$", RegexOptions.CultureInvariant),
             FigureKey = new Regex(@"^([a-z]+(?:_[a-z]+)*\.[a-z0-9]+(?:_[a-z0-9]+)*)/[a-z0-9]+(?:_[a-z0-9]+)*$", RegexOptions.CultureInvariant),
-            RulingId = new Regex(@"^(A[0-9]+(-[0-9]+)?|G[0-9]+)$", RegexOptions.CultureInvariant),
             LinkMark = new Regex(@"\[\[([^\]|]+)\|([^\]]+)\]\]", RegexOptions.CultureInvariant),
             StringKey = new Regex(@"^[a-z0-9_]+(\.[a-z0-9_]+)+$", RegexOptions.CultureInvariant);
 
@@ -196,7 +184,6 @@ namespace Sinnoh.Data
             public string Key, Chapter, ChapterTitle, Title, Source;
             public List<int> Pages;
             public List<BlockRow> Blocks;
-            public List<FixRow> Fixes;
         }
 
         sealed class BlockRow
@@ -215,13 +202,6 @@ namespace Sinnoh.Data
         {
             public string Text;
             public List<ItemRow> Items;
-        }
-
-        [JsonObject(ItemRequired = Required.Always)]
-        sealed class FixRow
-        {
-            public int No;
-            public string Ruling, Now, Ko, En;
         }
 
         public static Rulebook Load(string json, string file = "rulebook.ko.json")
@@ -244,27 +224,17 @@ namespace Sinnoh.Data
                 var blocks = new List<RulebookBlock>(r.Blocks.Count);
                 for (int k = 0; k < r.Blocks.Count; k++) blocks.Add(Block(r.Blocks[k], $"{at} 블록 {k}", r.Key, figures));
                 var links = new List<string>();
-                var shown = new StringBuilder(Plain(r.Title));
                 foreach (var b in blocks)
                     foreach (string t in b.Texts())
                     {
                         if (string.IsNullOrEmpty(t)) throw new FormatException(at + ": 빈 글");
-                        shown.Append('\n').Append(Plain(t));
                         foreach (var (key, _) in LinksIn(t))
                             if (!links.Contains(key)) links.Add(key);
                     }
-                var fixes = new List<RulebookFix>(r.Fixes.Count);
-                foreach (var f in r.Fixes)
-                {
-                    if (!RulingId.IsMatch(f.Ruling ?? "")) throw new FormatException($"{at} 고침 {f.No}: 근거 {f.Ruling}");
-                    if (string.IsNullOrEmpty(f.Now) || string.IsNullOrEmpty(f.Ko) || string.IsNullOrEmpty(f.En)) throw new FormatException($"{at} 고침 {f.No}: 빈 칸");
-                    if (shown.ToString().IndexOf(f.Now, StringComparison.Ordinal) < 0) throw new FormatException($"{at} 고침 {f.No}: 고친 글이 절 글에 없다");
-                    fixes.Add(new RulebookFix { No = f.No, Ruling = f.Ruling, Now = f.Now, Ko = f.Ko, En = f.En });
-                }
                 sections.Add(new RulebookSection
                 {
                     Key = r.Key, Chapter = r.Chapter, ChapterTitle = r.ChapterTitle, Title = r.Title, Source = r.Source, Pages = r.Pages.ToArray(),
-                    Blocks = blocks, Fixes = fixes, Links = links,
+                    Blocks = blocks, Links = links,
                 });
             }
             foreach (var s in sections)

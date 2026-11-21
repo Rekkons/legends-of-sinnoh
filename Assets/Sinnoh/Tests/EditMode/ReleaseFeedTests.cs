@@ -78,6 +78,88 @@ namespace Sinnoh.Tests.EditMode
                 Assert.That(ReleaseFeed.Read(junk, RfcKey, out _), Is.Null, junk ?? "null");
         }
 
+        // 자동 업데이트 칸(결정 161 K1 — store · auto)이 있는 manifest(같은 RFC 시험 키로 Node가 서명)
+        const string AutoManifest = "{\"app\":\"sinnoh\",\"version\":\"0.2.0\",\"date\":\"2026-11-21\",\"page\":\"https://github.com/Rekkons/legends-of-sinnoh/releases\",\"base\":\"https://dl.example/releases/0.2.0/\",\"store\":\"https://dl.example/files/\",\"auto\":true,\"packages\":[],\"files\":[{\"path\":\"Sinnoh.exe\",\"size\":3,\"sha256\":\"cd\"}]}";
+        const string AutoSignature = "uLCr9u8n05pI/dnIWkaXRTayPcQAIF7YNn/VSmMmGq4bn21ElYjBdDE3Pxwv8tzMF7rwbUD02ig3E1QoejGKBg==";
+
+        [Test]
+        public void M10_판정보읽기_store와auto_옛꼴은자동없음_서명뒤store를고치면틀림()
+        {
+            string json = Latest(AutoManifest, AutoSignature);
+            var m = ReleaseFeed.Read(json, RfcKey, out string why);
+            Assert.That(m, Is.Not.Null, why);
+            Assert.That((m.Store, m.Auto, m.Base), Is.EqualTo(("https://dl.example/files/", true, "https://dl.example/releases/0.2.0/")));
+            Assert.That(m.Text, Is.EqualTo(json), "받은 글 그대로(도우미가 같은 글의 서명을 다시 본다)");
+
+            var old = ReleaseFeed.Read(Latest(), RfcKey, out why);
+            Assert.That((old.Store, old.Auto), Is.EqualTo(("", false)), "0.1.0 꼴(칸 없음) = 자동 업데이트 없음");
+
+            Assert.That(ReleaseFeed.Read(Latest(AutoManifest.Replace("dl.example/files", "evil.example/files"), AutoSignature), RfcKey, out why), Is.Null);
+            Assert.That(why, Is.EqualTo("signature"), "서명 뒤 store를 고치면");
+            Assert.That(ReleaseFeed.Read(Latest(AutoManifest.Replace("\"auto\":true", "\"auto\":false"), AutoSignature), RfcKey, out why), Is.Null);
+            Assert.That(why, Is.EqualTo("signature"), "서명 뒤 auto를 고치면");
+        }
+
+        // 자동 업데이트 판(결정 161)의 pack.mjs 꼴 그대로(store · auto · files에 도우미 · 들여 쓴 겉 글) — RFC 시험 키로 Node가 서명
+        const string NewManifest = "{\"app\":\"sinnoh\",\"version\":\"0.2.0\",\"date\":\"2026-11-21\",\"page\":\"https://github.com/Rekkons/legends-of-sinnoh/releases\",\"base\":\"https://sinnoh-dl.legends-of-sinnoh.workers.dev/releases/0.2.0/\",\"store\":\"https://sinnoh-dl.legends-of-sinnoh.workers.dev/files/\",\"auto\":true,\"packages\":[{\"path\":\"Sinnoh-0.2.0-setup.exe\",\"size\":10,\"sha256\":\"abababababababababababababababababababababababababababababababab\"},{\"path\":\"Sinnoh-0.2.0-win64.zip\",\"size\":11,\"sha256\":\"cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd\"}],\"files\":[{\"path\":\"Sinnoh.exe\",\"size\":3,\"sha256\":\"efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef\"},{\"path\":\"SinnohUpdater.exe\",\"size\":50176,\"sha256\":\"2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e\"},{\"path\":\"Sinnoh_Data/글꼴.txt\",\"size\":5,\"sha256\":\"0101010101010101010101010101010101010101010101010101010101010101\"}]}";
+        const string NewSignature = "Wg6STtPOuIpq0dgF78kriTZ72z1J7d/EgZmnewQ97aG2EZDpskPiP1/mvrKJNr/TcrOuLX8FwooSy0GpJCbaDA==";
+
+        [Test]
+        public void M10_배포한010판파서가_자동업데이트꼴판정보를읽고_새판을알린다()
+        {
+            // pack.mjs signLatest의 겉 글(JSON.stringify(…, null, 2) + 줄바꿈)
+            string json = "{\n  \"format\": 1,\n  \"manifest\": \"" + NewManifest.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\",\n  \"signature\": \"" + NewSignature + "\"\n}\n";
+            Assert.That(V010.Notice(json, RfcKey, "0.1.0", out string why), Is.EqualTo("0.2.0"), "0.1.0의 알림 규칙: " + why);
+            Assert.That(V010.Notice(json, RfcKey, "0.2.0", out why), Is.Null);
+            Assert.That(why, Is.EqualTo("same"));
+            Assert.That(V010.Notice(json.Replace("\\\"auto\\\":true", "\\\"auto\\\":false"), RfcKey, "0.1.0", out why), Is.Null, "서명 뒤 새 칸을 고치면 0.1.0도 거부");
+            Assert.That(why, Is.EqualTo("signature"));
+            Assert.That(ReleaseFeed.Notice(json, RfcKey, "0.1.0", out why), Is.EqualTo("0.2.0"), "지금 판의 알림 규칙도 같은 답");
+            var m = ReleaseFeed.Read(json, RfcKey, out why);
+            Assert.That((m.Store, m.Auto, m.Files.Count, m.Files[1].Path), Is.EqualTo(("https://sinnoh-dl.legends-of-sinnoh.workers.dev/files/", true, 3, "SinnohUpdater.exe")), why);
+        }
+
+        /// <summary>
+        /// 배포한 0.1.0의 판 정보 읽기(git 79d6dafb <c>Assets/Sinnoh/Data/ReleaseFeed.cs</c> Read · Notice — 고치지 않는다): 이미 깔린 0.1.0이 새 꼴 latest.json을 받아들이는지 보는 기준.
+        /// 판 정보 꼴을 바꿀 때 이 사본이 거부하면 0.1.0 사용자는 새 판 알림을 못 받는다(format · manifest · signature · app · version은 그대로 둔다).
+        /// </summary>
+        static class V010
+        {
+            public static string Notice(string json, byte[] publicKey, string local, out string why)
+            {
+                if (!Read(json, publicKey, out why, out string version)) return null;
+                if (!ReleaseVersion.Newer(version, local)) { why = "same"; return null; }
+                return version;
+            }
+
+            static bool Read(string json, byte[] publicKey, out string why, out string version)
+            {
+                version = null;
+                try
+                {
+                    var outer = Newtonsoft.Json.Linq.JObject.Parse(json ?? "");
+                    if ((int?)outer["format"] != 1) { why = "format"; return false; }
+                    string manifest = (string)outer["manifest"], sig = (string)outer["signature"];
+                    if (string.IsNullOrEmpty(manifest) || string.IsNullOrEmpty(sig)) { why = "fields"; return false; }
+                    if (!Ed25519.Verify(publicKey, Encoding.UTF8.GetBytes(manifest), Convert.FromBase64String(sig))) { why = "signature"; return false; }
+                    var m = Newtonsoft.Json.Linq.JObject.Parse(manifest);
+                    if ((string)m["app"] != "sinnoh") { why = "app"; return false; }
+                    version = (string)m["version"];
+                    if (!ReleaseVersion.TryParse(version, out _)) { why = "version"; return false; }
+                    foreach (var list in new[] { m["packages"], m["files"] })
+                        if (list is Newtonsoft.Json.Linq.JArray a)
+                            foreach (var f in a) _ = ((string)f["path"], (long?)f["size"] ?? 0, (string)f["sha256"]);
+                    why = null;
+                    return true;
+                }
+                catch (Exception e) when (e is Newtonsoft.Json.JsonException || e is FormatException || e is InvalidCastException || e is ArgumentException || e is OverflowException)
+                {
+                    why = "parse";
+                    return false;
+                }
+            }
+        }
+
         [Test]
         public void M10_판정보설정값_공개키32바이트_받기는GitHub()
         {

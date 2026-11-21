@@ -139,7 +139,7 @@ namespace Sinnoh.Client
             {
                 if (watch < 0) return false;
                 var seq = flow.Fx != null ? flow.Fx.Sequencer : null;
-                if (GameFlow.PartyPlaying(seq, watch)) return false;   // 그 좌석의 사당 보상 · 정비 보기(380행)가 재생 중이면 판 보기에 자리를 내준다(결정 120)
+                if (GameFlow.PartyPlaying(seq, watch)) return false;   // 그 좌석의 사당 보상 판 보기(380행)가 재생 중이면 판 보기에 자리를 내준다(결정 120)
                 if (WatchChoice() != null) return true;
                 if (seq == null) return false;
                 foreach (var entry in seq.Queued)
@@ -859,9 +859,12 @@ namespace Sinnoh.Client
                 if (opts[i].Target != mon) continue;
                 int index = i, old = view.Pokemon[mon].Moves[opts[i].Arg];
                 var chip = Chip(slots, "board-shrine-opt-" + (i + 1).ToString(inv), i == selected, false, () => PickOption(index));
-                Add(chip, Kit.Text(old >= 0 ? stage.T(BattleFeed.MoveNameKey(ctx, old)) : stage.T("screen.shrine.slot.empty"), Kit.F2), null, null);
-                if (old >= 0) Add(chip, Kit.Text(Arrow, Kit.F2), null, "kit-muted");
-                if (old >= 0) Add(chip, Kit.Text(move, Kit.F2), null, null);
+                var tactic = old < 0 ? LegendRules.TacticAt(view.Pokemon[mon], opts[i].Arg) : LegendTactic.None;   // 결정 195: 전설 특수기술이 차지한 빈 칸 — 가르치면 덮인다
+                Add(chip, Kit.Text(old >= 0 ? stage.T(BattleFeed.MoveNameKey(ctx, old)) : tactic != LegendTactic.None ? stage.T(MonParts.TacticKey(tactic)) : stage.T("screen.shrine.slot.empty"), Kit.F2), null, null);
+                if (old >= 0 || tactic != LegendTactic.None) Add(chip, Kit.Text(Arrow, Kit.F2), null, "kit-muted");
+                if (old >= 0 || tactic != LegendTactic.None) Add(chip, Kit.Text(move, Kit.F2), null, null);
+                if (tactic != LegendTactic.None) stage.Tips.Hook(chip, stage.T(MonParts.TacticKey(tactic)), MonParts.TacticTip(stage, tactic), TipSide.Below, reading: true);
+                if (open && old >= 0) MonParts.MoveTip(stage, ctx, chip, old, TipSide.Left, panel);   // 바꿀 원래 기술의 이름 + 효과(결정 186)
             }
         }
 

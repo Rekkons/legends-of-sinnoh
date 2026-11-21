@@ -201,6 +201,18 @@ namespace Sinnoh.Fx
             return step != null && Removed(step) != null ? step : null;
         }
 
+        /// <summary>
+        /// 그 항목의 신 격파에 추가 턴이 붙나(결정 198): 엔진이 신을 이긴 좌석에 「한 턴 더」를 적은 표(UsageMarked GodVictory — 신오의 심장 캠페인에서만, rulings A28 ①)가 실렸다.
+        /// 화면은 캠페인을 다시 따지지 않고 이 표로 「한 번 더!」를 고른다. 떼어 낸 항목(<see cref="SplitOff(List{FxEntry})"/>)에도 같이 옮겨 싣는다.
+        /// </summary>
+        public static bool Extra(FxEntry entry)
+        {
+            if (entry == null) return false;
+            foreach (var e in entry.Events)
+                if (e is UsageMarked um && um.Kind == UsageKind.GodVictory) return true;
+            return false;
+        }
+
         public static TokenRemoved Removed(FxStep step)
         {
             if (step == null) return null;
@@ -273,6 +285,13 @@ namespace Sinnoh.Fx
                 tail.Steps.Add(step);
                 tail.Events.AddRange(step.Events);
                 foreach (var e in step.Events) entry.Events.Remove(e);
+                // 신 격파의 추가 턴 표(단계가 없는 이벤트 — 결정 198 GodBeats.Extra)도 떼어 낸 항목으로
+                for (int k = entry.Events.Count - 1; k >= 0; k--)
+                    if (entry.Events[k] is UsageMarked um && um.Kind == UsageKind.GodVictory)
+                    {
+                        tail.Events.Add(entry.Events[k]);
+                        entry.Events.RemoveAt(k);
+                    }
                 tail.QueueMs = ms;
                 entry.QueueMs = Math.Max(0, entry.QueueMs - ms);
                 entry.Reveal = null;
@@ -421,6 +440,118 @@ namespace Sinnoh.Fx
 
         /// <summary>천상의 오라(78행 — 신 배틀에서 오라가 걸려 있는 동안): 옅은 금빛 오라가 남는다.</summary>
         public static AuraPose God() => new AuraPose { Kind = AuraKind.God, Type = -1, Px = StayPx, Tint = StayTint };
+
+        /// <summary>비스트 부스트가 쌓여 있는 동안(결정 184): 옅은 붉은 오라가 남는다(빛 알갱이 <see cref="BoostMotes.Stay"/>와 함께).</summary>
+        public static AuraPose BoostStay() => new AuraPose { Kind = AuraKind.BeastBoost, Type = -1, Px = StayPx, Tint = StayTint };
+    }
+
+    /// <summary>DS 층의 빛 알갱이 하나(DS px — 가운데 자리 · 한 변 2 ~ 4 · 세기 0 ~ 1). 그리는 쪽은 바깥 1px 테두리(어두운 주황) + 몸(주황) + 밝은 심을 찍는다.</summary>
+    public struct Mote
+    {
+        public int X, Y, Size;
+        public float Alpha;
+    }
+
+    /// <summary>
+    /// 비스트 부스트의 빛 알갱이(결정 184): 그 쪽에 비스트 부스트가 쌓여 있는 동안 출전 포켓몬의 발 둘레에서 알갱이가 몸 높이만큼 올랐다 사라지고(<see cref="Stay"/> — 늘 도는 장식,
+    /// 쌓인 수만큼 더 많이 · 도트 둘레에는 옅은 오라 <see cref="AuraBeats.BoostStay"/>), 새로 쌓이는 순간(피로 641 비스트 부스트 단계의 앞 <see cref="BurstMs"/>) 몸 가운데서 둘레로 한 번 터진다(<see cref="Burst"/>).
+    /// 자리 · 세기는 받은 시각과 도트 크기(발 둘레 반 폭 · 몸 높이 — 그리는 쪽이 도트 표에서 준다)만으로 정한다(시계 없음). 색 · 수 · 속도는 [가정 결정 184 ①].
+    /// </summary>
+    public static class BoostMotes
+    {
+        /// <summary>오르는 알갱이 하나의 한 바퀴(ms) · 쌓인 1개의 수 · 하나 더 쌓일 때마다 더하는 수 · 가장 많은 수 · 그림이 바뀌는 박자(ms).</summary>
+        public const int RiseMs = 1700, StayBase = 18, StayPer = 3, StayMax = 30, StepMs = 80;
+        /// <summary>알갱이 한 변(DS px)의 가장 작은 · 큰 값.</summary>
+        public const int SizeMin = 2, SizeMax = 4;
+        /// <summary>터짐의 길이(ms) · 알갱이 수 · 퍼지는 거리(DS px, 앞모습 — 뒷모습은 1.5배).</summary>
+        public const int BurstMs = 520, BurstCount = 28, BurstPx = 51;
+        /// <summary>비스트 부스트가 쌓이는 피로 단계(641 — 오라 <see cref="AuraBeats.Boost"/>와 같은 단계).</summary>
+        public const int Row = 641;
+
+        /// <summary>쌓인 수 → 알갱이 수.</summary>
+        public static int StayCount(int stack) => stack <= 0 ? 0 : Math.Min(StayMax, StayBase + StayPer * (stack - 1));
+
+        /// <summary>쌓여 있는 동안(ms = 늘 도는 시계): 발 둘레(반 폭 half)에서 알갱이가 엇갈려 몸 높이(body)만큼 오르며 처음에 켜지고 끝으로 갈수록 흐려진다.</summary>
+        public static void Stay(long ms, int footX, int footY, int half, int body, int stack, List<Mote> into)
+        {
+            if (stack <= 0 || ms < 0) return;
+            ms -= ms % StepMs;
+            half = Math.Max(8, half);
+            body = Math.Max(16, body);
+            int n = StayCount(stack);
+            for (int i = 0; i < n; i++)
+            {
+                long t = ms + (long)i * RiseMs / n;
+                int cycle = (int)(t / RiseMs);
+                float p = t % RiseMs / (float)RiseMs;
+                int h = Hash(i, cycle);
+                float a = p < 0.12f ? p / 0.12f : p < 0.65f ? 1f : 1f - (p - 0.65f) / 0.35f;
+                into.Add(new Mote
+                {
+                    X = footX - half + h % (2 * half + 1),
+                    Y = footY - 2 - (h >> 8) % 10 - (int)(p * body),
+                    Size = SizeMin + (h >> 4) % (SizeMax - SizeMin + 1),
+                    Alpha = a,
+                });
+            }
+        }
+
+        /// <summary>새로 쌓이는 순간(ms = 그 단계 안 시각): 몸 가운데(발 줄 위 body/2)서 둘레로 퍼지며 흐려진다. big = 뒷모습(1.5배). <see cref="BurstMs"/> 뒤에는 없다.</summary>
+        public static void Burst(int ms, int footX, int footY, int body, List<Mote> into, bool big = false)
+        {
+            if (ms < 0 || ms >= BurstMs) return;
+            ms -= ms % (StepMs / 2);
+            float p = Tween.Apply(Ease.OutQuad, Tween.Progress(ms, 0, BurstMs));
+            float a = ms < BurstMs / 2 ? 1f : 1f - Tween.Progress(ms, BurstMs / 2, BurstMs / 2);
+            int cx = footX, cy = footY - Math.Max(16, body) / 2, far = big ? BurstPx * 3 / 2 : BurstPx;
+            for (int i = 0; i < BurstCount; i++)
+            {
+                double angle = 2 * Math.PI * (i + 0.5 * (Hash(i, 7) % 2)) / BurstCount;
+                float reach = far * (0.6f + 0.4f * (Hash(i, 3) % 10) / 9f) * p;
+                into.Add(new Mote
+                {
+                    X = cx + (int)Math.Round(Math.Cos(angle) * reach),
+                    Y = cy - (int)Math.Round(Math.Sin(angle) * reach * 0.8f),
+                    Size = SizeMin + i % (SizeMax - SizeMin + 1),
+                    Alpha = a,
+                });
+            }
+        }
+
+        /// <summary>그 항목의 그 포켓몬의 비스트 부스트 단계(641 — FatigueChanged Cause = BeastBoost). 없으면 null.</summary>
+        public static FxStep StepOf(FxEntry entry, int pokemon)
+        {
+            if (entry == null) return null;
+            foreach (var s in entry.Steps)
+                if (s.Row == Row)
+                    foreach (var e in s.Events)
+                        if (e is FatigueChanged f && f.Cause == FatigueCause.BeastBoost && f.PokemonId == pokemon) return s;
+            return null;
+        }
+
+        /// <summary>그 포켓몬의 비스트 부스트 단계가 대기열에 아직 끝나지 않고 남았나(보기는 이미 쌓인 값 — 그 단계가 끝나야 오르는 알갱이를 그린다).</summary>
+        public static bool Ahead(IEnumerable<FxEntry> queued, FxEntry current, int localMs, int pokemon)
+        {
+            if (queued == null) return false;
+            foreach (var entry in queued)
+            {
+                var s = StepOf(entry, pokemon);
+                if (s != null && !(ReferenceEquals(entry, current) && localMs >= s.EndMs)) return true;
+            }
+            return false;
+        }
+
+        static int Hash(int i, int cycle)
+        {
+            unchecked
+            {
+                uint h = (uint)(i * 73856093) ^ (uint)(cycle * 19349663);
+                h ^= h >> 13;
+                h *= 0x5BD1E995u;
+                h ^= h >> 15;
+                return (int)(h & 0x7FFFFFFF);
+            }
+        }
     }
 
     /// <summary>폼이 바뀌는 한 순간(<see cref="FormBeats.At"/>).</summary>

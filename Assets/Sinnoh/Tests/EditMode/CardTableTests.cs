@@ -85,6 +85,9 @@ namespace Sinnoh.Tests.EditMode
             foreach (var c in list)
             {
                 Assert.AreEqual("Choose your starter", c.En[c.Key == "home_village.ultra_megalopolis" ? 1 : 0], c.Key);
+                // 결정 173: TTS 자리 색 안내 줄(「Place this card in your hand…」)은 뺐다 — 고르기 줄이 끝 줄
+                Assert.AreEqual(c.Key == "home_village.ultra_megalopolis" ? 2 : 1, c.En.Count, c.Key);
+                Assert.IsFalse(ko.Contains(c.Key + ".text." + (c.En.Count + 1)), c.Key + ": 한국어에도 빠진 줄이 없다");
                 // 카드 이름 = 그 마을 이름(고정물 문자열)
                 Assert.AreEqual(ko["village." + c.Key.Substring("home_village.".Length)], ko[c.Key], c.Key);
             }
@@ -146,7 +149,7 @@ namespace Sinnoh.Tests.EditMode
             foreach (var c in list) Assert.AreEqual("You must attach this ability to a Pokémon in your party.", c.En[0], c.Key);
             Assert.AreEqual("The moves of the user are now Typeless, but their attack strengths are increased by 1.", Card("distortion_breach.chromatic_union").En[1],
                 "rulings A15: +1(한국어판 「1 감소」는 오역)");
-            Assert.That(ko["distortion_breach.chromatic_union.text.2"], Does.Contain("1 증가"));
+            Assert.That(ko["distortion_breach.chromatic_union.text.2"], Does.Contain("위력이 1 오릅니다"));
             Assert.AreEqual("Reduce the initiative of the user by 3 but increase the base health of the user by 3.", Card("distortion_breach.gravitational_drag").En[1]);
         }
 

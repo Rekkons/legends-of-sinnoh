@@ -67,23 +67,21 @@ namespace Sinnoh.Tests.EditMode
         }
 
         [Test]
-        public void M9_설명서_고친곳마다근거와원문_고친글이절글에있다()
+        public void M9_설명서_한국어는영문에서옮긴글_판정뜻이글에있다_결정163()
         {
+            // 결정 163: 한국어 설명서도 영문 원본에서 옮긴 글 — 「고침」 배지는 없고, 옛 고침의 판정 뜻은 글에 그대로 들었다
             var book = Ko();
-            var fixes = book.Sections.SelectMany(s => s.Fixes.Select(f => (s, f))).ToList();
-            Assert.GreaterOrEqual(fixes.Count, 18, "rulings 근거 오역(A4·A5·A6·A13·A14·A15·A22·A25·A26·A30·A51·A53·A55)");
-            CollectionAssert.AreEqual(Enumerable.Range(1, fixes.Count).ToArray(), fixes.Select(x => x.f.No).ToArray(), "번호는 1부터 차례로");
-            foreach (var (s, f) in fixes)
+            foreach (var (key, phrase) in new[]
             {
-                StringAssert.IsMatch(@"^(A[0-9]+(-[0-9]+)?|G[0-9]+)$", f.Ruling, $"{s.Key} 고침 {f.No}");
-                Assert.IsTrue(Regex.IsMatch(f.En, "[A-Za-z]"), $"{s.Key} 고침 {f.No}: 영문 원본");
-                Assert.IsTrue(Regex.IsMatch(f.Ko, "[가-힣]"), $"{s.Key} 고침 {f.No}: 한국어판 원문");
-                string shown = string.Join("\n", s.Blocks.SelectMany(b => b.Texts()).Select(Rulebook.Plain));
-                StringAssert.Contains(f.Now, shown, $"{s.Key} 고침 {f.No}: 고친 글");
+                ("overview.village", "하나 또는 둘 다"),            // A4 은행상회 거래 하나 또는 둘
+                ("ultra_burst.setup", "아르세우스의 축복 0개"),       // A14 마스터 트레이너
+                ("hidden_spots.campsites", "공중날기로 야영지에"),     // A5
+                ("ultra_burst.caverns", "내 최근 2차례"),             // A55
+            })
+            {
+                string shown = string.Join("\n", book.Find(key).Blocks.SelectMany(b => b.Texts()).Select(Rulebook.Plain));
+                StringAssert.Contains(phrase, shown, key);
             }
-            // 대표 고침: A14 마스터 트레이너 축복 0 · A4 은행상회 「거래 1개 또는 2개」
-            Assert.IsTrue(fixes.Any(x => x.s.Key == "ultra_burst.setup" && x.f.Ruling == "A14"));
-            Assert.IsTrue(fixes.Any(x => x.s.Key == "overview.village" && x.f.Ruling == "A4"));
         }
 
         [Test]
@@ -97,8 +95,8 @@ namespace Sinnoh.Tests.EditMode
             Assert.IsTrue(book.Sections.Any(s => s.Blocks.Any(b => b.Kind == RulebookBlockKind.Digital)), "TTS 조작 문장에 「디지털판」 꼬리표(결정 111 ④)");
             Assert.IsTrue(book.Find("automation.moving").Blocks.Any(b => b.Kind == RulebookBlockKind.Digital), "자동화 장은 절마다 꼬리표");
             string credits = string.Join("\n", book.Find("credits.credits").Blocks.SelectMany(b => b.Texts()));
-            StringAssert.Contains("3JA2", credits, "번역자 크레딧 유지(결정 35)");
-            StringAssert.Contains("로씨온", credits);
+            StringAssert.DoesNotContain("3JA2", credits, "한국어판은 크레딧에 적지 않는다(결정 172)");
+            StringAssert.DoesNotContain("로씨온", credits);
         }
 
         [Test]
@@ -109,8 +107,7 @@ namespace Sinnoh.Tests.EditMode
             Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"kind\":\"p\"", "\"kind\":\"para\""), File), "모르는 kind");
             Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"key\":\"overview.turn\"", "\"key\":\"overview.goal\""), File), "절 키 겹침");
             Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"key\":\"overview.turn\"", "\"key\":\"pokemon.turn\""), File), "절 키의 장 ≠ chapter");
-            Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"ruling\":\"A14\"", "\"ruling\":\"14\""), File), "근거 문법");
-            Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"now\":\"", "\"now\":\"없는 글 "), File), "고친 글이 절 글에 없다");
+            Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"chapter\":\"overview\"", "\"chapter\":\"overview\",\"fixes\":[]"), File), "고침 칸은 없다(결정 163)");
             Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"chapter\":\"overview\"", "\"chapter\":\"overview\",\"extra\":1"), File), "모르는 필드");
             Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"source\":\"rulebook\"", "\"source\":\"\""), File), "원천이 빔");
             Assert.Throws<FormatException>(() => Rulebook.Load(ReplaceFirst(json, "\"item.poke_ball\"", "\"Item Poke Ball\""), File), "카드 키 문법");
@@ -138,7 +135,6 @@ namespace Sinnoh.Tests.EditMode
             foreach (var s in en.Sections)
                 foreach (string to in s.Links) { links++; Assert.IsNotNull(en.Find(to), $"en {s.Key} → {to}"); }
             Assert.GreaterOrEqual(links, 10, "영문 원본의 「[See …]」 링크");
-            Assert.IsTrue(en.Sections.All(s => s.Fixes.Count == 0), "영어는 원본 그대로 — 고친 곳 없음");
             Assert.IsTrue(en.Sections.SelectMany(s => s.Blocks).Where(b => b.Kind == RulebookBlockKind.Digital).All(b => b.Text.StartsWith("In this game, ", StringComparison.Ordinal)), "꼬리표 영어판(plan §5 #307)");
             Assert.IsFalse(en.Sections.SelectMany(s => s.Blocks).SelectMany(b => b.Texts()).Any(t => Regex.IsMatch(t, "[가-힣]")), "영어판에 한글 없음");
         }
@@ -167,7 +163,7 @@ namespace Sinnoh.Tests.EditMode
                 Assert.IsTrue(secs.Count > 0 && secs.All(s => s.Source == source), $"{chapter}: 원천 {source}");
                 CollectionAssert.AreEquivalent(Enumerable.Range(1, pages).ToArray(), secs.SelectMany(s => s.Pages).Distinct().ToArray(), $"{chapter}: 원천 쪽 빠짐 없음");
             }
-            Assert.IsTrue(book.Find("trainer_cards.rules").Fixes.Any(f => f.Ruling == "A20-1"), "보드 한국어 「앞면」 빠짐(A20-1)");
+            StringAssert.Contains("앞면이 보이게", string.Join("${BS}n", book.Find("trainer_cards.rules").Blocks.SelectMany(b => b.Texts())), "트레이너 카드 「앞면」(A20-1)");
         }
     }
 }

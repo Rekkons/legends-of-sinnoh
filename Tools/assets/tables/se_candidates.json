@@ -13,5 +13,6 @@
 {"key":"flee","use":"도망(67행 — 지금 무음)","rom":["SEQ_SE_DP_NIGERU","SEQ_SE_DP_NIGERU2"],"plinkfx":[]},
 {"key":"fall","use":"귀환 암전 · 탈락 하강음(71·91행 — 지금 무음 · cancel 대역)","rom":["SEQ_SE_DP_PYUU","SEQ_SE_DP_PYUU2"],"plinkfx":["power-down"]},
 {"key":"search","use":"찾아보기 「!」 — 나무(20행, 결정 143 ⑥ 「나무를 흔들거나 수풀을 지나가는 소리」 — 옛 DP_FW230)","rom":["SEQ_SE_DP_KUSA","SEQ_SE_DP_HURU","SEQ_SE_DP_HURU2","SEQ_SE_DP_GASA01","SEQ_SE_DP_FW015","SEQ_SE_DP_FW230"],"plinkfx":[]},
-{"key":"search_reef","use":"찾아보기 「!」 — 바다 칸의 산호(20행, 결정 143 ⑥)","rom":["SEQ_SE_DP_FOOT3_1","SEQ_SE_DP_FOOT3_0","SEQ_SE_PL_WATER","SEQ_SE_DP_NAMI","SEQ_SE_DP_AWA"],"plinkfx":[]}
+{"key":"search_reef","use":"찾아보기 「!」 — 바다 칸의 산호(20행, 결정 143 ⑥)","rom":["SEQ_SE_DP_FOOT3_1","SEQ_SE_DP_FOOT3_0","SEQ_SE_PL_WATER","SEQ_SE_DP_NAMI","SEQ_SE_DP_AWA"],"plinkfx":[]},
+{"key":"fly_cutin","use":"공중날기 앞 비전기술 컷인의 휙(16행, 결정 167 — 원작 hm_cut_in.c는 DP_FW019)","rom":["SEQ_SE_DP_FW019","SEQ_SE_PL_W019","SEQ_SE_DP_W019","SEQ_SE_DP_HYUN","SEQ_SE_DP_KAZE"],"plinkfx":[]}
 ]}

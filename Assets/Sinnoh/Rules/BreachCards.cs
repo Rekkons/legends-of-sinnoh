@@ -120,6 +120,9 @@ namespace Sinnoh.Rules
             return RecklessBonus * (Count(ctx, attacker, BreachKind.RecklessAssault) + Count(ctx, defender, BreachKind.RecklessAssault));
         }
 
+        /// <summary>reckless_assault 몫의 출처(피해 계산 줄의 상성 칸을 표 상성과 나눠 보인다 — 결정 194).</summary>
+        public static SourceRef RecklessSource(Ctx ctx) => Source(ctx, BreachKind.RecklessAssault);
+
         /// <summary>nimble_frame(BattleFlow.DamageStep — 공격 피해를 버퍼에 넣은 뒤): 공격한 포켓몬이 1 피해(장마다, 같은 묶음으로 적용) · 턴 끝 뒤 교체할 수 있다(BattleState.SwitchAfter — 순서 그대로).</summary>
         internal static void Attacked(GameState s, Ctx ctx, BattleState b, int attacker)
         {

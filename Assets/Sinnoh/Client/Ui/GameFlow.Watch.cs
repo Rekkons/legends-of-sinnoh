@@ -27,6 +27,7 @@ namespace Sinnoh.Client
     /// 게임 메뉴 · 배틀 화면이 떠 있으면 그 아래로 숨고(하던 일을 덮지 않는다 — 결정 22 Q6), 닫으면 아직 볼 것이 남았을 때 다시 보인다. 그래서 내 창을 여는 길 · 답해야 하는 창의 자동 열기는 그대로다.
     /// 여는 때: 그 좌석의 공개 선택(조우 고르기 — 카드 공개 21행이 닿은 뒤 · 사당 카드 고르기)이 열렸거나, 남 좌석의 그 행 단계(<see cref="OtherActs"/> — 제작 36·37 · 은행상회 18 · 진화 39 · 공물 31 · 축복 32)가 재생 중일 때.
     /// 길이는 새로 만들지 않는다 — 남 좌석의 단계는 방장 멈춤과 같은 길이로 이미 대기열에 있다(<c>PlayTiming</c>). [닫기] · Esc로 접으면 그 좌석의 그 갈래는 그 턴 동안 다시 열지 않는다.
+    /// 남의 정비(38 · 40 · 41행 — 지닌물건 · 기술 · 놓아주기 · 순서, 카드 능력 정비 포함)는 창을 열지 않고 그 좌석 칩 꼬리표 「정비」 · 기록 줄만이다(결정 177 — 380행 중 사당 보상만 판 보기).
     /// 트레이너 카드 해금 · 바꾸기 · 능력(48 · 49 · 50행)은 창이 아니라 덮개 <see cref="CardFx"/>가 내 것과 같게 그린다(<see cref="ShowsOthers"/>). 좌석 하나 판 · 튜토리얼은 열지 않는다.
     /// </summary>
     public sealed partial class GameFlow
@@ -92,7 +93,7 @@ namespace Sinnoh.Client
                     key = "encounter|" + s + "|" + turn;
                     return new EncounterScreen(this, s);
                 }
-                if (PartyPlaying(seq, s)) continue;   // 그 좌석의 판 보기(정비 · 사당 보상 380행)가 먼저 — 아래 단계 고리가 연다
+                if (PartyPlaying(seq, s)) continue;   // 그 좌석의 판 보기(사당 보상 380행)가 먼저 — 아래 단계 고리가 연다
                 c = PeekRules.Open(view, s, PeekSpot.Shrine);
                 if (c != null && c.Options.Count > 0 && !c.Options.Contains(Engine.Unknown))
                 {
@@ -116,6 +117,7 @@ namespace Sinnoh.Client
                         key = "bank|" + s + "|" + turn;
                         return new VillageScreen(this, watch: s);
                     case WorkRows.Maint:
+                        if (!WorkRows.Gift(step)) continue;   // 남의 정비는 보기 창 없이 칩 꼬리표 · 기록 줄만(결정 177) — 사당 보상만 판 보기
                         key = "maint|" + s + "|" + turn;
                         return new PartyScreen(this, s, true);
                     case WorkRows.Evolve:
@@ -130,11 +132,11 @@ namespace Sinnoh.Client
             return null;
         }
 
-        /// <summary>그 좌석의 정비 보기 단계(380행 — 정비 · 사당의 그다음 고르기 결과)가 지금 재생 중인가.</summary>
+        /// <summary>그 좌석의 사당 보상 판 보기 단계(380행 중 사당의 그다음 고르기 결과 — 남의 정비는 보기 창이 없다, 결정 177)가 지금 재생 중인가.</summary>
         public static bool PartyPlaying(FxSequencer seq, int seat)
         {
             var step = WorkRows.Playing(seq, WorkRows.Maint, out int local);
-            return step != null && local < step.Ms && WorkRows.SeatOf(step) == seat;
+            return step != null && local < step.Ms && WorkRows.SeatOf(step) == seat && WorkRows.Gift(step);
         }
 
         void OpenWatch(IWatchScreen screen, string key, VisualElement hud)

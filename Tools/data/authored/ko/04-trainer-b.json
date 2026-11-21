@@ -1,0 +1,570 @@
+{
+  "schema": 1,
+  "note": "결정 163 다시 번역 — 04-trainer-b(트레이너 카드 능력 이름 · 문구 · 짧은 문구 파라솔 아가씨~반바지 꼬마, 원작 자산에 없는 직업 11)을 영문에서 새로 옮김. [가정] trainer_card.*_acolyte: Acolyte = 신도(진주 · 백금 · 합일 신도 — Undivided = 합일), 다이아 무녀(03-trainer-a)도 「다이아 신도」로 맞춰야 한다. [가정] trainer_card.roller_skater · scuba_diver · sky_trainer · tourist · triathlete · team_*: 후속작 공식 직업명(XY 롤러스케이트 · 스카이 트레이너 · 투어객, ORAS 다이버(ダイバー = Scuba Diver) · 아쿠아단/마그마단 조무래기, 3세대 트라이애슬리트, 로켓단 조무래기) — 원작 자산으로 확인하지 못함. [가정] 능력 이름이 본편 공식 이름과 같은 것은 공식 이름: 만능우산 · 헤롱헤롱바디(Cute Charm) · 쓱쓱(Swift Swim) · 시작의바다 · 끝의대지 · 대타출동. [가정] Egg Move = 교배 기술(screen.evolve.egg와 같게). Devotion = 신앙(공간 · 반골 · 영원의 신앙 — 03의 Temporal Devotion은 「시간의 신앙」으로 맞춘다). Chosen of ○○ = ○○가 택한 자. [가정] item 이름(날씨 휠 · 랜드마크 투어 · 아르세우스의 추종자 · 대타출동)은 지금 값 — 06 일감이 바꾸면 맞춘다. [가정] trainer_ability.tourist.1.text: 「kept next to your trainer area」(놓는 자리)와 worker.1.text 「Pen tool」 문장은 TTS 조작이라 뺐다(결정 87 W6). 검토: picnicker.1.text 끝 문장 「이 날기는 공중날기와 합쳐 한 턴에 한 번입니다.」는 영문에 없지만 사용자 결정 84 T11 ①(「문구에 적어」, rulings A43 ⑤)이라 남김(03 bird_keeper.1.text와 같음). worker.1.text 「밟은 칸과 밟을 칸」은 사용자 결정 84 T11 ②(켜기 전 걸음도, A43 ⑥).",
+  "strings": {
+    "trainer_ability.parasol_lady.1": {
+      "en": "Weather Forecast",
+      "ko": "일기 예보"
+    },
+    "trainer_ability.parasol_lady.1.text": {
+      "en": "When unlocked, place the Weather Wheel in the middle of the arena on a Weather of your choice. Any trainer may change the Weather by discarding 3 Journey Points at a Shrine. All moves that match the Weather type gain +2 attack strength.",
+      "ko": "해금될 때 날씨를 하나 골라 날씨 휠을 투기장 가운데에 놓습니다. 어느 트레이너든 사당에서 여행 점수 3점을 소모해 날씨를 바꿀 수 있습니다. 날씨와 타입이 같은 기술은 모두 위력 +2."
+    },
+    "trainer_ability.parasol_lady.1.short": {
+      "en": "Set the Weather; matching moves +2 power.",
+      "ko": "해금될 때 날씨를 고릅니다. 날씨 타입 기술 위력 +2. 사당에서 3점으로 바꿉니다."
+    },
+    "trainer_ability.parasol_lady.2": {
+      "en": "Utility Umbrella",
+      "ko": "만능우산"
+    },
+    "trainer_ability.parasol_lady.2.text": {
+      "en": "Your Pokémon take 2 less damage from moves that match the current Weather.",
+      "ko": "내 포켓몬은 지금 날씨와 타입이 같은 기술에 맞으면 데미지를 2 덜 받습니다."
+    },
+    "trainer_ability.pearl_acolyte.1": {
+      "en": "Spatial Devotion",
+      "ko": "공간의 신앙"
+    },
+    "trainer_ability.pearl_acolyte.1.text": {
+      "en": "When unlocked, become a Follower of Palkia for the rest of the game. Your Follower token always counts as 2 of the cards needed for Palkia's Play 3 effect.",
+      "ko": "해금될 때 남은 게임 내내 펄기아의 추종자가 됩니다. 펄기아 카드의 3장 사용 효과에서 내 추종자 토큰은 언제나 카드 2장 몫을 합니다."
+    },
+    "trainer_ability.pearl_acolyte.1.short": {
+      "en": "Follow Palkia; your token counts as 2 cards.",
+      "ko": "해금될 때 펄기아의 추종자가 됩니다. 추종자 토큰은 펄기아 카드 2장 몫입니다."
+    },
+    "trainer_ability.pearl_acolyte.2": {
+      "en": "Chosen of Palkia",
+      "ko": "펄기아가 택한 자"
+    },
+    "trainer_ability.pearl_acolyte.2.text": {
+      "en": "When unlocked, search the Legendary Pokémon deck for Palkia and add it to your party. Temporarily decrease the health and initiative of Palkia by 1 for each Shard you are currently missing or for every 3 Ultra Beasts undefeated.",
+      "ko": "해금될 때 전설 포켓몬 덱에서 펄기아를 찾아 내 파티에 넣습니다. 아직 얻지 못한 조각 1개마다, 또는 아직 쓰러뜨리지 못한 울트라 비스트 3마리마다 펄기아의 체력과 스피드가 일시적으로 1씩 줄어듭니다."
+    },
+    "trainer_ability.pearl_acolyte.2.short": {
+      "en": "Get Palkia; weaker for each missing Shard.",
+      "ko": "펄기아 합류. 없는 조각 · 남은 울트라 비스트 3마리마다 체력 · 스피드 −1."
+    },
+    "trainer_ability.picnicker.1": {
+      "en": "Woodland Explorer",
+      "ko": "숲 탐험가"
+    },
+    "trainer_ability.picnicker.1.text": {
+      "en": "Once per turn, you may move up to 2 Forest tiles in a row for free. Additionally, you may fly to Campsites from any tile by discarding 1 Apricorn.",
+      "ko": "한 턴에 한 번, 숲 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다. 또 어느 칸에서든 규토리 1개를 소모해 야영지로 날아갈 수 있습니다. 이 날기는 공중날기와 합쳐 한 턴에 한 번입니다."
+    },
+    "trainer_ability.picnicker.1.short": {
+      "en": "2 free Forest tiles; fly to Campsites.",
+      "ko": "한 턴에 한 번 숲 칸 2칸을 무료로 갑니다. 규토리 1개로 야영지에 날아갑니다."
+    },
+    "trainer_ability.picnicker.2": {
+      "en": "Picnic Basket",
+      "ko": "피크닉 바구니"
+    },
+    "trainer_ability.picnicker.2.text": {
+      "en": "When crafting an Apricorn Stew, you may gain the effect of another Apricorn Stew for free.",
+      "ko": "규토리 스튜를 만들 때, 다른 규토리 스튜 하나의 효과도 무료로 얻을 수 있습니다."
+    },
+    "trainer_ability.platinum_acolyte.1": {
+      "en": "Renegade Devotion",
+      "ko": "반골의 신앙"
+    },
+    "trainer_ability.platinum_acolyte.1.text": {
+      "en": "When unlocked, become a Follower of Giratina for the rest of the game. Your Follower token always counts as 2 of the cards needed for Giratina's Play 3 effect.",
+      "ko": "해금될 때 남은 게임 내내 기라티나의 추종자가 됩니다. 기라티나 카드의 3장 사용 효과에서 내 추종자 토큰은 언제나 카드 2장 몫을 합니다."
+    },
+    "trainer_ability.platinum_acolyte.1.short": {
+      "en": "Follow Giratina; your token counts as 2 cards.",
+      "ko": "해금될 때 기라티나의 추종자가 됩니다. 추종자 토큰은 기라티나 카드 2장 몫입니다."
+    },
+    "trainer_ability.platinum_acolyte.2": {
+      "en": "Chosen of Giratina",
+      "ko": "기라티나가 택한 자"
+    },
+    "trainer_ability.platinum_acolyte.2.text": {
+      "en": "When unlocked, search the Legendary Pokémon deck for Giratina and add it to your party. Temporarily decrease the health and initiative of Giratina by 1 for each Shard you are currently missing or for every 3 Ultra Beasts undefeated.",
+      "ko": "해금될 때 전설 포켓몬 덱에서 기라티나를 찾아 내 파티에 넣습니다. 아직 얻지 못한 조각 1개마다, 또는 아직 쓰러뜨리지 못한 울트라 비스트 3마리마다 기라티나의 체력과 스피드가 일시적으로 1씩 줄어듭니다."
+    },
+    "trainer_ability.platinum_acolyte.2.short": {
+      "en": "Get Giratina; weaker for each missing Shard.",
+      "ko": "기라티나 합류. 없는 조각 · 남은 울트라 비스트 3마리마다 체력 · 스피드 −1."
+    },
+    "trainer_ability.poke_fan.1": {
+      "en": "Cute Charm",
+      "ko": "헤롱헤롱바디"
+    },
+    "trainer_ability.poke_fan.1.text": {
+      "en": "Your Weak Pokémon can at most take 3 damage from a single attack.",
+      "ko": "내 약한 포켓몬은 한 번의 공격에서 데미지를 최대 3까지만 받습니다."
+    },
+    "trainer_ability.poke_fan.2": {
+      "en": "Loyalty Card",
+      "ko": "단골 카드"
+    },
+    "trainer_ability.poke_fan.2.text": {
+      "en": "When crafting a Battle Item, you may gain another Battle Item for free.",
+      "ko": "배틀 아이템을 만들 때, 배틀 아이템 하나를 무료로 더 얻을 수 있습니다."
+    },
+    "trainer_ability.poke_maniac.1": {
+      "en": "Pokémon Disguise",
+      "ko": "포켓몬 변장"
+    },
+    "trainer_ability.poke_maniac.1.text": {
+      "en": "When attacking, you may use the signature move of the opposing Pokémon against them.",
+      "ko": "공격할 때, 상대 포켓몬의 고유 기술을 그 포켓몬에게 쓸 수 있습니다."
+    },
+    "trainer_ability.poke_maniac.2": {
+      "en": "Uncanny Substitute",
+      "ko": "기묘한 대타출동"
+    },
+    "trainer_ability.poke_maniac.2.text": {
+      "en": "When unlocked, you receive the Substitute held item. The Pokémon with the Substitute held item attached may be switched in from your party just before any damage is applied from an opposing attack.",
+      "ko": "해금될 때 지닌물건 대타출동을 받습니다. 대타출동을 지닌 포켓몬은 상대 공격의 데미지가 들어가기 바로 전에 파티에서 교체해 나올 수 있습니다."
+    },
+    "trainer_ability.poke_maniac.2.short": {
+      "en": "Get Substitute: its holder switches in to block",
+      "ko": "해금될 때 대타출동을 받습니다. 지닌 포켓몬은 데미지 직전에 교체해 나올 수 있습니다."
+    },
+    "trainer_ability.pokemon_breeder.1": {
+      "en": "Egg Move",
+      "ko": "교배 기술"
+    },
+    "trainer_ability.pokemon_breeder.1.text": {
+      "en": "When evolving a Weak Pokémon, you may instead teach the move of its evolution to the pre-evolution as an Egg Move. This Pokémon can no longer evolve.",
+      "ko": "약한 포켓몬을 진화시킬 때, 진화하는 대신 진화형의 기술을 교배 기술로 진화 전 포켓몬에게 가르칠 수 있습니다. 그 포켓몬은 더는 진화할 수 없습니다."
+    },
+    "trainer_ability.pokemon_breeder.1.short": {
+      "en": "Teach a Weak Pokémon its evolution's Egg Move.",
+      "ko": "약한 포켓몬은 진화하는 대신 진화형 기술을 교배 기술로 배울 수 있습니다(진화 불가)."
+    },
+    "trainer_ability.pokemon_breeder.2": {
+      "en": "Almost Perfect IVs",
+      "ko": "거의 완벽한 개체값"
+    },
+    "trainer_ability.pokemon_breeder.2.text": {
+      "en": "Your Pokémon that were taught an Egg Move gain +5 health and +5 initiative.",
+      "ko": "교배 기술을 배운 내 포켓몬은 체력 +5, 스피드 +5."
+    },
+    "trainer_ability.pokemon_ranger.1": {
+      "en": "Pokémon Ranch",
+      "ko": "포켓몬 목장"
+    },
+    "trainer_ability.pokemon_ranger.1.text": {
+      "en": "You may use any locked party slots to store your Pokémon but these Pokémon cannot be used in battle. In the Ultra Burst campaign, you may store up to 2 Distortion Breach cards in each empty slot.",
+      "ko": "잠긴 파티 칸에 포켓몬을 맡겨 둘 수 있지만, 그 포켓몬은 배틀에 나갈 수 없습니다. 울트라 버스트 캠페인에서는 빈 파티 칸마다 왜곡 균열 카드를 2장까지 넣어 둘 수 있습니다."
+    },
+    "trainer_ability.pokemon_ranger.1.short": {
+      "en": "Store Pokémon in locked party slots.",
+      "ko": "잠긴 파티 칸에 포켓몬을 맡깁니다(배틀 불가). 울트라 버스트는 균열 카드도 2장씩."
+    },
+    "trainer_ability.pokemon_ranger.2": {
+      "en": "Trusty Companions",
+      "ko": "든든한 동료"
+    },
+    "trainer_ability.pokemon_ranger.2.text": {
+      "en": "Your Moderate Pokémon gain +1 health and +1 initiative for each locked party slot that you unlock. In the Ultra Burst campaign, you get the maximum of +3 health and +3 initiative immediately.",
+      "ko": "잠긴 파티 칸을 하나 열 때마다 내 적당한 포켓몬은 체력 +1, 스피드 +1. 울트라 버스트 캠페인에서는 최대치인 체력 +3, 스피드 +3을 바로 얻습니다."
+    },
+    "trainer_ability.pokemon_ranger.2.short": {
+      "en": "Moderate Pokémon grow with each opened slot.",
+      "ko": "파티 칸을 열 때마다 적당한 포켓몬 체력 · 스피드 +1. 울트라 버스트는 바로 +3."
+    },
+    "trainer_ability.psychic.1": {
+      "en": "Telekinetic Reach",
+      "ko": "염력의 손길"
+    },
+    "trainer_ability.psychic.1.text": {
+      "en": "Once per turn, you may interact with something from up to 2 tiles away.",
+      "ko": "한 턴에 한 번, 2칸 안의 칸에서 할 일을 그 칸에 가지 않고 할 수 있습니다."
+    },
+    "trainer_ability.psychic.2": {
+      "en": "Subtle Manipulation",
+      "ko": "은밀한 조작"
+    },
+    "trainer_ability.psychic.2.text": {
+      "en": "When you attack with a Psychic-type or Ghost-type move, you may change the result of 1 dice rolled to any other value.",
+      "ko": "에스퍼 타입이나 고스트 타입 기술로 공격할 때, 굴린 주사위 1개의 눈을 원하는 다른 눈으로 바꿀 수 있습니다."
+    },
+    "trainer_ability.psychic.2.short": {
+      "en": "Psychic/Ghost attacks: set 1 die to any face.",
+      "ko": "에스퍼 · 고스트 타입 기술로 공격하면 주사위 1개를 원하는 눈으로 바꿀 수 있습니다."
+    },
+    "trainer_ability.roller_skater.1": {
+      "en": "Roller Skates",
+      "ko": "롤러스케이트"
+    },
+    "trainer_ability.roller_skater.1.text": {
+      "en": "Once per turn, you may move up to 2 Plains tiles in a row for free. Additionally, non-Legendary wild Pokémon can now only flee after defeating two of your Pokémon.",
+      "ko": "한 턴에 한 번, 평원 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다. 또 전설이 아닌 야생 포켓몬은 내 포켓몬을 2마리 쓰러뜨려야 도망칠 수 있습니다."
+    },
+    "trainer_ability.roller_skater.1.short": {
+      "en": "2 free Plains tiles; wild Pokémon flee later.",
+      "ko": "한 턴에 한 번 평원 칸 2칸 무료. 전설 아닌 야생은 2마리를 쓰러뜨려야 도망칩니다."
+    },
+    "trainer_ability.roller_skater.2": {
+      "en": "Protective Gear",
+      "ko": "보호 장구"
+    },
+    "trainer_ability.roller_skater.2.text": {
+      "en": "Your Pokémon can at most take 6 damage from a single attack.",
+      "ko": "내 포켓몬은 한 번의 공격에서 데미지를 최대 6까지만 받습니다."
+    },
+    "trainer_ability.ruin_maniac.1": {
+      "en": "Artifact Hunter",
+      "ko": "유물 사냥꾼"
+    },
+    "trainer_ability.ruin_maniac.1.text": {
+      "en": "Once per turn, you may reveal 1 Special Hidden Spot anywhere on the map. If it is an Artifact, you may instantly move to it and attach it to a Pokémon in your party.",
+      "ko": "한 턴에 한 번, 보드 어디에 있든 특별한 숨겨진 장소 1개를 공개할 수 있습니다. 그것이 유물이면 곧바로 그 칸으로 가서 내 파티의 포켓몬에게 지니게 할 수 있습니다."
+    },
+    "trainer_ability.ruin_maniac.1.short": {
+      "en": "Reveal 1 Special Hidden Spot anywhere.",
+      "ko": "한 턴에 한 번 특별한 숨겨진 장소 1개를 공개합니다. 유물이면 가서 지니게 합니다."
+    },
+    "trainer_ability.ruin_maniac.2": {
+      "en": "Artifact Expert",
+      "ko": "유물 전문가"
+    },
+    "trainer_ability.ruin_maniac.2.text": {
+      "en": "Your Artifacts gain +1 attack strength to their bonuses and cannot be taken by other trainers.",
+      "ko": "내 유물은 위력 보너스가 1씩 더 늘고, 다른 트레이너에게 빼앗기지 않습니다."
+    },
+    "trainer_ability.scientist.1": {
+      "en": "Field Observation",
+      "ko": "야외 관찰"
+    },
+    "trainer_ability.scientist.1.text": {
+      "en": "Once per turn, search at an Apricorn Tree, Apricorn Reef or Distortion Gate without starting a battle. You may now directly teach all the moves searched to any Pokémon in your party that can learn them.",
+      "ko": "한 턴에 한 번, 규토리 나무 · 규토리 산호 · 왜곡 게이트에서 배틀을 시작하지 않고 찾아볼 수 있습니다. 그때 나온 기술은 모두 내 파티에서 배울 수 있는 포켓몬에게 바로 가르칠 수 있습니다."
+    },
+    "trainer_ability.scientist.1.short": {
+      "en": "Search without battling; teach the moves found.",
+      "ko": "한 턴에 한 번 배틀 없이 찾아봅니다. 그때 나온 기술을 바로 가르칠 수 있습니다."
+    },
+    "trainer_ability.scientist.2": {
+      "en": "Weakness Analysis",
+      "ko": "약점 분석"
+    },
+    "trainer_ability.scientist.2.text": {
+      "en": "When attacking, your damage from positive type effectiveness is increased by 1.",
+      "ko": "공격할 때, 유리한 타입 상성으로 더해지는 데미지가 1 늘어납니다."
+    },
+    "trainer_ability.scuba_diver.1": {
+      "en": "Sunken Treasure",
+      "ko": "가라앉은 보물"
+    },
+    "trainer_ability.scuba_diver.1.text": {
+      "en": "Once per turn whilst on an Ocean tile, shuffle the Hidden Spot discard pile and then draw the top Hidden Spot. Place the drawn Hidden Spot on the tile you are on, you may then interact with it as usual.",
+      "ko": "한 턴에 한 번, 바다 칸에 있을 때 버린 숨겨진 장소 더미를 섞어 1장을 뽑아 내 칸에 놓습니다. 그 뒤 평소처럼 열지 고를 수 있습니다."
+    },
+    "trainer_ability.scuba_diver.1.short": {
+      "en": "On Ocean, draw a discarded Hidden Spot.",
+      "ko": "한 턴에 한 번 바다 칸에서 버린 숨겨진 장소 1장을 섞어 뽑아 내 칸에 놓습니다."
+    },
+    "trainer_ability.scuba_diver.2": {
+      "en": "Scuba Dive",
+      "ko": "스쿠버 다이빙"
+    },
+    "trainer_ability.scuba_diver.2.text": {
+      "en": "After you attack with a Water-type move, the user may switch out and then heal all status effects.",
+      "ko": "물 타입 기술로 공격한 뒤, 사용자는 교체해 물러난 다음 상태 이상을 모두 회복할 수 있습니다."
+    },
+    "trainer_ability.scuba_diver.2.short": {
+      "en": "After a Water attack, switch out and cure all.",
+      "ko": "물 타입 기술로 공격한 뒤 교체해 물러나 상태 이상을 모두 회복할 수 있습니다."
+    },
+    "trainer_ability.sky_trainer.1": {
+      "en": "Wing Suit",
+      "ko": "윙슈트"
+    },
+    "trainer_ability.sky_trainer.1.text": {
+      "en": "You may move to adjacent tiles that are 2 or more elevations lower than your current tile. After doing so, you may move up to 4 additional tiles in a row so long as your elevation does not increase.",
+      "ko": "지금 칸보다 높이가 2 이상 낮은 이웃 칸으로 갈 수 있습니다. 그렇게 내려간 뒤에는 높이가 오르지 않는 한 연달아 4칸까지 더 갈 수 있습니다."
+    },
+    "trainer_ability.sky_trainer.1.short": {
+      "en": "Glide down 2+ levels, then 4 tiles free.",
+      "ko": "높이가 2 이상 낮은 이웃 칸으로 활공합니다. 그 뒤 오르지 않으면 4칸 더 무료."
+    },
+    "trainer_ability.sky_trainer.2": {
+      "en": "Air Superiority",
+      "ko": "제공권"
+    },
+    "trainer_ability.sky_trainer.2.text": {
+      "en": "Your Flying-type Pokémon gain +1 attack strength to all their moves so long as they are not against another Flying-type Pokémon.",
+      "ko": "내 비행 타입 포켓몬은 비행 타입이 아닌 포켓몬과 싸울 때 모든 기술의 위력 +1."
+    },
+    "trainer_ability.swimmer.1": {
+      "en": "Swift Swim",
+      "ko": "쓱쓱"
+    },
+    "trainer_ability.swimmer.1.text": {
+      "en": "Once per turn, you may move up to 2 Ocean tiles in a row for free. Additionally, your Water-type Pokémon gain +1 initiative.",
+      "ko": "한 턴에 한 번, 바다 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다. 또 내 물 타입 포켓몬은 스피드 +1."
+    },
+    "trainer_ability.swimmer.1.short": {
+      "en": "2 free Ocean tiles; Water types +1 Initiative.",
+      "ko": "한 턴에 한 번 바다 칸 2칸을 무료로 갑니다. 물 타입 포켓몬은 스피드 +1."
+    },
+    "trainer_ability.swimmer.2": {
+      "en": "Butterfly Technique",
+      "ko": "접영"
+    },
+    "trainer_ability.swimmer.2.text": {
+      "en": "When you attack with a Water-type move, you may change its type to either Bug-type or Flying-type.",
+      "ko": "물 타입 기술로 공격할 때, 그 기술의 타입을 벌레 타입이나 비행 타입으로 바꿀 수 있습니다."
+    },
+    "trainer_ability.swimmer.2.short": {
+      "en": "Water attacks may count as Bug or Flying.",
+      "ko": "물 타입 기술로 공격할 때 벌레 타입이나 비행 타입으로 바꿀 수 있습니다."
+    },
+    "trainer_ability.team_aqua.1": {
+      "en": "Submarine Dive",
+      "ko": "잠수함 잠항"
+    },
+    "trainer_ability.team_aqua.1.text": {
+      "en": "If you are standing on an Ocean tile at the end of your turn, you may instantly move to any other Ocean tile.",
+      "ko": "내 턴이 끝날 때 바다 칸에 서 있으면, 곧바로 다른 바다 칸 어디로든 옮겨 갈 수 있습니다."
+    },
+    "trainer_ability.team_aqua.1.short": {
+      "en": "End on Ocean: jump to any Ocean tile.",
+      "ko": "턴이 끝날 때 바다 칸에 있으면 다른 바다 칸으로 곧바로 갈 수 있습니다."
+    },
+    "trainer_ability.team_aqua.2": {
+      "en": "Primordial Sea",
+      "ko": "시작의바다"
+    },
+    "trainer_ability.team_aqua.2.text": {
+      "en": "During your battles, all Water-type moves gain +1 attack strength and all Water-type Pokémon take 1 less damage when attacked.",
+      "ko": "내 배틀 동안 모든 물 타입 기술은 위력 +1. 물 타입 포켓몬은 모두 공격받을 때 데미지를 1 덜 받습니다."
+    },
+    "trainer_ability.team_aqua.2.short": {
+      "en": "Water moves +1 power; Water types take 1 less.",
+      "ko": "내 배틀에서 물 타입 기술은 위력 +1, 물 타입 포켓몬이 받는 데미지는 −1."
+    },
+    "trainer_ability.team_magma.1": {
+      "en": "Magma Tunnels",
+      "ko": "마그마 터널"
+    },
+    "trainer_ability.team_magma.1.text": {
+      "en": "If you are standing on a Mountain tile at the end of your turn, you may instantly move to any other Mountain tile.",
+      "ko": "내 턴이 끝날 때 산 칸에 서 있으면, 곧바로 다른 산 칸 어디로든 옮겨 갈 수 있습니다."
+    },
+    "trainer_ability.team_magma.1.short": {
+      "en": "End on a Mountain: jump to any Mountain tile.",
+      "ko": "턴이 끝날 때 산 칸에 있으면 다른 산 칸으로 곧바로 갈 수 있습니다."
+    },
+    "trainer_ability.team_magma.2": {
+      "en": "Desolate Land",
+      "ko": "끝의대지"
+    },
+    "trainer_ability.team_magma.2.text": {
+      "en": "During your battles, all Fire-type moves gain +1 attack strength and all Fire-type Pokémon take 1 less damage when attacked.",
+      "ko": "내 배틀 동안 모든 불꽃 타입 기술은 위력 +1. 불꽃 타입 포켓몬은 모두 공격받을 때 데미지를 1 덜 받습니다."
+    },
+    "trainer_ability.team_magma.2.short": {
+      "en": "Fire moves +1 power; Fire types take 1 less.",
+      "ko": "내 배틀에서 불꽃 타입 기술은 위력 +1, 불꽃 타입 포켓몬이 받는 데미지는 −1."
+    },
+    "trainer_ability.team_rocket.1": {
+      "en": "Pokémon Thief",
+      "ko": "포켓몬 도둑"
+    },
+    "trainer_ability.team_rocket.1.text": {
+      "en": "During a battle with another trainer, you can attempt to capture their Pokémon but with -2 to your capture rolls. The captured Pokémon keeps everything it currently has attached.",
+      "ko": "다른 트레이너와 배틀할 때 그 트레이너의 포켓몬을 포획해 볼 수 있지만, 포획 굴림에 −2가 붙습니다. 잡힌 포켓몬은 지금 붙어 있는 것을 모두 그대로 가지고 옵니다."
+    },
+    "trainer_ability.team_rocket.1.short": {
+      "en": "Catch other trainers' Pokémon at −2.",
+      "ko": "트레이너 배틀에서 상대 포켓몬을 포획 굴림 −2로 잡을 수 있습니다(붙은 것 그대로)."
+    },
+    "trainer_ability.team_rocket.2": {
+      "en": "Blasting Off",
+      "ko": "로켓 발사"
+    },
+    "trainer_ability.team_rocket.2.text": {
+      "en": "When one of your Pokémon faints, deal 2 damage to the opposing Pokémon. If you are out of usable Pokémon, you may travel to any tile on the map and are automatically fully restored at the start of your next turn.",
+      "ko": "내 포켓몬이 기절하면 상대 포켓몬에게 데미지를 2 줍니다. 쓸 수 있는 포켓몬이 없게 되면 보드의 원하는 칸으로 갈 수 있고, 다음 내 턴이 시작될 때 저절로 모두 회복합니다."
+    },
+    "trainer_ability.team_rocket.2.short": {
+      "en": "Fainting deals 2; blast off to any tile.",
+      "ko": "내 포켓몬이 기절하면 상대에게 데미지 2. 모두 기절하면 원하는 칸으로 날아갑니다."
+    },
+    "trainer_ability.tourist.1": {
+      "en": "Landmark Tour",
+      "ko": "랜드마크 투어"
+    },
+    "trainer_ability.tourist.1.text": {
+      "en": "When unlocked, place the Landmark Tour sheet in your hand. Once at each Artifact Legendary Location, stamp it on your Landmark Tour sheet to search for the Legendary Pokémon there and make a clone of its card. These cards become your Legendary Snaps and are kept next to your trainer area.",
+      "ko": "해금될 때 랜드마크 투어 시트를 받습니다. 유물이 필요한 전설 장소마다 한 번, 시트에 도장을 찍고 그곳의 전설 포켓몬을 찾아 그 카드를 복사합니다. 복사한 카드는 내 기념사진이 됩니다."
+    },
+    "trainer_ability.tourist.1.short": {
+      "en": "Get the Landmark Tour sheet for Legendary Snaps",
+      "ko": "해금될 때 랜드마크 투어 시트를 받습니다. 유물 전설 장소마다 기념사진을 얻습니다."
+    },
+    "trainer_ability.tourist.2": {
+      "en": "Holiday Album",
+      "ko": "여행 앨범"
+    },
+    "trainer_ability.tourist.2.text": {
+      "en": "You may teach the Legendary Snaps you have collected as moves to any Pokémon in your party that can learn them. Additionally, if you complete your Landmark Tour sheet, gain 30 Journey Points.",
+      "ko": "모은 기념사진을 배울 수 있는 내 파티의 포켓몬에게 기술로 가르칠 수 있습니다. 또 랜드마크 투어 시트를 다 채우면 여행 점수 30점을 얻습니다."
+    },
+    "trainer_ability.tourist.2.short": {
+      "en": "Teach Legendary Snaps; full tour gives 30 JP.",
+      "ko": "기념사진을 기술로 가르칠 수 있습니다. 투어 시트를 다 채우면 여행 점수 30점."
+    },
+    "trainer_ability.triathlete.1": {
+      "en": "Swim Bike Run",
+      "ko": "트라이애슬론"
+    },
+    "trainer_ability.triathlete.1.text": {
+      "en": "Once per turn, you may move up to 2 non-Mountain tiles in a row for free.",
+      "ko": "한 턴에 한 번, 산이 아닌 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다."
+    },
+    "trainer_ability.triathlete.2": {
+      "en": "Triple Threat",
+      "ko": "삼중 위협"
+    },
+    "trainer_ability.triathlete.2.text": {
+      "en": "When your Pokémon knows moves of 3 different types, you may change the type of your attack to any of those 3 types. Works for Typeless moves too.",
+      "ko": "내 포켓몬이 서로 다른 3가지 타입의 기술을 알고 있으면, 공격 타입을 그 3가지 중 하나로 바꿀 수 있습니다. 타입 없음 기술도 한 타입으로 칩니다."
+    },
+    "trainer_ability.triathlete.2.short": {
+      "en": "Attack as any of your 3 move types.",
+      "ko": "기술 타입이 3가지면 공격 타입을 그중 하나로 바꿀 수 있습니다. 타입 없음도 칩니다."
+    },
+    "trainer_ability.undivided_acolyte.1": {
+      "en": "Eternal Devotion",
+      "ko": "영원의 신앙"
+    },
+    "trainer_ability.undivided_acolyte.1.text": {
+      "en": "When unlocked, replace your Follower token with the Follower of Arceus token for the rest of the game. A Follower of Arceus is counted as a Follower of all three Gods of Sinnoh at the same time.",
+      "ko": "해금될 때 남은 게임 내내 내 추종자 토큰을 아르세우스의 추종자 토큰으로 바꿉니다. 아르세우스의 추종자는 신오의 세 신 모두의 추종자로 동시에 칩니다."
+    },
+    "trainer_ability.undivided_acolyte.1.short": {
+      "en": "Follow Arceus: counts as all three Gods.",
+      "ko": "해금될 때 아르세우스의 추종자가 됩니다. 신오의 세 신 모두의 추종자로 칩니다."
+    },
+    "trainer_ability.undivided_acolyte.2": {
+      "en": "Judgement of Arceus",
+      "ko": "아르세우스의 심판"
+    },
+    "trainer_ability.undivided_acolyte.2.text": {
+      "en": "After attacking, the opposing Pokémon faints if they have 2 or less health remaining.",
+      "ko": "공격한 뒤, 상대 포켓몬의 남은 체력이 2 이하이면 그 포켓몬은 기절합니다."
+    },
+    "trainer_ability.veteran.1": {
+      "en": "Wilderness Expert",
+      "ko": "황야 전문가"
+    },
+    "trainer_ability.veteran.1.text": {
+      "en": "When you find an Apricorn Stash, gain 2 extra Apricorns of the same type and move 1 additional tile this turn.",
+      "ko": "규토리 더미를 찾으면 같은 색 규토리를 2개 더 얻고, 이번 턴에 1칸 더 이동할 수 있습니다."
+    },
+    "trainer_ability.veteran.1.short": {
+      "en": "Apricorn Stash: +2 Apricorns and +1 tile move.",
+      "ko": "규토리 더미를 찾으면 같은 색 규토리 +2, 이번 턴에 1칸 더 이동합니다."
+    },
+    "trainer_ability.veteran.2": {
+      "en": "Gale Force",
+      "ko": "질풍의 힘"
+    },
+    "trainer_ability.veteran.2.text": {
+      "en": "When you attack with an Ice-type or Dragon-type move, you may add up to 2 status symbols to roll.",
+      "ko": "얼음 타입이나 드래곤 타입 기술로 공격할 때, 굴림에 상태 이상 심볼을 2개까지 더할 수 있습니다."
+    },
+    "trainer_ability.veteran.2.short": {
+      "en": "Ice/Dragon attacks may add 2 status symbols.",
+      "ko": "얼음 · 드래곤 타입 기술로 공격할 때 굴림에 상태 이상 심볼을 2개까지 더합니다."
+    },
+    "trainer_ability.worker.1": {
+      "en": "Civil Engineer",
+      "ko": "토목 기사"
+    },
+    "trainer_ability.worker.1.text": {
+      "en": "Costs 2 Journey Points: You may build Roads on any non-Ocean tiles you move onto this turn. All trainers can move through any number of interconnected Roads for 1 tile move. Roads are built by drawing them with the Pen tool.",
+      "ko": "여행 점수 2점 소모: 이번 턴에 밟은 칸과 밟을 칸 가운데 바다가 아닌 칸마다 도로를 놓을 수 있습니다. 모든 트레이너는 서로 이어진 도로를 몇 칸이든 이동력 1로 지나갈 수 있습니다."
+    },
+    "trainer_ability.worker.1.short": {
+      "en": "Pay 2 JP to build Roads where you walk.",
+      "ko": "여행 점수 2점: 이번 턴 지나는 칸(바다 제외)에 도로. 이어진 도로는 이동력 1."
+    },
+    "trainer_ability.worker.2": {
+      "en": "Road Works",
+      "ko": "도로 공사"
+    },
+    "trainer_ability.worker.2.text": {
+      "en": "When your Steel-type Pokémon are switched in, increase the battle fatigue of the opposing Pokémon by 3 and prevent them from switching out or fleeing the battle.",
+      "ko": "내 강철 타입 포켓몬이 교체해 나오면, 상대 포켓몬의 전투 피로가 3 늘고 그 포켓몬은 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "trainer_ability.worker.2.short": {
+      "en": "Steel switch-in: foe +3 fatigue, can't escape.",
+      "ko": "내 강철 타입 포켓몬이 교체해 나오면 상대는 전투 피로 +3, 교체 · 도망 불가."
+    },
+    "trainer_ability.youngster.1": {
+      "en": "Childhood Friends",
+      "ko": "소꿉친구"
+    },
+    "trainer_ability.youngster.1.text": {
+      "en": "Your Weak Pokémon gain +1 health and +1 initiative.",
+      "ko": "내 약한 포켓몬은 체력 +1, 스피드 +1."
+    },
+    "trainer_ability.youngster.2": {
+      "en": "Career Options",
+      "ko": "진로 선택"
+    },
+    "trainer_ability.youngster.2.text": {
+      "en": "When unlocked, draw 5 trainer cards from the deck and swap this card with one of the drawn cards. Triggers the \"when unlocked\" effects on the new trainer card.",
+      "ko": "해금될 때 덱에서 트레이너 카드 5장을 뽑아, 이 카드를 뽑은 카드 1장과 바꿉니다. 새 트레이너 카드의 “해금될 때” 효과가 발동합니다."
+    },
+    "trainer_ability.youngster.2.short": {
+      "en": "Draw 5 trainer cards and swap to one.",
+      "ko": "해금될 때 트레이너 카드 5장을 뽑아 1장과 바꿉니다. 새 카드의 해금 효과도 발동."
+    },
+    "trainer_card.pearl_acolyte": {
+      "en": "Pearl Acolyte",
+      "ko": "진주 신도"
+    },
+    "trainer_card.platinum_acolyte": {
+      "en": "Platinum Acolyte",
+      "ko": "백금 신도"
+    },
+    "trainer_card.roller_skater": {
+      "en": "Roller Skater",
+      "ko": "롤러스케이트"
+    },
+    "trainer_card.scuba_diver": {
+      "en": "Scuba Diver",
+      "ko": "다이버"
+    },
+    "trainer_card.sky_trainer": {
+      "en": "Sky Trainer",
+      "ko": "스카이트레이너"
+    },
+    "trainer_card.team_aqua": {
+      "en": "Team Aqua",
+      "ko": "아쿠아단 조무래기"
+    },
+    "trainer_card.team_magma": {
+      "en": "Team Magma",
+      "ko": "마그마단 조무래기"
+    },
+    "trainer_card.team_rocket": {
+      "en": "Team Rocket",
+      "ko": "로켓단 조무래기"
+    },
+    "trainer_card.tourist": {
+      "en": "Tourist",
+      "ko": "투어객"
+    },
+    "trainer_card.triathlete": {
+      "en": "Triathlete",
+      "ko": "트라이애슬리트"
+    },
+    "trainer_card.undivided_acolyte": {
+      "en": "Undivided Acolyte",
+      "ko": "합일 신도"
+    }
+  }
+}

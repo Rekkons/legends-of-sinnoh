@@ -274,6 +274,24 @@ namespace Sinnoh.Tests.EditMode
             Assert.IsFalse(LegendRules.HasAlphaStrike(plain), "전설 특수기술이 없는 포켓몬");
         }
 
+        // 결정 195(11-21 「비스트 부스트나 알파스트라이크 있는 칸이면 빈칸으로 표시하지 마」): 빈 칸을 앞에서부터 알파 스트라이크 → 비스트 부스트가 차지한다(화면 표시 — 셈은 위와 같다)
+        [Test]
+        public void A26_빈기술칸은남은전설특수기술이앞에서부터차지한다_결정195()
+        {
+            var p = new PokemonState { Def = Card("479:1"), HasLegendaryMove = true };
+            Assert.AreEqual(LegendTactic.AlphaStrike, LegendRules.TacticAt(p, 0));
+            Assert.AreEqual(LegendTactic.BeastBoost, LegendRules.TacticAt(p, 1));
+            p.Moves[0] = Mv("splash");
+            Assert.AreEqual(LegendTactic.None, LegendRules.TacticAt(p, 0), "기술이 있는 칸");
+            Assert.AreEqual(LegendTactic.BeastBoost, LegendRules.TacticAt(p, 1), "알파 스트라이크는 덮였다 — 남은 빈 칸은 비스트 부스트");
+            p.Moves[0] = -1;
+            p.Breach[1] = 0;
+            Assert.AreEqual(LegendTactic.None, LegendRules.TacticAt(p, 1), "균열 카드가 막은 칸");
+            Assert.AreEqual(LegendTactic.BeastBoost, LegendRules.TacticAt(p, 0), "균열 카드도 기술처럼 덮는다(A52 ①)");
+            p.Breach[1] = -1;
+            Assert.AreEqual(LegendTactic.None, LegendRules.TacticAt(new PokemonState { Def = Card("479:1") }, 0), "전설 특수기술이 없는 포켓몬");
+        }
+
         [Test]
         public void A26_원칙AI는알파스트라이크를가장좋은타입으로고른다()
         {

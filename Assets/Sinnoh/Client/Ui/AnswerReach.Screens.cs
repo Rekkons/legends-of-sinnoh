@@ -16,7 +16,7 @@ namespace Sinnoh.Client
         static bool Screens(GameFlow flow, PendingChoice c, List<ChoiceAnswer> legal, Result r)
         {
             var client = flow.Client;
-            if (CardRewardScreen.Owns(c))
+            if (CardRewardScreen.Takes(flow, c))
             {
                 r.Where = "카드 보상 창";
                 if (!(flow.Stage.Current is CardRewardScreen reward) || !flow.BoardOpen) { r.NotReady = true; return true; }

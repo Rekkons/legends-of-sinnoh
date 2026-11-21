@@ -1,0 +1,758 @@
+{
+  "schema": 1,
+  "note": "결정 163 다시 번역 — 06-items-names-ui(아이템 이름 · 효과, 고정물 · 숨겨진 장소 이름, 폼 이름, 원작 언어 모듈 ui.*를 영문에서 새로 옮김). [가정] item.greater_ball · item.ultimate_ball: 공식 Great Ball · Ultra Ball과 이름이 다른 팬 아이템이라 그레이터볼 · 얼티밋볼(수퍼볼 · 하이퍼볼 아님). [가정] village.stark · nesburgh · sinnome: 본편 지명(무쇠시티 · 장막시티 · 꽃향기마을)과 다른 팬 마을 — 하드마을(하드마운틴 · region.stark_* 하드) · 네스버그마을 · 시노메마을(home_village.* 카드 이름과 맞출 것). [가정] item.*_artifact: 레전드 아르세우스 이름(큰금강옥 · 큰백옥 · 백금옥). [가정] pokemon 폼: 영문에 꼬리가 없는 유크시 · 엠라이트 · 아그놈 · 디아루가 · 펄기아 · 기라티나 · 울트라 비스트 10은 종 이름만. [가정] ui.*: 빌드가 ko 앞뒤 공백을 막아 자리 공백 · 끝 공백은 뺐다(지금 코드가 쓰지 않는 키). [가정] legendary_site.magma_chamber = 마그마의 방, temple_of_the_sea = 바다의 신전, hallowed_tower = 신령탑(Pt 공식), lake_*_cavern = ○○호수의 공동(Pt 공식), *_ruins = 유적. [가정] 다른 일감 이름: Apex Strength = 정점의 힘, Catch of the Day = 오늘의 월척, Celestial Aura = 천상의 오라, Landmark Tour = 랜드마크 투어, Amplifier = 앰프 주사위(트레이너 카드 글 Amplifier dice와 같게), Cherish Ball = 프레셔스볼(공식).",
+  "strings": {
+    "gate.deepmarsh_distortion": {
+      "en": "Deepmarsh Gate",
+      "ko": "깊은 늪 게이트"
+    },
+    "gate.deepmarsh_main": {
+      "en": "Deepmarsh Gate",
+      "ko": "깊은 늪 게이트"
+    },
+    "gate.lilly_distortion": {
+      "en": "Lilly Gate",
+      "ko": "릴리 게이트"
+    },
+    "gate.lilly_main": {
+      "en": "Lilly Gate",
+      "ko": "릴리 게이트"
+    },
+    "gate.snowdrift_distortion": {
+      "en": "Snowdrift Gate",
+      "ko": "눈더미 게이트"
+    },
+    "gate.snowdrift_main": {
+      "en": "Snowdrift Gate",
+      "ko": "눈더미 게이트"
+    },
+    "gate.westbreeze_distortion": {
+      "en": "Westbreeze Gate",
+      "ko": "서풍 게이트"
+    },
+    "gate.westbreeze_main": {
+      "en": "Westbreeze Gate",
+      "ko": "서풍 게이트"
+    },
+    "hidden_spot.black_apricorn_stash": {
+      "en": "Black Apricorn Stash",
+      "ko": "검정 규토리 더미"
+    },
+    "hidden_spot.blue_apricorn_stash": {
+      "en": "Blue Apricorn Stash",
+      "ko": "파랑 규토리 더미"
+    },
+    "hidden_spot.campsite": {
+      "en": "Campsite",
+      "ko": "야영지"
+    },
+    "hidden_spot.fallen_star": {
+      "en": "Fallen Star",
+      "ko": "떨어진 별"
+    },
+    "hidden_spot.green_apricorn_stash": {
+      "en": "Green Apricorn Stash",
+      "ko": "초록 규토리 더미"
+    },
+    "hidden_spot.pink_apricorn_stash": {
+      "en": "Pink Apricorn Stash",
+      "ko": "분홍 규토리 더미"
+    },
+    "hidden_spot.red_apricorn_stash": {
+      "en": "Red Apricorn Stash",
+      "ko": "빨강 규토리 더미"
+    },
+    "hidden_spot.white_apricorn_stash": {
+      "en": "White Apricorn Stash",
+      "ko": "하양 규토리 더미"
+    },
+    "hidden_spot.yellow_apricorn_stash": {
+      "en": "Yellow Apricorn Stash",
+      "ko": "노랑 규토리 더미"
+    },
+    "item.adamant_artifact": {
+      "en": "Adamant Artifact",
+      "ko": "큰금강옥"
+    },
+    "item.adamant_artifact.text": {
+      "en": "Prevents the effects of Celestial Aura when Dialga is encountered.",
+      "ko": "디아루가와 조우하면 천상의 오라가 걸리지 않습니다."
+    },
+    "item.alluring_stew": {
+      "en": "Alluring Stew",
+      "ko": "매혹적인 스튜"
+    },
+    "item.alluring_stew.text": {
+      "en": "Replace any 1 status symbol with 1 regular hit once during your next wild encounter.",
+      "ko": "다음 야생 배틀에서 한 번, 아무 상태 이상 심볼 1개를 일반 타격 1개로 바꿉니다."
+    },
+    "item.alpha_pokemon": {
+      "en": "Alpha Pokémon",
+      "ko": "우두머리 포켓몬"
+    },
+    "item.alpha_pokemon.text": {
+      "en": "Increases the health of the user by 4 and reclassifies it as a Legendary Pokémon (Alpha Strike · Beast Boost · capture on 6+ · 4 Journey Points). It is bound to the Pokémon and cannot be unequipped.",
+      "ko": "사용자의 체력이 4 늘고, 전설 포켓몬으로 분류됩니다(알파 스트라이크 · 비스트 부스트 · 6 이상이면 포획 · 여행 점수 4). 이 지닌물건은 그 포켓몬에게서 뗄 수 없습니다."
+    },
+    "item.amplifier": {
+      "en": "Amplifier",
+      "ko": "앰프 주사위"
+    },
+    "item.amplifier.text": {
+      "en": "A dice with faces 0, 1, 2, 3, 4 and 5.",
+      "ko": "면이 0 · 1 · 2 · 3 · 4 · 5인 주사위입니다."
+    },
+    "item.apex_dragon": {
+      "en": "Apex Dragon",
+      "ko": "정점의 드래곤"
+    },
+    "item.apex_dragon.text": {
+      "en": "Requires Apex Strength: The user gains +6 health, +2 initiative and +1 attack strength to its moves.",
+      "ko": "정점의 힘이 있을 때: 사용자의 체력 +6 · 스피드 +2 · 기술의 위력 +1."
+    },
+    "item.blast_crystal": {
+      "en": "Blast Crystal",
+      "ko": "폭발 수정"
+    },
+    "item.blast_crystal.text": {
+      "en": "Only on the first attack against the user, deal 1 damage to the attacker and prevent them from switching out this turn.",
+      "ko": "사용자가 처음 공격받을 때만, 공격한 포켓몬에게 데미지를 1 주고 그 포켓몬이 이번 턴에 교체하지 못하게 합니다."
+    },
+    "item.catch_size_dice": {
+      "en": "Catch Size Dice",
+      "ko": "월척 주사위"
+    },
+    "item.catch_size_dice.text": {
+      "en": "Requires Catch of the Day: The user gains health equal to their Catch Size.",
+      "ko": "오늘의 월척이 있을 때: 사용자의 체력이 월척 크기만큼 늘어납니다."
+    },
+    "item.cherish_ball": {
+      "en": "Cherish Ball",
+      "ko": "프레셔스볼"
+    },
+    "item.cherish_ball.text": {
+      "en": "When the Cherish Ball is used to capture a wild Pokémon, it automatically captures that Pokémon. Additionally, if you release the captured Pokémon, you get the Cherish Ball back. Flip over when the Pokémon faints.",
+      "ko": "프레셔스볼로 야생 포켓몬을 포획하려 하면 그 포켓몬은 무조건 포획됩니다. 또 그렇게 잡은 포켓몬을 놓아주면 프레셔스볼이 돌아옵니다. 그 포켓몬이 기절하면 뒤집습니다."
+    },
+    "item.choice_band": {
+      "en": "Choice Band",
+      "ko": "구애머리띠"
+    },
+    "item.choice_band.text": {
+      "en": "Increase the attack strength of a move by 1, but the user may only use this move until switched out.",
+      "ko": "기술 하나의 위력 +1. 하지만 교체될 때까지 사용자는 그 기술만 쓸 수 있습니다."
+    },
+    "item.eviolite": {
+      "en": "Eviolite",
+      "ko": "진화의휘석"
+    },
+    "item.eviolite.text": {
+      "en": "When the user is attacked, remove 2 regular hits. Only works on Weak/Moderate Pokémon or Pokémon that are not fully evolved.",
+      "ko": "사용자가 공격받으면 일반 타격을 2개 없앱니다. 약한 · 적당한 포켓몬이나 아직 끝까지 진화하지 않은 포켓몬에게만 효과가 있습니다."
+    },
+    "item.follower_of_arceus": {
+      "en": "Follower of Arceus",
+      "ko": "아르세우스의 추종자"
+    },
+    "item.follower_of_arceus.text": {
+      "en": "Follower token of Arceus.",
+      "ko": "아르세우스의 추종자 토큰입니다."
+    },
+    "item.gracidea_flower": {
+      "en": "Gracidea Flower",
+      "ko": "그라시데아꽃"
+    },
+    "item.gracidea_flower.text": {
+      "en": "Increase the attack strength of Grass and Flying type moves by 1. Lets you encounter Shaymin at the Garden of Gratitude.",
+      "ko": "풀 타입 기술과 비행 타입 기술의 위력 +1. 감사의 화원에서 쉐이미와 조우할 수 있습니다."
+    },
+    "item.greater_ball": {
+      "en": "Greater Ball",
+      "ko": "수퍼볼"
+    },
+    "item.greater_ball.text": {
+      "en": "Roll 4 dice when rolling to capture.",
+      "ko": "포획 굴림에서 주사위 4개를 굴립니다."
+    },
+    "item.griseous_artifact": {
+      "en": "Griseous Artifact",
+      "ko": "백금옥"
+    },
+    "item.griseous_artifact.text": {
+      "en": "Prevents the effects of Celestial Aura when Giratina is encountered.",
+      "ko": "기라티나와 조우하면 천상의 오라가 걸리지 않습니다."
+    },
+    "item.health_dice": {
+      "en": "Health Dice",
+      "ko": "체력 주사위"
+    },
+    "item.health_dice.text": {
+      "en": "A dice with faces -2, -1, 1, 2, 3 and 4 for tracking health bonuses.",
+      "ko": "면이 −2 · −1 · 1 · 2 · 3 · 4인 주사위로, 체력 보너스를 기록합니다."
+    },
+    "item.heart_of_sinnoh": {
+      "en": "Heart of Sinnoh",
+      "ko": "신오의 심장"
+    },
+    "item.heart_of_sinnoh.text": {
+      "en": "The restored Heart of Sinnoh. This held item is required to battle Cyrus.",
+      "ko": "복구된 신오의 심장입니다. 이 지닌물건이 있어야 태홍과 배틀할 수 있습니다."
+    },
+    "item.icesteel_core": {
+      "en": "Icesteel Core",
+      "ko": "얼음강철 코어"
+    },
+    "item.icesteel_core.text": {
+      "en": "Increases the attack strength of Ice and Steel type moves by 1. Lets you encounter Regice at Westbreeze Ruins and Registeel at Firelilly Ruins.",
+      "ko": "얼음 타입 기술과 강철 타입 기술의 위력 +1. 서풍 유적에서 레지아이스와, 파이어릴리 유적에서 레지스틸과 조우할 수 있습니다."
+    },
+    "item.infused_stew": {
+      "en": "Infused Stew",
+      "ko": "우러난 스튜"
+    },
+    "item.infused_stew.text": {
+      "en": "Discard only half of the Journey Points needed to evolve 1 Pokémon this turn, rounded down.",
+      "ko": "이번 턴에 포켓몬 1마리를 진화시킬 때 필요한 여행 점수의 절반(내림)만 소모합니다."
+    },
+    "item.initiative_dice": {
+      "en": "Initiative Dice",
+      "ko": "스피드 주사위"
+    },
+    "item.initiative_dice.text": {
+      "en": "A dice with faces -2, -1, 1, 2, 3 and 4 for tracking initiative bonuses.",
+      "ko": "면이 −2 · −1 · 1 · 2 · 3 · 4인 주사위로, 스피드 보너스를 기록합니다."
+    },
+    "item.keystone_ball": {
+      "en": "Keystone Ball",
+      "ko": "키스톤볼"
+    },
+    "item.keystone_ball.text": {
+      "en": "Roll 6 dice when rolling to capture.",
+      "ko": "포획 굴림에서 주사위 6개를 굴립니다."
+    },
+    "item.landmark_tour": {
+      "en": "Landmark Tour",
+      "ko": "랜드마크 투어"
+    },
+    "item.landmark_tour.text": {
+      "en": "Once at each Artifact Legendary Location, stamp it on your Landmark Tour sheet to search for the Legendary Pokémon there and make a clone of its card.",
+      "ko": "유물이 필요한 전설 장소마다 한 번, 랜드마크 투어 시트에 도장을 찍고 그곳의 전설 포켓몬을 찾아 그 카드의 복제본을 만듭니다."
+    },
+    "item.lucky_egg": {
+      "en": "Lucky Egg",
+      "ko": "행복의알"
+    },
+    "item.lucky_egg.text": {
+      "en": "When the user attacks, replace 2 status symbols with 1 critical hit if possible.",
+      "ko": "사용자의 공격에서 상태 이상 심볼이 2개 있으면 급소 1개로 바꿉니다."
+    },
+    "item.lustrous_artifact": {
+      "en": "Lustrous Artifact",
+      "ko": "큰백옥"
+    },
+    "item.lustrous_artifact.text": {
+      "en": "Prevents the effects of Celestial Aura when Palkia is encountered.",
+      "ko": "펄기아와 조우하면 천상의 오라가 걸리지 않습니다."
+    },
+    "item.magma_stone.text": {
+      "en": "Increase the attack strength of Fire and Ground type moves by 1. Lets you encounter Heatran at the Magma Chamber.",
+      "ko": "불꽃 타입 기술과 땅 타입 기술의 위력 +1. 마그마의 방에서 히드런과 조우할 수 있습니다."
+    },
+    "item.odd_keystone.text": {
+      "en": "Increase the attack strength of Dark and Ghost type moves by 1. Lets you encounter Spiritomb at the Hallowed Tower.",
+      "ko": "악 타입 기술과 고스트 타입 기술의 위력 +1. 신령탑에서 화강돌과 조우할 수 있습니다."
+    },
+    "item.poke_ball.text": {
+      "en": "Roll 3 dice when rolling to capture.",
+      "ko": "포획 굴림에서 주사위 3개를 굴립니다."
+    },
+    "item.restoring_stew": {
+      "en": "Restoring Stew",
+      "ko": "회복 스튜"
+    },
+    "item.restoring_stew.text": {
+      "en": "Fully restore your entire party.",
+      "ko": "내 파티의 포켓몬을 모두 완전히 회복합니다."
+    },
+    "item.rockice_core": {
+      "en": "Rockice Core",
+      "ko": "바위얼음 코어"
+    },
+    "item.rockice_core.text": {
+      "en": "Increases the attack strength of Rock and Ice type moves by 1. Lets you encounter Regirock at Valley Ruins and Regice at Westbreeze Ruins.",
+      "ko": "바위 타입 기술과 얼음 타입 기술의 위력 +1. 계곡 유적에서 레지락과, 서풍 유적에서 레지아이스와 조우할 수 있습니다."
+    },
+    "item.scroll_of_nobility": {
+      "en": "Scroll of Nobility",
+      "ko": "수호신의 두루마리"
+    },
+    "item.scroll_of_nobility.text": {
+      "en": "Allows any fully evolved Starter Pokémon to use its Noble Form (State 2) when held.",
+      "ko": "끝까지 진화한 스타팅 포켓몬이 지니면 수호신 폼(상태 2)으로 폼체인지할 수 있습니다."
+    },
+    "item.seafarer_egg": {
+      "en": "Seafarer Egg",
+      "ko": "항해자의 알"
+    },
+    "item.seafarer_egg.text": {
+      "en": "Increase the attack strength of Psychic and Water type moves by 1. Lets you encounter Manaphy at the Temple of the Sea.",
+      "ko": "에스퍼 타입 기술과 물 타입 기술의 위력 +1. 바다의 신전에서 마나피와 조우할 수 있습니다."
+    },
+    "item.secret_key": {
+      "en": "Secret Key",
+      "ko": "비밀의열쇠"
+    },
+    "item.secret_key.text": {
+      "en": "Increase the attack strength of Ghost and Electric type moves by 1. Lets you encounter Rotom at the Grand Chateau.",
+      "ko": "고스트 타입 기술과 전기 타입 기술의 위력 +1. 그랜드 샤토에서 로토무와 조우할 수 있습니다."
+    },
+    "item.star_shield": {
+      "en": "Star Shield",
+      "ko": "별의 방패"
+    },
+    "item.star_shield.text": {
+      "en": "Only on the first attack against the user, the user takes 2 less damage and is immune to any status effects inflicted this turn.",
+      "ko": "사용자가 처음 공격받을 때만, 그 공격의 데미지 −2. 또 이번 턴에는 어떤 상태 이상에도 걸리지 않습니다."
+    },
+    "item.steelrock_core": {
+      "en": "Steelrock Core",
+      "ko": "강철바위 코어"
+    },
+    "item.steelrock_core.text": {
+      "en": "Increases the attack strength of Steel and Rock type moves by 1. Lets you encounter Registeel at Firelilly Ruins and Regirock at Valley Ruins.",
+      "ko": "강철 타입 기술과 바위 타입 기술의 위력 +1. 파이어릴리 유적에서 레지스틸과, 계곡 유적에서 레지락과 조우할 수 있습니다."
+    },
+    "item.substitute.text": {
+      "en": "The user may be switched in from your party just before any damage is applied from an opposing attack.",
+      "ko": "상대 공격의 데미지가 들어가기 직전에 사용자가 파티에서 교체해 나올 수 있습니다."
+    },
+    "item.swiftness_sash": {
+      "en": "Swiftness Sash",
+      "ko": "신속의 띠"
+    },
+    "item.swiftness_sash.text": {
+      "en": "Increase the initiative of the user by 2 but decrease the attack strength of your moves by 1. Minimum 1 attack strength.",
+      "ko": "사용자의 스피드 +2. 하지만 기술의 위력 −1. 위력은 최소 1입니다."
+    },
+    "item.ultimate_ball": {
+      "en": "Ultimate Ball",
+      "ko": "하이퍼볼"
+    },
+    "item.ultimate_ball.text": {
+      "en": "Roll 5 dice when rolling to capture.",
+      "ko": "포획 굴림에서 주사위 5개를 굴립니다."
+    },
+    "item.weather_wheel": {
+      "en": "Weather Wheel",
+      "ko": "날씨 휠"
+    },
+    "item.weather_wheel.text": {
+      "en": "All moves that match the Weather type gain +2 attack strength.",
+      "ko": "날씨와 타입이 같은 기술은 모두 위력 +2."
+    },
+    "item.weather_wheel_base": {
+      "en": "Weather Wheel Base",
+      "ko": "날씨 휠 받침"
+    },
+    "item.weather_wheel_base.text": {
+      "en": "Base of the Weather Wheel: Sun (Fire), Snow (Ice), Rain (Water), Sandstorm (Rock).",
+      "ko": "날씨 휠의 받침입니다. 쾌청(불꽃) · 눈(얼음) · 비(물) · 모래바람(바위)."
+    },
+    "item.zesty_stew": {
+      "en": "Zesty Stew",
+      "ko": "자극적인 스튜"
+    },
+    "item.zesty_stew.text": {
+      "en": "Move 3 additional tiles this turn whilst preventing Alpha Pokémon from battling you.",
+      "ko": "이번 턴에는 3칸 더 이동할 수 있고, 우두머리 포켓몬이 배틀을 걸어오지 않습니다."
+    },
+    "legendary_shrine.colossus_shrine": {
+      "en": "Colossus Shrine",
+      "ko": "거상 사당"
+    },
+    "legendary_shrine.firesong_shrine": {
+      "en": "Firesong Shrine",
+      "ko": "불꽃노래 사당"
+    },
+    "legendary_shrine.frostsong_shrine": {
+      "en": "Frostsong Shrine",
+      "ko": "서리노래 사당"
+    },
+    "legendary_shrine.moonglade_shrine": {
+      "en": "Moonglade Shrine",
+      "ko": "달빛공터 사당"
+    },
+    "legendary_shrine.origin_shrine": {
+      "en": "Origin Shrine",
+      "ko": "시작의 사당"
+    },
+    "legendary_shrine.thundersong_shrine": {
+      "en": "Thundersong Shrine",
+      "ko": "천둥노래 사당"
+    },
+    "legendary_shrine.timeless_shrine": {
+      "en": "Timeless Shrine",
+      "ko": "시간의 사당"
+    },
+    "legendary_site.firelilly_ruins": {
+      "en": "Firelilly Ruins",
+      "ko": "파이어릴리 유적"
+    },
+    "legendary_site.garden_of_gratitude": {
+      "en": "The Garden of Gratitude",
+      "ko": "감사의 화원"
+    },
+    "legendary_site.grand_chateau": {
+      "en": "The Grand Chateau",
+      "ko": "그랜드 샤토"
+    },
+    "legendary_site.hallowed_tower": {
+      "en": "The Hallowed Tower",
+      "ko": "신령탑"
+    },
+    "legendary_site.lake_acuity_cavern": {
+      "en": "Lake Acuity Cavern",
+      "ko": "예지호수의 공동"
+    },
+    "legendary_site.lake_valor_cavern": {
+      "en": "Lake Valor Cavern",
+      "ko": "입지호수의 공동"
+    },
+    "legendary_site.lake_verity_cavern": {
+      "en": "Lake Verity Cavern",
+      "ko": "진실호수의 공동"
+    },
+    "legendary_site.magma_chamber": {
+      "en": "The Magma Chamber",
+      "ko": "마그마의 방"
+    },
+    "legendary_site.temple_of_sinnoh": {
+      "en": "The Temple of Sinnoh",
+      "ko": "신오신전"
+    },
+    "legendary_site.temple_of_the_sea": {
+      "en": "The Temple of the Sea",
+      "ko": "바다의 신전"
+    },
+    "legendary_site.valley_ruins": {
+      "en": "Valley Ruins",
+      "ko": "계곡 유적"
+    },
+    "legendary_site.westbreeze_ruins": {
+      "en": "Westbreeze Ruins",
+      "ko": "서풍 유적"
+    },
+    "pokemon.157:2": {
+      "en": "Typhlosion (Noble Form)",
+      "ko": "블레이범 (수호신 폼)"
+    },
+    "pokemon.26:2": {
+      "en": "Raichu (Noble Form)",
+      "ko": "라이츄 (수호신 폼)"
+    },
+    "pokemon.365:2": {
+      "en": "Walrein (Noble Form)",
+      "ko": "씨카이저 (수호신 폼)"
+    },
+    "pokemon.389:2": {
+      "en": "Torterra (Noble Form)",
+      "ko": "토대부기 (수호신 폼)"
+    },
+    "pokemon.392:2": {
+      "en": "Infernape (Noble Form)",
+      "ko": "초염몽 (수호신 폼)"
+    },
+    "pokemon.395:2": {
+      "en": "Empoleon (Noble Form)",
+      "ko": "엠페르트 (수호신 폼)"
+    },
+    "pokemon.398:2": {
+      "en": "Staraptor (Noble Form)",
+      "ko": "찌르호크 (수호신 폼)"
+    },
+    "pokemon.405:2": {
+      "en": "Luxray (Noble Form)",
+      "ko": "렌트라 (수호신 폼)"
+    },
+    "pokemon.407:2": {
+      "en": "Roserade (Noble Form)",
+      "ko": "로즈레이드 (수호신 폼)"
+    },
+    "pokemon.468:2": {
+      "en": "Togekiss (Noble Form)",
+      "ko": "토게키스 (수호신 폼)"
+    },
+    "pokemon.473:2": {
+      "en": "Mamoswine (Noble Form)",
+      "ko": "맘모꾸리 (수호신 폼)"
+    },
+    "pokemon.474:2": {
+      "en": "Porygon-Z (Noble Form)",
+      "ko": "폴리곤Z (수호신 폼)"
+    },
+    "pokemon.477:2": {
+      "en": "Dusknoir (Noble Form)",
+      "ko": "야느와르몽 (수호신 폼)"
+    },
+    "pokemon.480:0": {
+      "en": "Uxie",
+      "ko": "유크시"
+    },
+    "pokemon.481:0": {
+      "en": "Mesprit",
+      "ko": "엠라이트"
+    },
+    "pokemon.482:0": {
+      "en": "Azelf",
+      "ko": "아그놈"
+    },
+    "pokemon.483:1": {
+      "en": "Dialga",
+      "ko": "디아루가"
+    },
+    "pokemon.484:1": {
+      "en": "Palkia",
+      "ko": "펄기아"
+    },
+    "pokemon.487:1": {
+      "en": "Giratina",
+      "ko": "기라티나"
+    },
+    "pokemon.503:2": {
+      "en": "Samurott (Noble Form)",
+      "ko": "대검귀 (수호신 폼)"
+    },
+    "pokemon.609:2": {
+      "en": "Chandelure (Noble Form)",
+      "ko": "샹델라 (수호신 폼)"
+    },
+    "pokemon.68:2": {
+      "en": "Machamp (Noble Form)",
+      "ko": "괴력몬 (수호신 폼)"
+    },
+    "pokemon.724:2": {
+      "en": "Decidueye (Noble Form)",
+      "ko": "모크나이퍼 (수호신 폼)"
+    },
+    "pokemon.793:0": {
+      "en": "Nihilego",
+      "ko": "텅비드"
+    },
+    "pokemon.794:0": {
+      "en": "Buzzwole",
+      "ko": "매시붕"
+    },
+    "pokemon.795:0": {
+      "en": "Pheromosa",
+      "ko": "페로코체"
+    },
+    "pokemon.796:0": {
+      "en": "Xurkitree",
+      "ko": "전수목"
+    },
+    "pokemon.797:0": {
+      "en": "Celesteela",
+      "ko": "철화구야"
+    },
+    "pokemon.798:0": {
+      "en": "Kartana",
+      "ko": "종이신도"
+    },
+    "pokemon.799:0": {
+      "en": "Guzzlord",
+      "ko": "악식킹"
+    },
+    "pokemon.804:2": {
+      "en": "Naganadel (Noble Form)",
+      "ko": "아고용 (수호신 폼)"
+    },
+    "pokemon.805:0": {
+      "en": "Stakataka",
+      "ko": "차곡차곡"
+    },
+    "pokemon.806:0": {
+      "en": "Blacephalon",
+      "ko": "두파팡"
+    },
+    "ui.arena_dice_roller.DICE_BUTTON_LABEL": {
+      "en": " Dice",
+      "ko": "개"
+    },
+    "ui.arena_dice_roller.DICE_BUTTON_TOOLTIP": {
+      "en": "Toggle Attack Strength",
+      "ko": "위력 전환"
+    },
+    "ui.arena_dice_roller.FATIGUED_TOOLTIP": {
+      "en": "Fatigued: Take 3 damage after each roll",
+      "ko": "전투 피로: 굴릴 때마다 데미지를 3 입습니다."
+    },
+    "ui.arena_dice_roller.ROLL_BUTTON_LABEL": {
+      "en": "Roll",
+      "ko": "굴리기"
+    },
+    "ui.arena_dice_roller.TYPE_BUTTON_TOOLTIP": {
+      "en": "Toggle Attack Type",
+      "ko": "공격 타입 전환"
+    },
+    "ui.arena_dice_roller.TYPE_RANGE_BUTTON_TOOLTIP": {
+      "en": "Toggle All Types",
+      "ko": "전체 타입 전환"
+    },
+    "ui.errors.MISSING_DATA_DESCRIPTION": {
+      "en": "Internal data for this card has been deleted. It can no longer be used in the arena. Try rewinding time.",
+      "ko": "이 카드의 내부 데이터가 지워져 더는 투기장에서 쓸 수 없습니다. 되돌리기를 해 보십시오."
+    },
+    "ui.errors.MISSING_DATA_NAME": {
+      "en": "Missing Data",
+      "ko": "데이터 없음"
+    },
+    "ui.music_box.BACK_BUTTON_TOOLTIP": {
+      "en": "Back",
+      "ko": "이전 곡"
+    },
+    "ui.music_box.BATTLE_LABEL": {
+      "en": "Battle! ",
+      "ko": "배틀!"
+    },
+    "ui.music_box.FORWARD_BUTTON_TOOLTIP": {
+      "en": "Forward",
+      "ko": "다음 곡"
+    },
+    "ui.music_box.NOW_PLAYING_LABEL": {
+      "en": "Now Playing: ",
+      "ko": "재생 중:"
+    },
+    "ui.music_box.OFFLINE_LABEL": {
+      "en": "Music Box",
+      "ko": "뮤직 박스"
+    },
+    "ui.music_box.PAUSE_BUTTON_TOOLTIP": {
+      "en": "Pause",
+      "ko": "일시 정지"
+    },
+    "ui.music_box.PLAY_BUTTON_TOOLTIP": {
+      "en": "Play",
+      "ko": "재생"
+    },
+    "ui.music_box.REPEAT_BUTTON_TOOLTIP": {
+      "en": "Toggle Repeat",
+      "ko": "반복 재생"
+    },
+    "ui.music_box.SHUFFLE_BUTTON_TOOLTIP": {
+      "en": "Toggle Shuffle",
+      "ko": "무작위 재생"
+    },
+    "ui.pokedex.BATTLE_BUTTON_LABEL": {
+      "en": "Battle!",
+      "ko": "배틀!"
+    },
+    "ui.pokedex.CLOSE_BUTTON_LABEL": {
+      "en": "Close Pokédex",
+      "ko": "도감 닫기"
+    },
+    "ui.pokedex.EMPTY_SLOT_MESSAGE": {
+      "en": "The arena needs an empty slot.",
+      "ko": "투기장에 빈자리가 있어야 합니다."
+    },
+    "ui.pokedex.EVOLVE_BUTTON_LABEL": {
+      "en": "Evolve",
+      "ko": "진화"
+    },
+    "ui.pokedex.EVOLVE_INVALID_MESSAGE": {
+      "en": "This Pokémon does not evolve.",
+      "ko": "진화하지 않는 포켓몬입니다."
+    },
+    "ui.pokedex.EVOLVE_NOT_FOUND_MESSAGE": {
+      "en": " evolution card not found in the evolution deck.",
+      "ko": "의 진화 카드가 진화 포켓몬 덱에 없습니다."
+    },
+    "ui.pokedex.EVOLVE_RETURN_MESSAGE": {
+      "en": "Return the currently searched Pokémon.",
+      "ko": "지금 찾아본 포켓몬을 돌려놓으십시오."
+    },
+    "ui.pokedex.EVOLVE_SLOT_MESSAGE": {
+      "en": "Place a Pokémon in the slot above.",
+      "ko": "위 칸에 포켓몬을 놓으십시오."
+    },
+    "ui.pokedex.OPEN_BUTTON_LABEL": {
+      "en": "Open Pokédex",
+      "ko": "도감 열기"
+    },
+    "ui.pokedex.RETURN_ALREADY_RUNNING_MESSAGE": {
+      "en": "Return cards method currently running (if it is not, reloading the game should fix it).",
+      "ko": "카드를 돌려놓는 중입니다(멈춘 것 같으면 게임을 다시 불러오면 됩니다)."
+    },
+    "ui.pokedex.RETURN_BUTTON_LABEL": {
+      "en": "Return",
+      "ko": "돌려놓기"
+    },
+    "ui.pokedex.SEARCH_BUTTON_LABEL": {
+      "en": "Search",
+      "ko": "찾아보기"
+    },
+    "ui.pokedex.SEARCH_NOT_ON_ENCOUNTER_MESSAGE": {
+      "en": " trainer token not on an encounter token.",
+      "ko": "의 트레이너 토큰이 조우 토큰 위에 없습니다."
+    },
+    "ui.pokedex.SEARCH_OUT_OF_POKEMON_MESSAGE": {
+      "en": "Out of Pokémon for this biome, climate and encounter tier. You may claim any Apricorns here but your turn ends.",
+      "ko": "이 지형 · 기후 · 조우 등급의 포켓몬이 다 떨어졌습니다. 여기 있는 규토리는 가져갈 수 있지만 턴이 종료됩니다."
+    },
+    "ui.setup_panel.HOS_CAMPAIGN_LABEL": {
+      "en": "Heart of Sinnoh Campaign",
+      "ko": "신오의 심장 캠페인"
+    },
+    "ui.setup_panel.START_GAME_LABEL": {
+      "en": "Start Game",
+      "ko": "게임 시작"
+    },
+    "ui.setup_panel.UB_CAMPAIGN_LABEL": {
+      "en": "Ultra Burst Campaign",
+      "ko": "울트라 버스트 캠페인"
+    },
+    "ui.teleport.TELEPORT_BUTTON_TOOLTIP": {
+      "en": "Teleport Here",
+      "ko": "여기로 순간이동"
+    },
+    "ui.tooltips.FLIP": {
+      "en": "Flip",
+      "ko": "뒤집기"
+    },
+    "ui.ub_control_panel.ALREADY_MOVING_MESSAGE": {
+      "en": "Ultra Beasts already moving.",
+      "ko": "울트라 비스트가 이미 이동 중입니다."
+    },
+    "ui.ub_control_panel.BREACH_STRENGTH_INCREASES_MESSAGE": {
+      "en": "The breach is growing stronger",
+      "ko": "균열이 점점 강해지고 있습니다."
+    },
+    "ui.ub_control_panel.BREACH_STRENGTH_TOOLTIP": {
+      "en": "Move Ultra Beasts",
+      "ko": "울트라 비스트 이동"
+    },
+    "ui.village.ALREADY_FLYING_MESSAGE": {
+      "en": "Someone is already flying (if they are not, reloading the game should fix it).",
+      "ko": "누군가 이미 날아가는 중입니다(아무도 날고 있지 않다면 게임을 다시 불러오면 됩니다)."
+    },
+    "ui.village.FLY_BUTTON_TOOLTIP_1": {
+      "en": "Fly to ",
+      "ko": "공중날기"
+    },
+    "ui.village.FLY_BUTTON_TOOLTIP_2": {
+      "en": "[Costs 1 Apricorn]",
+      "ko": "[규토리 1개 소모]"
+    },
+    "village.nesburgh": {
+      "en": "Nesburgh Village",
+      "ko": "네스버그마을"
+    },
+    "village.sinnome": {
+      "en": "Sinnome Village",
+      "ko": "시노메마을"
+    },
+    "village.stark": {
+      "en": "Stark Village",
+      "ko": "하드마을"
+    }
+  }
+}

@@ -236,8 +236,14 @@ namespace Sinnoh.Fx
         /// <summary>UB · 네크로즈마가 나무 · 산호 · 사당을 부숨(83행 — 결정 147 ①, 원작 자산 DP_W088 바위 던짐). 칸 파괴에만 쓴다 — VS 「!」 · 시련 막 깨짐은 <see cref="Bang"/> 그대로.</summary>
         public const string Destroy = "destroy";
 
+        /// <summary>공중날기 앞 비전기술 컷인의 휙 소리(16행 — 결정 167, 원작 자산 DP_FW019 = pret hm_cut_in.c가 띠를 걷으며 내는 소리 [가정 — 후보는 듣기 폴더]).</summary>
+        public const string FlyCutin = "fly_cutin";
+
+        /// <summary>사당 공물 빛기둥(310 — 결정 174, 원작 자산 DP_W361 힐링 위시 1.84초 [가정 — 후보는 듣기 폴더]). 옛에는 <see cref="Heal"/>을 같이 썼다.</summary>
+        public const string ShrineLight = "shrine_light";
+
         public static readonly string[] All = { Select, Decide, Cancel, Land, Hit, BallThrow, BallOpen, BallShake, Capture, CardFlip, Dice, MyTurn, DiceRoll, Faint, Bang, Wipe, ActCard, Heal, Band, Token, Meet,
-            Ping, Emote, Mark, Timer, Warp, Shine, Stamp, Coin, Exp, Flee, Fall, Center, Evolve, Fanfare, Trade, Search, SearchReef, Destroy };
+            Ping, Emote, Mark, Timer, Warp, Shine, Stamp, Coin, Exp, Flee, Fall, Center, Evolve, Fanfare, Trade, Search, SearchReef, Destroy, FlyCutin, ShrineLight };
 
         /// <summary>
         /// 울음(소리 표의 층 <see cref="SoundLayer.Cry"/> — 효과음 표가 아니라 울음 표 <see cref="CryBook"/>, 결정 67 ① PokeAPI): 표 칸의 값은 <see cref="Cry"/>(그대로) · <see cref="CryLow"/>(기절 — 낮춰서).

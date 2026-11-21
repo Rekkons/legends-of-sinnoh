@@ -10,7 +10,7 @@ namespace Sinnoh.Client
     /// 이동 표시(04 §3-4 S19, §8-8 10행): 갈 수 있는 칸 · 마우스를 올린 칸까지의 경로 · 그 칸을 칸 윗면 위에 눕힌 육각형으로 칠한다.
     /// 어느 칸을 칠할지는 화면(<see cref="BoardHud"/>)이 엔진의 합법 답으로 정한다 — 여기는 그리기만 한다.
     /// 고정물 아이콘과 같은 셰이더(빛 없음 · 알파 섞기 · 깊이는 견주기만)에 흰 그림 + 색을 쓴다. 물 칸(투명 대기열) 위에도 보이게 그 뒤에 그린다.
-    /// 메시 하나(부분 일곱: 갈 수 있는 칸 / 경로 / 마우스를 올린 칸 / 고른 칸의 테두리 / 경유 칸의 테두리 / 길 위 숨겨진 장소 표지 / 흐린 칸)를 바뀔 때마다 다시 짠다(많아야 수십 칸).
+    /// 메시 하나(부분 여덟: 갈 수 있는 칸 / 경로 / 마우스를 올린 칸 / 고른 칸의 테두리 / 경유 칸의 테두리 / 길 위 숨겨진 장소 표지 / 흐린 칸 / 고른 길 칸의 파란 테두리)를 바뀔 때마다 다시 짠다(많아야 수십 칸).
     /// </summary>
     public sealed class BoardMarks : MonoBehaviour
     {
@@ -47,8 +47,14 @@ namespace Sinnoh.Client
         /// <summary>T18 ① 공중날기 목적지를 보드에서 고르는 동안 갈 수 없는 마을 · 야영지를 흐리게 덮는 칠 [가정 #675].</summary>
         public static readonly Color DimColor = new Color(0f, 0f, 0f, 0.5f);
 
-        readonly List<int> reach = new List<int>(), path = new List<int>(), vias = new List<int>(), stops = new List<int>(), dims = new List<int>();
-        readonly Material[] materials = new Material[7];
+        /// <summary>
+        /// 결정 168 고른 길(걷기 전 확인 — 붙든 칸까지)의 칸마다 파란 육각 테두리: 출발 칸 · 고른 칸(금색) · 경유 칸(흰색)을 뺀 사이 칸. 자리 · 굵기는 고른 칸 테두리와 같다 [가정 꼴 — 색은 캡처로 맞춤].
+        /// 길 위 숨겨진 장소의 하늘색 고리(안쪽)와 가르도록 짙은 파랑.
+        /// </summary>
+        public static readonly Color TrailColor = new Color(0.22f, 0.45f, 1f, 1f);
+
+        readonly List<int> reach = new List<int>(), path = new List<int>(), vias = new List<int>(), stops = new List<int>(), dims = new List<int>(), trail = new List<int>();
+        readonly Material[] materials = new Material[8];
         Board board;
         IReadOnlyList<CellLook> looks;
         Mesh mesh;
@@ -66,6 +72,8 @@ namespace Sinnoh.Client
         public IReadOnlyList<int> Stops => stops;
         /// <summary>지금 흐리게 덮은 칸(T18 ① 갈 수 없는 마을 · 야영지).</summary>
         public IReadOnlyList<int> Dims => dims;
+        /// <summary>지금 파란 테두리로 그린 고른 길의 칸(결정 168 — 붙든 칸이 있을 때만).</summary>
+        public IReadOnlyList<int> Trail => trail;
         /// <summary>고른 칸을 테두리로 그렸나(붙든 칸 — 걷기 전 확인). 마우스를 올린 칸이면 false(금색 칠).</summary>
         public bool Held { get; private set; }
         public bool Visible => meshRenderer != null && meshRenderer.enabled;
@@ -79,7 +87,7 @@ namespace Sinnoh.Client
             meshRenderer = gameObject.AddComponent<MeshRenderer>();
             meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             meshRenderer.receiveShadows = false;
-            var colors = new[] { ReachColor, PathColor, TargetColor, RingColor, ViaColor, SpotColor, DimColor };
+            var colors = new[] { ReachColor, PathColor, TargetColor, RingColor, ViaColor, SpotColor, DimColor, TrailColor };
             for (int i = 0; i < materials.Length; i++)
             {
                 materials[i] = new Material(shader) { name = "Marks " + i, hideFlags = HideFlags.DontSave, renderQueue = Queue };
@@ -117,9 +125,13 @@ namespace Sinnoh.Client
             if (dim != null) dims.AddRange(dim);
             Target = target;
             Held = held;
+            trail.Clear();
+            if (held)
+                foreach (int c in path)
+                    if (c != target && !vias.Contains(c)) trail.Add(c);
             var v = new List<Vector3>();
             var uv = new List<Vector2>();
-            var tris = new[] { new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+            var tris = new[] { new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>() };
             foreach (int c in reach)
                 if (c != target && !path.Contains(c)) Hex(v, uv, tris[0], c);
             foreach (int c in path) Hex(v, uv, tris[1], c);
@@ -131,6 +143,7 @@ namespace Sinnoh.Client
             else if (target >= 0) Hex(v, uv, tris[2], target);
             foreach (int c in vias)
                 if (c != target) Ring(v, uv, tris[4], c, 1f, RingInner);
+            foreach (int c in trail) Ring(v, uv, tris[7], c, 1f, RingInner);
             foreach (int c in stops) Ring(v, uv, tris[5], c, SpotOuter, SpotInner);
             foreach (int c in dims) Hex(v, uv, tris[6], c);
             mesh.Clear();
@@ -159,6 +172,7 @@ namespace Sinnoh.Client
             vias.Clear();
             stops.Clear();
             dims.Clear();
+            trail.Clear();
             Target = -1;
             Held = false;
             mesh.Clear();
@@ -226,6 +240,7 @@ namespace Sinnoh.Client
             vias.Clear();
             stops.Clear();
             dims.Clear();
+            trail.Clear();
             Target = -1;
             Held = false;
         }

@@ -174,6 +174,19 @@ namespace Sinnoh.Tests.PlayMode
                 var types = new List<int>();
                 foreach (var t in ctx.Cards.Pokemon[rotom].LearnTypes) if (!types.Contains((int)t)) types.Add((int)t);
                 Assert.That(battle.AlphaTypes.Count, Is.EqualTo(types.Count), "배울 수 있는 타입마다 한 줄");
+                // 결정 199 ②: 줄마다 표 상성 배지 — 0이면 「±0」
+                {
+                    var foeTypes = ctx.Cards.Pokemon[flow.Client.View.Pokemon[flow.Client.View.Battle.Sides[1 - flow.Battle.MySide].Active].Def].Types;
+                    for (int i = 0; i < battle.AlphaTypes.Count; i++)
+                    {
+                        var t = (PokemonType)battle.AlphaTypes[i].Values[0];
+                        if (t == PokemonType.Typeless) continue;
+                        int bonus = TypeChart.Bonus(t, foeTypes[0], foeTypes.Count > 1 ? foeTypes[1] : PokemonType.Typeless);
+                        string want = bonus == 0 ? BattleScreen.Even : bonus > 0 ? "+" + bonus : "−" + (-bonus);
+                        var labels = stage.Root.Q("battle-alpha-" + (i + 1)).Query<Label>().ToList();
+                        Assert.That(labels.Exists(l => l.text == want), Is.True, t + ": 상성 배지 「" + want + "」");
+                    }
+                }
                 for (int i = 0; i < 3; i++) yield return null;
                 bad = WorkUi.Overflows(stage.Root.Q("battle-moves"));
                 Assert.That(bad, Is.Empty, "타입 줄: " + string.Join(" / ", bad));
@@ -285,5 +298,140 @@ namespace Sinnoh.Tests.PlayMode
         }
 
         static BoardBoot rig(ScreenBoot boot) => Object.FindAnyObjectByType<BoardBoot>();
+
+        [UnityTest]
+        public IEnumerator M10_결정184_비스트부스트가쌓이면도트둘레에빛알갱이가터지고_쌓인동안오르고_쓰면지워진다()
+        {
+            var errors = new List<string>();
+            void Grab(string msg, string stack, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) errors.Add(type + ": " + msg);
+            }
+            Application.logMessageReceived += Grab;
+            RenderTexture rt = null;
+            try
+            {
+                yield return Open();
+                var boot = Object.FindAnyObjectByType<ScreenBoot>();
+                Assert.That(boot, Is.Not.Null, "씬에 ScreenBoot 없음");
+                Assert.That(boot.Root, Is.Not.Null, "화면 뿌리 없음(Gen 글꼴·창틀 — rebuild-all)");
+                boot.PointerFromMouse = false;
+                rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                rt.Create();
+                boot.Root.SetTarget(rt);
+                var flow = boot.Flow;
+                var stage = boot.Root.Stage;
+                var ctx = flow.Ctx;
+                // UiShots row-76-boost와 같은 판: 전설 특수기술을 가진 디아루가(화염방사 하나 — 알파 스트라이크는 덮이고 비스트 부스트는 남는다)가 고향 마을의 조무래기에게 도전
+                int dialga = ctx.Cards.PokemonIds.IndexOf("483:2"), palkia = ctx.Cards.PokemonIds.IndexOf("484:2"), fire = ctx.Cards.MoveIds.IndexOf("flamethrower");
+                int mine = -1;
+                flow.StartSeats(new SoloSettings(), 1, Seed, AiSeed, state =>
+                {
+                    var st = state.Seats[0];
+                    int starter = st.Party[0];
+                    st.OpenSlots = st.Party.Length;
+                    st.Party[0] = mine = PokemonRules.Spawn(state, dialga, 0, (int)DeckId.Legendary);
+                    st.Party[1] = PokemonRules.Spawn(state, palkia, 0, (int)DeckId.Legendary);
+                    st.Party[2] = starter;
+                    state.Pokemon[mine].HasLegendaryMove = true;
+                    state.Pokemon[mine].Moves[0] = fire;
+                });
+                yield return null;
+                flow.Skip(flow.OpeningMs);
+                Wait(flow);
+                Assert.That(flow.Hud.Press(BoardHud.Challenge), Is.True, "[도전]");
+                BattleScreen battle = null;
+                FxStep boost = null;
+                bool checkedNone = false;
+                for (int guard = 0; guard < 600 && boost == null; guard++)
+                {
+                    battle = stage.Current as BattleScreen;
+                    foreach (var entry in flow.Fx.Sequencer.Queued) boost = boost ?? BoostMotes.StepOf(entry, mine);
+                    if (boost != null) break;
+                    if (battle != null && battle.Open)
+                    {
+                        if (battle.AskingToken) battle.PressToken(true);
+                        else if (battle.AskingOrder) battle.PressOrder(0);
+                        else if (battle.AskingFate) battle.PressFatePass();
+                        else if (battle.AskingAsk) battle.PressAsk(false);
+                        else if (battle.Bench.Count > 0) { if (!battle.PressStay()) battle.PressBench(0); }
+                        else if (battle.Moves.Count > 0)
+                        {
+                            if (!checkedNone)
+                            {
+                                stage.Tweens.Advance(0);
+                                Assert.That(battle.PlayerMotes + battle.EnemyMotes, Is.EqualTo(0), "쌓인 비스트 부스트가 없으면 알갱이도 없다");
+                                checkedNone = true;
+                            }
+                            int row = 0;
+                            for (int i = 0; i < battle.Moves.Count; i++) if (battle.Moves[i].Target == fire) row = i;
+                            battle.PressMove(row);
+                        }
+                    }
+                    flow.Skip(250);
+                    if (guard % 4 == 0) yield return null;
+                }
+                Assert.That(boost, Is.Not.Null, "조무래기 포켓몬이 쓰러져 비스트 부스트가 쌓인다(641)");
+                Assert.That(checkedNone, Is.True);
+                flow.Skip(flow.MsUntil(st => ReferenceEquals(st, boost)) + 100);
+                stage.Tweens.Advance(0);
+                battle = (BattleScreen)stage.Current;
+                Assert.That(battle.PlayerMotes, Is.EqualTo(BoostMotes.BurstCount), "쌓이는 순간: 한 번 터진다");
+                Assert.That(battle.Painted.Over, Is.Not.Null.And.Not.Empty, "DS 장면의 알갱이");
+                // 단계가 끝난 뒤 내 차례: 쌓여 있는 동안 오르는 알갱이
+                bool myTurn = false;
+                for (int guard = 0; guard < 200 && !myTurn; guard++)
+                {
+                    myTurn = battle.Open && battle.Moves.Count > 0 && !battle.AskingToken && !battle.AskingOrder && !battle.AskingFate && !battle.AskingAsk && battle.Bench.Count == 0;
+                    if (myTurn) break;
+                    if (battle.Open)
+                    {
+                        if (battle.AskingToken) battle.PressToken(true);
+                        else if (battle.AskingOrder) battle.PressOrder(0);
+                        else if (battle.AskingFate) battle.PressFatePass();
+                        else if (battle.AskingAsk) battle.PressAsk(false);
+                        else if (battle.Bench.Count > 0) battle.PressStay();   // 「그대로 싸운다」(교체하면 쌓인 것이 사라진다)
+                    }
+                    flow.Skip(200);
+                    if (guard % 5 == 0) yield return null;
+                }
+                Assert.That(myTurn, Is.True, "쌓인 뒤 내 차례(" + (battle.Open ? "열림" : "닫힘") + " · 기술 " + battle.Moves.Count + " · 대기 " + battle.Bench.Count + ")");
+                stage.Tweens.Advance(0);
+                var side = flow.Client.View.Battle.Sides[flow.Battle.MySide];
+                Assert.That(side.Active, Is.EqualTo(mine));
+                Assert.That(side.BeastBoost, Is.GreaterThan(0), "쌓여 있다");
+                Assert.That(battle.PlayerMotes, Is.InRange(BoostMotes.StayBase, BoostMotes.StayMax), "쌓여 있는 동안: 오르는 알갱이");
+                Assert.That(battle.EnemyMotes, Is.EqualTo(0), "상대 쪽은 없다");
+                // 다음 공격에 쓰면(보기에서 0) 지워진다
+                bool pressed = false;
+                for (int guard = 0; guard < 40 && !pressed; guard++)
+                {
+                    int r = 0;
+                    for (int i = 0; i < battle.Moves.Count; i++) if (battle.Moves[i].Target == fire) r = i;
+                    pressed = battle.Moves.Count > 0 && battle.PressMove(r);   // 클릭 막기가 풀릴 때까지(화염방사가 막혔으면 다른 공격 기술 — 쌓인 것은 어느 공격에든 쓰인다)
+                    for (int i = 0; i < battle.Moves.Count && !pressed; i++) if (battle.Moves[i].Target != BattleRules.AlphaStrike) pressed = battle.PressMove(i);
+                    if (!pressed) { flow.Skip(100); yield return null; }
+                }
+                Assert.That(pressed, Is.True, "공격 기술(" + (battle.Open ? "열림" : "닫힘") + " · 기술 " + battle.Moves.Count + " · 준비 " + battle.Ready + ")");
+                flow.Skip(300);
+                stage.Tweens.Advance(0);
+                yield return null;
+                var now = flow.Client.View.Battle;
+                int left = now != null ? now.Sides[flow.Battle.MySide].BeastBoost : 0;
+                if (left == 0) Assert.That(battle.PlayerMotes, Is.EqualTo(0), "쓴 뒤에는 오르는 알갱이가 없다");
+                Assert.That(errors, Is.Empty, "에러 로그: " + string.Join(" | ", errors));
+            }
+            finally
+            {
+                Application.logMessageReceived -= Grab;
+                var shut = Object.FindAnyObjectByType<ScreenBoot>();
+                if (shut != null && shut.Root != null) shut.Root.SetTarget(null);
+                if (rt != null)
+                {
+                    rt.Release();
+                    Object.Destroy(rt);
+                }
+            }
+        }
     }
 }

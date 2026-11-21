@@ -38,7 +38,7 @@ namespace Sinnoh.Client
         readonly List<int> backs = new List<int>();   // 풀의 기술 카드마다 앞면 포켓몬 카드(카드 표 색인 — 모르면 −1, T30)
         readonly List<DeckId> backDecks = new List<DeckId>();   // 그 카드를 뽑은 덱(등급 — 스탬프 보상은 약함 · 보통 · 강함 덱, 스냅은 전설)
         UiStage stage;
-        VisualElement page, cols, poolBox, bagBox, ask;
+        VisualElement page, cols, poolBox, bagBox, ask, panelBox, recipes;
         Label guide;
         VisualElement ghost;
         // 끌어 놓기: 누른 자리·누른 것(문턱을 넘으면 끌기가 된다) · 놓을 수 있는 칸(다시 그릴 때마다 — 빛나는 칸과 같다)
@@ -145,6 +145,12 @@ namespace Sinnoh.Client
             var titleText = Add(head, Kit.Text(KoJosa.Fix(stage.T(Mine ? "screen.party.title.mine" : watching ? (WorkRows.Gift(MaintStep()) ? "screen.party.title.gift" : "screen.party.title.watch") : "screen.party.title.other").Replace("{name}", flow.SeatName(Seat))), Kit.FTitle), "board-party-title", "kit-title");
             if (!Mine) FaceBox.Owner(flow, Seat, titleText);
             guide = Add(head, Kit.Text("", Kit.F2), "board-party-guide", "sn-party-guide");
+            panelBox = panel;
+            if (Mine && !watching)   // 조합표(결정 191): 내 판이면 보드 · 배틀 중 언제든 — 다시 누르면 닫힌다(결정 176)
+            {
+                var book = Add(head, Kit.Button(stage.T("screen.party.recipes"), KitButtonKind.Normal, ToggleRecipes), "board-party-recipes-button", null);
+                stage.Tips.Hook(book, null, stage.T("screen.party.recipes.tip"), TipSide.Below, reading: true);
+            }
             // 배틀 화면 위에 연 판(배틀 독의 [정비])이면 닫기 = 「← 배틀로」(용어표)
             Add(head, Kit.Button(stage.T(flow.Stage.Current is BattleScreen ? "screen.party.close.battle" : "screen.party.close"), KitButtonKind.Main, () => { if (watching) flow.CloseWatch(); else flow.CloseParty(); }), "board-party-close", null);
             cols = Add(panel, new VisualElement(), "board-party-cols", "sn-party-cols");
@@ -175,6 +181,42 @@ namespace Sinnoh.Client
             ghost = null;
             abil = null;
             page = null;
+            panelBox = recipes = null;
+            RecipeCount = 0;
+        }
+
+        // ── 조합표(결정 191): 판 위에 덮는 보기 창 — 제작 창의 레시피 줄(그림 · 이름 · 재료)을 보기 전용으로, 효과는 마우스 오버 ──
+
+        /// <summary>조합표가 열려 있나 · 그 줄 수(확인용).</summary>
+        public bool RecipesOpen => recipes != null;
+        public int RecipeCount { get; private set; }
+
+        /// <summary>[조합표]: 닫혀 있으면 열고 열려 있으면 닫는다.</summary>
+        public void ToggleRecipes()
+        {
+            if (RecipesOpen) CloseRecipes();
+            else OpenRecipes();
+        }
+
+        public void OpenRecipes()
+        {
+            if (stage == null || panelBox == null || RecipesOpen) return;
+            stage.Tips.Hide();
+            recipes = Add(panelBox, Kit.Panel(stage.Skin), "board-party-recipes", "sn-party-recipes");
+            var head = Add(recipes, new VisualElement(), null, "sn-party-head");
+            Add(head, Kit.Text(stage.T("screen.party.recipes"), Kit.FTitle), "board-party-recipes-title", "kit-title");
+            Add(head, Kit.Button(stage.T("screen.village.close"), KitButtonKind.Main, CloseRecipes), "board-party-recipes-close", null);
+            var scroll = Add(recipes, new ScrollView(ScrollViewMode.Vertical), "board-party-recipes-scroll", "sn-party-recipes-scroll");
+            RecipeCount = CraftScreen.Book(stage, flow, Seat, scroll.contentContainer);
+        }
+
+        public void CloseRecipes()
+        {
+            if (!RecipesOpen) return;
+            stage?.Tips.Hide();
+            recipes.RemoveFromHierarchy();
+            recipes = null;
+            RecipeCount = 0;
         }
 
         // ── 그리기 ──
@@ -297,8 +339,12 @@ namespace Sinnoh.Client
                 int hp = flow.Fx != null ? flow.Fx.Sequencer.Shown.Get(ShownKey.Hp(id), PokemonRules.Hp(ctx, pk)) : PokemonRules.Hp(ctx, pk);
                 stats.Add(Kit.Pill(heart, hp.ToString(inv), hp * 2 <= max ? KitTone.Low : KitTone.Base, max.ToString(inv)));
                 stats.Add(Kit.Pill(speed, def.Initiative.ToString(inv)));
-                string status = hp <= 0 ? "screen.info.fainted" : MonParts.StatusKey(pk.Status);
-                if (status != null) Add(info, new VisualElement(), null, "sn-party-line").Add(Kit.Badge(stage.T(status), hp <= 0 ? KitBadgeKind.Red : KitBadgeKind.Warn, Kit.F2));
+                if (hp <= 0) Add(info, new VisualElement(), null, "sn-party-line").Add(Kit.Badge(stage.T("screen.info.fainted"), KitBadgeKind.Red, Kit.F2));
+                else if (pk.Status != StatusEffect.None)   // 상태 이상은 아래 판 파티 칸 · 배틀과 같은 그림(결정 180 — 둘째 상태까지) — 아래 판처럼 도트 위 왼쪽에 세로로(열 높이를 늘리지 않는다 — 가방 칸이 밀려 판 밖으로 나갔다)
+                {
+                    var line = Add(card, new VisualElement(), "board-party-status-" + i.ToString(inv), "sn-party-status");
+                    MonParts.StatusIcons(stage, line, pk, line.name);
+                }
                 MonParts.Passives(stage, Add(info, new VisualElement(), null, "sn-party-line"), pk, true, "board-party-passive-" + i.ToString(inv), true);   // 우두머리 · 비스트 부스트(T23 · T27)
                 var learn = Add(col, new VisualElement(), null, "sn-party-learn");
                 Add(learn, Kit.Text(stage.T("screen.party.learn"), Kit.F2), null, "kit-muted");
@@ -316,6 +362,7 @@ namespace Sinnoh.Client
                     VisualElement row;
                     if (old >= 0) row = MonParts.MoveRow(stage, ctx, old, false, null);
                     else if (pk.Breach[k] >= 0) row = MonParts.BreachRow(stage, ctx, pk.Breach[k], Held == Hold.Move ? (TipSide?)null : TipSide.Below);   // 균열 카드가 막은 칸(rulings A52 ①)
+                    else if (LegendRules.TacticAt(pk, k) != LegendTactic.None) row = MonParts.TacticRow(stage, ctx, pk, k, Held == Hold.Move ? (TipSide?)null : TipSide.Below, types: false);   // 전설 특수기술이 차지한 빈 칸(결정 195)
                     else
                     {
                         row = new VisualElement();
@@ -353,6 +400,8 @@ namespace Sinnoh.Client
                         {
                             stage.OnTap(row, SoundKeys.Select, e => PressSlot(index, slot));
                             Target(row, () => PressSlot(index, slot));
+                            var tactic = LegendRules.TacticAt(pk, slot);   // 결정 195: 가르치면 덮일 전설 특수기술
+                            if (tactic != LegendTactic.None) stage.Tips.Hook(row, stage.T(MonParts.TacticKey(tactic)), MonParts.TacticTip(stage, tactic), TipSide.Below, reading: true);
                         }
                         else stage.Tips.Hook(row, moveName, stage.T(why == RejectReason.NoChange ? "screen.party.slot.same" : why == RejectReason.Timing ? "screen.party.guide.rejected" : "screen.party.slot.no"), TipSide.Below, reading: true);
                     }
@@ -464,12 +513,12 @@ namespace Sinnoh.Client
                 Icon(balls, GenAssets.ItemIcons + BattleFeed.BallItem(b) + ".png");
                 balls.Add(Kit.Text(Res(ResKind.Ball, b, seat.Balls[b]).ToString(inv), Kit.F2));
             }
-            var apricorns = Add(bagBox, new VisualElement(), null, "sn-party-line");
-            Add(apricorns, Kit.Text(stage.T("screen.info.apricorns"), Kit.F2), null, "kit-muted");
+            // 규토리는 볼과 한 줄(좁으면 줄바꿈 — 열이 긴 판에서 가방 칸 높이를 아낀다)
+            Add(balls, Kit.Text(stage.T("screen.info.apricorns"), Kit.F2), null, "kit-muted").AddToClassList("sn-party-gap");
             for (int c = 0; c < seat.Apricorns.Length; c++)
             {
-                Icon(apricorns, EncounterScreen.ApricornKey((ApricornColor)c));
-                apricorns.Add(Kit.Text(Res(ResKind.Apricorn, c, seat.Apricorns[c]).ToString(inv), Kit.F2));
+                Icon(balls, EncounterScreen.ApricornKey((ApricornColor)c));
+                balls.Add(Kit.Text(Res(ResKind.Apricorn, c, seat.Apricorns[c]).ToString(inv), Kit.F2));
             }
             var foot2 = Add(bagBox, new VisualElement(), null, "sn-party-line");
             foot2.AddToClassList("sn-party-counts");
@@ -1082,9 +1131,10 @@ namespace Sinnoh.Client
             // 등급 = 그 카드를 뽑은 덱(약함 · 보통 · 강함 · 전설 — 약함 덱의 스타팅 포켓몬 카드도 「약함」)
             var deck = n < backDecks.Count ? backDecks[n] : DeckId.Starter;
             string grade = deck == DeckId.Weak || deck == DeckId.Moderate || deck == DeckId.Strong || deck == DeckId.Legendary ? deck.ToString() : def.Tier.ToString();
-            string tier = stage.TOrNull("screen.encounter.grade." + grade.ToLowerInvariant());
-            if (tier == null) return;
-            var badge = Add(row, Kit.Badge(tier, KitBadgeKind.Plain, Kit.F1), row.name + "-back", "sn-party-pooltier");
+            var made = MonParts.GradeBadge(stage, grade.ToLowerInvariant());   // 등급 색(결정 192)
+            if (made == null) return;
+            string tier = made.text;
+            var badge = Add(row, made, row.name + "-back", "sn-party-pooltier");
             stage.Tips.Hook(badge, stage.T("screen.party.pool.back").Replace("{mon}", stage.T("pokemon." + def.Key)), stage.T("screen.party.pool.back.tip").Replace("{tier}", tier), TipSide.Above, reading: true);
         }
 

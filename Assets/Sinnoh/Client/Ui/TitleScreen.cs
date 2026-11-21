@@ -58,9 +58,9 @@ namespace Sinnoh.Client
         readonly Action quit, solo, settings, saves, tutorial, host, join, dex;
         readonly Action rulebook, credits;   // 「룰 설명서」 S43 · 「크레딧」 S03(M9 — GameFlow.OpenTitleRulebook · OpenCredits). null이면 그 줄은 아직 없는 화면이다
         readonly Action<bool> notice;   // 첫 실행 플레이 기록 알림의 답(결정 126 ④ — GameFlow.AnswerPlayNotice: false = [확인] · true = [설정 열기]). null이면 알림이 없다
-        string update;   // 새 판 알림의 판 번호(결정 148 ① — GameFlow.ShowRelease). null이면 알림이 없다
-        Action download;   // 알림의 [받기](GitHub Releases 페이지 — GameFlow.DownloadRelease)
-        VisualElement page, noticeBox, updateBox;
+        UpdateView view;   // 새 판 알림(결정 148 ① · 161 — GameFlow.ShowRelease · GameFlow.Update.cs). null이면 알림이 없다
+        VisualElement page, noticeBox, updateBox, updateBlock, updateFill;
+        Label updateAmount;
         bool noticeAnswered;
         readonly string saveLine;
         readonly bool web, firstTime;
@@ -84,11 +84,10 @@ namespace Sinnoh.Client
         /// <param name="dex">「포켓몬 도감」이 하는 일(S42 — <see cref="GameFlow.OpenTitleDex"/>, 결정 105 ③ · 웹 손님판에도 있다). null이면 그 줄은 아직 없는 화면이다.</param>
         public TitleScreen(Action quit = null, bool? web = null, string pick = Solo, Action solo = null, Action settings = null, Action saves = null, string saveLine = null,
             Action tutorial = null, bool firstTime = false, Action host = null, Action join = null, Action dex = null, Action rulebook = null, Action credits = null, Action<bool> notice = null,
-            string update = null, Action download = null)
+            string update = null, Action download = null, UpdateView updates = null)
         {
             this.notice = notice;
-            this.update = update;
-            this.download = download;
+            view = updates ?? (update != null ? new UpdateView { Version = update, Download = download } : null);
             this.rulebook = rulebook;
             this.credits = credits;
             this.host = host;
@@ -177,7 +176,7 @@ namespace Sinnoh.Client
 
             int start = shown.FindIndex(i => i.Id == startPick);
             Pick(start >= 0 ? start : 0);
-            updateBox = update != null && !web ? Update() : null;
+            updateBox = view?.Version != null && !web ? Update() : null;
             noticeBox = notice != null && !noticeAnswered ? Notice(page) : null;
             return page;
         }
@@ -186,6 +185,9 @@ namespace Sinnoh.Client
         {
             noticeBox = null;
             updateBox = null;
+            updateBlock = null;
+            updateFill = null;
+            updateAmount = null;
             page = null;
         }
 
@@ -196,32 +198,128 @@ namespace Sinnoh.Client
         public bool UpdateShown => updateBox != null && updateBox.parent != null;
 
         /// <summary>새 판 알림을 띄운다(이미 그린 타이틀 — 판 정보를 늦게 받았을 때). 웹 손님판은 띄우지 않는다. 첫 실행 알림 창이 떠 있으면 그 아래에.</summary>
-        public void ShowUpdate(string version, Action download)
+        public void ShowUpdate(string version, Action download) => ShowUpdate(version == null ? null : new UpdateView { Version = version, Download = download });
+
+        /// <summary>알림 상자를 그 단계로 다시 그린다(결정 161 — 흐름이 단계가 바뀔 때마다 부른다). 받는 중에는 메뉴를 막는 덮개가 상자 아래에 깔린다.</summary>
+        public void ShowUpdate(UpdateView v)
         {
-            update = version;
-            this.download = download;
-            if (page == null || web || version == null) return;
+            view = v;
+            if (page == null || web) return;
+            updateBlock?.RemoveFromHierarchy();
             updateBox?.RemoveFromHierarchy();
-            updateBox = Update();
-            if (NoticeShown) page.Insert(page.IndexOf(noticeBox), updateBox);
+            updateBlock = null;
+            updateBox = v?.Version != null ? Update() : null;
+            if (updateBox != null && NoticeShown)
+            {
+                if (updateBlock != null) page.Insert(page.IndexOf(noticeBox), updateBlock);
+                page.Insert(page.IndexOf(noticeBox), updateBox);
+            }
         }
 
-        /// <summary>알림의 [받기]를 누른다. 알림이 없으면 false.</summary>
+        /// <summary>받는 중 진행 막대 · 「12.3 / 28.8 MB」만 고친다(상자를 다시 짓지 않는다).</summary>
+        public void Progress(long got, long total)
+        {
+            if (view == null) return;
+            view.Got = got;
+            view.Total = total;
+            if (updateFill == null) return;
+            updateFill.style.width = Length.Percent(total > 0 ? Mathf.Clamp01((float)got / total) * 100f : 0f);
+            updateAmount.text = Amount(got, total);
+        }
+
+        static string Amount(long got, long total) => GameFlow.Mb(got) + " / " + GameFlow.Mb(total) + " MB";
+
+        /// <summary>업데이트가 메뉴를 막고 있나(견주기 · 받기 · 다시 시작 — 모달).</summary>
+        public bool UpdateBusy => view != null && view.Busy && UpdateShown;
+
+        /// <summary>알림의 단계(알림이 없으면 null).</summary>
+        public UpdateStep? UpdateStepShown => UpdateShown ? view.Step : (UpdateStep?)null;
+
+        /// <summary>알림의 첫 단추: [업데이트](자동 업데이트가 되면) 또는 [받기]. 알림이 없거나 받는 중이면 false.</summary>
         public bool PressUpdate()
         {
-            if (!UpdateShown || NoticeShown || download == null) return false;
-            download();
+            if (!UpdateShown || NoticeShown || view.Busy || view.Step == UpdateStep.Failed) return false;
+            var act = view.Start ?? view.Download;
+            if (act == null) return false;
+            act();
             return true;
         }
 
-        // 새 판 알림(결정 148 ① — 아래 띠 바로 위 오른쪽 작은 판 [가정]): 「새 버전 x.y.z」 + [받기](마우스 오버 = GitHub 받기 페이지)
+        /// <summary>[취소](견주기 · 받는 중).</summary>
+        public bool PressCancel()
+        {
+            if (!UpdateShown || (view.Step != UpdateStep.Scan && view.Step != UpdateStep.Fetch) || view.Cancel == null) return false;
+            view.Cancel();
+            return true;
+        }
+
+        /// <summary>실패 알림의 [다시 시도](retry = true) · [받기].</summary>
+        public bool PressFailed(bool retry)
+        {
+            if (!UpdateShown || NoticeShown || view.Step != UpdateStep.Failed) return false;
+            var act = retry ? view.Retry : view.Download;
+            if (act == null) return false;
+            act();
+            return true;
+        }
+
+        // 새 판 알림(결정 148 ① · 161 — 아래 띠 바로 위 오른쪽 작은 판 [가정]): 단계마다
+        //   알림 「새 버전 x.y.z」 + [업데이트](바뀐 파일만 받고 다시 시작) 또는 [받기](GitHub) · 견주기 「확인 중」 + [취소] · 받기 「받는 중 12.3 / 28.8 MB」 + 막대 + [취소]
+        //   · 「다시 시작합니다」 · 실패 「업데이트하지 못했습니다」 + 까닭 한 줄(공간 · 한도) + [다시 시도] · [받기]. 받는 동안은 덮개가 메뉴를 막는다
         VisualElement Update()
         {
+            var v = view;
+            updateFill = null;
+            updateAmount = null;
+            if (v.Busy) updateBlock = Add(page, new VisualElement(), "title-update-block", "kit-scrim");
             var box = Add(page, Kit.Panel(stage.Skin), "title-update", "sn-title-update");
-            Add(box, Kit.Text(stage.T("screen.title.update").Replace("{v}", update), Kit.F2), "title-update-text", "sn-title-update-text");
-            var get = Add(box, Kit.Button(stage.T("screen.title.update.get"), KitButtonKind.Main, () => PressUpdate()), "title-update-get", null);
-            stage.Tips.Hook(get, stage.T("screen.title.update.get"), stage.T("screen.title.update.tip"), TipSide.Above, reading: true);
+            switch (v.Step)
+            {
+                case UpdateStep.Scan:
+                    Add(box, Kit.Text(stage.T("screen.title.update.scan"), Kit.F2), "title-update-text", "sn-title-update-text");
+                    Add(box, Kit.Button(stage.T("screen.title.update.cancel"), KitButtonKind.Normal, () => PressCancel()), "title-update-cancel", null);
+                    break;
+                case UpdateStep.Fetch:
+                    box.AddToClassList("sn-title-update-wide");
+                    var head = Add(box, new VisualElement(), null, "sn-title-update-row");
+                    Add(head, Kit.Text(stage.T("screen.title.update.fetch"), Kit.F2), "title-update-text", "sn-title-update-text");
+                    updateAmount = Add(head, Kit.Text(Amount(v.Got, v.Total), Kit.F2), "title-update-amount", "sn-title-update-amount");
+                    var row = Add(box, new VisualElement(), null, "sn-title-update-row");
+                    var bar = Add(row, new VisualElement(), "title-update-bar", "sn-title-update-bar");
+                    updateFill = Add(bar, new VisualElement(), "title-update-fill", "sn-title-update-fill");
+                    Add(row, Kit.Button(stage.T("screen.title.update.cancel"), KitButtonKind.Normal, () => PressCancel()), "title-update-cancel", null);
+                    Progress(v.Got, v.Total);
+                    break;
+                case UpdateStep.Ready:
+                case UpdateStep.Restart:
+                    Add(box, Kit.Text(stage.T("screen.title.update.restart"), Kit.F2), "title-update-text", null);
+                    break;
+                case UpdateStep.Failed:
+                    box.AddToClassList("sn-title-update-wide");
+                    Add(box, Kit.Text(stage.T("screen.title.update.fail"), Kit.F2), "title-update-text", null);
+                    if (v.FailLine != null) Add(box, Kit.Wrapped(v.FailLine, Kit.F2), "title-update-why", "sn-title-update-why");
+                    var buttons = Add(box, new VisualElement(), null, "sn-title-update-buttons");
+                    if (v.Retry != null) Add(buttons, Kit.Button(stage.T("screen.title.update.retry"), KitButtonKind.Main, () => PressFailed(true)), "title-update-retry", null);
+                    GetButton(buttons, v.Retry == null ? KitButtonKind.Main : KitButtonKind.Normal, () => PressFailed(false));
+                    break;
+                default:
+                    Add(box, Kit.Text(stage.T("screen.title.update").Replace("{v}", v.Version), Kit.F2), "title-update-text", "sn-title-update-text");
+                    if (v.Start != null)
+                    {
+                        var go = Add(box, Kit.Button(stage.T("screen.title.update.do"), KitButtonKind.Main, () => PressUpdate()), "title-update-do", null);
+                        stage.Tips.Hook(go, stage.T("screen.title.update.do"), stage.T("screen.title.update.do.tip"), TipSide.Above, reading: true);
+                    }
+                    else GetButton(box, KitButtonKind.Main, () => PressUpdate());
+                    break;
+            }
             return box;
+        }
+
+        // [받기](마우스 오버 = GitHub 받기 페이지)
+        void GetButton(VisualElement parent, KitButtonKind kind, Action press)
+        {
+            var get = Add(parent, Kit.Button(stage.T("screen.title.update.get"), kind, press), "title-update-get", null);
+            stage.Tips.Hook(get, stage.T("screen.title.update.get"), stage.T("screen.title.update.tip"), TipSide.Above, reading: true);
         }
 
         /// <summary>첫 실행의 플레이 기록 알림 창(<c>title-notice</c>)이 떠 있나.</summary>
@@ -270,7 +368,7 @@ namespace Sinnoh.Client
         /// <summary>줄을 누른다. 아직 없는 화면이면 아무 일도 없다(false).</summary>
         public bool Activate(int index)
         {
-            if (index < 0 || index >= shown.Count || NoticeShown) return false;   // 알림 창이 떠 있는 동안은 메뉴를 누르지 않는다(창이 덮고 있다)
+            if (index < 0 || index >= shown.Count || NoticeShown || UpdateBusy) return false;   // 알림 창이 떠 있는 동안 · 업데이트를 받는 동안은 메뉴를 누르지 않는다(창 · 덮개가 덮고 있다)
             Pick(index);
             var item = shown[index];
             if (!Ready(item)) return false;

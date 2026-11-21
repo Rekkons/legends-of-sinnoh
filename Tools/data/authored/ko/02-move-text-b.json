@@ -1,0 +1,590 @@
+{
+  "schema": 1,
+  "note": "결정 163 다시 번역 — 02-move-text-b(기술 이름 33 · 기술 효과 113, 영문에서 새로 옮김). [가정] 배틀 안 turn = 차례(this turn 이번 차례 · last turn 직전 차례 · end of your turns 내 차례가 끝날 때마다 — screen.battle.* 꼴) · Heal N damage = 체력을 N 회복합니다 · 상태 이상을 heal = 고칩니다 · If any status symbols are rolled = 상태 이상 심볼이 하나라도 나오면 · add/remove … to/from the roll = 그 굴림에 더합니다 / 그 굴림에서 뺍니다 · Effect may be used once until the user switches out = 사용자가 교체될 때까지 한 번, … · may no longer = 이제 … 수 없습니다 · Evolution Pokémon deck = 진화 포켓몬 덱. [가정] 이름: move.disguise = 탈(따라큐 특성 Disguise의 공식 이름) · move.hidden_punch = 잠재펀치(잠재파워 꼴) · move.adaptive_cloak = 적응도롱(공식 폼 ○○도롱 · 도롱 폼) · move.frost_song = 서리의 노래 · move.frigid_ice = 혹한의 얼음 · move.chilling_acuity = 냉철한 통찰 · move.infatuate = 홀리기 · move.lift_off = 이륙 · move.menacing_moonraze = 섬뜩한 문레이즈 · move.searing_sunraze = 작열하는 선레이즈(둘 다 7자 넘음 — 옛 이름보다 짧게) · Blazing Form(zen_restoration) = 노말모드(불비달마 공식 폼).",
+  "strings": {
+    "move.adaptive_cloak": {
+      "en": "Adaptive Cloak",
+      "ko": "적응도롱"
+    },
+    "move.adaptive_cloak.text": {
+      "en": "The user may change Cloak Form if possible. Now choose either base type of the user as the type of this attack.",
+      "ko": "가능하다면 다른 도롱 폼으로 폼체인지할 수 있습니다. 그 뒤 사용자의 기본 타입 둘 중 하나를 골라 이 공격의 타입으로 합니다."
+    },
+    "move.anchor_shot.text": {
+      "en": "Deals 4 extra damage to Water-type Pokémon. The target may no longer switch out or flee the battle.",
+      "ko": "물 타입 포켓몬에게는 데미지를 4 더 줍니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "move.ancient_power.text": {
+      "en": "Until the user switches out: Add 1 critical hit and 1 status symbol to your attack rolls.",
+      "ko": "사용자가 교체될 때까지 공격 굴림에 급소 1개와 상태 이상 심볼 1개를 더합니다."
+    },
+    "move.aqua_jet.text": {
+      "en": "Effect may be used once until the user switches out: The user may use a second move this turn.",
+      "ko": "사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다."
+    },
+    "move.barb_barrage.text": {
+      "en": "Inflict the Poisoned status on the target. If the target is already Poisoned, this move deals double damage.",
+      "ko": "상대를 독 상태로 만듭니다. 상대가 이미 독 상태라면 이 기술의 데미지는 2배입니다."
+    },
+    "move.barrier.text": {
+      "en": "When the user is next attacked, all critical hits damage the attacker instead of the user.",
+      "ko": "사용자가 다음에 공격받을 때 급소의 데미지는 모두 사용자 대신 공격한 포켓몬이 받습니다."
+    },
+    "move.belch.text": {
+      "en": "You may consume 1 Apricorn to increase attack strength to 7.",
+      "ko": "규토리 1개를 소모해 위력을 7로 올릴 수 있습니다."
+    },
+    "move.blazing_valor": {
+      "en": "Blazing Valor",
+      "ko": "타오르는 용맹"
+    },
+    "move.blazing_valor.text": {
+      "en": "If any status symbols are rolled: Inflict the Burned status on the target and another Pokémon in the target party.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대와 상대 파티의 다른 포켓몬 1마리를 화상 상태로 만듭니다."
+    },
+    "move.body_slam.text": {
+      "en": "If any status symbols are rolled: Inflict the Paralysed status on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다."
+    },
+    "move.bubble_beam.text": {
+      "en": "When the target is next attacked, add 2 status symbols to the roll.",
+      "ko": "상대가 다음에 공격받을 때 그 굴림에 상태 이상 심볼 2개를 더합니다."
+    },
+    "move.bug_trap": {
+      "en": "Bug Trap",
+      "ko": "벌레덫"
+    },
+    "move.bug_trap.text": {
+      "en": "Deals 4 extra damage to Bug-type Pokémon. The target may no longer switch out or flee the battle.",
+      "ko": "벌레 타입 포켓몬에게는 데미지를 4 더 줍니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "move.bullet_punch.text": {
+      "en": "Effect may be used once until the user switches out: The user may use a second move this turn.",
+      "ko": "사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다."
+    },
+    "move.calm_mind.text": {
+      "en": "Deal extra damage equal to your current battle fatigue and then reset your battle fatigue to 0.",
+      "ko": "지금 내 전투 피로만큼 데미지를 더 주고, 전투 피로를 0으로 되돌립니다."
+    },
+    "move.chest_thump": {
+      "en": "Chest Thump",
+      "ko": "가슴치기"
+    },
+    "move.chest_thump.text": {
+      "en": "Deal 2 damage to the user. Change to Zen Form if possible.",
+      "ko": "사용자는 데미지를 2 입습니다. 가능하다면 달마모드로 폼체인지합니다."
+    },
+    "move.chilling_acuity": {
+      "en": "Chilling Acuity",
+      "ko": "냉철한 통찰"
+    },
+    "move.chilling_acuity.text": {
+      "en": "If any status symbols are rolled: Inflict the Frozen status on the target and another Pokémon in the target party.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대와 상대 파티의 다른 포켓몬 1마리를 얼음 상태로 만듭니다."
+    },
+    "move.chomp": {
+      "en": "Chomp",
+      "ko": "우걱우걱"
+    },
+    "move.chomp.text": {
+      "en": "When the target is next attacked, add 1 regular hit to the roll.",
+      "ko": "상대가 다음에 공격받을 때 그 굴림에 일반 타격을 1개 더합니다."
+    },
+    "move.coil.text": {
+      "en": "Increase the battle fatigue of the target by 3. The target may no longer switch out or flee the battle.",
+      "ko": "상대의 전투 피로를 3 올립니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "move.confusion.text": {
+      "en": "Inflict the Confused status on the target.",
+      "ko": "상대를 혼란 상태로 만듭니다."
+    },
+    "move.conversion.text": {
+      "en": "Until the user switches out: Add 1 critical hit and 1 status symbol to your attack rolls.",
+      "ko": "사용자가 교체될 때까지 공격 굴림에 급소 1개와 상태 이상 심볼 1개를 더합니다."
+    },
+    "move.conversion_2.text": {
+      "en": "When the user is next attacked, remove 2 regular hits from the roll.",
+      "ko": "사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 2개 뺍니다."
+    },
+    "move.cross_poison.text": {
+      "en": "Critical hits deal +1 damage.",
+      "ko": "급소마다 데미지 +1."
+    },
+    "move.crush_grip.text": {
+      "en": "Inflict the Paralysed status on the target. The target may no longer switch out or flee the battle.",
+      "ko": "상대를 마비 상태로 만듭니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "move.disguise": {
+      "en": "Disguise",
+      "ko": "탈"
+    },
+    "move.disguise.text": {
+      "en": "If this move was not used last turn, take at most 1 damage when the user is next attacked.",
+      "ko": "직전 차례에 이 기술을 쓰지 않았다면, 사용자가 다음에 공격받을 때 데미지를 최대 1만 받습니다."
+    },
+    "move.double_edge.text": {
+      "en": "Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.",
+      "ko": "급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다."
+    },
+    "move.double_hit.text": {
+      "en": "Regular hits deal +1 damage.",
+      "ko": "일반 타격마다 데미지 +1."
+    },
+    "move.electro_wheel": {
+      "en": "Electro Wheel",
+      "ko": "전기휠"
+    },
+    "move.electro_wheel.text": {
+      "en": "If any status symbols are rolled: Inflict the Paralysed status on the target. Change to Hangry Form if possible.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다. 가능하다면 배고픈 모양으로 폼체인지합니다."
+    },
+    "move.eternal_glade": {
+      "en": "Eternal Glade",
+      "ko": "영원한 숲"
+    },
+    "move.eternal_glade.text": {
+      "en": "Your currently active effects that would last until the user switches out now last until the end of the battle.",
+      "ko": "지금 걸려 있는 내 효과 가운데 사용자가 교체될 때까지 이어지는 것은 이제 배틀이 끝날 때까지 이어집니다."
+    },
+    "move.explosion.text": {
+      "en": "Critical hits deal +2 damage but for each critical hit rolled: The user takes 3 damage.",
+      "ko": "급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 3 입습니다."
+    },
+    "move.extreme_speed.text": {
+      "en": "Effect may be used once until the user switches out: The user may use a second move this turn.",
+      "ko": "사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다."
+    },
+    "move.fire_song": {
+      "en": "Fire Song",
+      "ko": "불꽃의 노래"
+    },
+    "move.fire_song.text": {
+      "en": "For each other non-fainted Pokémon in your party with a Song move: Attack strength is increased by 1.",
+      "ko": "파티의 기절하지 않은 다른 포켓몬 가운데 노래 기술을 가진 포켓몬마다 위력 +1."
+    },
+    "move.flash_cannon.text": {
+      "en": "When the target next attacks, status symbols deal -1 damage.",
+      "ko": "상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −1."
+    },
+    "move.flip_turn.text": {
+      "en": "The user may switch out if possible.",
+      "ko": "가능하다면 사용자를 교체할 수 있습니다."
+    },
+    "move.frigid_ice": {
+      "en": "Frigid Ice",
+      "ko": "혹한의 얼음"
+    },
+    "move.frigid_ice.text": {
+      "en": "Until the user switches out: When the user is attacked, inflict the Frozen status on the attacker.",
+      "ko": "사용자가 교체될 때까지, 사용자가 공격받으면 공격한 포켓몬을 얼음 상태로 만듭니다."
+    },
+    "move.frost_song": {
+      "en": "Frost Song",
+      "ko": "서리의 노래"
+    },
+    "move.frost_song.text": {
+      "en": "For each other non-fainted Pokémon in your party with a Song move: Attack strength is increased by 1.",
+      "ko": "파티의 기절하지 않은 다른 포켓몬 가운데 노래 기술을 가진 포켓몬마다 위력 +1."
+    },
+    "move.future_sight.text": {
+      "en": "Will there be more, less or an equal amount of critical hits rolled than status symbols? If incorrect, deal -3 damage.",
+      "ko": "급소가 상태 이상 심볼보다 많이 나올지, 적게 나올지, 같은 수로 나올지 예상합니다. 틀리면 데미지 −3."
+    },
+    "move.gather_sunlight": {
+      "en": "Gather Sunlight",
+      "ko": "햇빛모으기"
+    },
+    "move.gather_sunlight.text": {
+      "en": "Heal 3 damage. Change to Sunshine Form if possible.",
+      "ko": "체력을 3 회복합니다. 가능하다면 포지폼으로 폼체인지합니다."
+    },
+    "move.hangry_wheel": {
+      "en": "Hangry Wheel",
+      "ko": "배고픔휠"
+    },
+    "move.hangry_wheel.text": {
+      "en": "You may consume 1 Apricorn to increase attack strength to 7 and to change to Full Belly Form if possible.",
+      "ko": "규토리 1개를 소모해 위력을 7로 올리고, 가능하다면 배부른 모양으로 폼체인지할 수 있습니다."
+    },
+    "move.head_smash.text": {
+      "en": "Critical hits deal +2 damage but for each critical hit rolled: The user takes 3 damage.",
+      "ko": "급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 3 입습니다."
+    },
+    "move.headbutt.text": {
+      "en": "If any status symbols are rolled: Inflict the Paralysed status on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다."
+    },
+    "move.heal_bell.text": {
+      "en": "Heal 1 damage and all status effects from the user and from all Pokémon in your party.",
+      "ko": "사용자와 내 파티의 모든 포켓몬은 체력을 1 회복하고 상태 이상을 모두 고칩니다."
+    },
+    "move.heavy_slam.text": {
+      "en": "Attack strength is equal to half the base health of the user, rounded down. Maximum 5 attack strength.",
+      "ko": "위력은 사용자 최대 체력의 절반(내림)이고, 최대 5입니다."
+    },
+    "move.hidden_power.text": {
+      "en": "Choose any learnable type of the user as the type of this attack.",
+      "ko": "사용자가 배울 수 있는 타입 하나를 골라 이 공격의 타입으로 합니다."
+    },
+    "move.hidden_punch": {
+      "en": "Hidden Punch",
+      "ko": "잠재펀치"
+    },
+    "move.hidden_punch.text": {
+      "en": "Choose any learnable type of the user as the type of this attack.",
+      "ko": "사용자가 배울 수 있는 타입 하나를 골라 이 공격의 타입으로 합니다."
+    },
+    "move.hydro_pump.text": {
+      "en": "If 2 or more status symbols are rolled: Inflict the Confused status on the target.",
+      "ko": "상태 이상 심볼이 2개 이상 나오면 상대를 혼란 상태로 만듭니다."
+    },
+    "move.hyper_beam.text": {
+      "en": "If this move was used last turn, attack strength is decreased to 2.",
+      "ko": "내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다."
+    },
+    "move.imprison.text": {
+      "en": "The target may no longer change form, switch out or flee the battle.",
+      "ko": "상대는 이제 폼체인지하거나 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "move.infatuate": {
+      "en": "Infatuate",
+      "ko": "홀리기"
+    },
+    "move.infatuate.text": {
+      "en": "Inflict both the Paralysed and Confused statuses on the target simultaneously.",
+      "ko": "상대를 마비와 혼란 상태로 동시에 만듭니다."
+    },
+    "move.iron_tail.text": {
+      "en": "When the target is next attacked, add 1 regular hit to the roll.",
+      "ko": "상대가 다음에 공격받을 때 그 굴림에 일반 타격을 1개 더합니다."
+    },
+    "move.judgement.text": {
+      "en": "Choose any type, this attack becomes the chosen type.",
+      "ko": "아무 타입이나 하나 골라 이 공격의 타입으로 합니다."
+    },
+    "move.kinesis.text": {
+      "en": "Copy the effect of a move the user or target knows.",
+      "ko": "사용자나 상대가 가진 기술 하나를 골라 그 효과를 씁니다."
+    },
+    "move.kings_blade": {
+      "en": "King's Blade",
+      "ko": "킹블레이드"
+    },
+    "move.kings_blade.text": {
+      "en": "Critical hits deal +1 damage. Change to Shield Form if possible.",
+      "ko": "급소마다 데미지 +1. 가능하다면 실드폼으로 폼체인지합니다."
+    },
+    "move.kings_shield.text": {
+      "en": "When the user is next attacked, remove all regular hits from the roll. Change to Blade Form if possible.",
+      "ko": "사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 모두 뺍니다. 가능하다면 블레이드폼으로 폼체인지합니다."
+    },
+    "move.lift_off": {
+      "en": "Lift Off",
+      "ko": "이륙"
+    },
+    "move.lift_off.text": {
+      "en": "Inflict the Burned status on the target. Each time this attack is used this battle, attack strength is increased by 1.",
+      "ko": "상대를 화상 상태로 만듭니다. 이번 배틀에서 이 기술을 쓸 때마다 위력이 1 오릅니다."
+    },
+    "move.lunar_blessing.text": {
+      "en": "Heal 3 damage from the user. When the user is next attacked, status symbols deal -1 damage.",
+      "ko": "사용자는 체력을 3 회복합니다. 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 −1."
+    },
+    "move.menacing_moonraze": {
+      "en": "Menacing Moonraze",
+      "ko": "섬뜩한 문레이즈"
+    },
+    "move.menacing_moonraze.text": {
+      "en": "Inflict the Frozen status on the target. If the target is already Frozen, this move deals double damage.",
+      "ko": "상대를 얼음 상태로 만듭니다. 상대가 이미 얼음 상태라면 이 기술의 데미지는 2배입니다."
+    },
+    "move.metal_claw.text": {
+      "en": "Status symbols deal +1 damage.",
+      "ko": "상태 이상 심볼마다 데미지 +1."
+    },
+    "move.metronome.text": {
+      "en": "Shuffle the Evolution Pokémon deck and then attack the target with the top move of the deck.",
+      "ko": "진화 포켓몬 덱을 섞은 뒤, 덱 맨 위 카드의 기술로 상대를 공격합니다."
+    },
+    "move.mimic.text": {
+      "en": "Select a move from the target and then attack the target with this move.",
+      "ko": "상대의 기술 하나를 골라 그 기술로 상대를 공격합니다."
+    },
+    "move.muddy_water.text": {
+      "en": "When the target next attacks, status symbols deal -1 damage.",
+      "ko": "상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −1."
+    },
+    "move.multi_attack.text": {
+      "en": "Choose any learnable type of the user as the type of this attack. Ignores the effects of Prism Armour.",
+      "ko": "사용자가 배울 수 있는 타입 하나를 골라 이 공격의 타입으로 합니다. 프리즘 아머를 무시합니다."
+    },
+    "move.neurotoxin": {
+      "en": "Neurotoxin",
+      "ko": "신경독"
+    },
+    "move.neurotoxin.text": {
+      "en": "Inflict both the Poisoned and Drowsy statuses on the target simultaneously.",
+      "ko": "상대를 독과 졸음 상태로 동시에 만듭니다."
+    },
+    "move.octazooka.text": {
+      "en": "Critical hits deal +2 damage.",
+      "ko": "급소마다 데미지 +2."
+    },
+    "move.overcut": {
+      "en": "Overcut",
+      "ko": "오버컷"
+    },
+    "move.overcut.text": {
+      "en": "If the target faints, any remaining damage from this attack is applied to the next Pokémon switched in.",
+      "ko": "상대가 기절하면 이 공격의 남은 데미지를 다음에 나오는 포켓몬이 받습니다."
+    },
+    "move.photon_geyser.text": {
+      "en": "Inflict any status effect on the target. If any status symbols are rolled: Inflict another status effect simultaneously.",
+      "ko": "상태 이상을 하나 골라 상대에게 겁니다. 상태 이상 심볼이 하나라도 나오면 다른 상태 이상 하나를 동시에 겁니다."
+    },
+    "move.poison_fang.text": {
+      "en": "Inflict the Poisoned status on the target.",
+      "ko": "상대를 독 상태로 만듭니다."
+    },
+    "move.poison_jab.text": {
+      "en": "If any status symbols are rolled: Inflict the Poisoned status on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대를 독 상태로 만듭니다."
+    },
+    "move.poison_sting.text": {
+      "en": "Inflict the Poisoned status on the target. When the user is next attacked, remove 2 regular hits from the roll.",
+      "ko": "상대를 독 상태로 만듭니다. 사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 2개 뺍니다."
+    },
+    "move.poison_tail.text": {
+      "en": "Inflict the Poisoned status on the target. Critical hits deal +1 damage.",
+      "ko": "상대를 독 상태로 만듭니다. 급소마다 데미지 +1."
+    },
+    "move.power_gem.text": {
+      "en": "If any status symbols are rolled: Roll a status dice and inflict the result on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상태 이상 주사위를 굴려 나온 상태 이상을 상대에게 겁니다."
+    },
+    "move.power_plant": {
+      "en": "Power Plant",
+      "ko": "파워플랜트"
+    },
+    "move.power_plant.text": {
+      "en": "Until the user switches out: Heal 1 damage at the end of your turns and add 1 regular hit to your attack rolls.",
+      "ko": "사용자가 교체될 때까지 내 차례가 끝날 때마다 체력을 1 회복하고, 공격 굴림에 일반 타격을 1개 더합니다."
+    },
+    "move.prismatic_laser.text": {
+      "en": "If 2 or more status symbols are rolled: Deal 2 damage to all Pokémon in the target party that is not the target.",
+      "ko": "상태 이상 심볼이 2개 이상 나오면 상대 파티의 다른 모든 포켓몬에게 데미지를 2 줍니다."
+    },
+    "move.psychic.text": {
+      "en": "If 2 or more status symbols are rolled: Inflict the Confused status on the target.",
+      "ko": "상태 이상 심볼이 2개 이상 나오면 상대를 혼란 상태로 만듭니다."
+    },
+    "move.psycho_cut.text": {
+      "en": "Critical hits deal +1 damage.",
+      "ko": "급소마다 데미지 +1."
+    },
+    "move.psyshield_bash.text": {
+      "en": "When the user is next attacked, remove 1 regular hit from the roll.",
+      "ko": "사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 1개 뺍니다."
+    },
+    "move.rampart_riposte": {
+      "en": "Rampart Riposte",
+      "ko": "성벽의 반격"
+    },
+    "move.rampart_riposte.text": {
+      "en": "Attack strength is increased equal to the amount of damage taken last turn.",
+      "ko": "직전 차례에 받은 데미지만큼 위력이 오릅니다."
+    },
+    "move.razor_shell.text": {
+      "en": "Critical hits deal +1 damage.",
+      "ko": "급소마다 데미지 +1."
+    },
+    "move.renegade_fury": {
+      "en": "Renegade Fury",
+      "ko": "반골의 분노"
+    },
+    "move.renegade_fury.text": {
+      "en": "If the target faints, any remaining damage from this attack is applied to the next Pokémon switched in.",
+      "ko": "상대가 기절하면 이 공격의 남은 데미지를 다음에 나오는 포켓몬이 받습니다."
+    },
+    "move.repairing_rock": {
+      "en": "Repairing Rock",
+      "ko": "바위고치기"
+    },
+    "move.repairing_rock.text": {
+      "en": "Until the user switches out: Heal 2 damage at the end of your turns.",
+      "ko": "사용자가 교체될 때까지 내 차례가 끝날 때마다 체력을 2 회복합니다."
+    },
+    "move.ripple_in_space": {
+      "en": "Ripple in Space",
+      "ko": "공간의 물결"
+    },
+    "move.ripple_in_space.text": {
+      "en": "If this move was used last turn, attack strength is decreased to 2.",
+      "ko": "내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다."
+    },
+    "move.rock_blast.text": {
+      "en": "Status symbols deal -2 damage.",
+      "ko": "상태 이상 심볼마다 데미지 −2."
+    },
+    "move.rock_wrecker.text": {
+      "en": "If this move was used last turn, attack strength is decreased to 2.",
+      "ko": "내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다."
+    },
+    "move.rollout.text": {
+      "en": "Each time this attack is used this battle, attack strength is increased by 1.",
+      "ko": "이번 배틀에서 이 기술을 쓸 때마다 위력이 1 오릅니다."
+    },
+    "move.scald.text": {
+      "en": "If any status symbols are rolled: Inflict the Burned status on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다."
+    },
+    "move.searing_sunraze": {
+      "en": "Searing Sunraze",
+      "ko": "작열하는 선레이즈"
+    },
+    "move.searing_sunraze.text": {
+      "en": "Inflict the Burned status on the target. If the target is already Burned, this move deals double damage.",
+      "ko": "상대를 화상 상태로 만듭니다. 상대가 이미 화상 상태라면 이 기술의 데미지는 2배입니다."
+    },
+    "move.shelter.text": {
+      "en": "The user may switch out. When the target next attacks, remove 2 regular hits from the roll.",
+      "ko": "사용자를 교체할 수 있습니다. 상대가 다음에 공격할 때 그 굴림에서 일반 타격을 2개 뺍니다."
+    },
+    "move.shocking_verity": {
+      "en": "Shocking Verity",
+      "ko": "충격적인 진실"
+    },
+    "move.shocking_verity.text": {
+      "en": "If any status symbols are rolled: Inflict the Paralysed status on the target and another Pokémon in the target party.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대와 상대 파티의 다른 포켓몬 1마리를 마비 상태로 만듭니다."
+    },
+    "move.slash.text": {
+      "en": "Critical hits deal +1 damage.",
+      "ko": "급소마다 데미지 +1."
+    },
+    "move.sludge_wave.text": {
+      "en": "If 2 or more status symbols are rolled: Inflict the Poisoned status on the target.",
+      "ko": "상태 이상 심볼이 2개 이상 나오면 상대를 독 상태로 만듭니다."
+    },
+    "move.smack_down.text": {
+      "en": "Deals 2 extra damage to Flying-type Pokémon.",
+      "ko": "비행 타입 포켓몬에게는 데미지를 2 더 줍니다."
+    },
+    "move.spit_up.text": {
+      "en": "Heal 2 damage. If this move was used last turn, decrease attack strength to 2.",
+      "ko": "체력을 2 회복합니다. 내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다."
+    },
+    "move.steel_wing.text": {
+      "en": "When the user is next attacked, remove 1 regular hit from the roll.",
+      "ko": "사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 1개 뺍니다."
+    },
+    "move.stinging_punch": {
+      "en": "Stinging Punch",
+      "ko": "따끔따끔펀치"
+    },
+    "move.stinging_punch.text": {
+      "en": "Critical hits deal +1 damage and for each critical hit rolled: Heal 2 damage.",
+      "ko": "급소마다 데미지 +1. 또한 급소마다 체력을 2 회복합니다."
+    },
+    "move.stone_edge.text": {
+      "en": "Critical hits deal +1 damage but status symbols deal -1 damage.",
+      "ko": "급소마다 데미지 +1. 하지만 상태 이상 심볼마다 데미지 −1."
+    },
+    "move.surf.text": {
+      "en": "For each other non-fainted Pokémon in your party with the move Surf: Attack strength is increased by 1.",
+      "ko": "파티의 기절하지 않은 다른 포켓몬 가운데 파도타기를 가진 포켓몬마다 위력 +1."
+    },
+    "move.sweet_scent.text": {
+      "en": "On the next attack or capture roll against the target, status symbols deal +1 damage.",
+      "ko": "상대를 노린 다음 공격이나 포획 굴림에서 상태 이상 심볼마다 데미지 +1."
+    },
+    "move.swift.text": {
+      "en": "Status symbols deal +1 damage.",
+      "ko": "상태 이상 심볼마다 데미지 +1."
+    },
+    "move.tackle.text": {
+      "en": "When the target next attacks, remove 1 regular hit from the roll.",
+      "ko": "상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다."
+    },
+    "move.take_down.text": {
+      "en": "Critical hits deal +2 damage but for each critical hit rolled: The user takes 1 damage.",
+      "ko": "급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 1 입습니다."
+    },
+    "move.take_heart.text": {
+      "en": "Heal any status effects. When the user is next attacked, remove 1 regular hit from the roll.",
+      "ko": "상태 이상을 모두 고칩니다. 사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 1개 뺍니다."
+    },
+    "move.teleport.text": {
+      "en": "The user may switch out. When the target next attacks, remove 2 regular hits from the roll.",
+      "ko": "사용자를 교체할 수 있습니다. 상대가 다음에 공격할 때 그 굴림에서 일반 타격을 2개 뺍니다."
+    },
+    "move.tempered_steel": {
+      "en": "Tempered Steel",
+      "ko": "강철담금질"
+    },
+    "move.tempered_steel.text": {
+      "en": "Until the user switches out: The user is immune to all status effects.",
+      "ko": "사용자가 교체될 때까지 어떤 상태 이상에도 걸리지 않습니다."
+    },
+    "move.temporal_guard": {
+      "en": "Temporal Guard",
+      "ko": "시간의 수호"
+    },
+    "move.temporal_guard.text": {
+      "en": "When the target next attacks, status symbols deal -2 damage.",
+      "ko": "상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −2."
+    },
+    "move.thrash.text": {
+      "en": "Inflict the Confused status on the user. Deal any damage taken by the user during this attack to the target as well.",
+      "ko": "사용자를 혼란 상태로 만듭니다. 이 공격 중에 사용자가 받은 데미지를 상대에게도 똑같이 줍니다."
+    },
+    "move.thunder_song": {
+      "en": "Thunder Song",
+      "ko": "천둥의 노래"
+    },
+    "move.thunder_song.text": {
+      "en": "For each other non-fainted Pokémon in your party with a Song move: Attack strength is increased by 1.",
+      "ko": "파티의 기절하지 않은 다른 포켓몬 가운데 노래 기술을 가진 포켓몬마다 위력 +1."
+    },
+    "move.toxic.text": {
+      "en": "Inflict the Poisoned status on the target. If the target is already Poisoned, attack strength is increased to 3.",
+      "ko": "상대를 독 상태로 만듭니다. 상대가 이미 독 상태라면 위력이 3으로 오릅니다."
+    },
+    "move.tri_attack.text": {
+      "en": "If any status symbols are rolled: Roll a status dice and inflict the result on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상태 이상 주사위를 굴려 나온 상태 이상을 상대에게 겁니다."
+    },
+    "move.uproar.text": {
+      "en": "Status symbols deal +1 damage. Heal any Drowsy status effects from the user and the target.",
+      "ko": "상태 이상 심볼마다 데미지 +1. 사용자와 상대의 졸음을 고칩니다."
+    },
+    "move.venoshock.text": {
+      "en": "If the target has any status effects, this move deals double damage.",
+      "ko": "상대에게 상태 이상이 하나라도 있으면 이 기술의 데미지는 2배입니다."
+    },
+    "move.water_gun.text": {
+      "en": "When the target next attacks, remove 1 regular hit from the roll.",
+      "ko": "상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다."
+    },
+    "move.water_pulse.text": {
+      "en": "If any status symbols are rolled: Inflict the Confused status on the target.",
+      "ko": "상태 이상 심볼이 하나라도 나오면 상대를 혼란 상태로 만듭니다."
+    },
+    "move.wave_crash.text": {
+      "en": "Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.",
+      "ko": "급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다."
+    },
+    "move.whirlpool.text": {
+      "en": "Increase the battle fatigue of the target by 2. The target may no longer switch out or flee the battle.",
+      "ko": "상대의 전투 피로를 2 올립니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다."
+    },
+    "move.zen_restoration": {
+      "en": "Zen Restoration",
+      "ko": "좌선회복"
+    },
+    "move.zen_restoration.text": {
+      "en": "Inflict the Drowsy status on the user. Heal 6 damage if the user has just become Drowsy. Change to Blazing Form if possible.",
+      "ko": "사용자를 졸음 상태로 만듭니다. 사용자가 방금 졸음 상태가 됐다면 체력을 6 회복합니다. 가능하다면 노말모드로 폼체인지합니다."
+    }
+  }
+}

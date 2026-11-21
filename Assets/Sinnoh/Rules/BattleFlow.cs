@@ -913,7 +913,9 @@ namespace Sinnoh.Rules
                 fx.Add(new TypeMatchup { AttackerId = att, DefenderId = def, Type = type, DefTypes = defTypes, Delta = matchup, Typeless = type == PokemonType.Typeless });
                 var steps = new List<DamageStep> { new DamageStep { Kind = DamageStepKind.Dice, Value = sum, Source = src } };
                 foreach (var m in effects) steps.Add(new DamageStep { Kind = DamageStepKind.Effect, Value = m.Delta, Source = m.Source });
-                steps.Add(new DamageStep { Kind = DamageStepKind.Effectiveness, Value = matchup, Source = SourceRef.None });
+                // 상성(③): 표 상성(출처 없음) · 균열 카드 reckless_assault 몫(그 카드 — 결정 194: 화면이 「상성 +2 · 무모한 돌격 +2」로 나눠 보인다)
+                steps.Add(new DamageStep { Kind = DamageStepKind.Effectiveness, Value = matchup - calc.Reckless, Source = SourceRef.None });
+                if (calc.Reckless > 0) steps.Add(new DamageStep { Kind = DamageStepKind.Effectiveness, Value = calc.Reckless, Source = BreachRules.RecklessSource(ctx) });
                 if (calc.Analysis > 0) steps.Add(new DamageStep { Kind = DamageStepKind.Effectiveness, Value = calc.Analysis, Source = calc.AnalysisSource }); // scientist R(rulings A32)
                 // 2배 칩의 값 = 2배로 더해진 만큼(① + ② + ③)
                 if (doubled) steps.Add(new DamageStep { Kind = DamageStepKind.Double, Value = sum + effect + matchup + calc.Analysis, Source = src });
@@ -968,6 +970,8 @@ namespace Sinnoh.Rules
             /// <summary>scientist R의 상성 +1(③ — 없으면 0)과 그 출처(rulings A32).</summary>
             public int Analysis;
             public SourceRef AnalysisSource;
+            /// <summary>Matchup 안의 균열 카드 reckless_assault 몫(없으면 0 — 표 상성 = Matchup − Reckless, 결정 194).</summary>
+            public int Reckless;
             /// <summary>받는 쪽 트레이너 카드의 감소·문턱·상한(TrainerRules.TakenMods). Nullified = 문턱이 이번 피해를 실제로 0으로 만들었으면 그 문턱, 아니면 0.</summary>
             public TrainerRules.Taken Card;
             public int Nullified;
@@ -989,6 +993,7 @@ namespace Sinnoh.Rules
             var r = new DamageCalc { Matchup = TypeChart.Bonus(type, t1, t2), Sum = AttackDice.Sum(faces) };
             int reckless = BreachRules.Reckless(ctx, s.Pokemon[att], s.Pokemon[def], r.Matchup); // 균열 카드 reckless_assault: 유리한 상성 +2(공격·피격)
             r.Matchup += reckless;
+            r.Reckless = reckless;
             r.Doubled = EffectRules.DamageMods(s, ctx, b.Move, att, def, faces, mods) | UbOnslaught.Doubles(s, b, def); // 울트라 온슬롯 6: 균열 카드가 붙은 상대에게 2배
             r.Opportune = TrainerRules.Opportune(s, ctx, b); // essentia R: 움직이지 않고 건 야생 배틀의 첫 공격은 2배(rulings A34)
             r.Doubled |= r.Opportune;
@@ -1524,11 +1529,25 @@ namespace Sinnoh.Rules
         {
             var balls = s.Seats[b.Sides[k].Owner].Balls;
             balls[(int)ball]--;
+            var rolled = AttackDice.Roll(s.Rng, CaptureRules.Dice(ball));
             b.Faces.Clear();
-            b.Faces.AddRange(AttackDice.Roll(s.Rng, CaptureRules.Dice(ball)));
+            b.Faces.AddRange(rolled);
             b.CaptureBall = (int)ball;
             b.Step = BattleStep.Capture;
             bool stolen = s.Pokemon[b.Sides[1 - k].Active].Owner >= 0; // team_rocket B로 남의 포켓몬을 잡는 굴림에는 디아루가 재굴림이 없다(사용자 결정 84 T7 ①)
+            // 결정 188: 굴린 뒤 창을 열 거면 굴린 볼 주사위를 먼저 드러낸다(공격 굴림의 RollStep과 같은 순서) — 없으면 화면은 물음을 먼저 띄우고 굴림은 판정(CaptureAttempt)에서야 보인다.
+            // 상태 · 난수는 그대로(이벤트만 — 규칙 판을 올리지 않는다). 물을 좌석이 없으면 지금처럼 CaptureAttempt 하나로 던지고 굴린다.
+            if (!stolen && fx.On)
+            {
+                var cands = new List<ReactionCandidate>();
+                Reactions.Candidates(s, ctx, Window.AfterRoll, cands);
+                if (cands.Count > 0)
+                    fx.Add(new DiceRolled
+                    {
+                        Side = k, PokemonId = b.Sides[k].Active, Kind = DiceKind.Capture, Type = PokemonType.Typeless, Faces = rolled, Sum = BattleRules.Sum(rolled),
+                        Power = rolled.Length, PowerMods = new Mod[0], BallKey = (int)ball,
+                    });
+            }
             if (!stolen && Reactions.Open(s, ctx, fx, Window.AfterRoll, true)) return;
             CaptureRolled(s, ctx, fx, b);
         }
@@ -1744,7 +1763,7 @@ namespace Sinnoh.Rules
                     if (won) UbTrial.Won(s, ctx, fx, seat0, wp.Def);
                     // 전설·신을 쓰러뜨리거나 잡았으면 그 토큰(사당 전설 · 시작의 사당의 신)이 빠진다 — 신이면 한 턴 더(p.21, rulings A28)
                     if (won && (b.Kind == BattleKind.Legendary || b.Kind == BattleKind.God) && LegendRules.RemoveToken(s, fx, seat0, wp.Def) && s.Hos != null)
-                        MapActions.Mark(s, fx, seat0, UsageKind.GodVictory, -1, false);
+                        MapActions.Mark(s, fx, seat0, UsageKind.GodVictory);   // UsageMarked GodVictory = 추가 턴이 온다는 엔진 사실(화면의 「한 번 더!」 · 기록 줄이 본다 — 결정 198)
                     if (result == BattleResult.Captured)
                     {
                         GainJp(s, seat0, BattleRules.RewardJp(grade, wp.Alpha, false), changes);

@@ -17,12 +17,12 @@ namespace Sinnoh.Client
     /// 못 하는 포켓몬은 흐리게 + 까닭(진화 없음 · 여행 점수 부족).</item>
     /// <item>갈래(Reward/EvolveBranch, R14 — 이브이): 진화할 모습 카드 가운데 하나를 누른다.</item>
     /// <item>진화(39행): DS 층(256×192 정수배 — <see cref="DsStage"/>)에 원작처럼 「…오잉!?」 → 흰 실루엣이 두 모습 사이를 점점 빠르게 오감(결정 75 C2 가) → 흰 빛 → 「축하합니다!」.</item>
-    /// <item>옛 기술(Reward/EvolveTeach, p.5 「regardless of the types it can learn」): 옛 시그니처 기술을 칸 1 · 칸 2에 가르치거나 [가르치지 않기].</item>
+    /// <item>옛 기술(Reward/EvolveTeach, p.5 「regardless of the types it can learn」): 옛 시그니처 기술을 칸 1 · 칸 2에 가르치거나 [가르치지 않기]. 진화한 포켓몬이 지금 가진 기술(★ 고유 기술 + 칸의 기술 — 결정 181)을 함께 보인다.</item>
     /// </list>
     /// 규칙을 다시 세지 않는다: 단추는 열린 선택의 합법 답 그대로이고, 비용·까닭은 엔진 함수(<see cref="EvolveRules.Cost"/>)와 보기에서 읽는다.
     /// 진화 연출 · 갈래 · 옛 기술을 묻는 동안은 닫히지 않는다. 이어 받은 판에서 갈래·옛 기술을 묻고 있으면 <see cref="GameFlow"/>가 이 창을 연다.
     /// 요소 이름: <c>board-evolve</c>·<c>board-evolve-panel</c>·<c>board-evolve-close</c>·<c>board-evolve-jp</c>·<c>board-evolve-half</c>·<c>board-evolve-mon-&lt;i&gt;</c>·<c>board-evolve-go-&lt;i&gt;</c>·
-    /// <c>board-evolve-branch-&lt;n&gt;</c>·<c>board-evolve-ds</c>·<c>board-evolve-flash</c>·<c>board-evolve-teach-&lt;0|1&gt;</c>·<c>board-evolve-keep</c>.
+    /// <c>board-evolve-branch-&lt;n&gt;</c>·<c>board-evolve-ds</c>·<c>board-evolve-flash</c>·<c>board-evolve-now</c>·<c>board-evolve-sig</c>·<c>board-evolve-teach-&lt;0|1&gt;</c>·<c>board-evolve-keep</c>.
     /// </summary>
     public sealed class EvolveScreen : IWorkScreen, IWatchScreen
     {
@@ -368,18 +368,18 @@ namespace Sinnoh.Client
                 var from = Add(panel, new VisualElement(), "board-evolve-egg-from-" + t, "sn-party-line");
                 from.Add(Kit.Text(KoJosa.Fix(stage.T("screen.evolve.egg.from").Replace("{name}", stage.T("pokemon." + ctx.Cards.Pokemon[to].Key))), Kit.F2));
                 var old = Add(panel, new VisualElement(), "board-evolve-egg-move-" + t, "sn-evolve-old");
-                old.Add(MonParts.MoveRow(stage, ctx, ctx.Cards.Pokemon[to].Signature, false, TipSide.Below));
+                old.Add(MonParts.MoveRow(stage, ctx, ctx.Cards.Pokemon[to].Signature, false, TipSide.Below, panel));
                 for (int slot = 0; slot < PokemonState.MoveSlots; slot++)
                 {
                     int sl = slot;
                     var box = Add(panel, new VisualElement(), "board-evolve-egg-" + t + "-" + slot, "sn-evolve-slot");
                     box.Add(Kit.Text(stage.T("screen.evolve.slot").Replace("{n}", (slot + 1).ToString(inv)), Kit.F2));
-                    if (p.Moves[slot] >= 0) box.Add(MonParts.MoveRow(stage, ctx, p.Moves[slot], false, TipSide.Below));
-                    else box.Add(Kit.Text(stage.T("screen.evolve.slot.empty"), Kit.F2));
+                    if (p.Moves[slot] >= 0) box.Add(MonParts.MoveRow(stage, ctx, p.Moves[slot], false, null));
+                    else box.Add(MonParts.TacticRow(stage, ctx, p, slot, TipSide.Below) ?? Kit.Text(stage.T("screen.evolve.slot.empty"), Kit.F2));   // 전설 특수기술이 차지한 빈 칸(결정 195)
                     bool can = open && eggs.Exists(a => a.Values[0] == to && a.Values[1] == sl);
                     box.AddToClassList(can ? "sn-party-press" : "sn-party-no");
                     if (can) stage.OnTap(box, SoundKeys.Decide, e => PressEgg(to, sl));
-                    if (p.Moves[slot] >= 0) stage.Tips.Hook(box, null, stage.T("screen.evolve.egg.slot.tip"), TipSide.Above, reading: true);
+                    if (p.Moves[slot] >= 0) MonParts.MoveTip(stage, ctx, box, p.Moves[slot], TipSide.Below, panel, stage.T("screen.evolve.egg.slot.tip"));   // 칸 하나에 툴팁 하나 — 지금 기술의 효과 + 안내(결정 186)
                 }
             }
             var back = Add(panel, Kit.Button(stage.T("screen.common.back"), KitButtonKind.Normal, () => CloseEgg()), "board-evolve-egg-back", "sn-evolve-keep");
@@ -492,19 +492,26 @@ namespace Sinnoh.Client
             var def = ctx.Cards.Pokemon[p.Def];
             Add(panel, Kit.Text(KoJosa.Fix(stage.T("screen.evolve.teach").Replace("{name}", stage.T("pokemon." + def.Key)).Replace("{move}", stage.T(BattleFeed.MoveNameKey(ctx, reward.Subject)))), Kit.F2), "board-evolve-guide", null);
             var old = Add(panel, new VisualElement(), "board-evolve-old", "sn-evolve-old");
-            old.Add(MonParts.MoveRow(stage, ctx, reward.Subject, false, TipSide.Below));
-            Add(panel, Kit.Text(stage.T("screen.evolve.teach.where"), Kit.F2), null, "sn-village-label");
+            old.Add(MonParts.MoveRow(stage, ctx, reward.Subject, false, TipSide.Below, panel));
+            // 진화한 포켓몬이 지금 가진 기술(결정 181): ★ 고유 기술(바꿀 수 없다) + 칸 1·2 — 정비 판과 같은 줄
+            Add(panel, Kit.Text(KoJosa.Fix(stage.T("screen.evolve.teach.now").Replace("{name}", stage.T("pokemon." + def.Key))), Kit.F2), "board-evolve-now", "sn-village-label");
+            var sig = Add(panel, new VisualElement(), "board-evolve-sig", "sn-evolve-slot");
+            sig.AddToClassList("sn-evolve-fixed");
+            sig.Add(Kit.Text(stage.T("screen.mon.sig"), Kit.F2));
+            sig.Add(MonParts.MoveRow(stage, ctx, def.Signature, true, null));
+            MonParts.MoveTip(stage, ctx, sig, def.Signature, TipSide.Below, panel, stage.T("screen.evolve.sig.tip"));   // 칸 하나에 툴팁 하나(결정 186 — 기술 효과 + 안내)
             for (int slot = 0; slot < PokemonState.MoveSlots; slot++)
             {
                 int s = slot;
                 var box = Add(panel, new VisualElement(), "board-evolve-teach-" + slot, "sn-evolve-slot");
                 box.Add(Kit.Text(stage.T("screen.evolve.slot").Replace("{n}", (slot + 1).ToString(CultureInfo.InvariantCulture)), Kit.F2));
-                if (p.Moves[slot] >= 0) box.Add(MonParts.MoveRow(stage, ctx, p.Moves[slot], false, TipSide.Below));
-                else box.Add(Kit.Text(stage.T("screen.evolve.slot.empty"), Kit.F2));
+                if (p.Moves[slot] >= 0) box.Add(MonParts.MoveRow(stage, ctx, p.Moves[slot], false, null));
+                else if (p.Breach[slot] >= 0) box.Add(MonParts.BreachRow(stage, ctx, p.Breach[slot], TipSide.Below));   // 균열 카드가 막은 칸(rulings A52 ①) — 가르칠 수 없다
+                else box.Add(MonParts.TacticRow(stage, ctx, p, slot, TipSide.Below) ?? Kit.Text(stage.T("screen.evolve.slot.empty"), Kit.F2));   // 전설 특수기술이 차지한 빈 칸(결정 195)
                 bool can = open && teach.Exists(a => a.Kind == AnswerKind.Pick && a.Arg == s);
                 box.AddToClassList(can ? "sn-party-press" : "sn-party-no");
                 if (can) stage.OnTap(box, SoundKeys.Decide, e => PressTeach(s));
-                if (p.Moves[slot] >= 0) stage.Tips.Hook(box, null, stage.T("screen.evolve.slot.tip"), TipSide.Above, reading: true);
+                if (p.Moves[slot] >= 0) MonParts.MoveTip(stage, ctx, box, p.Moves[slot], TipSide.Below, panel, stage.T("screen.evolve.slot.tip"));   // 지금 기술의 효과 + 안내(결정 186)
             }
             var keep = Add(panel, Kit.Button(stage.T("screen.evolve.keep"), KitButtonKind.Normal, () => PressTeach(-1)), "board-evolve-keep", "sn-evolve-keep");
             keep.SetEnabled(open);

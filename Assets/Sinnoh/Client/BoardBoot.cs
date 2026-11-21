@@ -94,6 +94,22 @@ namespace Sinnoh.Client
 
         BoardMarks marks;
 
+        /// <summary>UB · 네크로즈마 피규어 발밑의 붉은 바닥 고리(결정 189). 처음 물을 때 만든다. 둘 자리는 화면 흐름(GameFlow)이 피규어를 세울 때 준다.</summary>
+        public BeastRings Rings
+        {
+            get
+            {
+                if (rings == null && View != null)
+                {
+                    rings = Child("BeastRings").AddComponent<BeastRings>();
+                    rings.Init(iconShader);
+                }
+                return rings;
+            }
+        }
+
+        BeastRings rings;
+
         /// <summary>놓인 길(worker B — 감사 G5-1). 처음 물을 때 만든다. 칠할 칸은 화면 흐름(GameFlow)이 보기에서 준다.</summary>
         public BoardRoads Roads
         {
@@ -265,6 +281,8 @@ namespace Sinnoh.Client
         {
             if (marks != null) { marks.Clear(); DestroyNow(marks.gameObject); }
             marks = null;
+            if (rings != null) { rings.Clear(); DestroyNow(rings.gameObject); }
+            rings = null;
             if (tokens != null) { tokens.Clear(); DestroyNow(tokens.gameObject); }
             tokens = null;
             if (Pieces != null) { Pieces.Clear(); DestroyNow(Pieces.gameObject); }

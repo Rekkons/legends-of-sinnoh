@@ -26,6 +26,8 @@ namespace Sinnoh.Tests.PlayMode
         sealed class Seen
         {
             public int SearchButtons, HealButtons, ChallengeButtons, Encounters, Cards, WildTurns, Bags, Balls, Captures, SendIns, Switches, Nexts, Teaches, PartyFulls, Corals, Results, Heals;
+            /// <summary>기술 가르치기에서 툴팁을 확인한 원래 기술 칸 단추 수(결정 186).</summary>
+            public int TeachTips;
             /// <summary>연출에서 본 것: 조우 창이 뜨기 전(찾아보기 「!」) · 카드 뒷면 · 배틀 화면이 열리기 전의 전환 · 포획 판정 · 요약의 잡은 포켓몬 줄 · 결과 창이 떠 있는데 [확인]은 아직인 때.</summary>
             public int Bangs, Backs, Wipes, Verdicts, SummaryCaught, ResultWaits, Gained;
             /// <summary>내 포켓몬이 아직 화면에 나오지 않았는데(조우 전환 뒤 절반 · 인트로) 내 기술 고르기는 이미 와 있던 프레임 수.</summary>
@@ -242,7 +244,43 @@ namespace Sinnoh.Tests.PlayMode
             if (seen.Music.Count == 0 || seen.Music[seen.Music.Count - 1] != note) seen.Music.Add(note);
         }
 
-        static IEnumerator Walk(SoloTrail trail, Seen seen)
+        [UnityTest]
+        public IEnumerator M10_격파뒤기술가르치기에서원래기술칸에마우스를올리면그기술의이름과효과가뜬다_결정186()
+        {
+            // 스타팅 포켓몬의 칸 1에 기술을 넣어 둔 격파 판: 결과 창의 칸 단추 = 바꿀 원래 기술 — 그 단추의 툴팁이 기술 줄과 같은 글이다
+            var seen = new Seen();
+            int given = -1;
+            yield return Walk(SoloTrail.Defeat, seen, flow => flow.Rebase(st =>
+            {
+                var p = st.Pokemon[st.Seats[0].Party[0]];
+                int sig = flow.Ctx.Cards.Pokemon[p.Def].Signature;
+                for (int m = 0; m < flow.Ctx.Cards.Moves.Count && given < 0; m++)
+                    if (m != sig && flow.Stage.TOrNull(BattleFeed.MoveNameKey(flow.Ctx, m) + ".text") != null) given = m;
+                p.Moves[0] = given;
+            }));
+            Assert.That(given, Is.GreaterThanOrEqualTo(0));
+            Assert.That(seen.Teaches, Is.EqualTo(1), "격파 뒤 기술 가르치기 묻기");
+            Assert.That(seen.TeachTips, Is.GreaterThan(0), "원래 기술이 든 칸 단추의 툴팁을 봤다");
+        }
+
+        /// <summary>그 요소에 기술 툴팁이 걸렸고(<see cref="MonParts.MoveTip"/>) 제목 = 기술 이름, 본문 = 효과 문구(+ note 한 줄)인지 본다(결정 186).</summary>
+        internal static void TipIs(UiStage stage, VisualElement target, Ctx ctx, int move, string note = null)
+        {
+            Assert.That(target, Is.Not.Null, "툴팁을 볼 요소");
+            stage.Tips.Show(target);
+            Assert.That(stage.Tips.Target, Is.SameAs(target), target.name + ": 툴팁이 걸리지 않았다");
+            string key = BattleFeed.MoveNameKey(ctx, move);
+            string text = stage.TOrNull(key + ".text");
+            Assert.That(text, Is.Not.Null, key + ".text");
+            if (note != null) text += "\n" + note;
+            var labels = stage.Tips.Element.Query<Label>().ToList();
+            Assert.That(labels[0].text, Is.EqualTo(stage.T(key)), target.name + ": 툴팁 제목 = 기술 이름");
+            Assert.That(labels[labels.Count - 1].text, Is.EqualTo(KoText.JoinWords(text)), target.name + ": 툴팁 본문 = 효과 문구");
+            stage.Tips.Hide();
+        }
+
+        /// <param name="prepare">셋업 뒤 보드에서 판을 손본다(<see cref="GameFlow.Rebase"/> 등 — null이면 그대로).</param>
+        static IEnumerator Walk(SoloTrail trail, Seen seen, System.Action<GameFlow> prepare = null)
         {
             var errors = new List<string>();
             void Grab(string msg, string stack, LogType type)
@@ -284,6 +322,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(stage.Current, Is.InstanceOf<SoloScreen>());
                 flow.EventsSeen += seen.Events.AddRange;
                 var pilot = FlowPilot.Start(flow, trail);   // 찾아 둔 판의 시드로 시작한다([게임 시작]은 아무 시드나 고른다)
+                if (prepare != null) prepare(flow);
                 yield return null;
                 Assert.That(flow.OnBoard, Is.True, "셋업을 끝내 보드에 있다");
                 var client = flow.Client;
@@ -492,7 +531,12 @@ namespace Sinnoh.Tests.PlayMode
                             var chips = stage.Root.Q("battle-foe-moves").Query<Label>(className: "kit-badge").ToList().FindAll(l => l.name != "battle-foe-move-bonus");   // 상성 배지(T19)는 기술 칩이 아니다
                             Assert.That(chips.Count, Is.EqualTo(foeMoves.Count), "상대 기술 칩 수");
                             for (int i = 0; i < foeMoves.Count; i++)
+                            {
                                 Assert.That(chips[i].text, Does.EndWith(stage.T(BattleFeed.MoveNameKey(flow.Ctx, foeMoves[i])) + " " + BattleScreen.CardStrength(flow.Ctx, foeMoves[i])));
+                                // 결정 187: 칩 묶음 안에 그 기술의 타입 그림(타입 없는 전술 · 알파 스트라이크는 없다)
+                                bool typed = BattleRules.MoveType(flow.Ctx, foeMoves[i]) != PokemonType.Typeless && foeMoves[i] != BattleRules.AlphaStrike;
+                                Assert.That(stage.Root.Q("battle-foe-move-" + i).Query(className: "sn-type-icon").ToList().Count, Is.EqualTo(typed ? 1 : 0), "상대 기술 칩의 타입 그림 " + i);
+                            }
                             int mimic = -1;
                             for (int i = 0; i < flow.Ctx.Cards.Moves.Count; i++) if (flow.Ctx.Cards.Moves[i].Key == "mimic") mimic = i;
                             Assert.That(flow.Ctx.Cards.Moves[mimic].AttackStrength, Is.Null, "흉내내기: 카드에 공격력이 없다");
@@ -614,6 +658,16 @@ namespace Sinnoh.Tests.PlayMode
                             seen.Teaches++;
                             Assert.That(flow.Battle.Ended, Is.True);
                             Assert.That(stage.Root.Q<Label>("battle-reward-ask").text.Replace("⁠", ""), Does.Contain(stage.T(BattleFeed.MoveNameKey(flow.Ctx, choice.Subject))));
+                            // 결정 186: 새 기술 줄 · 원래 기술이 든 칸 단추에 마우스를 올리면 그 기술의 이름 + 효과 문구
+                            TipIs(stage, stage.Root.Q("battle-reward-move"), flow.Ctx, choice.Subject);
+                            for (int i = 0; i < legal.Count; i++)
+                            {
+                                if (legal[i].Kind != AnswerKind.Pick) continue;
+                                int old = client.View.Pokemon[legal[i].Target].Moves[legal[i].Arg];
+                                if (old < 0) continue;
+                                TipIs(stage, stage.Root.Q("battle-reward-" + (i + 1)), flow.Ctx, old);
+                                seen.TeachTips++;
+                            }
                         }
                         else if (choice.Sub == ChoiceSub.PartyFull)
                         {

@@ -182,7 +182,7 @@ namespace Sinnoh.Fx
     /// </summary>
     public static class RerollBeats
     {
-        public const int InMs = 80, LockMs = 480, FlashMs = 90, FlickerMs = 60;
+        public const int InMs = 200, LockMs = 1200, FlashMs = 225, FlickerMs = 150;   // 결정 190: 옛 80 · 480 · 90 · 60의 2.5배(PlayTiming.RerollPerMs · DiceRollScene 글리치와 같이)
 
         public static FxStep StepOf(FxEntry entry) => entry != null ? entry.Step(FateRows.Reroll) : null;
 

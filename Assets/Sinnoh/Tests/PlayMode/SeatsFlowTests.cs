@@ -237,6 +237,44 @@ namespace Sinnoh.Tests.PlayMode
         }
 
         [UnityTest]
+        public IEnumerator M10_남의정비는보기창이안뜨고_그좌석칩꼬리표로보인다_결정177()
+        {
+            int band = -1;
+            yield return Seats(2, st =>
+            {
+                band = flow.Ctx.Items.Ids.IndexOf("item.choice_band");
+                for (int s = 0; s < 2; s++) st.Seats[s].Bag.Add(band);
+            });
+            int me = flow.Client.Seat, other = 1 - me;
+            Assert.That(flow.Hud.Press(BoardHud.EndTurn), Is.True, "[턴 종료]");
+            yield return Settle(() => flow.Client.View.ActiveSeat == other && flow.BoardOpen);
+            int mon = flow.Client.View.Seats[other].Party[0];
+            Assert.That(flow.MaintainSeat(other, new Maintenance { Kind = MaintKind.HoldItem, Pokemon = mon, Value = band }), Is.True, "남 좌석의 지니게 하기");
+            bool tagged = false, watched = false, current = false;
+            string text = null;
+            for (int guard = 0; guard < 300; guard++)
+            {
+                flow.Skip(50);
+                yield return null;
+                if (flow.Watch != null || flow.WatchShown || stage.Root.Q("board-watch") != null) watched = true;
+                if (stage.Current != null) current = true;
+                if (flow.Hud.DidSeat == other && flow.Hud.DidKey == "maint")
+                {
+                    tagged = true;
+                    var tag = stage.Root.Q<Label>(BoardHud.DidName(other));
+                    if (tag != null) text = tag.text;
+                }
+                if (tagged && flow.Fx.Sequencer.IsEmpty) break;
+            }
+            Assert.That(tagged, Is.True, "그 좌석 칩에 「정비」 꼬리표");
+            Assert.That(text, Is.EqualTo(stage.T("screen.board.did.maint")), "꼬리표 글");
+            Assert.That(watched, Is.False, "남의 정비는 보기 창(board-watch)을 띄우지 않는다");
+            Assert.That(current, Is.False, "창도 열지 않는다");
+            Assert.That(flow.NotReadyShown, Is.EqualTo(0));
+            Assert.That(errors, Is.Empty, string.Join("\n", errors));
+        }
+
+        [UnityTest]
         public IEnumerator M9_남의조우고르기는카드로보이고_단추가없고_고르면닫힌다_결정120_T7()
         {
             yield return Seats(2, st =>

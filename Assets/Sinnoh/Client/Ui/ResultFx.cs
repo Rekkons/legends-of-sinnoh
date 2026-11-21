@@ -36,6 +36,8 @@ namespace Sinnoh.Client
         public int FlyShown { get; private set; }
         public float GlowShown { get; private set; }
         public bool BannerShown { get; private set; }
+        /// <summary>신 격파 배너에 지금 적힌 글(「한 번 더!」 · 「신을 넘어섰다!」 — 결정 198, 확인용).</summary>
+        public string BannerText => bannerText != null ? bannerText.text : null;
 
         /// <summary>1막 해방의 「이동력 +2」 칩(94행 941)이 보이나 · 그 자리(이 층의 좌표) · 자리로 간 만큼(0 = 마을 칸 위 ~ 1 = 그 좌석의 자리) — 확인용.</summary>
         public bool MoveShown { get; private set; }
@@ -359,7 +361,7 @@ namespace Sinnoh.Client
             return -1;
         }
 
-        // 신 격파(80행): 시작의 사당 위에서 빛이 흩어지고 「한 번 더!」
+        // 신 격파(80행): 시작의 사당 위에서 빛이 흩어지고 「한 번 더!」(추가 턴이 오는 때만 — 아니면 「신을 넘어섰다!」, 결정 198)
         void ShowGod(FxSequencer seq)
         {
             var step = GodBeats.StepOf(seq != null ? seq.Current : null);
@@ -376,7 +378,7 @@ namespace Sinnoh.Client
             motes.Show(seq.LocalMs - step.StartMs, at.x, at.y - ScatterMotes.AbovePx * Unit, Unit);   // 신 피규어가 빛으로 흩어진다(P28 — 피규어는 GameFlow.SyncFigures가 줄인다)
             GodBeats.At(seq.LocalMs - step.StartMs, step.Ms, out float burst, out float show, out float scale);
             float unit = Unit;
-            if (bannerText.text.Length == 0) bannerText.text = flow.Stage.T("screen.board.god.again");
+            bannerText.text = flow.Stage.T(GodBeats.Extra(seq.Current) ? "screen.board.god.again" : "screen.board.god.done");   // 추가 턴이 오는 때만 「한 번 더!」(결정 198 — 울트라 버스트 캠페인은 없다)
             FxUi.Move(banner, at.x, at.y - 70f * unit);
             FxUi.Scale(banner, scale, scale);
             FxUi.Fade(banner, show);

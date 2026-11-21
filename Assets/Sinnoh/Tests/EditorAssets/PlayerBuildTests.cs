@@ -50,6 +50,7 @@ namespace Sinnoh.Tests.EditorAssets
                 DsStage.StageTableKey, DsStage.EnemyBoxKey, DsStage.PlayerBoxKey, DsStage.DigitsKey, DsStage.MessageBoxKey,
                 DsStage.TokenKey, DsStage.TokenBackKey,   // 우선권 토큰 앞면·뒷면(결정 73 ⑦)
                 EvolveScreen.BgKey,   // 진화 화면 배경(M9 다듬기 P10)
+                FlyCutin.BandKey,     // 공중날기 컷인 띠(결정 167)
                 DsFont.TableKey(DsStage.HudFont), DsFont.AtlasKey(DsStage.HudFont), DsFont.TableKey(DsStage.MessageFont), DsFont.AtlasKey(DsStage.MessageFont),
             });
             foreach (Sinnoh.Rules.StatusEffect status in System.Enum.GetValues(typeof(Sinnoh.Rules.StatusEffect)))

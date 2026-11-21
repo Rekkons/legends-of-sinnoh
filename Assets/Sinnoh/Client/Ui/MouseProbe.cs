@@ -772,7 +772,19 @@ namespace Sinnoh.Client
                     yield return Frames(3);
                     keyClosed = stage.Current == null && flow.InputOpen;
                 }
-                Step("board-party", "ok", partyShown && monShown && monClosed && keyClosed, "at", at, "maintOn", maintOn, "party", partyShown, "mon", monShown, "back", monClosed, "keyT", keyClosed, "commands", flow.Session.CommandCount);
+                // [정비] 두 번 = 열고 닫힘(결정 176 — 판이 떠 있어도 아래 판의 단추는 가려지지 않는다)
+                bool buttonToggled = false;
+                if (keyClosed)
+                {
+                    yield return Click(Px(Q("board-hud-maint")));
+                    yield return Frames(3);
+                    bool reopened = stage.Current is PartyScreen;
+                    yield return Click(Px(Q("board-hud-maint")));
+                    yield return Frames(3);
+                    buttonToggled = reopened && stage.Current == null && flow.InputOpen;
+                }
+                Step("board-party", "ok", partyShown && monShown && monClosed && keyClosed && buttonToggled, "at", at, "maintOn", maintOn, "party", partyShown, "mon", monShown, "back", monClosed, "keyT", keyClosed, "buttonTwice", buttonToggled, "commands", flow.Session.CommandCount);
+                Check("정비", buttonToggled, "[정비]를 다시 눌렀는데 정비 판이 닫히지 않았다(결정 176)");
                 Check("정비", partyShown, "[정비]를 눌렀는데 정비 판이 열리지 않았다(단추 켜짐 " + maintOn + ")");
                 Check("정비", monShown && monClosed, "포켓몬 카드를 눌러 카드 확대를 열고 [닫기]로 정비 판에 돌아오지 못했다");
                 Check("정비", keyClosed, "T로 정비 판이 닫히지 않았거나 보드 입력이 열리지 않았다");
@@ -1033,6 +1045,26 @@ namespace Sinnoh.Client
             bool keysOk = yawE == 1 && yawQ == 5 && rig.Yaw == 1 && rig.CurrentZoom == BoardCameraRig.Zoom.Close;
             Step("keys-q-e", "ok", keysOk, "afterE", yawE, "afterQQ", yawQ, "afterEE", rig.Yaw, "zoom", rig.CurrentZoom.ToString());
             Check("Q·E", keysOk, "Q·E로 방향이 60°씩 돌지 않았다(E " + yawE + " · QQ " + yawQ + " · EE " + rig.Yaw + ", 줌 " + rig.CurrentZoom + ")");
+            // 보드 돌리기 단추(결정 164): ↺ = Q · ↻ = E — 마우스로 누른다(같은 방향으로 돌아온다)
+            {
+                var rotLeft = Q(BoardHud.RotateLeft);
+                var rotRight = Q(BoardHud.RotateRight);
+                bool rotShown = flow.Hud.RotateShown && Laid(rotLeft) && Laid(rotRight);
+                int rotYaw0 = rig.Yaw, rotAfterLeft = -1;
+                commands = flow.Session.CommandCount;
+                if (rotShown)
+                {
+                    yield return Click(Px(rotLeft));
+                    yield return Frames(2);
+                    rotAfterLeft = rig.Yaw;
+                    yield return Snap("10a-board-rotate-left");
+                    yield return Click(Px(rotRight));
+                    yield return Frames(2);
+                }
+                bool rotOk = rotShown && rotAfterLeft == (rotYaw0 + 5) % 6 && rig.Yaw == rotYaw0 && rig.CurrentZoom == BoardCameraRig.Zoom.Close && flow.Session.CommandCount == commands;
+                Step("rotate-click", "ok", rotOk, "shown", rotShown, "from", rotYaw0, "rotAfterLeft", rotAfterLeft, "afterRight", rig.Yaw, "commands", flow.Session.CommandCount - commands);
+                Check("돌리기 단추", rotOk, "보드 돌리기 단추(↺ · ↻)를 눌렀는데 Q · E처럼 돌지 않았다(보임 " + rotShown + " · " + rotYaw0 + " → " + rotAfterLeft + " → " + rig.Yaw + ")");
+            }
             commands = flow.Session.CommandCount;
             var turned = OpenCells("회전 뒤", out float off1);
             turned.RemoveAll(sp => hud.StopsBefore(sp.Cell).Count > 0);   // 결정 71: 길 가운데 뒷면 숨겨진 장소에서 멈추는 칸은 뺀다(아래가 걸은 뒤 도착 칸을 단정한다)
@@ -2089,6 +2121,22 @@ namespace Sinnoh.Client
             yield return Frames(3);
             var bag = Q("battle-bag");
             if (!Check("가방", battle.BagOn && Laid(bag), "야생 배틀의 내 차례에 [가방]이 켜지지 않았다")) { flow.EventsSeen -= Count; Finish(1, head.ToString()); yield break; }
+            // 단축키 Q = [가방](결정 164 — 단추의 글자): 볼 줄 → Q 다시 = 기술 줄. 배틀 화면 위에서 Q는 보드를 돌리지 않고 돌리기 단추도 숨는다
+            {
+                int qkYaw = rig.Yaw;
+                commands = flow.Session.CommandCount;
+                bool qkHidden = flow.Hud == null || !flow.Hud.RotateShown;
+                yield return Tap(Key.Q);
+                yield return Frames(2);
+                bool qkOpen = battle.BagOpen && Laid(Q("battle-ball-1"));
+                yield return Tap(Key.Q);
+                yield return Frames(2);
+                bool qkBack = !battle.BagOpen && Laid(Q("battle-move-1"));
+                bool qkOk = qkOpen && qkBack && rig.Yaw == qkYaw && qkHidden && flow.Session.CommandCount == commands;
+                Step("battle-key-bag", "ok", qkOk, "open", qkOpen, "back", qkBack, "yaw", rig.Yaw, "yawBefore", qkYaw, "qkHidden", qkHidden, "commands", flow.Session.CommandCount - commands);
+                Check("가방 단축키", qkOk, "배틀 화면에서 Q가 [가방]을 열고 닫지 않았다(열림 " + qkOpen + " · 닫힘 " + qkBack + " · 방향 " + qkYaw + " → " + rig.Yaw + " · 돌리기 단추 숨김 " + qkHidden + ")");
+                bag = Q("battle-bag");
+            }
             commands = flow.Session.CommandCount;
             yield return Click(Px(bag));
             yield return Frames(3);
@@ -2920,7 +2968,7 @@ namespace Sinnoh.Client
             Check("물음 창 위 정보 창", blessDone, "라운드 끝 축복 물음(UB 턴 건너뛰기)이 열리지 않았다");
         }
 
-        // 물음 창(under)이 떠 있는 동안 [메뉴] · [상성] · [정비] · [도감]을 차례로 누르고 Esc로 닫는다 — 열린 층 · 아래 창 그대로 · 답 없음
+        // 물음 창(under)이 떠 있는 동안 [메뉴] · [상성] · [버림 더미] · [정비] · [도감]을 차례로 누르고 Esc로 닫는다 — 열린 층 · 아래 창 그대로 · 답 없음
         IEnumerator PeekOver(string step, string label, object under, string snap)
         {
             int commands = flow.Session.CommandCount;
@@ -2941,6 +2989,14 @@ namespace Sinnoh.Client
             yield return Wait(() => stage.Info == null, 5f);
             bool typesBack = stage.Info == null && Under();
 
+            // 버림 더미(결정 196): 상성 창과 같은 층
+            yield return Click(Px(Q("board-hud-discards")));
+            yield return Wait(() => stage.Info is DiscardScreen, 5f);
+            bool discards = stage.Info is DiscardScreen && Under();
+            yield return Tap(Key.Escape);
+            yield return Wait(() => stage.Info == null, 5f);
+            bool discardsBack = stage.Info == null && Under();
+
             yield return Click(Px(Q("board-hud-maint")));
             yield return Wait(() => stage.Info is PartyScreen, 5f);
             bool party = stage.Info is PartyScreen p && p.Lock == "screen.peek.lock.window" && Under();
@@ -2957,8 +3013,8 @@ namespace Sinnoh.Client
             bool dexBack = stage.Info == null && Under();
 
             bool quiet = flow.Session.CommandCount == commands;
-            bool ok = menu && menuBack && types && typesBack && party && partyBack && dex && dexBack && quiet;
-            Step(step, "ok", ok, "menu", menu, "menuBack", menuBack, "types", types, "typesBack", typesBack, "party", party, "partyBack", partyBack, "dex", dex, "dexBack", dexBack,
+            bool ok = menu && menuBack && types && typesBack && discards && discardsBack && party && partyBack && dex && dexBack && quiet;
+            Step(step, "ok", ok, "menu", menu, "menuBack", menuBack, "types", types, "typesBack", typesBack, "discards", discards, "discardsBack", discardsBack, "party", party, "partyBack", partyBack, "dex", dex, "dexBack", dexBack,
                 "commandsBefore", commands, "commandsAfter", flow.Session.CommandCount, "screen", stage.Current != null ? stage.Current.Name : "");
             Check(label + " 위 정보 창", ok, "[메뉴] · [상성] · [정비](보기만) · [도감]이 정보 창 층에 열리고 Esc 뒤 " + label + "이 그대로여야 한다(메뉴 " + menu + "/" + menuBack + " · 상성 " + types + "/" + typesBack
                 + " · 정비 " + party + "/" + partyBack + " · 도감 " + dex + "/" + dexBack + " · 답 없음 " + quiet + ")");

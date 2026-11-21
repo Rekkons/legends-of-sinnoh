@@ -22,6 +22,8 @@ namespace Sinnoh.Editor
             Screen("ub-gauge-late", s => Gauge(s, UbGame(s, st => UbRounds(s.Board.Ctx, st, 4)), true)),
             // 6인 판: 위 띠 폭이 모자라 칩이 상태 판 아래 오른쪽 판으로(BoardUb.RowSeats)
             Screen("ub-gauge-6", s => Gauge(s, UbGame(s, null, 6), true)),
+            // 위 띠 프리즘 칩의 마우스 오버 = 개수 · 효과 · 옮겨 감(결정 193)
+            Screen("ub-prism-tip", s => PrismTip(s, UbGame(s))),
             // 82행: UB 턴 시작 — 가운데 페이즈 띠(102행) · 균열 칩 눌림 → 첫 이동 가운데(위 가운데 띠 · 「자동」 꼬리표) → 첫 착지 뒤
             Screen("row-82-phase", s => Hud(s, UbTurnInto(s, st => st.Row == UbRows.Start, 380), h => h.Band.UbPhaseShown, "UB 페이즈 띠")),
             Screen("row-82-band", s => Hud(s, UbTurnInto(s, st => st.Row == UbRows.Move, 200), h => h.Ub.BandShown >= 1f && h.Ub.TagFor >= 0, "위 가운데 띠 · 꼬리표")),
@@ -65,6 +67,23 @@ namespace Sinnoh.Editor
             }
             UbClean(hud);
             if (tip) flow.Stage.Tips.Show(root.Q(BoardUb.Gauge));
+        }
+
+        // 프리즘 칩에 마우스: 툴팁에 효과 문구(screen.board.ub.prism.tip.effect)가 있다
+        static void PrismTip(UiShot s, GameFlow flow)
+        {
+            Gauge(s, flow, false);
+            flow.Stage.Tips.Show(flow.Stage.Root.Q(BoardUb.Prism));
+            TipHas(flow, "screen.board.ub.prism.tip.effect");
+        }
+
+        // 떠 있는 툴팁의 글에 그 키의 문구가 있다
+        static void TipHas(GameFlow flow, string key)
+        {
+            string want = flow.Stage.T(key).Replace("⁠", "");
+            foreach (var l in flow.Stage.Tips.Element.Query<Label>().ToList())
+                if (l.text.Replace("⁠", "").Contains(want)) return;
+            throw new InvalidOperationException("툴팁에 " + key + " 문구가 없다");
         }
 
         // 연출 장면: 그 요소가 떠 있고(seen) 칩·띠의 글이 넘치지 않는다

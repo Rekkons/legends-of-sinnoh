@@ -1,0 +1,566 @@
+{
+  "schema": 1,
+  "note": "결정 163 다시 번역 — 05-cards(막 · 운명의 변화 · 왜곡 균열 · 은행상회 · 고향 마을 · 사당 이벤트 · 여행 스탬프 · 울트라 온슬롯 카드, 영문에서 새로 옮김). [가정] home_village.nesburgh · sinnome · stark: 본편 지명이 아닌 팬 마을이라(3JA2는 장막시티 · 꽃향기마을 · 무쇠시티 = 다른 공식 도시) 새로 옮김 — 하드마을(Stark = 하드마운틴, region.stark_* 「하드」와 맞춤) · 네스버그마을 · 시노메마을(소리 옮김). village.*(06 일감)과 같은 이름이어야 한다. [가정] distortion_breach 이름 6: 색채 융합 · 중력 끌림 · 날렵한 몸 · 재빠른 공격 · 무모한 돌격 · 상태 과부하 — 룰북 울트라 장 그림 설명(Reckless Assault)과 맞춘다. 「ability」는 포켓몬 공식 말 특성(용어집 #41 비스트 부스트(특성)과 같게). [가정] shrine_event 이름: 빛의 봉화 · 등가 교환 · 운명적인 만남(본편 「운명적인 만남」) · 깨어나는 거인 · 나타나는 그림자 · 성대한 연회 · 고요한 한때 · 먼 곳에서 온 손님. [가정] ultra_onslaught 이름 = 용어집 00 §5-2 #60 「울트라 온슬롯」 그대로. act.* 이름 = screen.act.title.*(침입 · 여정 · 조각 · 심장 · 선택)과 같게. [가정] act.journey.text.3: 「the 2 Team Galactic Grunts」 = 조무래기 덱에서 뽑은 포켓몬 2마리(A1)라 「조무래기 2마리」(마리 = 포켓몬 셈, 「포켓몬」을 더하지 않음). [가정] home_village.*.text 「Place this card in your hand…」: TTS 자리 색 조작 문장이지만 카드 줄 수를 지켜야 해 그대로 옮겼다(W6로 뺄지는 메인 판단). [가정] 다른 일감 이름은 지금 값으로 부른다 — 시작의 사당 · 달빛공터 사당 · 거상 사당 · 불꽃노래 사당 · 서리노래 사당 · 천둥노래 사당 · 시간의 사당(06 legendary_shrine.*) · 수퍼볼 · 하이퍼볼 · 키스톤볼(06 item.*) · 비스트 부스트 · 알파 스트라이크 — 06이 바꾸면 맞춘다.",
+  "strings": {
+    "act.choice": {
+      "en": "The Choice",
+      "ko": "선택"
+    },
+    "act.choice.text.1": {
+      "en": "Is it over? Arceus, awaking from its control, looks expectantly at the restored Heart of Sinnoh you hold in your hands.",
+      "ko": "이제 끝난 걸까요? 조종에서 풀려난 아르세우스가 내가 손에 든 복구된 신오의 심장을 기대에 찬 눈으로 바라봅니다."
+    },
+    "act.choice.text.2": {
+      "en": "But with this power, surely the world could be changed... for the better? Someone like Cyrus would never be able to rise again... right?",
+      "ko": "하지만 이 힘이라면 세상을 바꿀 수 있지 않을까요... 더 나은 쪽으로? 태홍 같은 자가 다시는 일어서지 못하게... 그렇죠?"
+    },
+    "act.choice.text.3": {
+      "en": "Hero of Sinnoh: Return the Heart to Arceus.",
+      "ko": "신오의 영웅: 심장을 아르세우스에게 되돌려 줍니다."
+    },
+    "act.choice.text.4": {
+      "en": "Traitor of Sinnoh: Claim the Heart of Sinnoh. Challenge and defeat each of your fellow trainers in battle to be crowned as the undisputed strongest trainer.",
+      "ko": "신오의 배신자: 신오의 심장을 차지합니다. 동료 트레이너 모두에게 배틀을 걸어 이기고, 누구도 반박할 수 없는 최강의 트레이너로 등극합니다."
+    },
+    "act.heart": {
+      "en": "The Heart",
+      "ko": "심장"
+    },
+    "act.heart.text.1": {
+      "en": "Without the power of the Heart, Arceus falls under the control of Cyrus and the world begins to reshape itself according to the machinations of its new God.",
+      "ko": "심장의 힘이 없는 아르세우스는 태홍에게 조종당하고, 세계는 새로운 신의 계략대로 모습을 바꾸기 시작합니다."
+    },
+    "act.heart.text.2": {
+      "en": "Restore the Heart of Sinnoh at the Origin Shrine then proceed to the Temple of Sinnoh to confront Cyrus.",
+      "ko": "시작의 사당에서 신오의 심장을 복구한 뒤, 신오신전으로 가서 태홍과 맞서십시오."
+    },
+    "act.heart.text.3": {
+      "en": "Objective: Defeat Cyrus at the Temple of Sinnoh.",
+      "ko": "목표: 신오신전에서 태홍을 이깁니다."
+    },
+    "act.heart.text.4": {
+      "en": "Reward: Draw the Ending card",
+      "ko": "보상: 종막 카드 뽑기"
+    },
+    "act.heart.text.5": {
+      "en": "Once one trainer completes this objective: They draw the Ending card.",
+      "ko": "트레이너 한 명이 이 목표를 이루면 그 트레이너가 종막 카드를 뽑습니다."
+    },
+    "act.incursion": {
+      "en": "The Incursion",
+      "ko": "침입"
+    },
+    "act.incursion.text.1": {
+      "en": "In the future, a pivotal battle for the fate of the world has been lost.",
+      "ko": "미래에서는 세계의 운명이 걸린 결정적인 배틀에서 패하고 말았습니다."
+    },
+    "act.incursion.text.2": {
+      "en": "By harnessing the powers of the legendary Pokémon Dialga and Palkia, Team Galactic have travelled to our own time to shatter the Heart of Sinnoh, a primordial jewel that embodies the spirit of the world.",
+      "ko": "갤럭시단은 전설 포켓몬 디아루가와 펄기아의 힘을 이용해 우리 시대로 건너왔습니다. 세계의 혼이 깃든 태초의 보석, 신오의 심장을 산산조각 내기 위해서입니다."
+    },
+    "act.incursion.text.3": {
+      "en": "To prevent retribution whilst their plans are finalised, grunts have been dispatched to subdue the villages of the region.",
+      "ko": "계획이 마무리될 때까지 반격을 막으려고, 갤럭시단은 이 지방의 마을들을 억누를 조무래기들을 보냈습니다."
+    },
+    "act.incursion.text.4": {
+      "en": "Place one “Team Galactic Grunts” token on the home village of each trainer face-up. You cannot fly to or from a village with this token on. Draw the Act I card.",
+      "ko": "트레이너마다 고향 마을에 “갤럭시단 조무래기” 토큰을 1개씩 앞면으로 놓습니다. 이 토큰이 있는 마을은 공중날기로 가거나 떠날 수 없습니다. 1막 카드를 뽑습니다."
+    },
+    "act.journey": {
+      "en": "The Journey",
+      "ko": "여정"
+    },
+    "act.journey.text.1": {
+      "en": "Members of your village are hesitant to make a stand against Team Galactic. Set out on a journey to catch and train a small team capable of liberating your home.",
+      "ko": "내 마을 사람들은 갤럭시단에 맞서기를 주저하고 있습니다. 여행을 떠나 포켓몬을 잡고 길러, 고향을 해방할 수 있는 작은 팀을 꾸리십시오."
+    },
+    "act.journey.text.2": {
+      "en": "As you leave, you grab 3 Red Apricorns to construct some Poké Balls with.",
+      "ko": "길을 나서며 몬스터볼을 만들 빨강 규토리 3개를 챙깁니다."
+    },
+    "act.journey.text.3": {
+      "en": "Objective: Defeat the 2 Team Galactic Grunts at your home village.",
+      "ko": "목표: 내 고향 마을의 갤럭시단 조무래기 2마리를 쓰러뜨립니다."
+    },
+    "act.journey.text.4": {
+      "en": "Reward: +2 Movement per Turn",
+      "ko": "보상: 매 턴 이동력 +2"
+    },
+    "act.journey.text.5": {
+      "en": "Once one trainer completes this objective: Draw the Act II card and flip over the tokens at each of the three lakes.",
+      "ko": "트레이너 한 명이 이 목표를 이루면 2막 카드를 뽑고, 세 호수의 토큰을 모두 뒤집습니다."
+    },
+    "act.shards": {
+      "en": "The Shards",
+      "ko": "조각"
+    },
+    "act.shards.text.1": {
+      "en": "The Shards needed to restore the Heart are bestowed by the three mysterious Lake Guardians.",
+      "ko": "신비로운 호수의 수호신 셋이 심장 복구에 필요한 조각을 내려 줍니다."
+    },
+    "act.shards.text.2": {
+      "en": "Knowing this, Team Galactic have deployed their commanders to Lake Verity, Lake Acuity and Lake Valor to prevent anyone from collecting these Shards.",
+      "ko": "이를 알아챈 갤럭시단은 누구도 조각을 모으지 못하도록 진실호수 · 예지호수 · 입지호수에 간부들을 배치했습니다."
+    },
+    "act.shards.text.3": {
+      "en": "Objective: Defeat the Galactic Commanders at each lake to collect all three Shards.",
+      "ko": "목표: 호수마다 갤럭시단 간부를 쓰러뜨려 조각 3개를 모두 모읍니다."
+    },
+    "act.shards.text.4": {
+      "en": "Reward: +1 Party Slot per Shard",
+      "ko": "보상: 조각 1개마다 파티 칸 +1"
+    },
+    "act.shards.text.5": {
+      "en": "Once one trainer completes this objective: Draw the Act III card and flip over the token at the Temple of Sinnoh.",
+      "ko": "트레이너 한 명이 이 목표를 이루면 3막 카드를 뽑고, 신오신전의 토큰을 뒤집습니다."
+    },
+    "change_of_fate.arceus.text.1": {
+      "en": "Wildcard",
+      "ko": "와일드카드"
+    },
+    "change_of_fate.arceus.text.2": {
+      "en": "Play 3: Blessing of Arceus",
+      "ko": "3장 사용: 아르세우스의 축복"
+    },
+    "change_of_fate.dialga.text.1": {
+      "en": "Reroll 1",
+      "ko": "재굴림 1"
+    },
+    "change_of_fate.dialga.text.2": {
+      "en": "Play 3: Reroll Any",
+      "ko": "3장 사용: 원하는 주사위 재굴림"
+    },
+    "change_of_fate.giratina.text.1": {
+      "en": "Sacrifice 2",
+      "ko": "희생 2"
+    },
+    "change_of_fate.giratina.text.2": {
+      "en": "Play 3: Sacrifice All",
+      "ko": "3장 사용: 모두 희생"
+    },
+    "change_of_fate.palkia.text.1": {
+      "en": "Teleport 3",
+      "ko": "순간이동 3"
+    },
+    "change_of_fate.palkia.text.2": {
+      "en": "Play 3: Teleport Anywhere",
+      "ko": "3장 사용: 어디로든 순간이동"
+    },
+    "distortion_breach.chromatic_union": {
+      "en": "Chromatic Union",
+      "ko": "색채 융합"
+    },
+    "distortion_breach.chromatic_union.text.1": {
+      "en": "You must attach this ability to a Pokémon in your party.",
+      "ko": "이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다."
+    },
+    "distortion_breach.chromatic_union.text.2": {
+      "en": "The moves of the user are now Typeless, but their attack strengths are increased by 1.",
+      "ko": "사용자의 기술은 모두 타입 없음이 됩니다. 대신 위력이 1 오릅니다."
+    },
+    "distortion_breach.gravitational_drag": {
+      "en": "Gravitational Drag",
+      "ko": "중력 끌림"
+    },
+    "distortion_breach.gravitational_drag.text.1": {
+      "en": "You must attach this ability to a Pokémon in your party.",
+      "ko": "이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다."
+    },
+    "distortion_breach.gravitational_drag.text.2": {
+      "en": "Reduce the initiative of the user by 3 but increase the base health of the user by 3.",
+      "ko": "사용자는 스피드 −3. 하지만 최대 체력 +3."
+    },
+    "distortion_breach.nimble_frame": {
+      "en": "Nimble Frame",
+      "ko": "날렵한 몸"
+    },
+    "distortion_breach.nimble_frame.text.1": {
+      "en": "You must attach this ability to a Pokémon in your party.",
+      "ko": "이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다."
+    },
+    "distortion_breach.nimble_frame.text.2": {
+      "en": "When the user attacks, it takes 1 damage, but may switch out afterwards. Does not affect the current turn order.",
+      "ko": "사용자는 공격할 때 데미지를 1 입지만, 공격한 뒤 교체할 수 있습니다. 지금의 차례 순서는 바뀌지 않습니다."
+    },
+    "distortion_breach.rapid_strikes": {
+      "en": "Rapid Strikes",
+      "ko": "재빠른 공격"
+    },
+    "distortion_breach.rapid_strikes.text.1": {
+      "en": "You must attach this ability to a Pokémon in your party.",
+      "ko": "이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다."
+    },
+    "distortion_breach.rapid_strikes.text.2": {
+      "en": "The user always goes first but reduces its moves with greater than 3 total attack strength to 3 attack strength.",
+      "ko": "사용자는 언제나 먼저 행동합니다. 하지만 총 위력이 3을 넘는 기술은 위력이 3으로 줄어듭니다."
+    },
+    "distortion_breach.reckless_assault": {
+      "en": "Reckless Assault",
+      "ko": "무모한 돌격"
+    },
+    "distortion_breach.reckless_assault.text.1": {
+      "en": "You must attach this ability to a Pokémon in your party.",
+      "ko": "이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다."
+    },
+    "distortion_breach.reckless_assault.text.2": {
+      "en": "When the user attacks or is attacked, positive type effectiveness damage is increased by 2.",
+      "ko": "사용자가 공격하거나 공격받을 때, 유리한 타입 상성으로 더해지는 데미지가 2 늘어납니다."
+    },
+    "distortion_breach.status_overload": {
+      "en": "Status Overload",
+      "ko": "상태 과부하"
+    },
+    "distortion_breach.status_overload.text.1": {
+      "en": "You must attach this ability to a Pokémon in your party.",
+      "ko": "이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다."
+    },
+    "distortion_breach.status_overload.text.2": {
+      "en": "When the user switches in, roll a status dice and inflict the result on both the user and the target.",
+      "ko": "사용자가 배틀에 나올 때 상태 이상 주사위를 1개 굴려, 나온 결과를 사용자와 상대 모두에게 겁니다."
+    },
+    "ginkgo_trade.1": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.2": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.3": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.4": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.5": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.6": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.7": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.8": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "ginkgo_trade.9": {
+      "en": "Ginkgo Trade",
+      "ko": "은행상회 거래"
+    },
+    "home_village.canalave.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.celestic.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.eterna.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.nesburgh": {
+      "en": "Nesburgh Village",
+      "ko": "네스버그마을"
+    },
+    "home_village.nesburgh.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.sinnome": {
+      "en": "Sinnome Village",
+      "ko": "시노메마을"
+    },
+    "home_village.sinnome.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.snowpoint.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.stark": {
+      "en": "Stark Village",
+      "ko": "하드마을"
+    },
+    "home_village.stark.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.sunyshore.text.1": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "home_village.ultra_megalopolis.text.1": {
+      "en": "Ultra Burst Campaign Only",
+      "ko": "울트라 버스트 캠페인 전용"
+    },
+    "home_village.ultra_megalopolis.text.2": {
+      "en": "Choose your starter",
+      "ko": "스타팅 포켓몬을 고르십시오"
+    },
+    "shrine_event.ancient_wisdom": {
+      "en": "Ancient Wisdom",
+      "ko": "고대의 지혜"
+    },
+    "shrine_event.ancient_wisdom.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.ancient_wisdom.text.2": {
+      "en": "You may learn a move from a discarded Pokémon with encounter tier up to Moderate/Strong/Legendary.",
+      "ko": "버려진 포켓몬 가운데 조우 등급이 적당한/강한/전설 이하인 포켓몬의 기술을 1개 배울 수 있습니다."
+    },
+    "shrine_event.beacon_of_light": {
+      "en": "A Beacon of Light",
+      "ko": "빛의 봉화"
+    },
+    "shrine_event.beacon_of_light.text.1": {
+      "en": "All trainers gain 2 Pink Apricorns. Place the Cresselia token on the Moonglade Shrine (replaces the Darkrai token).",
+      "ko": "모든 트레이너가 분홍 규토리를 2개씩 얻습니다. 크레세리아 토큰을 달빛공터 사당에 놓습니다(다크라이 토큰을 대신합니다)."
+    },
+    "shrine_event.celestial_fracture": {
+      "en": "Celestial Fracture",
+      "ko": "천상의 균열"
+    },
+    "shrine_event.celestial_fracture.text.1": {
+      "en": "All trainers draw 1 Change of Fate card and may change their Follower token in secret. After revealing, place the God of Sinnoh token with the most Followers on the Origin Shrine (you choose if tied).",
+      "ko": "모든 트레이너가 운명의 변화 카드를 1장씩 뽑고, 몰래 추종자 토큰을 바꿀 수 있습니다. 공개한 뒤 추종자가 가장 많은 신오의 신 토큰을 시작의 사당에 놓습니다(동점이면 내가 고릅니다)."
+    },
+    "shrine_event.equivalent_exchange": {
+      "en": "Equivalent Exchange",
+      "ko": "등가 교환"
+    },
+    "shrine_event.equivalent_exchange.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.equivalent_exchange.text.2": {
+      "en": "You may replace up to a Weak/Moderate/Strong Pokémon in your party with any wild Pokémon of the same encounter tier whilst keeping everything else attached.",
+      "ko": "내 파티에서 조우 등급이 약한/적당한/강한 이하인 포켓몬 1마리를 같은 조우 등급의 원하는 야생 포켓몬으로 바꿀 수 있습니다. 붙어 있던 것은 모두 새 포켓몬에게 그대로 남습니다."
+    },
+    "shrine_event.fateful_encounter": {
+      "en": "Fateful Encounter",
+      "ko": "운명적인 만남"
+    },
+    "shrine_event.fateful_encounter.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.fateful_encounter.text.2": {
+      "en": "Draw 1/2/3 Change of Fate cards.",
+      "ko": "운명의 변화 카드 1/2/3장을 뽑습니다."
+    },
+    "shrine_event.giant_awakens": {
+      "en": "A Giant Awakens",
+      "ko": "깨어나는 거인"
+    },
+    "shrine_event.giant_awakens.text.1": {
+      "en": "All trainers gain 2 White Apricorns. Place the Regigigas token on the Colossus Shrine.",
+      "ko": "모든 트레이너가 하양 규토리를 2개씩 얻습니다. 거상 사당에 레지기가스 토큰을 놓습니다."
+    },
+    "shrine_event.hidden_treasure": {
+      "en": "Hidden Treasure",
+      "ko": "숨겨진 보물"
+    },
+    "shrine_event.hidden_treasure.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.hidden_treasure.text.2": {
+      "en": "Gain a Greater Ball/Ultimate Ball/Keystone Ball.",
+      "ko": "수퍼볼/하이퍼볼/키스톤볼 1개를 얻습니다."
+    },
+    "shrine_event.shadow_emerges": {
+      "en": "A Shadow Emerges",
+      "ko": "나타나는 그림자"
+    },
+    "shrine_event.shadow_emerges.text.1": {
+      "en": "All trainers gain 1 Black Apricorn. Place the Darkrai token on the Moonglade Shrine (replaces the Cresselia token).",
+      "ko": "모든 트레이너가 검정 규토리를 1개씩 얻습니다. 다크라이 토큰을 달빛공터 사당에 놓습니다(크레세리아 토큰을 대신합니다)."
+    },
+    "shrine_event.song_of_fire": {
+      "en": "A Song of Fire",
+      "ko": "불꽃의 노래"
+    },
+    "shrine_event.song_of_fire.text.1": {
+      "en": "All trainers gain 3 Red Apricorns. Place the Moltres token on the Firesong Shrine.",
+      "ko": "모든 트레이너가 빨강 규토리를 3개씩 얻습니다. 불꽃노래 사당에 파이어 토큰을 놓습니다."
+    },
+    "shrine_event.song_of_frost": {
+      "en": "A Song of Frost",
+      "ko": "서리의 노래"
+    },
+    "shrine_event.song_of_frost.text.1": {
+      "en": "All trainers gain 3 Blue Apricorns. Place the Articuno token on the Frostsong Shrine.",
+      "ko": "모든 트레이너가 파랑 규토리를 3개씩 얻습니다. 서리노래 사당에 프리져 토큰을 놓습니다."
+    },
+    "shrine_event.song_of_thunder": {
+      "en": "A Song of Thunder",
+      "ko": "천둥의 노래"
+    },
+    "shrine_event.song_of_thunder.text.1": {
+      "en": "All trainers gain 3 Yellow Apricorns. Place the Zapdos token on the Thundersong Shrine.",
+      "ko": "모든 트레이너가 노랑 규토리를 3개씩 얻습니다. 천둥노래 사당에 썬더 토큰을 놓습니다."
+    },
+    "shrine_event.splendid_banquet": {
+      "en": "Splendid Banquet",
+      "ko": "성대한 연회"
+    },
+    "shrine_event.splendid_banquet.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.splendid_banquet.text.2": {
+      "en": "Use 1/2/3 Apricorn Stew effects for free this turn. You cannot choose the same stew effect more than once.",
+      "ko": "이번 턴에 규토리 스튜 효과 1/2/3개를 무료로 사용합니다. 같은 스튜 효과는 한 번만 고를 수 있습니다."
+    },
+    "shrine_event.tranquil_moment": {
+      "en": "Tranquil Moment",
+      "ko": "고요한 한때"
+    },
+    "shrine_event.tranquil_moment.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.tranquil_moment.text.2": {
+      "en": "Gain 2/4/6 Journey Points.",
+      "ko": "여행 점수를 2/4/6 얻습니다."
+    },
+    "shrine_event.unexpected_gift": {
+      "en": "Unexpected Gift",
+      "ko": "뜻밖의 선물"
+    },
+    "shrine_event.unexpected_gift.text.1": {
+      "en": "4+ trainers: Choose another trainer to also get this effect",
+      "ko": "트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다."
+    },
+    "shrine_event.unexpected_gift.text.2": {
+      "en": "Gain any 1/2/3 Apricorns.",
+      "ko": "원하는 규토리를 1/2/3개 얻습니다."
+    },
+    "shrine_event.visitor_from_afar": {
+      "en": "A Visitor from Afar",
+      "ko": "먼 곳에서 온 손님"
+    },
+    "shrine_event.visitor_from_afar.text.1": {
+      "en": "All trainers gain 2 Green Apricorns. Place the Celebi token on the Timeless Shrine.",
+      "ko": "모든 트레이너가 초록 규토리를 2개씩 얻습니다. 시간의 사당에 세레비 토큰을 놓습니다."
+    },
+    "stamp.1": {
+      "en": "Journey Stamp 1",
+      "ko": "여행 스탬프 1"
+    },
+    "stamp.1.text": {
+      "en": "You fail to capture a wild Pokémon 2 turns in a row during a battle.",
+      "ko": "배틀 중 2차례 연속으로 야생 포켓몬 포획에 실패합니다."
+    },
+    "stamp.2": {
+      "en": "Journey Stamp 2",
+      "ko": "여행 스탬프 2"
+    },
+    "stamp.2.text": {
+      "en": "You win a battle against another trainer or an Ultra Beast.",
+      "ko": "다른 트레이너나 울트라 비스트와의 배틀에서 이깁니다."
+    },
+    "stamp.3": {
+      "en": "Journey Stamp 3",
+      "ko": "여행 스탬프 3"
+    },
+    "stamp.3.text": {
+      "en": "You have at least 1 of every Apricorn type in your bag.",
+      "ko": "가방에 규토리가 종류마다 1개 이상 있습니다."
+    },
+    "stamp.4": {
+      "en": "Journey Stamp 4",
+      "ko": "여행 스탬프 4"
+    },
+    "stamp.4.text": {
+      "en": "You have captured a Legendary Pokémon.",
+      "ko": "전설 포켓몬을 포획했습니다."
+    },
+    "stamp.5": {
+      "en": "Journey Stamp 5",
+      "ko": "여행 스탬프 5"
+    },
+    "stamp.5.text": {
+      "en": "You have 3 or more held items equipped in your party.",
+      "ko": "내 파티에 지닌물건이 3개 이상 있습니다."
+    },
+    "stamp.6": {
+      "en": "Journey Stamp 6",
+      "ko": "여행 스탬프 6"
+    },
+    "stamp.6.text": {
+      "en": "You have been victorious at a Swarm Battle.",
+      "ko": "무리 배틀에서 승리했습니다."
+    },
+    "stamp.7": {
+      "en": "Journey Stamp 7",
+      "ko": "여행 스탬프 7"
+    },
+    "stamp.7.text": {
+      "en": "You have 3 different Change of Fate cards in your hand.",
+      "ko": "손에 서로 다른 운명의 변화 카드가 3장 있습니다."
+    },
+    "ultra_onslaught.1": {
+      "en": "Ultra Onslaught",
+      "ko": "울트라 온슬롯"
+    },
+    "ultra_onslaught.1.text.1": {
+      "en": "Do not attack this turn.",
+      "ko": "이번 턴에는 공격하지 않습니다."
+    },
+    "ultra_onslaught.1.text.2": {
+      "en": "Heal 4 damage and all status effects.",
+      "ko": "체력을 4 회복하고 상태 이상을 모두 없앱니다."
+    },
+    "ultra_onslaught.2": {
+      "en": "Ultra Onslaught",
+      "ko": "울트라 온슬롯"
+    },
+    "ultra_onslaught.2.text.1": {
+      "en": "Replace all status symbols with critical hits.",
+      "ko": "상태 이상 심볼을 모두 급소로 바꿉니다."
+    },
+    "ultra_onslaught.3": {
+      "en": "Ultra Onslaught",
+      "ko": "울트라 온슬롯"
+    },
+    "ultra_onslaught.3.text.1": {
+      "en": "Immediately trigger the effects of Beast Boost. If Beast Boost is already active, add to its effect.",
+      "ko": "곧바로 비스트 부스트의 효과를 발동합니다. 비스트 부스트가 이미 발동 중이면 그 효과에 더합니다."
+    },
+    "ultra_onslaught.4": {
+      "en": "Ultra Onslaught",
+      "ko": "울트라 온슬롯"
+    },
+    "ultra_onslaught.4.text.1": {
+      "en": "When next attacked, all regular hits damage the attacker as well.",
+      "ko": "다음에 공격받을 때, 일반 타격은 모두 공격한 포켓몬에게도 데미지를 줍니다."
+    },
+    "ultra_onslaught.5": {
+      "en": "Ultra Onslaught",
+      "ko": "울트라 온슬롯"
+    },
+    "ultra_onslaught.5.text.1": {
+      "en": "Use Alpha Strike twice this turn.",
+      "ko": "이번 턴에는 알파 스트라이크를 2번 씁니다."
+    },
+    "ultra_onslaught.6": {
+      "en": "Ultra Onslaught",
+      "ko": "울트라 온슬롯"
+    },
+    "ultra_onslaught.6.text.1": {
+      "en": "Deal double damage to the opposing Pokémon if they have any Distortion Breach cards attached.",
+      "ko": "왜곡 균열 카드가 붙은 상대 포켓몬에게는 데미지를 2배로 줍니다."
+    }
+  }
+}

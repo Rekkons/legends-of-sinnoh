@@ -78,6 +78,14 @@ namespace Sinnoh.Data
     public sealed class ReleaseManifest
     {
         public string Version, Date;
+        /// <summary>묶음 자리(<c>&lt;받기 주소&gt;/releases/&lt;판&gt;/</c> — zip 경로가 쓴다). 없으면 "".</summary>
+        public string Base = "";
+        /// <summary>파일 객체 자리(결정 161 K1 — <c>&lt;받기 주소&gt;/files/</c>, 받을 주소 = Store + sha256). 비면 자동 업데이트 없음([받기]만).</summary>
+        public string Store = "";
+        /// <summary>이 판을 자동 업데이트로 받아도 되나(K1 — 칸이 없는 0.1.0 꼴 · pack --manual이면 거짓).</summary>
+        public bool Auto;
+        /// <summary>받은 latest.json 글 그대로(도우미가 같은 글의 서명을 다시 확인한다 — 다시 직렬화하지 않는다).</summary>
+        public string Text;
         public readonly List<ReleaseFile> Packages = new List<ReleaseFile>();
         public readonly List<ReleaseFile> Files = new List<ReleaseFile>();
     }
@@ -85,7 +93,7 @@ namespace Sinnoh.Data
     /// <summary>
     /// 새 판 알림(결정 148 ① · 151): 판 정보 파일 <c>latest.json</c>(Cloudflare R2 — <see cref="Url"/>)을 읽어 우리 키의 Ed25519 서명을 확인한다.
     /// 파일 꼴(<c>Tools/release/pack.mjs</c>가 만든다): <c>{"format":1,"manifest":"&lt;JSON 글&gt;","signature":"&lt;base64&gt;"}</c> — 서명은 manifest 글의 UTF-8 바이트 그대로에 건다(다시 직렬화하지 않는다).
-    /// manifest = <c>{"app":"sinnoh","version","date","page","base","packages":[{path,size,sha256}],"files":[{path,size,sha256}]}</c>(files = 다음 묶음 업데이트 도우미가 견줄 게임 파일).
+    /// manifest = <c>{"app":"sinnoh","version","date","page","base","store","auto","packages":[{path,size,sha256}],"files":[{path,size,sha256}]}</c>(files = 게임 파일 — 자동 업데이트가 견준다, store · auto = 결정 161 K1 · <c>Update/UpdatePlan</c>).
     /// 실패(꼴 · 서명 · 판 번호)는 예외 없이 null + 까닭 — 화면은 조용히 넘긴다.
     /// </summary>
     public static class ReleaseFeed
@@ -116,7 +124,7 @@ namespace Sinnoh.Data
                 if (!Ed25519.Verify(publicKey, Encoding.UTF8.GetBytes(manifest), Convert.FromBase64String(sig))) { why = "signature"; return null; }
                 var m = JObject.Parse(manifest);
                 if ((string)m["app"] != App) { why = "app"; return null; }
-                var info = new ReleaseManifest { Version = (string)m["version"], Date = (string)m["date"] };
+                var info = new ReleaseManifest { Version = (string)m["version"], Date = (string)m["date"], Base = (string)m["base"] ?? "", Store = (string)m["store"] ?? "", Auto = (bool?)m["auto"] ?? false, Text = json };
                 if (!ReleaseVersion.TryParse(info.Version, out _)) { why = "version"; return null; }
                 Files(m["packages"], info.Packages);
                 Files(m["files"], info.Files);

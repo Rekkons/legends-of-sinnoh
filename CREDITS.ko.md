@@ -4,7 +4,7 @@
 
 > **포켓몬스터 비공식 팬 게임 · 비영리** — 이 게임은 Lev(Levatius)의 팬 게임 「Pokémon: Legends of Sinnoh」를 디지털로 옮긴 팬 게임입니다. 무료로 나누며 팔지 않습니다. Nintendo · Creatures Inc. · GAME FREAK inc. · The Pokémon Company와 관계가 없고 승인 · 후원을 받지 않았습니다.
 >
-> 포켓몬 원작 자산(그림 · 소리 · 글꼴 · 이름)의 권리는 Nintendo / Creatures Inc. / GAME FREAK inc.에 있습니다. 원작 팬 게임의 규칙 · 자산은 Lev(Levatius), 한국어 번역은 3JA2 · 로씨온의 것이며 원작자가 밝힌 조건(비영리 · 출처 표기 · 판매 금지)을 따릅니다.
+> 포켓몬 원작 자산(그림 · 소리 · 글꼴 · 이름)의 권리는 Nintendo / Creatures Inc. / GAME FREAK inc.에 있습니다. 원작 팬 게임의 규칙 · 자산은 Lev(Levatius)의 것이며 원작자가 밝힌 조건(비영리 · 출처 표기 · 판매 금지)을 따릅니다.
 >
 > 라이선스는 `LICENSE.ko.md`, 배포본에 들어가는 오픈소스의 고지 · 라이선스 전문은 `THIRD-PARTY-NOTICES.ko.md`에 있습니다.
 
@@ -14,14 +14,6 @@
   - 출처: https://steamcommunity.com/sharedfiles/filedetails/?id=2652573878 · https://github.com/Levatius/pokemon-legends
   - 조건: 비영리 · 출처 표기 · 판매 금지(원작자가 밝힌 조건)
 - **A2.0 · Dongoboy · Just- · Lord O’Chocolates · TheOMega · Legends of Sinnoh Discord** — 원작 베타 테스트 · 커뮤니티
-
-## 번역
-
-- **3JA2** — 한국어 번역
-  - 출처: https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224
-  - 조건: 비영리 · 출처 표기(원작 조건)
-- **로씨온** — 1.4a 카드 번역
-  - 출처: https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224
 
 ## 포켓몬
 

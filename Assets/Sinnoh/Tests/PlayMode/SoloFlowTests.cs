@@ -219,7 +219,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(stage.Root.Q("setup-village-item-ultra_megalopolis"), Is.Null, "울트라메가로폴리스는 울트라 버스트에서만(G12)");
                 int stark = -1;
                 for (int i = 0; i < village.Villages.Count; i++) if (flow.Ctx.Fixtures.Fixtures[village.Villages[i]].Key == "village.stark") stark = i;
-                Assert.That(stage.Root.Q("setup-village-item-stark").Q<Label>(className: Kit.F2).text, Is.EqualTo("무쇠시티"), "마을 이름은 문자열 표에서");
+                Assert.That(stage.Root.Q("setup-village-item-stark").Q<Label>(className: Kit.F2).text, Is.EqualTo("하드마을"), "마을 이름은 문자열 표에서(결정 163 다시 번역 — Stark Village)");
                 Assert.That(board.Pieces.Pieces.Count, Is.EqualTo(0), "게임이 시작되면 시험 판 말을 치운다(아직 고른 것이 없다)");
                 Assert.That(rig.InputEnabled, Is.False, "셋업: 보드 입력 끔");
                 Assert.That(stage.Root.Q<Button>("setup-village-confirm").enabledSelf, Is.False);
@@ -259,7 +259,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(drop.Coloured, Is.False, "내려앉기 전에는 좌석 색이 없다");
                 Assert.That(FaceBox.SeatColorOf(stage.Root.Q("setup-drop-face")), Is.EqualTo(SeatColors.Unassigned));
                 Assert.That(FaceBox.Shown(stage.Root.Q("setup-drop-face")), Is.EqualTo(flow.Protagonist(0)), "좌석 띠의 얼굴 = 그 좌석의 주인공");
-                Assert.That(stage.Root.Q<Label>("setup-drop-village").text, Is.EqualTo("무쇠시티"));
+                Assert.That(stage.Root.Q<Label>("setup-drop-village").text, Is.EqualTo("하드마을"));
                 foreach (var e in stage.Root.Q("setup-drop-band").Query().ToList()) Assert.That(e.pickingMode, Is.EqualTo(PickingMode.Ignore), "좌석 띠는 마우스를 받지 않는다: " + e.name);
                 stage.Tweens.Advance(landAt - fallAt - 100 + 300);
                 Assert.That(drop.Coloured, Is.True, "내려앉으면 좌석 색으로 칠해진다");
@@ -499,7 +499,7 @@ namespace Sinnoh.Tests.PlayMode
                 // ── 기록(S21) · 칸 정보 줄 · 공개 정보 카드 ──
                 Assert.That(hud.RecentLog.Count, Is.EqualTo(BoardHud.RecentLines), "왼쪽 위 기록 판 = 최근 줄 셋");
                 Assert.That(hud.RecentLog[BoardHud.RecentLines - 1], Is.EqualTo("플레이어 1은 빨강 규토리 3개를 받았다"));
-                Assert.That(hud.CellInfoText, Does.Contain("무쇠시티").And.Contain("갤럭시단 조무래기").And.Contain("높이"), "마우스가 보드 밖이면 내가 선 칸");
+                Assert.That(hud.CellInfoText, Does.Contain("하드마을").And.Contain("갤럭시단 조무래기").And.Contain("높이"), "마우스가 보드 밖이면 내가 선 칸");
                 Assert.That(BoardHud.UnderPanel(stage.Root, stage.Root.Q("board-hud-log").worldBound.center), Is.True, "기록 판도 HUD 판이다");
                 flow.OpenLog();
                 var logScreen = stage.Current as LogScreen;
@@ -507,7 +507,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(flow.InputOpen, Is.False, "기록 창이 떠 있는 동안 보드 입력은 닫힌다");
                 Assert.That(rig.InputEnabled, Is.False);
                 Assert.That(logScreen.Shown[0], Is.EqualTo("게임 준비"));
-                Assert.That(logScreen.Shown, Has.Member("플레이어 1은 무쇠시티에서 여행을 시작했다"));
+                Assert.That(logScreen.Shown, Has.Member("플레이어 1은 하드마을에서 여행을 시작했다"));
                 Assert.That(logScreen.Shown, Has.Member("서막 「침입」이 시작되었다"));
                 Assert.That(logScreen.Shown, Has.Member("1라운드"));
                 Assert.That(logScreen.Pages, Is.EqualTo(1));
@@ -545,7 +545,7 @@ namespace Sinnoh.Tests.PlayMode
                 hud.Hover(plainCell);
                 Assert.That(hud.Info.Subject, Is.Null, "말도 토큰도 없는 칸에는 카드가 없다(칸 정보 줄만 바뀐다)");
                 hud.Hover(-1);
-                Assert.That(hud.CellInfoText, Does.Contain("무쇠시티"));
+                Assert.That(hud.CellInfoText, Does.Contain("하드마을"));
                 // 남 좌석의 말: 보는 좌석이 아니면 그 좌석의 카드 대상이다(혼자 하기에는 남 좌석이 없어 셈만 본다)
                 {
                     var seatsThere = new List<int>();

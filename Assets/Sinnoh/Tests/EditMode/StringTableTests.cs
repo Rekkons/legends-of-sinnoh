@@ -169,7 +169,7 @@ namespace Sinnoh.Tests.EditMode
                 Assert.IsFalse(v.Replace("전투 피로", "").Contains("전투"), $"{key}: UI는 배틀(§9 #26) — {v}");
             }
             StringAssert.StartsWith("전투 피로:", ko["ui.arena_dice_roller.FATIGUED_TOOLTIP"]);
-            Assert.AreEqual("전수목 (울트라 비스트)", ko["pokemon.796:0"]);
+            Assert.AreEqual("전수목", ko["pokemon.796:0"], "영문 Xurkitree 그대로(결정 163 — 옛 꼬리 「(울트라 비스트)」 없음)");
         }
 
         /// <summary>결정 42·43: 화면 문구(ui.*)에 쓰지 않는 말 — 어색한 말투와 공식 용어(불꽃·순간이동·얼음·졸음·지닌물건·위력·급소·스피드)로 바꾼 옛 말.</summary>
@@ -195,7 +195,7 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual("불꽃", ko["ui.types.Fire"], "공식 타입명(원작 자산 0617)");
             Assert.AreEqual("타입 없음", ko["ui.types.Typeless"]);
             Assert.AreEqual("여기로 순간이동", ko["ui.teleport.TELEPORT_BUTTON_TOOLTIP"]);
-            Assert.AreEqual("위력", ko["ui.arena_dice_roller.DICE_BUTTON_TOOLTIP"], "Attack Strength = 위력");
+            Assert.AreEqual("위력 전환", ko["ui.arena_dice_roller.DICE_BUTTON_TOOLTIP"], "Toggle Attack Strength — Attack Strength = 위력");
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace Sinnoh.Tests.EditMode
                 }
             Assert.AreEqual(102, n);
             Assert.AreEqual("팀 빌더", ko["trainer_ability.ace_trainer.1"]);
-            Assert.AreEqual("강한 포켓몬은 스피드를 +1 얻습니다.", ko["trainer_ability.ace_trainer.2.text"]);
+            Assert.AreEqual("강한 포켓몬은 스피드 +1.", ko["trainer_ability.ace_trainer.2.text"]);
         }
 
         [Test]
@@ -285,7 +285,7 @@ namespace Sinnoh.Tests.EditMode
                     n++;
                 }
             Assert.AreEqual(102, n);
-            Assert.AreEqual(67, own, "따로 쓴 짧은 문구(나머지는 전체 문구가 48자 이하라 그대로)");
+            Assert.AreEqual(68, own, "따로 쓴 짧은 문구(나머지는 전체 문구가 48자 이하라 그대로 — 결정 163 새 번역 기준)");
             Assert.AreEqual(101, ownEn, "따로 쓴 영어 짧은 문구(Competitive Edge 하나만 전체 영문이 48자 이하)");
         }
 
@@ -335,8 +335,8 @@ namespace Sinnoh.Tests.EditMode
             }
             Assert.AreEqual(db.Moves.Count, keys.Count, "기술마다 한 줄");
             foreach (var m in db.Moves) Assert.IsTrue(keys.Contains("move." + m.Key), m.Key);
-            CollectionAssert.AreEquivalent(new[] { "3ja2", "pokeapi" }, bySrc.Keys, "원천 = 현행 공식(PokeAPI) · 3JA2(이 게임만). 원작 자산은 대조용(note)");
-            Assert.AreEqual(33, bySrc["3ja2"], "이 게임만의 기술");
+            CollectionAssert.AreEquivalent(new[] { "ours", "pokeapi" }, bySrc.Keys, "원천 = 현행 공식(PokeAPI) · 영문에서 옮긴 이름(이 게임만 — 결정 163). 원작 자산은 대조용(note)");
+            Assert.AreEqual(33, bySrc["ours"], "이 게임만의 기술");
             Assert.AreEqual(10, romDiffers, "원작 자산(Pt·B2W2) 이름과 현행 이름이 다른 기술 — note에 옛 이름");
             Assert.AreEqual("웨이브태클", ko["move.wave_crash"], "6세대 이후 = PokeAPI 한국어(3JA2 「웨이브 크러쉬」)");
             Assert.AreEqual("심판의뭉치", ko["move.judgement"], "원작 철자 Judgement = Judgment");
@@ -351,7 +351,7 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual("본러시", ko["move.bone_rush"], "(본러쉬)");
             Assert.AreEqual("록블라스트", ko["move.rock_blast"], "(락블레스트)");
             Assert.AreEqual("메탈클로", ko["move.metal_claw"], "(메탈크로우)");
-            Assert.AreEqual("배고픔휠", ko["move.hangry_wheel"], "이 게임만의 기술은 3JA2 그대로");
+            Assert.AreEqual("배고픔휠", ko["move.hangry_wheel"], "이 게임만의 기술은 영문에서 옮긴 이름(결정 163)");
             // 3JA2 오역 고침(ui-text-audit §2-1): 「사용자의 다음 공격」 → 다음에 공격받을 때, 대상 타겟 → 사용자
             StringAssert.Contains("사용자가 다음에 공격받을 때", ko["move.close_combat.text"]);
             StringAssert.StartsWith("사용자를 졸음 상태로", ko["move.zen_restoration.text"]);
@@ -359,8 +359,8 @@ namespace Sinnoh.Tests.EditMode
             // 검토 반영: 같은 「each other」 틀의 노래 기술 3개, 졸음 활용형(「타겟은 잠듭니다」), 불비달마 폼 이름
             foreach (var song in new[] { "fire_song", "frost_song", "thunder_song" })
                 StringAssert.Contains("다른 포켓몬", ko["move." + song + ".text"], song + ": each other");
-            StringAssert.EndsWith("상대는 졸음 상태가 됩니다.", ko["move.moonblast.text"]);
-            StringAssert.EndsWith("상대는 졸음 상태가 됩니다.", ko["move.night_daze.text"]);
+            StringAssert.EndsWith("상대를 졸음 상태로 만듭니다.", ko["move.moonblast.text"], "결정 163: 상태 이상은 「상대를 ○○ 상태로 만듭니다」");
+            StringAssert.EndsWith("상대를 졸음 상태로 만듭니다.", ko["move.night_daze.text"]);
             StringAssert.Contains("노말모드로 폼체인지", ko["move.zen_restoration.text"], "Blazing Form = pokemon.555:1 노말모드");
         }
 
@@ -370,7 +370,7 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual("곤충채집소년", ko["trainer_card.bug_catcher"], "카드 「곤충채집 소년」 → 원작 자산");
             Assert.AreEqual("수영팬티소년", ko["trainer_card.swimmer"], "카드 「수영팬티 소년」 → 원작 자산");
             Assert.AreEqual("엘리트 트레이너", ko["trainer_card.ace_trainer"]);
-            Assert.AreEqual("백금 무녀", ko["trainer_card.platinum_acolyte"], "원작 자산에 없는 직업은 카드 번역");
+            Assert.AreEqual("백금 신도", ko["trainer_card.platinum_acolyte"], "원작 자산에 없는 직업은 영문에서 옮김(결정 163)");
             Assert.AreEqual("태홍", ko["galactic.cyrus"]);
             Assert.AreEqual("마스", ko["galactic.mars"]);
             Assert.AreEqual("주피터", ko["galactic.jupiter"]);
@@ -431,7 +431,7 @@ namespace Sinnoh.Tests.EditMode
             // 사용자 결정 84 T11 ① 가 + 메모 「문구에 적어」: 규칙(공중날기와 합쳐 턴에 한 번 — rulings A36)은 그대로, 카드 능력 문구(마우스 오버)에 한 줄
             foreach (var key in new[] { "trainer_ability.bird_keeper.1.text", "trainer_ability.picnicker.1.text" })
                 StringAssert.EndsWith("공중날기와 합쳐 한 턴에 한 번입니다.", ko[key], key);
-            StringAssert.Contains("규토리 1개를 버리고", ko["trainer_ability.bird_keeper.1.text"], "영문 「by discarding 1 Apricorn」");
+            StringAssert.Contains("규토리 1개를 소모해", ko["trainer_ability.bird_keeper.1.text"], "영문 「by discarding 1 Apricorn」 — 자원은 소모(ui-text-guide §2-1)");
         }
 
         [Test]

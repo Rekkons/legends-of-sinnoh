@@ -240,6 +240,29 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual(1, l3.OfType<CaptureAttempt>().Count, "운명 손패가 없으면 바로 판정");
         }
 
+        // 결정 188(11-21 방 플레이 「주사위 굴리기 전에 다시 굴릴 거냐고 물어보고 굴린 후에 안 물어보네」): 규칙 순서는 맞다(굴림 → 굴린 뒤 창 — p.19 「reroll … the dice rolled」) —
+        // 굴린 볼 주사위를 창보다 먼저 이벤트로 드러내야 화면이 굴림 뒤에 묻는다. 물을 좌석이 없으면 지금처럼 판정(CaptureAttempt) 하나뿐
+        [Test]
+        public void A24_포획굴림은굴린주사위를먼저드러낸뒤디아루가를묻는다_결정188()
+        {
+            var log = new EventLog();
+            var s = ThrowAt(log, new[] { FateCard.Dialga }, S, S, R);
+            var rolled = log.OfType<DiceRolled>().FindAll(d => d.Kind == DiceKind.Capture);
+            Assert.AreEqual(1, rolled.Count, "물음 앞에 포획 굴림 하나");
+            CollectionAssert.AreEqual(new[] { S, S, R }, rolled[0].Faces);
+            Assert.AreEqual((int)Ball.Regular, rolled[0].BallKey);
+            Assert.AreEqual(0, log.OfType<CaptureAttempt>().Count, "판정은 물음 뒤");
+            var ask = FateAsk(s, 0, Window.AfterRoll);
+            Assert.IsNotNull(ask, "굴린 뒤 창이 열려 있다");
+            Battles.Answer(s, ctx, ask, ChoiceAnswer.Of(AnswerKind.Decline), log);
+            Assert.IsTrue(log.Events.IndexOf(rolled[0]) < log.Events.IndexOf(log.OfType<CaptureAttempt>()[0]), "굴림 → 판정");
+
+            var l2 = new EventLog();
+            ThrowAt(l2, new FateCard[0], S, S, R);
+            Assert.AreEqual(0, l2.OfType<DiceRolled>().FindAll(d => d.Kind == DiceKind.Capture).Count, "물을 좌석이 없으면 판정 하나로(지금처럼 — 뒤의 상대 공격 굴림은 따로)");
+            Assert.AreEqual(1, l2.OfType<CaptureAttempt>().Count);
+        }
+
         // 결정 76 ③ 순서(볼 굴림 → 디아루가 창 → 매혹적인 스튜 묻기 → 판정 [가정]) · 만찬 스튜 + 만든 스튜는 한 굴림에 하나(plan §5 #95 ③)
         [Test]
         public void S13_4_포획굴림은디아루가창뒤에매혹적인스튜를묻고_스튜둘이면한굴림에하나만쓴다()

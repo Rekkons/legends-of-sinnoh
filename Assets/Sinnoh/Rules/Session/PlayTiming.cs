@@ -92,10 +92,10 @@ namespace Sinnoh.Rules.Session
         public static readonly Tunable DamageFlyMs = Host("damage.flyMs", 700);
         /// <summary>61행 HP 감소.</summary>
         public static readonly Tunable HpDrainMs = Host("damage.hpMs", 800);
-        /// <summary>43행 글리치 재굴림: 주사위 하나마다(들어옴 80 · 지직 400 · 고정 + 번쩍 · 600까지 고리).</summary>
-        public static readonly Tunable RerollPerMs = Host("reroll.perMs", 600);
-        /// <summary>43행 다시 세기 200 + 데미지 갱신 200.</summary>
-        public static readonly Tunable RerollRecountMs = Host("reroll.recountMs", 400);
+        /// <summary>43행 글리치 재굴림: 주사위 하나마다(들어옴 200 · 지직 1000 · 고정 + 번쩍 · 1500까지 고리 — 결정 190으로 옛 600의 2.5배).</summary>
+        public static readonly Tunable RerollPerMs = Host("reroll.perMs", 1500);
+        /// <summary>43행 다시 세기 500 + 데미지 갱신 500(결정 190 — 옛 400의 2.5배).</summary>
+        public static readonly Tunable RerollRecountMs = Host("reroll.recountMs", 1000);
 
         // 연출 목업 박자(결정 53·54, Logs/UiMock/r4-fx·r5-fx 「보통」) — Host 조정 값
         /// <summary>11행 걷기: 예비(웅크림). 걸음이 없으면 세지 않는다.</summary>
@@ -375,7 +375,7 @@ namespace Sinnoh.Rules.Session
                     // 예비 + 칸당 + 오르막 + 끝 착지(결정 53 ① — 2칸 = 150 + 270 × 2 + 200 = 890). 걸음이 없으면 0
                     return steps == 0 ? 0 : WalkPrepMs.Value + WalkStepMs.Value * steps + WalkUpMs.Value * up + WalkLandMs.Value;
                 }
-                case 160: return 3200;
+                case 160: return FlyMs;                 // 결정 167: 컷인 + 택시(옛 3200)
                 case 180: return 2500;
                 // 사당·균열(M5 「사당·균열 화면」 — 04 31~34행 시간 열 안에서 고름 [가정 plan §5 #115])
                 case 310: return 2500;
@@ -507,6 +507,9 @@ namespace Sinnoh.Rules.Session
 
         /// <summary>39행 진화 길이: 본인(진화 곡에 맞춤 — 결정 84 L11 실루엣 8번으로 줄임, 옛 값 6000) · 남 좌석(04 §8-8 39행 「본인 4800·남 2000」).</summary>
         public const int EvolveMs = 4800, EvolveOthersMs = 2000;
+
+        /// <summary>16행 공중날기 길이: 앞의 비전기술 컷인(결정 167 — Pt 비전기술 컷인의 가로 띠, 1.5초 안쪽 [가정]) + 찌르호크 택시 3200(옛 길이 그대로).</summary>
+        public const int FlyCutinMs = 1400, FlyTaxiMs = 3200, FlyMs = FlyCutinMs + FlyTaxiMs;
 
         /// <summary>
         /// 트레이너 카드 연출 길이(04 §8-8 35·48·49·50행 — M6 「트레이너 카드 해금 연출」 [가정 #162 ①]): 해금 한 박자 · 바로 골드면 한 박자 더(자물쇠 둘) ·

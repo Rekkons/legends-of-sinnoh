@@ -15,10 +15,11 @@ namespace Sinnoh.Client
     /// 규토리 7색 · 볼 넷 · 여행 점수 · 스탬프 · 운명의 변화 장수 · 도전 보호 · (턴인 좌석이면) 남은 이동력. 모두 보기(<c>ViewFor</c>)에 있는 값 그대로 —
     /// 남의 운명의 변화는 장수만 보인다(보기가 내용을 가려서 준다).</item>
     /// <item>토큰: 숨겨진 장소(뒷면은 정체 없이 한 줄 · 공개됐으면 이름) · 갤럭시단 조무래기(공중날기가 막힌 까닭).</item>
+    /// <item>피규어(울트라 버스트 판 — 결정 179): 그 칸에 보이는 UB · 네크로즈마의 이름(<see cref="GameFlow.BeastsAt"/>) · 서 있는 호수 수호신의 시련(<see cref="GameFlow.GuardianAt"/> — 넘긴 뒤에는 「시련 통과」).</item>
     /// </list>
     /// 누르면 여는 상세(S38·S39)는 아직 없다. 마우스를 받지 않는다(요소마다 <c>PickingMode.Ignore</c>) — 카드가 보드의 칸 고르기·휠을 막지 않는다.
     /// 화면들 위(툴팁 층 바로 아래)에 얹는다 — 배틀 화면이 떠 있어도 위 띠의 좌석 칩에서 뜬다(04 §4-6). 자리는 키트 툴팁과 같은 셈(<see cref="TipPlace"/>)이다.
-    /// 요소 이름: <c>info-card</c>·<c>info-card-seat-&lt;n&gt;</c>·<c>info-card-mon-&lt;i&gt;</c>·<c>info-card-token-&lt;hidden|revealed|grunt&gt;</c>.
+    /// 요소 이름: <c>info-card</c>·<c>info-card-seat-&lt;n&gt;</c>·<c>info-card-mon-&lt;i&gt;</c>·<c>info-card-token-&lt;hidden|revealed|grunt&gt;</c>·<c>info-card-beast</c>·<c>info-card-trial</c>(<c>-badge</c>·<c>-goal</c>·<c>-immune</c>·<c>-reward</c>).
     /// </summary>
     public sealed class InfoCard
     {
@@ -32,7 +33,8 @@ namespace Sinnoh.Client
         readonly VisualElement card;
         Rect target;
         TipSide side;
-        int version = -1, look;
+        int version = -1, look, figures;
+        readonly List<string> beasts = new List<string>();
 
         public VisualElement Element => card;
 
@@ -88,16 +90,20 @@ namespace Sinnoh.Client
             var seats = new List<int>();
             var tokens = new List<TokenState>();
             if (view != null) Subjects(view, flow.Client.Seat, cell, seats, tokens, flow.TokenShown);
-            if (seats.Count == 0 && tokens.Count == 0) { Hide(); return false; }
+            flow.BeastsAt(cell, beasts);   // 결정 179: 그 칸에 보이는 UB · 네크로즈마 · 시련이 남은 호수 수호신
+            int guardian = flow.GuardianAt(cell);
+            if (seats.Count == 0 && tokens.Count == 0 && beasts.Count == 0 && guardian < 0) { Hide(); return false; }
             string subject = "cell-" + cell.ToString(CultureInfo.InvariantCulture);
-            if (subject == Subject && version == flow.Client.Version && look == flow.TokenLook) { Aim(target, side); return true; }
+            if (subject == Subject && version == flow.Client.Version && look == flow.TokenLook && figures == flow.FigureLook()) { Aim(target, side); return true; }
             card.Clear();
             // 묶음(좌석 둘 이상): 머리 줄 + 좌석마다 줄인 칸(머리 · 파티 한 줄) — 여섯이어도 화면 안에 든다. 자세한 것은 좌석 칩의 카드
             bool stack = seats.Count >= 2;
             if (stack) Add(card, Kit.Text(stage.T("screen.info.stack").Replace("{n}", seats.Count.ToString(CultureInfo.InvariantCulture)), Kit.F2), "info-card-stack", "kit-title");
             foreach (int s in seats) Seat(view, s, stack);
             foreach (var t in tokens) Token(t);
-            card.EnableInClassList("sn-info-slim", seats.Count == 0);   // 토큰뿐이면 좁은 카드
+            foreach (string key in beasts) Beast(key);
+            if (guardian >= 0) Guardian(view, guardian);
+            card.EnableInClassList("sn-info-slim", seats.Count == 0);   // 토큰 · 피규어뿐이면 좁은 카드
             Open(subject, target, side);
             return true;
         }
@@ -121,6 +127,7 @@ namespace Sinnoh.Client
             Subject = subject;
             version = flow.Client.Version;
             look = flow.TokenLook;
+            figures = flow.FigureLook();
             target = at;
             side = where;
             Unpick(card);
@@ -238,9 +245,17 @@ namespace Sinnoh.Client
                 // 기술 줄: ★ 고유 기술 + 배운 칸 2(빈 칸은 점선), 지닌물건
                 var moves = Add(info, new VisualElement(), null, "sn-info-line");
                 Add(moves, Kit.Text("★" + stage.T(BattleFeed.MoveNameKey(ctx, def.Signature)), Kit.F2), null, "sn-info-move");
-                foreach (int m in pk.Moves)
+                for (int k = 0; k < pk.Moves.Length; k++)
                 {
+                    int m = pk.Moves[k];
+                    var tactic = m < 0 ? LegendRules.TacticAt(pk, k) : LegendTactic.None;   // 전설 특수기술이 차지한 빈 칸(결정 195)
                     if (m >= 0) Add(moves, Kit.Text(stage.T(BattleFeed.MoveNameKey(ctx, m)), Kit.F2), null, "sn-info-move");
+                    else if (tactic != LegendTactic.None)
+                    {
+                        var chip = Add(moves, Kit.Text(stage.T(MonParts.TacticKey(tactic)), Kit.F2), null, "sn-info-move");
+                        chip.AddToClassList(MonParts.LegendSlotClass);
+                        stage.Tips.Hook(chip, stage.T(MonParts.TacticKey(tactic)), MonParts.TacticTip(stage, tactic), TipSide.Above, reading: true);
+                    }
                     else Add(moves, new VisualElement(), null, "sn-info-move-empty");
                 }
                 foreach (int held in new[] { pk.HeldItem, pk.HeldItem2 })   // 둘째 칸 = backpacker R(rulings A39)
@@ -307,6 +322,32 @@ namespace Sinnoh.Client
                 Add(head, Kit.Text(stage.T("screen.token.hidden"), Kit.F2), null, "kit-title");
                 block.Add(Kit.Wrapped(stage.T("screen.token.hidden.tip"), Kit.F2));
             }
+        }
+
+        // ── 피규어(결정 179) ──
+
+        // UB · 네크로즈마: 이름(폼 이름까지)
+        void Beast(string key)
+        {
+            var block = Add(card, new VisualElement(), "info-card-beast", "sn-info-block");
+            var head = Add(block, new VisualElement(), null, "sn-info-line");
+            Add(head, Kit.Text(stage.T("pokemon." + key), Kit.F2), null, "kit-title");
+        }
+
+        // 호수 수호신: 이름 + 시련(이름 배지 · 넘기는 조건 · 면역) — 넘긴 뒤에는 「시련 통과」 · 보상 한 줄
+        void Guardian(GameState view, int def)
+        {
+            var ctx = flow.Ctx;
+            int lake = UbTrial.LakeOf(ctx, def);
+            bool passed = view.Ub.TrialsOvercome[lake];
+            string n = lake.ToString(CultureInfo.InvariantCulture);
+            var block = Add(card, new VisualElement(), "info-card-trial", "sn-info-block");
+            var head = Add(block, new VisualElement(), null, "sn-info-line");
+            Add(head, Kit.Text(stage.T("pokemon." + ctx.Cards.Pokemon[def].Key), Kit.F2), null, "kit-title");
+            Add(head, Kit.Badge(stage.T(passed ? "screen.battle.trial.passed" : "screen.battle.trial." + n), passed ? KitBadgeKind.Ok : KitBadgeKind.Warn, Kit.F1), "info-card-trial-badge", null);
+            Add(block, Kit.Wrapped(stage.T(passed ? "screen.info.trial.passed" : "screen.battle.trial.tip." + n), Kit.F2), "info-card-trial-goal", null);
+            if (!passed) Add(block, Kit.Wrapped(stage.T("screen.battle.immune.tip"), Kit.F2), "info-card-trial-immune", "kit-muted");
+            Add(block, Kit.Wrapped(stage.T("screen.info.trial.reward"), Kit.F2), "info-card-trial-reward", "kit-muted");
         }
 
         static void Icon(VisualElement parent, string key, string cls)

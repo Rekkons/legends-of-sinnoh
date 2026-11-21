@@ -445,8 +445,14 @@ namespace Sinnoh.Editor
             var bad = WorkUi.Overflows(flow.Stage.Root.Q("board-hud-seats")).FindAll(m => !m.Contains("글이 잘린다"));
             if (bad.Count > 0) throw new InvalidOperationException("좌석 칩 글 넘침: " + string.Join(" / ", bad));
             // 보기 단추 묶음(도감 · 상성 · 설명서): 늘 보이고 상태 판 안 · 좌석 넷 이상의 1080 벌은 둘째 줄이라 첫 줄 배지 · 시계 · [메뉴]와 겹치지 않는다(plan §5 #607)
-            foreach (var b in new[] { "board-hud-dex", "board-hud-types", "board-hud-book" })
+            // 버림 더미(결정 196): 좌석 다섯 이상의 720 벌은 위 띠에 자리가 없어 기록 판 머리의 단추 — 둘 중 하나가 보인다
+            var shownDiscards = flow.Stage.Root.Q("board-hud-discards");
+            bool discardsUp = shownDiscards != null && shownDiscards.resolvedStyle.display != DisplayStyle.None;
+            var logDiscards = flow.Stage.Root.Q("board-hud-log-discards");
+            if (!discardsUp && (logDiscards == null || logDiscards.resolvedStyle.display == DisplayStyle.None)) throw new InvalidOperationException("[버림 더미]가 위 띠에도 기록 판에도 없다(좌석 " + count + ")");
+            foreach (var b in new[] { "board-hud-dex", "board-hud-types", "board-hud-discards", "board-hud-book" })
             {
+                if (b == "board-hud-discards" && !discardsUp) continue;
                 var e = flow.Stage.Root.Q(b);
                 if (e == null || e.resolvedStyle.display == DisplayStyle.None) throw new InvalidOperationException(b + "이(가) 보이지 않는다(좌석 " + count + ")");
                 var r = e.worldBound;

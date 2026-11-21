@@ -123,6 +123,9 @@ namespace Sinnoh.Tests.EditMode
             Assert.IsTrue(OtherActs.Shows(Of(ShrineRows.Blessing, new ShrineBlessing { Seat = 2, From = 1 }), 0, 4), "남이 남에게 나눈 축복");
             Assert.IsFalse(OtherActs.Shows(Of(ShrineRows.Blessing, new ShrineBlessing { Seat = 2, From = 0 }), 0, 4), "내가 나눠 준 축복은 사당 판이 그린다");
             Assert.IsFalse(OtherActs.Shows(Of(ShrineRows.Offer), 0, 2), "이벤트 없는 단계");
+            Assert.AreEqual("stamp", OtherActs.Key(DealRows.Stamp), "남의 스탬프 = 「스탬프 n/7」(결정 178)");
+            Assert.IsTrue(OtherActs.Shows(Of(DealRows.Stamp, new StampGained { Seat = 1, CountAfter = 3 }), 0, 6), "6인 판 남 좌석의 스탬프");
+            Assert.IsFalse(OtherActs.Shows(Of(DealRows.Stamp, new StampGained { Seat = 0, CountAfter = 3 }), 0, 6), "내 스탬프는 도장 덮개가 그린다");
 
             // 박자: 떠오르며 나타나고 끝에서 흐려진다
             Assert.AreEqual(0f, OtherActs.Alpha(0, 1500, out float rise0));

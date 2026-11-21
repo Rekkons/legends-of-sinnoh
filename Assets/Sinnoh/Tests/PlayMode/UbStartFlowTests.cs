@@ -124,6 +124,15 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(partyHead.text, Does.EndWith("/6"), "파티 머리 = n/6");
                 Assert.That(flow.SaveId, Is.EqualTo(GameFlow.SoloSlot), "울트라 버스트 판도 자동 저장 한 칸에");
 
+                // ── 위 띠 프리즘 칩의 마우스 오버: 개수 줄 + 효과 문구(결정 193) ──
+                var prismChip = stage.Root.Q(BoardUb.Prism);
+                Assert.That(prismChip, Is.Not.Null, "프리즘 칩");
+                stage.Tips.Show(prismChip);
+                var prismTip = stage.Tips.Element.Query<Label>().ToList().ConvertAll(l => l.text.Replace("⁠", ""));
+                Assert.That(prismTip, Does.Contain(stage.T("screen.board.ub.prism.title")), "툴팁 머리 = 프리즘 아머");
+                Assert.That(prismTip.Exists(t => t.Contains(stage.T("screen.board.ub.prism.tip.effect").Replace("⁠", ""))), Is.True, "툴팁 본문에 효과 문구: " + string.Join(" | ", prismTip));
+                stage.Tips.Hide();
+
                 // ── 위 띠 축복 칩(S59 진입점 — 결정 84 M4 가): 누르면 축복 판 · Esc로 닫힘 ──
                 var blessChip = stage.Root.Q(BoardUb.Bless);
                 Assert.That(blessChip, Is.Not.Null, "축복 칩");

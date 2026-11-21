@@ -445,16 +445,16 @@ namespace Sinnoh.Tests.EditMode
                 }
                 if (sums.Checked < check && weights == BattleEval.Default && basis == null)
                 {
-                    // 이 셈 = 실제 StrongAgent(끝까지 · 깊이 EvalDepth)의 답
+                    // 이 셈 = 실제 StrongAgent(끝까지 · 깊이 EvalDepth)의 답 — 평균이 가장 큰 답(Pimc)만 따라 하므로 원칙 답 문턱(결정 197 Margin)은 끈다
                     var budget = new AgentBudget { MaxSimulations = BenchSims, Seed = seed };
                     var input = new AgentInput { View = view, Choice = vc, Ctx = ctx, PublicLog = noLog };
-                    Assert.IsTrue(vl[pick].SameAs(new StrongAgent().Decide(input, budget).Answer), $"판 {id} 선택 {c.Id}: 끝까지 굴리기 답");
+                    Assert.IsTrue(vl[pick].SameAs(new StrongAgent { Margin = 0 }.Decide(input, budget).Answer), $"판 {id} 선택 {c.Id}: 끝까지 굴리기 답");
                     int di = Array.IndexOf(EvalDepths, EvalDepth);
                     if (di >= 0)
                     {
                         var row = new long[vl.Count];
                         for (int i = 0; i < vl.Count; i++) row[i] = depth[di, i];
-                        Assert.IsTrue(vl[Pimc(row, count, vl, principle)].SameAs(new StrongAgent { Depth = EvalDepth }.Decide(input, budget).Answer), $"판 {id} 선택 {c.Id}: 깊이 {EvalDepth} 답");
+                        Assert.IsTrue(vl[Pimc(row, count, vl, principle)].SameAs(new StrongAgent { Depth = EvalDepth, Margin = 0 }.Decide(input, budget).Answer), $"판 {id} 선택 {c.Id}: 깊이 {EvalDepth} 답");
                     }
                     sums.Checked++;
                 }

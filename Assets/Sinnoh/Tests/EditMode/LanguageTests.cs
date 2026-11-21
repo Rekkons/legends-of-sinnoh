@@ -122,12 +122,6 @@ namespace Sinnoh.Tests.EditMode
                     string at = file + " " + s.Key;
                     Check(at, s.ChapterTitle);
                     foreach (string t in Rulebook.PlainTexts(s)) Check(at, t);
-                    foreach (var f in s.Fixes)
-                    {
-                        Check(at, f.Ruling);
-                        Check(at, f.Ko);
-                        Check(at, f.En);
-                    }
                 }
             }
             Check("Rulebook.Ellipsis", Rulebook.Ellipsis);

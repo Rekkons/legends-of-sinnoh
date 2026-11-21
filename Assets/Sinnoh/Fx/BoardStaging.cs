@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rekkon.UiKit;
 using Sinnoh.Rules;
+using Sinnoh.Rules.Session;
 
 namespace Sinnoh.Fx
 {
@@ -212,14 +213,24 @@ namespace Sinnoh.Fx
 
     /// <summary>
     /// 공중날기(04 §8-8 16행, S25)의 시간표. 길이는 방장과 같은 값(<c>PlayTiming.RowMs</c> 160행)이고 여기는 그 안의 박자다:
-    /// 제자리에서 떠오름 → 도착 마을까지 호를 그리며 날아감 → 내려앉음. 찌르호크 · 그림자 · 먼지 고리는 아직 없다 — 말이 직접 난다 [가정].
+    /// 비전기술 컷인(결정 167 — 앞 <see cref="CutinMs"/>, 박자는 <see cref="FlyCutinBeats"/> · 그동안 말은 떠난 마을에 그대로) →
+    /// 택시(<see cref="TaxiMs"/>): 제자리에서 떠오름 → 도착 마을까지 호를 그리며 날아감 → 내려앉음(찌르호크는 화면이 말 머리 위에 붙인다 — 결정 126).
     /// </summary>
     public static class FlyBeats
     {
         public const int Row = 160;
 
-        /// <summary>길이를 나누는 수: 떠오름 = 길이 / 8 · 내려앉음 = 길이 / 8.</summary>
+        /// <summary>택시 길이를 나누는 수: 떠오름 = 택시 길이 / 8 · 내려앉음 = 택시 길이 / 8.</summary>
         public const int LiftPart = 8, LandPart = 8;
+
+        /// <summary>앞의 컷인 길이(결정 167 — 방장 <c>PlayTiming.FlyCutinMs</c>).</summary>
+        public const int CutinMs = PlayTiming.FlyCutinMs;
+
+        /// <summary>그 단계 길이에서 컷인 몫: 컷인보다 길면 <see cref="CutinMs"/>, 아니면 0(컷인 없이 택시만).</summary>
+        public static int CutinOf(int total) => total > CutinMs ? CutinMs : 0;
+
+        /// <summary>그 단계 길이에서 택시 몫(= 길이 − 컷인).</summary>
+        public static int TaxiMs(int total) => Math.Max(0, total - CutinOf(total));
 
         /// <summary>떠오른 높이(호의 가장 높은 곳 = 1에 대한 비율).</summary>
         public const float Hover = 0.35f;
@@ -240,9 +251,17 @@ namespace Sinnoh.Fx
             return null;
         }
 
+        /// <summary>그 시각의 말 모습: 컷인 동안은 떠난 마을 땅 위(<c>T = 0 · Height = 0</c>), 그 뒤는 택시 몫 안의 시각으로 <see cref="Taxi"/>.</summary>
         /// <param name="ms">단계 안 시각.</param>
         /// <param name="total">단계 길이.</param>
         public static FlyPose At(int ms, int total)
+        {
+            int cut = CutinOf(total);
+            return Taxi(ms - cut, total - cut);
+        }
+
+        /// <summary>택시 몫 안의 한 순간(<paramref name="ms"/> = 택시가 시작한 뒤, <paramref name="total"/> = 택시 길이).</summary>
+        public static FlyPose Taxi(int ms, int total)
         {
             var p = new FlyPose();
             if (total <= 0 || ms >= total) { p.T = 1f; return p; }
@@ -261,6 +280,69 @@ namespace Sinnoh.Fx
             }
             p.T = Tween.At(ms, lift, glide, 0f, 1f, Ease.InOutQuad);
             p.Height = Hover + (1f - Hover) * (float)Math.Sin(p.T * Math.PI);
+            return p;
+        }
+    }
+
+    /// <summary>공중날기 컷인의 한 순간(<see cref="FlyCutinBeats.At"/>). 띠 크기는 비율, 탄 것의 자리는 화면 가로 비율, 날갯짓은 텍셀.</summary>
+    public struct FlyCutinPose
+    {
+        /// <summary>컷인이 보이는 때인가(단계의 앞 <see cref="FlyBeats.CutinMs"/> 안).</summary>
+        public bool Shown;
+        /// <summary>띠의 폭(0 ~ 1 — 가운데에서 좌우로 펼쳐진 만큼) · 높이(0 ~ 1 — <see cref="FlyCutinBeats.BandTexels"/>에 대한 비율).</summary>
+        public float Wide, Tall;
+        /// <summary>탄 것(찌르호크 + 주인공)이 보이나 · 가로 자리(1 = 오른쪽 화면 밖 · 0 = 가운데 · −1 = 왼쪽 화면 밖).</summary>
+        public bool Riders;
+        public float X;
+        /// <summary>날갯짓으로 오르내린 만큼(텍셀, 위 = +).</summary>
+        public int Bob;
+    }
+
+    /// <summary>
+    /// 공중날기 앞의 비전기술 컷인(사용자 결정 167 — Pt 본편 hm_cut_in: 가로 띠가 가운데 줄에서 좌우로 → 위아래로 펼쳐지고, 포켓몬이 오른쪽에서 미끄러져 들어와
+    /// 가운데에서 울고 왼쪽으로 빠져나간 뒤 띠가 접힌다). 여기서는 찌르호크에 그 좌석 주인공이 탄 채로 지나간다 [가정 — 길이 1400 · 띠 = 원작 자산 field_cutin 그림].
+    /// 시각은 16행 단계 안 시각 그대로(컷인이 단계 맨 앞이다). 울음 = <see cref="CryMs"/>, 휙 소리 = <see cref="SwooshMs"/>(소리 표 16행 「cry」·「cutin」).
+    /// </summary>
+    public static class FlyCutinBeats
+    {
+        /// <summary>띠 높이(원작 자산 화면의 96 ± 40줄) · 띠가 좌우로 펼쳐지는 동안의 두께(텍셀).</summary>
+        public const int BandTexels = 80, LineTexels = 2;
+
+        /// <summary>박자(단계 안 ms): 좌우로 펼침 끝 · 위아래로 펼침 끝 · 가운데 닿음(울음) · 떠나기 시작(휙) · 왼쪽으로 다 빠짐 · 접힘 끝(= <see cref="FlyBeats.CutinMs"/>).</summary>
+        public const int WideMs = 100, OpenMs = 300, InMs = 700, HoldMs = 950, OutMs = 1200, CloseMs = FlyBeats.CutinMs;
+
+        /// <summary>가운데에 머무는 동안 왼쪽으로 흘러가는 만큼(원작은 −2px/프레임으로 흐르며 운다).</summary>
+        public const float DriftX = 0.06f;
+
+        /// <summary>날갯짓 한 번(ms) · 오르내림 폭(텍셀).</summary>
+        public const int BobMs = 300, BobTexels = 2;
+
+        /// <summary>찌르호크의 전국도감 번호(울음 · 그림 — 원작 TTS 장막시티 택시).</summary>
+        public const int TaxiDex = 398;
+
+        public static int CryMs => InMs;
+        public static int SwooshMs => HoldMs;
+
+        /// <param name="ms">16행 단계 안 시각.</param>
+        /// <param name="total">16행 단계 길이(컷인 몫이 없으면 늘 안 보인다).</param>
+        public static FlyCutinPose At(int ms, int total)
+        {
+            var p = new FlyCutinPose();
+            if (FlyBeats.CutinOf(total) <= 0 || ms < 0 || ms >= CloseMs) return p;
+            p.Shown = true;
+            float line = LineTexels / (float)BandTexels;
+            if (ms < WideMs) { p.Wide = Tween.At(ms, 0, WideMs, 0f, 1f, Ease.OutQuad); p.Tall = line; }
+            else if (ms < OpenMs) { p.Wide = 1f; p.Tall = Tween.At(ms, WideMs, OpenMs - WideMs, line, 1f, Ease.InQuad); }
+            else if (ms < OutMs) { p.Wide = 1f; p.Tall = 1f; }
+            else { p.Wide = 1f; p.Tall = Tween.At(ms, OutMs, CloseMs - OutMs, 1f, 0f, Ease.InQuad); }
+            if (ms >= OpenMs && ms < OutMs)
+            {
+                p.Riders = true;
+                if (ms < InMs) p.X = Tween.At(ms, OpenMs, InMs - OpenMs, 1f, 0f, Ease.OutCubic);
+                else if (ms < HoldMs) p.X = Tween.At(ms, InMs, HoldMs - InMs, 0f, -DriftX, Ease.Linear);
+                else p.X = Tween.At(ms, HoldMs, OutMs - HoldMs, -DriftX, -1f, Ease.InQuad);
+                p.Bob = (int)Math.Round(BobTexels * Math.Sin(2 * Math.PI * (ms - OpenMs) / BobMs));
+            }
             return p;
         }
     }

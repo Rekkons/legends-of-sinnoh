@@ -29,8 +29,60 @@ namespace Sinnoh.Client
             row.Add(power);
             var def = move >= 0 && move < ctx.Cards.Moves.Count ? ctx.Cards.Moves[move] : null;
             row.Add(Kit.Text(def != null && def.AttackStrength.HasValue ? def.AttackStrength.Value.ToString(inv) : "?", Kit.F2));
-            if (tip.HasValue) stage.Tips.Hook(row, stage.T(key), stage.TOrNull(key + ".text"), tip.Value, reading: true, clear: clear);
+            if (tip.HasValue) MoveTip(stage, ctx, row, move, tip.Value, clear);
             return row;
+        }
+
+        /// <summary>전설 특수기술 칸 줄의 클래스(결정 195).</summary>
+        public const string LegendSlotClass = "sn-legend-slot";
+
+        /// <summary>전설 특수기술의 이름 키(없음이면 null — 결정 195).</summary>
+        public static string TacticKey(LegendTactic t) =>
+            t == LegendTactic.AlphaStrike ? "screen.battle.move.alpha_strike" : t == LegendTactic.BeastBoost ? "screen.passive.beast_boost" : null;
+
+        /// <summary>전설 특수기술 칸의 마우스 오버 글: 효과 + 「이 칸을 채우면 ○○이(가) 사라집니다.」(결정 195 [가정]).</summary>
+        public static string TacticTip(UiStage stage, LegendTactic t)
+        {
+            string key = TacticKey(t);
+            if (key == null) return null;
+            string effect = stage.TOrNull(t == LegendTactic.AlphaStrike ? key + ".text" : key + ".tip");
+            string covers = KoJosa.Fix(stage.T("screen.legend.covers").Replace("{name}", stage.T(key)));
+            return effect != null ? effect + "\n" + covers : covers;
+        }
+
+        /// <summary>
+        /// 빈 배운 기술 칸을 남은 전설 특수기술이 차지했으면(<see cref="LegendRules.TacticAt"/>) 「빈 칸」 대신 그릴 줄(결정 195): 이름 · 알파 스트라이크면 배울 수 있는 타입 그림(결정 182) ·
+        /// 마우스 오버 = 효과 + 채우면 사라진다(<paramref name="tip"/> — null이면 걸지 않는다). 차지하지 않은 칸이면 null.
+        /// </summary>
+        public static VisualElement TacticRow(UiStage stage, Ctx ctx, PokemonState pk, int slot, TipSide? tip = TipSide.Below, VisualElement clear = null, bool types = true)
+        {
+            var t = LegendRules.TacticAt(pk, slot);
+            if (t == LegendTactic.None) return null;
+            string key = TacticKey(t);
+            var row = new VisualElement();
+            row.AddToClassList("sn-enc-move");
+            row.AddToClassList(LegendSlotClass);
+            var name = Kit.Text(stage.T(key), Kit.F2);
+            name.AddToClassList("sn-enc-move-name");
+            row.Add(name);
+            if (t == LegendTactic.AlphaStrike && types)   // 좁은 칸(정비 판 — 위에 「배우는 타입」 줄이 있다)은 이름만
+            {
+                var learn = new System.Collections.Generic.List<int>(4);
+                LegendRules.AlphaTypes(ctx, pk, learn);
+                foreach (int type in learn) TypeIcon(row, (PokemonType)type);
+            }
+            if (tip.HasValue) stage.Tips.Hook(row, stage.T(key), TacticTip(stage, t), tip.Value, reading: true, clear: clear);
+            return row;
+        }
+
+        /// <summary>기술의 마우스 오버(기술 줄과 같은 글 — 이름 + 효과 문구)를 그 요소에 건다. 기술 이름만 적힌 단추(가르칠 칸의 지금 기술 등)도 이것으로 — 단추면 입력이 열렸을 때만 부른다.</summary>
+        /// <param name="note">효과 문구 뒤에 한 줄 더 붙일 안내(그 칸을 누르면 일어나는 일 등 — 칸 하나에 툴팁 하나만 건다).</param>
+        public static void MoveTip(UiStage stage, Ctx ctx, VisualElement target, int move, TipSide side = TipSide.Below, VisualElement clear = null, string note = null)
+        {
+            string key = BattleFeed.MoveNameKey(ctx, move);
+            string text = stage.TOrNull(key + ".text");
+            if (note != null) text = string.IsNullOrEmpty(text) ? note : text + "\n" + note;
+            stage.Tips.Hook(target, stage.T(key), text, side, reading: true, clear: clear);
         }
 
         /// <summary>
@@ -56,6 +108,20 @@ namespace Sinnoh.Client
 
         /// <summary>균열 카드의 효과 문구(카드 둘째 줄 — 첫째 줄 「반드시 붙인다」는 모든 카드가 같다).</summary>
         public static string BreachText(UiStage stage, string key) => stage.TOrNull(key + ".text.2") ?? "";
+
+        /// <summary>
+        /// 등급 상자(결정 192): 「약함 · 보통 · 강함 · 전설 · 우두머리」 배지에 등급 색을 입힌다(USS <c>sn-grade-&lt;등급&gt;</c> — 색 토큰 <c>--sn-grade-*</c>, 단계가 읽히게 파랑 → 초록 → 주황 → 금 · 우두머리 빨강).
+        /// grade = 영문 등급 키(weak · moderate · strong · legendary · alpha — 문자열 키 <c>screen.encounter.grade.*</c>의 꼬리). 그 등급 글이 표에 없으면 null.
+        /// </summary>
+        public static Label GradeBadge(UiStage stage, string grade, string size = Kit.F1)
+        {
+            string text = grade != null ? stage.TOrNull("screen.encounter.grade." + grade) : null;
+            if (text == null) return null;
+            var badge = Kit.Badge(text, KitBadgeKind.Plain, size);
+            badge.AddToClassList("sn-grade");
+            badge.AddToClassList("sn-grade-" + grade);
+            return badge;
+        }
 
         /// <summary>고유 기술 표시(기호라 문자열 표에 두지 않는다 — 공개 정보 카드와 같다).</summary>
         public const string Star = "★";
@@ -110,6 +176,34 @@ namespace Sinnoh.Client
                 case StatusEffect.None: return null;
                 default: return "screen.status." + status.ToString().ToLowerInvariant();
             }
+        }
+
+        /// <summary>
+        /// 걸린 상태 이상(<see cref="StatusRules.Statuses"/> — 첫 칸 · 둘째 칸 · hex_maniac R의 더한 것)을 배틀과 같은 Pt 상태 그림(<see cref="IconArt.Status(StatusEffect)"/>)으로 나란히 붙인다(결정 180).
+        /// 아이콘 이름 = <paramref name="name"/> + <c>-&lt;상태 소문자&gt;</c>, 마우스 오버 = 상태 이름 + 짧은 효과(<c>screen.status.*.tip</c>). 그림이 없으면 이름 배지. 붙인 수.
+        /// </summary>
+        public static int StatusIcons(UiStage stage, VisualElement parent, PokemonState pk, string name, TipSide side = TipSide.Below, VisualElement clear = null)
+        {
+            var list = new System.Collections.Generic.List<StatusEffect>(2);
+            StatusRules.Statuses(pk, list);
+            foreach (var s in list)
+            {
+                string key = StatusKey(s);
+                var tex = GenAssets.Load<Texture2D>(IconArt.Status(s));
+                VisualElement icon;
+                if (tex != null)
+                {
+                    icon = new VisualElement();
+                    icon.AddToClassList("sn-type-icon");
+                    icon.style.backgroundImage = new StyleBackground(tex);
+                }
+                else icon = Kit.Badge(stage.T(key), KitBadgeKind.Warn, Kit.F1);
+                icon.name = name + "-" + s.ToString().ToLowerInvariant();
+                icon.AddToClassList("sn-status-icon");
+                parent.Add(icon);
+                stage.Tips.Hook(icon, stage.T(key), stage.TOrNull(key + ".tip"), side, reading: true, clear: clear);
+            }
+            return list.Count;
         }
     }
 }

@@ -85,6 +85,8 @@ namespace Sinnoh.Client
         public List<DsSprite> Fx;
         /// <summary>단색 네모(발판 뒤 · 포켓몬 앞 — 신 둘째 폼의 빛기둥 78행). 알파 그대로 섞는다.</summary>
         public List<DsRect> Rects;
+        /// <summary>단색 네모(포켓몬 · 도트 이펙트 앞, 체력 상자 뒤 — 비스트 부스트의 빛 알갱이, 결정 184). 알파 그대로 섞는다.</summary>
+        public List<DsRect> Over;
         /// <summary>우선권 토큰(없으면 null).</summary>
         public DsToken Token;
         /// <summary>공간 일그러짐(M9 다듬기 P39 — 기라티나의 그림자 · 울트라 비스트 배틀의 균열): 다 그린 화면을 줄마다 가로로 미는 진폭(DS px, 0 = 없음)과 위상(0 ~ 1). 메시지 창 줄은 그대로 둔다.</summary>
@@ -364,6 +366,7 @@ namespace Sinnoh.Client
                 Fill(x, y - 1, 1, 3, StarInk);
             }
             if (scene.Fx != null) foreach (var fx in scene.Fx) Sprite(fx);
+            if (scene.Over != null) foreach (var r in scene.Over) Fill(r.X, r.Y, r.W, r.H, r.Color);
             if (scene.Enemy != null && scene.Enemy.BoxShown) Box(scene.Enemy, true);
             if (scene.Player != null && scene.Player.BoxShown) Box(scene.Player, false);
             Token(scene.Token);

@@ -12,7 +12,7 @@ namespace Sinnoh.Client
     /// <summary>
     /// 보드에서 트레이너 카드가 연 배틀 밖 선택(M6 「트레이너 카드 화면」 2c — 출처 = 카드, rulings A37·A40): 파티가 가득 찬 채 카드로 얻은 포켓몬의 놓아주기(Reward/PartyFull — 「When unlocked」 등) ·
     /// scientist B 현장 관찰의 기술 가르치기(Reward/TeachMove). 배틀 결과 창의 같은 물음(<see cref="BattleScreen"/>)과 같은 꼴 — 포켓몬 칸 · 기술 줄 · 칸 단추이고, 답은 엔진의 합법 답 그대로.
-    /// 답해야 하는 창이라 [닫기]·Esc가 없다. 요소 이름: <c>board-card-reward</c>·<c>-panel</c>·<c>-head</c>·<c>-ask</c>·<c>-move</c>·<c>-&lt;n&gt;</c>(답 색인 + 1).
+    /// 결과 창 없이 남은 배틀 뒤 놓아주기 · 가르치기(재접속 · 다시 연 판 — <see cref="Orphan"/>)도 받는다(머리 = 「배틀 보상」). 답해야 하는 창이라 [닫기]·Esc가 없다. 요소 이름: <c>board-card-reward</c>·<c>-panel</c>·<c>-head</c>·<c>-ask</c>·<c>-move</c>·<c>-&lt;n&gt;</c>(답 색인 + 1).
     /// </summary>
     public sealed class CardRewardScreen : IUiScreen
     {
@@ -32,6 +32,14 @@ namespace Sinnoh.Client
 
         /// <summary>이 창이 받는 선택인가: 출처가 카드인 배틀 밖 놓아주기 · 기술 가르치기.</summary>
         public static bool Owns(PendingChoice c) => CardAsk.FromCard(c) && c.Kind == ChoiceKind.Reward && c.Window != Sinnoh.Rules.Window.BattleEnd && (c.Sub == ChoiceSub.PartyFull || c.Sub == ChoiceSub.TeachMove);
+
+        /// <summary>
+        /// 결과 창 없이 남은 배틀 뒤 놓아주기 · 기술 가르치기(Window = BattleEnd): 따라가는 배틀이 없다(재접속 · 손본 판으로 다시 연 판 — 결과 창이 받을 배틀이 없다). 이 창이 받는다(결정 185).
+        /// </summary>
+        public static bool Orphan(GameFlow flow, PendingChoice c) => flow != null && flow.Battle == null && c != null && c.Kind == ChoiceKind.Reward && c.Window == Sinnoh.Rules.Window.BattleEnd && (c.Sub == ChoiceSub.PartyFull || c.Sub == ChoiceSub.TeachMove);
+
+        /// <summary>이 창이 지금 받는 선택인가: 카드가 연 것(<see cref="Owns"/>) 또는 결과 창 없이 남은 배틀 뒤 선택(<see cref="Orphan"/>).</summary>
+        public static bool Takes(GameFlow flow, PendingChoice c) => Owns(c) || Orphan(flow, c);
 
         /// <summary>창에 놓인 답(엔진 순서).</summary>
         public IReadOnlyList<ChoiceAnswer> Answers => answers;
@@ -62,7 +70,7 @@ namespace Sinnoh.Client
         {
             if (stage == null || panel == null || flow.Client == null || flow.Client.View == null) return;
             var choice = Choice;
-            if (!Owns(choice)) return;
+            if (!Takes(flow, choice)) return;
             bool open = Open;
             if (painted == flow.Client.Version && paintedOpen == open) return;
             painted = flow.Client.Version;
@@ -75,9 +83,10 @@ namespace Sinnoh.Client
             var inv = CultureInfo.InvariantCulture;
             int card = choice.Source.Id;
             // 머리: 놓아주기는 카드 이름(어느 능력으로 얻었는지는 카드마다 다르다), 가르치기는 「카드 — 능력」
-            string headText = choice.Sub == ChoiceSub.TeachMove ? CardAsk.Head(stage, ctx, choice) : stage.T("trainer_card." + CardAsk.CardKey(ctx, card));
+            bool fromCard = Owns(choice);
+            string headText = !fromCard ? stage.T("screen.battle.reward.head") : choice.Sub == ChoiceSub.TeachMove ? CardAsk.Head(stage, ctx, choice) : stage.T("trainer_card." + CardAsk.CardKey(ctx, card));
             var head = Add(panel, Kit.Wrapped(headText, Kit.FTitle), "board-card-reward-head", "kit-title");
-            if (choice.Sub == ChoiceSub.TeachMove) stage.Tips.Hook(head, null, CardAsk.Text(stage, ctx, choice), TipSide.Below, reading: true);
+            if (fromCard && choice.Sub == ChoiceSub.TeachMove) stage.Tips.Hook(head, null, CardAsk.Text(stage, ctx, choice), TipSide.Below, reading: true);
             var box = Add(panel, new VisualElement(), "board-card-reward-box", "sn-battle-reward");
             var mons = MonArt.Load();
             var heart = GenAssets.Load<Texture2D>(KitGallery.HealthIconKey);
@@ -105,14 +114,14 @@ namespace Sinnoh.Client
                 for (int i = 0; i < answers.Count; i++)
                 {
                     var tile = Tile(row, answers[i].Target, i, true);
-                    if (answers[i].Target == choice.Subject) tile.Q(className: "sn-battle-mon-info").Add(Kit.Badge(stage.T("screen.card.reward.new"), KitBadgeKind.Gold, Kit.F1));
+                    if (answers[i].Target == choice.Subject) tile.Q(className: "sn-battle-mon-info").Add(Kit.Badge(stage.T(fromCard ? "screen.card.reward.new" : "screen.battle.reward.caught"), KitBadgeKind.Gold, Kit.F1));
                 }
                 return;
             }
             // 기술 가르치기: 기술 줄 + 포켓몬마다 칸 단추(합법 답의 (포켓몬, 칸)만) + [가르치지 않기]
             string moveKey = BattleFeed.MoveNameKey(ctx, choice.Subject);
             Add(box, Kit.Wrapped(KoJosa.Fix(stage.T("screen.battle.reward.teach").Replace("{move}", stage.T(moveKey))), Kit.F2), "board-card-reward-ask", null);
-            Add(box, MonParts.MoveRow(stage, ctx, choice.Subject), "board-card-reward-move", null);
+            Add(box, MonParts.MoveRow(stage, ctx, choice.Subject, false, TipSide.Below, panel), "board-card-reward-move", null);
             Add(box, Kit.Wrapped(stage.T("screen.battle.reward.teach.slot"), Kit.F1), null, "kit-muted");
             var mons2 = Add(box, new VisualElement(), null, "sn-battle-reward-row");
             VisualElement slots = null;
@@ -128,8 +137,16 @@ namespace Sinnoh.Client
                     slots = Add(tile.Q(className: "sn-battle-mon-info"), new VisualElement(), null, "sn-battle-slots");
                 }
                 int old = slot >= 0 && slot < view.Pokemon[id].Moves.Length ? view.Pokemon[id].Moves[slot] : -1;
-                string label = old >= 0 ? stage.T(BattleFeed.MoveNameKey(ctx, old)) : stage.T("screen.battle.reward.teach.empty");
-                Add(slots, Kit.Button(label, KitButtonKind.Normal, () => Press(index)), "board-card-reward-" + (i + 1).ToString(inv), null).SetEnabled(open);
+                var tactic = old < 0 ? LegendRules.TacticAt(view.Pokemon[id], slot) : LegendTactic.None;   // 결정 195: 전설 특수기술이 차지한 빈 칸 — 가르치면 덮인다
+                string label = old >= 0 ? stage.T(BattleFeed.MoveNameKey(ctx, old)) : tactic != LegendTactic.None ? stage.T(MonParts.TacticKey(tactic)) : stage.T("screen.battle.reward.teach.empty");
+                var button = Add(slots, Kit.Button(label, KitButtonKind.Normal, () => Press(index)), "board-card-reward-" + (i + 1).ToString(inv), null);
+                button.SetEnabled(open);
+                if (tactic != LegendTactic.None)
+                {
+                    button.AddToClassList(MonParts.LegendSlotClass);
+                    stage.Tips.Hook(button, label, MonParts.TacticTip(stage, tactic), TipSide.Below, reading: true);
+                }
+                if (open && old >= 0) MonParts.MoveTip(stage, ctx, button, old, TipSide.Below, panel);   // 바꿀 원래 기술의 이름 + 효과(결정 186)
             }
             for (int i = 0; i < answers.Count; i++)
             {
@@ -143,7 +160,7 @@ namespace Sinnoh.Client
         public bool Press(int index)
         {
             var choice = Choice;
-            if (stage == null || !Open || !Owns(choice) || index < 0 || index >= answers.Count) return false;
+            if (stage == null || !Open || !Takes(flow, choice) || index < 0 || index >= answers.Count) return false;
             stage.Tips.Hide();
             return flow.Answer(choice, answers[index]).Accepted;
         }

@@ -48,32 +48,44 @@ namespace Sinnoh.Tests.EditMode
         [Test]
         public void M4_공중날기박자는떠오름_호_내려앉음이고양끝은땅위다()
         {
+            // 결정 167: 단계 = 앞의 컷인 + 택시 — 택시 몫(Taxi)의 박자는 옛 3200 그대로, 단계 시각(At)은 컷인만큼 늦다
+            Assert.That(PlayTiming.RowMs(new Flew(), FlyBeats.Row), Is.EqualTo(FlyBeats.CutinMs + 3200), "길이는 방장과 같은 값(컷인 + 택시)");
+            Assert.That(FlyBeats.TaxiMs(PlayTiming.FlyMs), Is.EqualTo(3200));
             const int total = 3200;
-            Assert.That(PlayTiming.RowMs(new Flew(), FlyBeats.Row), Is.EqualTo(total), "길이는 방장과 같은 값");
-            var start = FlyBeats.At(0, total);
+            var start = FlyBeats.Taxi(0, total);
             Assert.That(start.T, Is.EqualTo(0f));
             Assert.That(start.Height, Is.EqualTo(0f));
-            var lifted = FlyBeats.At(total / FlyBeats.LiftPart, total);
+            var lifted = FlyBeats.Taxi(total / FlyBeats.LiftPart, total);
             Assert.That(lifted.T, Is.EqualTo(0f).Within(1e-4f), "떠오르는 동안 제자리");
             Assert.That(lifted.Height, Is.EqualTo(FlyBeats.Hover).Within(1e-4f));
-            var mid = FlyBeats.At(total / 2, total);
+            var mid = FlyBeats.Taxi(total / 2, total);
             Assert.That(mid.T, Is.EqualTo(0.5f).Within(1e-3f));
             Assert.That(mid.Height, Is.EqualTo(1f).Within(1e-3f), "가운데가 가장 높다");
-            var landing = FlyBeats.At(total - total / FlyBeats.LandPart, total);
+            var landing = FlyBeats.Taxi(total - total / FlyBeats.LandPart, total);
             Assert.That(landing.T, Is.EqualTo(1f).Within(1e-4f), "내려앉는 동안 도착 칸 위");
             Assert.That(landing.Height, Is.EqualTo(FlyBeats.Hover).Within(1e-3f));
-            var end = FlyBeats.At(total, total);
+            var end = FlyBeats.Taxi(total, total);
             Assert.That(end.T, Is.EqualTo(1f));
             Assert.That(end.Height, Is.EqualTo(0f));
             // 가는 동안 뒤로 가지 않는다
             float last = 0f;
             for (int ms = 0; ms <= total; ms += 40)
             {
-                var p = FlyBeats.At(ms, total);
+                var p = FlyBeats.Taxi(ms, total);
                 Assert.That(p.T, Is.GreaterThanOrEqualTo(last - 1e-5f), ms + "ms");
                 Assert.That(p.Height, Is.InRange(0f, 1f + 1e-4f), ms + "ms");
                 last = p.T;
             }
+            // 단계 시각: 컷인 동안은 떠난 마을 땅 위 그대로, 그 뒤는 택시 몫의 같은 순간
+            for (int ms = 0; ms < FlyBeats.CutinMs; ms += 100)
+            {
+                var c = FlyBeats.At(ms, PlayTiming.FlyMs);
+                Assert.That((c.T, c.Height), Is.EqualTo((0f, 0f)), ms + "ms — 컷인 동안 말은 제자리");
+            }
+            Assert.That(FlyBeats.At(FlyBeats.CutinMs + total / 2, PlayTiming.FlyMs).T, Is.EqualTo(mid.T));
+            Assert.That(FlyBeats.At(PlayTiming.FlyMs, PlayTiming.FlyMs).T, Is.EqualTo(1f));
+            Assert.That(FlyBeats.CutinOf(total), Is.EqualTo(FlyBeats.CutinMs), "컷인보다 긴 단계면 컷인이 있다");
+            Assert.That(FlyBeats.CutinOf(FlyBeats.CutinMs), Is.EqualTo(0), "컷인 몫도 안 되는 단계는 택시만");
         }
 
         [Test]
@@ -123,7 +135,7 @@ namespace Sinnoh.Tests.EditMode
                 step = step ?? FlyBeats.StepOf(entry);
             }
             Assert.That(step, Is.Not.Null, "공중날기 단계가 대기열에 선다");
-            Assert.That(step.Ms, Is.EqualTo(3200));
+            Assert.That(step.Ms, Is.EqualTo(PlayTiming.FlyMs), "컷인 + 택시(결정 167)");
             var flight = FlyBeats.Flight(step);
             Assert.That(flight.Seat, Is.EqualTo(seat));
             Assert.That(flight.From, Is.EqualTo(from));
@@ -135,6 +147,78 @@ namespace Sinnoh.Tests.EditMode
             foreach (var line in log.Lines) lines.Add(line.Text(k => ko[k], n => "플레이어 " + (n + 1)));
             string village = ko[ctx.Fixtures.Fixtures[fly.Target].Key];
             Assert.That(lines, Has.Some.EqualTo(KoJosa.Fix("플레이어 " + (seat + 1) + "은(는) " + village + "(으)로 날아갔다")), string.Join(" | ", lines));
+        }
+
+        [Test]
+        public void M10_결정167_공중날기컷인은띠가펼쳐지고찌르호크가오른쪽에서들어와왼쪽으로빠진뒤접힌다()
+        {
+            int total = PlayTiming.FlyMs;
+            Assert.That(FlyBeats.CutinMs, Is.InRange(1, 1500), "택시에 더해지는 몫은 1.5초 안쪽 [가정]");
+            Assert.That(FlyCutinBeats.CloseMs, Is.EqualTo(FlyBeats.CutinMs));
+            Assert.That(FlyCutinBeats.At(-1, total).Shown, Is.False);
+            Assert.That(FlyCutinBeats.At(FlyBeats.CutinMs, total).Shown, Is.False, "컷인이 끝나면 택시만");
+            Assert.That(FlyCutinBeats.At(0, FlyBeats.CutinMs).Shown, Is.False, "컷인 몫이 없는 단계는 안 보인다");
+            var line = FlyCutinBeats.At(FlyCutinBeats.WideMs / 2, total);
+            Assert.That(line.Shown && !line.Riders, Is.True, "처음에는 띠만");
+            Assert.That(line.Wide, Is.InRange(0.01f, 0.99f), "가운데 줄이 좌우로 펼쳐지는 중");
+            Assert.That(line.Tall, Is.EqualTo(FlyCutinBeats.LineTexels / (float)FlyCutinBeats.BandTexels).Within(1e-5f), "그동안은 가는 줄");
+            var opening = FlyCutinBeats.At((FlyCutinBeats.WideMs + FlyCutinBeats.OpenMs) / 2, total);
+            Assert.That((opening.Wide, opening.Tall > line.Tall && opening.Tall < 1f), Is.EqualTo((1f, true)), "다음에 위아래로");
+            var arrive = FlyCutinBeats.At(FlyCutinBeats.OpenMs + 1, total);
+            Assert.That(arrive.Riders && arrive.X > 0.9f, Is.True, "오른쪽 화면 밖에서 들어온다");
+            Assert.That(FlyCutinBeats.At(FlyCutinBeats.InMs, total).X, Is.EqualTo(0f).Within(1e-5f), "울 때 가운데");
+            Assert.That(FlyCutinBeats.At(FlyCutinBeats.OutMs - 1, total).X, Is.LessThan(-0.9f), "왼쪽으로 빠져나간다");
+            Assert.That(FlyCutinBeats.At(FlyCutinBeats.OutMs, total).Riders, Is.False);
+            var closing = FlyCutinBeats.At((FlyCutinBeats.OutMs + FlyCutinBeats.CloseMs) / 2, total);
+            Assert.That(closing.Tall, Is.InRange(0.01f, 0.99f), "띠가 접히는 중");
+            // 가로 자리는 늘 오른쪽 → 왼쪽(뒤로 가지 않는다) · 날갯짓은 폭 안
+            float last = 2f;
+            for (int ms = FlyCutinBeats.OpenMs; ms < FlyCutinBeats.OutMs; ms += 10)
+            {
+                var p = FlyCutinBeats.At(ms, total);
+                Assert.That(p.X, Is.LessThanOrEqualTo(last + 1e-5f), ms + "ms");
+                Assert.That(System.Math.Abs(p.Bob), Is.LessThanOrEqualTo(FlyCutinBeats.BobTexels), ms + "ms");
+                last = p.X;
+            }
+        }
+
+        [Test]
+        public void M10_결정167_공중날기소리는컷인의울음과휙뒤에착지고_스페이스바는내것만착지로보낸다()
+        {
+            var s = Flow.Started(ctx, 2, 17);
+            int seat = s.ActiveSeat;
+            var st = s.Seats[seat];
+            foreach (var t in s.Tokens)
+                if (t.Kind == TokenKind.Grunt && t.Def == st.HomeVillage) t.Cell = -1;
+            var fly = Flow.MapLegal(s, ctx).Find(a => a.Kind == AnswerKind.Fly);
+            var events = new EventLog();
+            Flow.Answer(s, ctx, ChoiceKind.MapAction, fly, events);
+            FxEntry entry = null;
+            foreach (var e in new FxPlanner(seat, 2).Plan(events.Events))
+            {
+                FxBuilt.KeepSteps(e, x => x.Row == FlyBeats.Row);
+                if (FlyBeats.StepOf(e) != null) entry = e;
+            }
+            Assert.That(entry, Is.Not.Null);
+            var step = FlyBeats.StepOf(entry);
+            SoundCues.Add(entry, true, null, (id, species) => 0);
+            var sounds = new List<string>();
+            foreach (var c in entry.Cues) if (c.IsSound) sounds.Add(c.AtMs - step.StartMs + " " + c.Sound);
+            Assert.That(sounds, Is.EqualTo(new[]
+            {
+                FlyCutinBeats.CryMs + " " + SoundKeys.CryKey(FlyCutinBeats.TaxiDex, false),
+                FlyCutinBeats.SwooshMs + " " + SoundKeys.FlyCutin,
+                step.Ms + " " + SoundKeys.Land,
+            }), "가운데에서 찌르호크 울음 → 빠져나가며 휙 → 착지");
+            Assert.That(FlyCutinBeats.CryMs, Is.LessThan(FlyCutinBeats.SwooshMs));
+            Assert.That(FlyCutinBeats.SwooshMs, Is.LessThan(FlyBeats.CutinMs));
+            CollectionAssert.Contains(SoundKeys.All, SoundKeys.FlyCutin);
+
+            // 스페이스 바(결정 87 V12 다의 표에 16행): 컷인 · 택시 어디서든 그 단계의 착지(끝 − LandMs)로, 착지 뒤에는 없다
+            Assert.That(SkipBeats.Skips(FlyBeats.Row), Is.True);
+            Assert.That(SkipBeats.TargetOf(entry, step.StartMs + 200), Is.EqualTo(step.EndMs - SkipBeats.LandMs), "컷인 동안");
+            Assert.That(SkipBeats.TargetOf(entry, step.StartMs + FlyBeats.CutinMs + 1000), Is.EqualTo(step.EndMs - SkipBeats.LandMs), "택시 동안");
+            Assert.That(SkipBeats.TargetOf(entry, step.EndMs - SkipBeats.LandMs), Is.EqualTo(-1));
         }
 
         [Test]

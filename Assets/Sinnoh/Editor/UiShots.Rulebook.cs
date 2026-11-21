@@ -25,7 +25,6 @@ namespace Sinnoh.Editor
             Screen("rulebook-recipes", s => BookOpen(s, b => b.Show("recipes.items"))),              // cards 블록 — 아이템 그림 · 레시피 규토리
             Screen("rulebook-link", s => BookOpen(s, b => { b.Show("pokemon.encounter"); BookFollow(b, "hidden_spots.artifacts"); })),   // 링크 「[유물 참조]」 → 그 절
             Screen("rulebook-search", s => BookOpen(s, b => { b.Find("규토리"); b.Show(b.Hits[0].Section.Key); }, lang: "ko")),   // 한국어판 설명서(찾는 말이 한국어 — 영어 화면 전수에서도) · 찾기 결과(절마다 n곳 · 조각) + 본문 칠하기
-            Screen("rulebook-fix-tip", s => BookOpen(s, b => b.Show("overview.village"), tip: "rulebook-fix-", lang: "ko")),   // 한국어판 설명서에만 있는 「고침」 배지 마우스 오버(근거 · 영문 원본 · 한국어판)
             Screen("rulebook-en", s => BookOpen(s, b => b.Show("overview.village"), lang: "en")),    // 영문 원본(설명서 언어 = en)
             Screen("rulebook-all", s => BookAll(s)),                                                 // 두 언어의 모든 절을 세워 글 넘침을 본다(끝 모습 = 영어 마지막 절)
             Screen("rulebook-board", s =>                                                            // 게임 메뉴 [룰 설명서] → 게임 중 큰 창(보드 위)
@@ -59,7 +58,6 @@ namespace Sinnoh.Editor
                 BookCheck(s, flow);
             }),
             Screen("credits", s => Credits(s, null)),                                                // 크레딧: 원작 탭 · 고지 문구
-            Screen("credits-korean", s => Credits(s, "korean")),                                     // 번역
             Screen("credits-pokemon", s => Credits(s, "pokemon")),                                   // 포켓몬 권리자 한 줄 · PokeAPI
             Screen("credits-art", s => Credits(s, "art")),                                           // 그림: Smogon 작가 25 · 쇼다운 작가 이름 줄
             Screen("credits-sound", s => Credits(s, "sound")),                                       // 소리 · 글꼴
@@ -81,7 +79,7 @@ namespace Sinnoh.Editor
             if (bad.Count > 0) throw new InvalidOperationException("타이틀 메뉴 글 넘침: " + string.Join(" / ", bad));
         }
 
-        static void BookOpen(UiShot s, Action<RulebookScreen> then, string tip = null, string lang = null)
+        static void BookOpen(UiShot s, Action<RulebookScreen> then, string lang = null)
         {
             var flow = s.Flow();
             flow.OpenTitle();
@@ -99,17 +97,6 @@ namespace Sinnoh.Editor
             }
             then?.Invoke(b);
             BookCheck(s, flow);
-            if (tip != null)
-            {
-                VisualElement badge = null;
-                foreach (var kv in b.View.Fixes) { badge = kv.Value; break; }
-                if (badge == null) throw new InvalidOperationException(b.Current.Key + "에 「고침」 배지가 없다");
-                flow.Stage.Tips.Show(badge);
-                s.Panel.Tick(3);
-                var t = flow.Stage.Tips.Element.worldBound;
-                var screen = flow.Stage.Root.worldBound;
-                if (t.width < 1 || t.xMin < screen.xMin - 0.5f || t.xMax > screen.xMax + 0.5f || t.yMax > screen.yMax + 0.5f) throw new InvalidOperationException("고침 툴팁이 화면 밖 " + t);
-            }
         }
 
         // 링크(UI Toolkit 링크 태그 — 시험은 화면 함수로): 그 절 글에 그 링크가 있어야 한다

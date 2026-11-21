@@ -57,7 +57,13 @@ namespace Sinnoh.Tests.EditMode
             var tm = log.OfType<TypeMatchup>()[0];
             Assert.AreEqual(4, tm.Delta, "불꽃 → 풀 +2, 카드 +2");
             var br = log.OfType<DamageBreakdown>()[0];
-            Assert.AreEqual(4, System.Array.Find(br.Steps, x => x.Kind == DamageStepKind.Effectiveness).Value);
+            // 결정 194: 계산 줄의 상성 칸은 표 상성(출처 없음) +2와 카드 몫 +2(그 균열 카드)로 나뉜다 — 합은 그대로 4
+            var matchups = System.Array.FindAll(br.Steps, x => x.Kind == DamageStepKind.Effectiveness);
+            Assert.AreEqual(2, matchups.Length, "표 상성 · 무모한 돌격");
+            Assert.AreEqual(2, matchups[0].Value);
+            Assert.AreEqual(SourceRef.None, matchups[0].Source, "표 상성은 출처 없음");
+            Assert.AreEqual(BreachRules.RecklessBonus, matchups[1].Value);
+            Assert.AreEqual(new SourceRef(SourceKind.BreachCard, Card(BreachKind.RecklessAssault)), matchups[1].Source, "카드 몫의 출처 = 무모한 돌격");
             Assert.AreEqual(log.OfType<DiceRolled>()[0].Sum + 4, br.Final);
 
             // 받는 쪽에 붙어 있어도 같다: 야생 불꽃숭이(우선도 6)가 내 모부기(4)를 먼저 친다

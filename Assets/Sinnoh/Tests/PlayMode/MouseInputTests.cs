@@ -225,5 +225,439 @@ namespace Sinnoh.Tests.PlayMode
             }
             Assert.That(errors, Is.Empty, string.Join("\n", errors));
         }
+
+        static readonly System.Reflection.MethodInfo ClickInvoke = typeof(Clickable).GetMethod("Invoke", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public, null, new[] { typeof(EventBase) }, null);
+
+        // 키트 단추를 누른다(그 단추의 Clickable — 마우스를 뗄 때와 같은 동작, TutorialClickPath와 같은 꼴)
+        static void Invoke(Button button)
+        {
+            Assert.That(ClickInvoke, Is.Not.Null, "Clickable.Invoke(EventBase)를 찾지 못했다(Unity 판이 바뀌었다)");
+            using (var e = ClickEvent.GetPooled())
+            {
+                e.target = button;
+                ClickInvoke.Invoke(button.clickable, new object[] { e });
+            }
+        }
+
+        // 보드 씬 · 화면 시작점(장치 입력을 받도록 입력 설정 둘을 푼다 — 끝에서 되돌린다)
+        sealed class KeyHarness : System.IDisposable
+        {
+            public ScreenBoot Boot;
+            public VirtualInput Input;
+            public readonly List<string> Errors = new List<string>();
+            readonly InputSettings.BackgroundBehavior backgroundWas;
+#if UNITY_EDITOR
+            readonly InputSettings.EditorInputBehaviorInPlayMode editorWas;
+#endif
+            public KeyHarness()
+            {
+                Application.logMessageReceived += Grab;
+                var settings = InputSystem.settings;
+                backgroundWas = settings.backgroundBehavior;
+#if UNITY_EDITOR
+                editorWas = settings.editorInputBehaviorInPlayMode;
+#endif
+            }
+
+            void Grab(string msg, string stack, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) Errors.Add(type + ": " + msg);
+            }
+
+            public IEnumerator Load()
+            {
+                yield return SceneManager.LoadSceneAsync("Board", LoadSceneMode.Single);
+                for (int i = 0; i < 30; i++)
+                {
+                    yield return null;
+                    Boot = Object.FindAnyObjectByType<ScreenBoot>();
+                    if (Boot != null && Boot.Root != null && Boot.Root.Stage.Root != null) break;
+                }
+                Assert.That(Boot, Is.Not.Null, "씬에 ScreenBoot 없음");
+                Assert.That(Boot.Root, Is.Not.Null, "화면 뿌리 없음(Gen 글꼴·창틀 — rebuild-all)");
+            }
+
+            public IEnumerator Devices()
+            {
+                var settings = InputSystem.settings;
+                settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+#if UNITY_EDITOR
+                settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+#endif
+                Input = new VirtualInput();
+                yield return Frames(3);
+            }
+
+            public IEnumerator Press(Key key)
+            {
+                Input.Hold(key);
+                yield return Frames(2);
+                Input.Release();
+                yield return Frames(2);
+            }
+
+            public void Dispose()
+            {
+                Application.logMessageReceived -= Grab;
+                Input?.Dispose();
+                var settings = InputSystem.settings;
+                settings.backgroundBehavior = backgroundWas;
+#if UNITY_EDITOR
+                settings.editorInputBehaviorInPlayMode = editorWas;
+#endif
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator M10_보드돌리기단추는QE와같은함수이고키를못받으면숨는다()
+        {
+            using (var t = new KeyHarness())
+            {
+                yield return t.Load();
+                var stage = t.Boot.Root.Stage;
+                var flow = t.Boot.Flow;
+                var cam = Camera.main.GetComponent<BoardCameraRig>();
+                flow.StartSolo(new SoloSettings(), 11, 99);
+                yield return Frames(2);
+                var village = (SetupVillageScreen)stage.Current;
+                village.Pick(0);
+                Assert.That(village.Confirm(), Is.True);
+                flow.Skip(flow.QueueLeftMs);
+                yield return Frames(2);
+                var pick = (SetupPickScreen)stage.Current;
+                pick.PickStarter(0);
+                pick.PickCard(0);
+                Assert.That(pick.Confirm(), Is.True);
+                flow.Skip(flow.OpeningMs);
+                yield return Until(() => flow.InputOpen, 15f);
+                yield return Frames(3);
+                yield return t.Devices();
+                var hud = flow.Hud;
+                var root = stage.Root;
+                var left = root.Q<Button>(BoardHud.RotateLeft);
+                var right = root.Q<Button>(BoardHud.RotateRight);
+                Assert.That(left, Is.Not.Null, "↺ 단추");
+                Assert.That(right, Is.Not.Null, "↻ 단추");
+                Assert.That(left.text, Does.Contain("Q"), "↺ 단추에 키 글자 Q");
+                Assert.That(right.text, Does.Contain("E"), "↻ 단추에 키 글자 E");
+                Assert.That((hud.RotateShown, flow.CanTurn), Is.EqualTo((true, true)), "보드: 단추가 보이고 키를 받는다");
+                Assert.That(root.Q(BoardHud.Rotate).ClassListContains(BoardHud.RotateOff), Is.False);
+
+                // 단추 = 키: ↺ 한 번과 Q 한 번이 같은 칸만큼 돈다 · ↻ = E(줌 · 보는 점은 그대로)
+                int yaw0 = cam.Yaw;
+                var zoom0 = cam.CurrentZoom;
+                var target0 = cam.Target;
+                int commands = flow.Session.CommandCount;
+                Invoke(left);
+                Assert.That(cam.Yaw, Is.EqualTo((yaw0 + 5) % 6), "↺ = 방향 −1");
+                yield return t.Press(Key.Q);
+                Assert.That(cam.Yaw, Is.EqualTo((yaw0 + 4) % 6), "Q = 방향 −1(단추와 같다)");
+                Invoke(right);
+                yield return t.Press(Key.E);
+                Assert.That(cam.Yaw, Is.EqualTo(yaw0), "↻ · E = 방향 +1씩");
+                Assert.That((cam.CurrentZoom, cam.Target), Is.EqualTo((zoom0, target0)), "돌리기는 줌 · 보는 점을 바꾸지 않는다");
+                Assert.That(flow.Session.CommandCount, Is.EqualTo(commands), "돌리기는 답을 내지 않는다");
+
+                // 게임 메뉴가 덮으면: 단추가 숨고 키 · 단추 함수 모두 돌리지 않는다 → Esc로 닫으면 다시
+                flow.OpenMenu();
+                yield return Frames(2);
+                Assert.That((hud.RotateShown, flow.CanTurn), Is.EqualTo((false, false)), "메뉴 위: 단추 숨김 · 키 안 받음");
+                Assert.That(root.Q(BoardHud.Rotate).ClassListContains(BoardHud.RotateOff), Is.True);
+                Assert.That(flow.Turn(1), Is.False);
+                yield return t.Press(Key.E);
+                Assert.That(cam.Yaw, Is.EqualTo(yaw0), "메뉴 위의 E · 단추 함수는 돌리지 않는다");
+                yield return t.Press(Key.Escape);
+                Assert.That(flow.MenuUp, Is.False);
+                yield return Frames(2);
+                Assert.That(hud.RotateShown, Is.True, "메뉴를 닫으면 다시 보인다");
+
+                // 글 칸에 글을 치는 동안(채팅 · 찾기 — GameFlow.Typing): 단추 숨김 · Q 안 받음
+                flow.Typing = true;
+                yield return Frames(2);
+                Assert.That((hud.RotateShown, flow.CanTurn), Is.EqualTo((false, false)), "글 치는 중");
+                yield return t.Press(Key.Q);
+                Assert.That(cam.Yaw, Is.EqualTo(yaw0), "글 치는 중의 Q는 돌리지 않는다");
+                flow.Typing = false;
+                yield return Frames(2);
+                Assert.That(hud.RotateShown, Is.True);
+                flow.OpenTitle();
+                yield return Frames(2);
+                Assert.That(t.Errors, Is.Empty, string.Join("\n", t.Errors));
+            }
+        }
+
+        // 보드까지: 화면의 함수로(고정 시드 — 위 돌리기 시험과 같은 길)
+        static IEnumerator ToBoard(GameFlow flow, UiStage stage)
+        {
+            flow.StartSolo(new SoloSettings(), 11, 99);
+            yield return Frames(2);
+            var village = (SetupVillageScreen)stage.Current;
+            village.Pick(0);
+            Assert.That(village.Confirm(), Is.True);
+            flow.Skip(flow.QueueLeftMs);
+            yield return Frames(2);
+            var pick = (SetupPickScreen)stage.Current;
+            pick.PickStarter(0);
+            pick.PickCard(0);
+            Assert.That(pick.Confirm(), Is.True);
+            flow.Skip(flow.OpeningMs);
+            yield return Until(() => flow.InputOpen, 15f);
+            Assert.That(flow.InputOpen, Is.True, "내 턴 컷신 뒤 입력이 열린다");
+            yield return Frames(3);
+        }
+
+        // 글쇠 하나를 글 칸에(패널이 포커스 요소에 보내는 엔진 이벤트 — 창 없는 에디터의 패널은 장치 키를 글로 받지 못한다) + 같은 키를 가상 키보드로(ScreenBoot · 카메라가 읽는 길)
+        static IEnumerator Type(KeyHarness t, TextField field, char c, Key key)
+        {
+            var target = field.panel.focusController.focusedElement as VisualElement ?? field;
+            using (var e = KeyDownEvent.GetPooled(c, KeyCode.None, EventModifiers.None)) target.SendEvent(e);
+            yield return t.Press(key);
+        }
+
+        [UnityTest]
+        public IEnumerator M10_결정175_글칸에포커스가있으면단축키글자가칸에들어가고도감과옆판이그대로다()
+        {
+            using (var t = new KeyHarness())
+            {
+                yield return t.Load();
+                var boot = t.Boot;
+                var flow = boot.Flow;
+                var stage = boot.Root.Stage;
+                boot.PointerFromMouse = false;   // 가상 마우스가 칸 고르기로 새지 않게(키보드만 — 보드 누르기는 흐름 함수로)
+                var cam = Camera.main.GetComponent<BoardCameraRig>();
+                yield return t.Devices();
+
+                // ① 타이틀에서 연 도감(보드 없음): 찾기 칸에 T · Y · Q · E · 스페이스 · 1 → 도감 그대로 · 글자는 칸에
+                flow.OpenTitleDex();
+                yield return Frames(2);
+                var titleDex = stage.Current as DexScreen;
+                Assert.That(titleDex, Is.Not.Null);
+                var field = stage.Root.Q<TextField>("dex-name");
+                field.Focus();
+                yield return Frames(2);
+                Assert.That(flow.Typing, Is.True, "도감 찾기 칸 포커스 = 글 치기(따로 걸지 않아도 — 결정 175)");
+                yield return Type(t, field, 't', Key.T);
+                yield return Type(t, field, 'y', Key.Y);
+                yield return Type(t, field, 'q', Key.Q);
+                yield return Type(t, field, 'e', Key.E);
+                yield return Type(t, field, ' ', Key.Space);
+                yield return Type(t, field, '1', Key.Digit1);
+                Assert.That(stage.Current, Is.SameAs(titleDex), "타이틀 도감: 단축키 글자에 닫히지 않는다");
+                Assert.That((field.value, titleDex.Search), Is.EqualTo(("tyqe 1", "tyqe 1")), "친 글자가 칸에 들어가 찾기를 건다");
+                flow.CloseDex();
+                yield return Frames(2);
+                Assert.That(flow.Typing, Is.False, "칸이 사라지면 글 치기도 끝");
+
+                // ② 게임 중 도감: T(정비) · Y(상성) · 스페이스가 도감을 바꾸지 않는다
+                yield return ToBoard(flow, stage);
+                Assert.That(flow.OpenDex(), Is.True);
+                yield return Frames(2);
+                var dex = (DexScreen)stage.Current;
+                field = stage.Root.Q<TextField>("dex-name");
+                field.Focus();
+                yield return Frames(2);
+                Assert.That(flow.Typing, Is.True);
+                yield return Type(t, field, 't', Key.T);
+                yield return Type(t, field, 'y', Key.Y);
+                yield return Type(t, field, ' ', Key.Space);
+                Assert.That((flow.Front, stage.Info), Is.EqualTo(((IUiScreen)dex, (IUiScreen)null)), "게임 중 도감: T · Y에 정비 판 · 상성 창이 덮지 않는다");
+                Assert.That(field.value, Is.EqualTo("ty "));
+                // 포커스를 놓으면 단축키는 다시 듣는다(Y = 상성 창 — 정보 창 층 위)
+                field.Blur();
+                yield return Frames(2);
+                Assert.That(flow.Typing, Is.False);
+                yield return t.Press(Key.Y);
+                Assert.That(flow.Front, Is.InstanceOf<TypeChartScreen>(), "칸 밖에서는 Y가 상성 창을 연다");
+                yield return t.Press(Key.Y);
+                Assert.That(flow.Front, Is.SameAs(dex));
+                flow.CloseDex();
+                yield return Frames(2);
+                Assert.That(stage.Current, Is.Null);
+
+                // ③ 룰 설명서 옆 판(창이 아니다 — 카메라가 Q · E를 받는 자리): 찾기 칸에 Q · E · T → 보드가 돌지 않고 정비 판도 안 열림
+                Assert.That(flow.ToggleBookSide(), Is.True);
+                yield return Frames(2);
+                field = stage.Root.Q<TextField>("rulebook-side-find");
+                Assert.That(field, Is.Not.Null, "옆 판의 찾기 칸");
+                field.Focus();
+                yield return Frames(2);
+                Assert.That((flow.Typing, flow.CanTurn), Is.EqualTo((true, false)), "옆 판 찾기 칸 포커스 = 글 치기 · 카메라 키 끔");
+                int yaw = cam.Yaw;
+                yield return Type(t, field, 'q', Key.Q);
+                yield return Type(t, field, 'e', Key.E);
+                yield return Type(t, field, 't', Key.T);
+                Assert.That(cam.Yaw, Is.EqualTo(yaw), "글 치는 중의 Q · E는 보드를 돌리지 않는다");
+                Assert.That((stage.Current, stage.Info), Is.EqualTo(((IUiScreen)null, (IUiScreen)null)), "글 치는 중의 T는 정비 판을 열지 않는다");
+                Assert.That(field.value, Is.EqualTo("qet"));
+                // 보드(PC 층 밖)를 누르면 칸이 포커스를 놓는다 → Q가 다시 돈다
+                Vector2 spot = default;
+                bool found = false;
+                for (int gy = 2; gy < 9 && !found; gy++)
+                    for (int gx = 2; gx < 9 && !found; gx++)
+                    {
+                        var p = new Vector2(boot.Root.Size.x * gx / 10f, boot.Root.Size.y * gy / 10f);
+                        if (!flow.OverUi(p.x, p.y)) { spot = p; found = true; }
+                    }
+                Assert.That(found, Is.True, "PC 층 밖의 보드 자리");
+                flow.Pointer(spot.x, spot.y, true, false);
+                flow.Pointer(spot.x, spot.y, false, false);
+                yield return Frames(2);
+                Assert.That(flow.Typing, Is.False, "보드를 누르면 글 치기 끝");
+                flow.Hud.Back();   // 누른 칸의 고르기를 푼다
+                yield return t.Press(Key.Q);
+                Assert.That(cam.Yaw, Is.EqualTo((yaw + 5) % 6), "칸 밖에서는 Q가 돈다");
+                flow.OpenTitle();
+                yield return Frames(2);
+                Assert.That(t.Errors, Is.Empty, string.Join("\n", t.Errors));
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator M10_결정176_정비운명트레이너스탬프단추는다시누르면닫히고창이떠있어도가려지지않는다()
+        {
+            var rts = new List<RenderTexture>();
+            using (var t = new KeyHarness())
+            {
+                try
+                {
+                    yield return t.Load();
+                    var boot = t.Boot;
+                    var flow = boot.Flow;
+                    var stage = boot.Root.Stage;
+                    boot.PointerFromMouse = false;
+                    yield return ToBoard(flow, stage);
+                    var cases = new (string id, System.Type screen)[]
+                    {
+                        ("board-hud-maint", typeof(PartyScreen)),
+                        (BoardHud.FateButton, typeof(FateScreen)),
+                        ("board-hud-trainer", typeof(TrainerScreen)),
+                        (BoardHud.StampButton, typeof(StampScreen)),
+                    };
+                    foreach (var size in new[] { new Vector2Int(1280, 720), new Vector2Int(1920, 1080) })
+                    {
+                        var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                        rt.Create();
+                        rts.Add(rt);
+                        boot.Root.SetTarget(rt);
+                        yield return Frames(4);
+                        int commands = flow.Session.CommandCount;
+                        foreach (var (id, screen) in cases)
+                        {
+                            string at = size.y + " " + id;
+                            var button = stage.Root.Q<Button>(id);
+                            Assert.That(button, Is.Not.Null, at);
+                            Assert.That(button.enabledInHierarchy, Is.True, at + " 창이 없을 때 켜짐");
+                            Invoke(button);
+                            yield return Frames(2);
+                            Assert.That(flow.Front, Is.InstanceOf(screen), at + " 한 번 = 열림");
+                            button = stage.Root.Q<Button>(id);   // 아래 판이 다시 그려졌을 수 있다
+                            Assert.That(button.enabledInHierarchy, Is.True, at + " 창이 떠 있어도 다시 누를 수 있다");
+                            var hit = stage.Root.panel.Pick(button.worldBound.center);
+                            Assert.That(hit != null && (hit == button || button.Contains(hit)), Is.True, at + " 창이 단추를 덮지 않는다(맨 위 요소 " + (hit != null ? hit.name : "없음") + ")");
+                            Invoke(button);
+                            yield return Frames(2);
+                            Assert.That((stage.Current, stage.Info), Is.EqualTo(((IUiScreen)null, (IUiScreen)null)), at + " 두 번 = 닫힘");
+                            Assert.That(flow.InputOpen, Is.True, at);
+                        }
+                        Assert.That(flow.Session.CommandCount, Is.EqualTo(commands), "열고 닫기만 — 답을 내지 않는다");
+                    }
+                    flow.OpenTitle();
+                    yield return Frames(2);
+                    Assert.That(t.Errors, Is.Empty, string.Join("\n", t.Errors));
+                }
+                finally
+                {
+                    if (t.Boot != null && t.Boot.Root != null) t.Boot.Root.SetTarget(null);
+                    foreach (var rt in rts) rt.Release();
+                }
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator M10_배틀독단축키는단추글자와같고Q는보드를돌리지않는다()
+        {
+            RenderTexture rt = null;
+            using (var t = new KeyHarness())
+            {
+                try
+                {
+                    yield return t.Load();
+                    var boot = t.Boot;
+                    var flow = boot.Flow;
+                    boot.PointerFromMouse = false;   // 가상 마우스가 칸 고르기로 새지 않게(키보드만 본다)
+                    var stage = boot.Root.Stage;
+                    rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                    rt.Create();
+                    boot.Root.SetTarget(rt);
+                    yield return Frames(4);
+                    var cam = Camera.main.GetComponent<BoardCameraRig>();
+                    var title = (TitleScreen)stage.Current;
+                    int soloIndex = -1;
+                    for (int i = 0; i < title.Shown.Count; i++) if (title.Shown[i].Id == TitleScreen.Solo) soloIndex = i;
+                    Assert.That(title.Activate(soloIndex), Is.True);
+                    yield return null;
+                    var pilot = FlowPilot.Start(flow, Sinnoh.Ai.SoloTrail.Catch);   // 볼을 쥐여 준 판 — 야생 배틀에서 [가방]이 켜진다
+                    yield return null;
+                    BattleScreen b = null;
+                    float t0 = Time.realtimeSinceStartup;
+                    for (int guard = 0; guard < 40000 && Time.realtimeSinceStartup - t0 < 240f; guard++)
+                    {
+                        flow.Skip(150);
+                        yield return null;
+                        if (stage.Current is BattleScreen s && s.Open && s.Over == null && s.BagOn) { b = s; break; }
+                        FlowPilot.Step(flow, pilot);
+                    }
+                    Assert.That(b, Is.Not.Null, "야생 배틀의 내 차례([가방] 켜짐)에 닿지 못했다");
+                    yield return t.Devices();
+                    var root = stage.Root;
+                    int yaw = cam.Yaw;
+                    int commands = flow.Session.CommandCount;
+                    Assert.That(flow.CanTurn, Is.False, "배틀 화면 위: 카메라가 Q · E를 받지 않는다");
+                    Assert.That(flow.Hud == null || !flow.Hud.RotateShown, Is.True, "배틀 화면 위: 돌리기 단추 숨김");
+                    // 독의 키 글자 = 누르는 요소
+                    Assert.That(b.KeyTarget('Q'), Is.SameAs(root.Q("battle-bag")), "Q = [가방]");
+                    Assert.That(b.KeyTarget('1'), Is.SameAs(root.Q("battle-move-1")), "1 = 기술 줄 1");
+
+                    // Q = [가방] → 볼 줄(보드는 돌지 않는다) · 볼 줄에서 1은 기술을 누르지 않는다 · Q 다시 = 기술 줄
+                    yield return t.Press(Key.Q);
+                    Assert.That(b.BagOpen, Is.True, "Q로 [가방]이 열린다");
+                    Assert.That(root.Q("battle-ball-1"), Is.Not.Null, "볼 줄");
+                    Assert.That(cam.Yaw, Is.EqualTo(yaw), "배틀 중의 Q는 보드를 돌리지 않는다");
+                    yield return t.Press(Key.Digit1);
+                    Assert.That((b.BagOpen, flow.Session.CommandCount), Is.EqualTo((true, commands)), "볼 줄에서 1은 아무 일도 없다");
+                    yield return t.Press(Key.Q);
+                    Assert.That(b.BagOpen, Is.False, "Q 다시 = 기술 줄로");
+                    Assert.That(root.Q("battle-move-1"), Is.Not.Null);
+                    // E = [기권] — 켜지지 않은 때(내 포켓몬이 기절하기 전)는 아무 일도 없다
+                    if (!b.ForfeitOn)
+                    {
+                        Assert.That(b.KeyTarget('E'), Is.Null);
+                        yield return t.Press(Key.E);
+                        Assert.That(stage.Current, Is.SameAs(b), "꺼진 [기권]의 E: 배틀 화면 그대로");
+                        Assert.That((flow.Session.CommandCount, cam.Yaw), Is.EqualTo((commands, yaw)), "꺼진 [기권]의 E는 답도 회전도 없다");
+                    }
+                    // T = [정비](배틀 화면 위 정비 판) → T 다시 = 닫기
+                    yield return t.Press(Key.T);
+                    Assert.That(flow.Front, Is.InstanceOf<PartyScreen>(), "T로 정비 판(배틀 화면 위 — 정비를 못 받는 때는 보기만 하는 정보 창 층)");
+                    yield return t.Press(Key.Q);
+                    Assert.That(b.BagOpen, Is.False, "정비 판이 위에 있으면 Q는 독을 누르지 않는다");
+                    yield return t.Press(Key.T);
+                    Assert.That(flow.Front, Is.SameAs(b), "T 다시 = 닫기");
+                    yield return Until(() => b.Open && b.KeyTarget('1') != null, 5f);
+                    // 1 = 기술 줄 1(누른 것과 같은 답)
+                    commands = flow.Session.CommandCount;
+                    yield return t.Press(Key.Digit1);
+                    Assert.That(flow.Session.CommandCount, Is.EqualTo(commands + 1), "1 = 기술 줄 1의 답");
+                    Assert.That(cam.Yaw, Is.EqualTo(yaw));
+                    flow.OpenTitle();
+                    yield return Frames(2);
+                    Assert.That(t.Errors, Is.Empty, string.Join("\n", t.Errors));
+                }
+                finally
+                {
+                    if (rt != null) rt.Release();
+                }
+            }
+        }
     }
 }

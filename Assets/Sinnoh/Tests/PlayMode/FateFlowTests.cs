@@ -101,6 +101,84 @@ namespace Sinnoh.Tests.PlayMode
         }
 
         /// <summary>
+        /// 결정 188(11-21 방 플레이): 볼을 던지면 포획 주사위가 독의 굴림판에서 먼저 구르고(DiceRolled Kind = Capture), 그 뒤에 굴린 뒤 창(디아루가)을 묻는다 —
+        /// 포획 길 <see cref="SoloTrail.Catch"/>에 디아루가 1장을 쥐여 다시 연 판, 길잡이는 운명을 쓰지 않는다(안 씀).
+        /// </summary>
+        [UnityTest]
+        public IEnumerator M10_포획주사위가굴림판에서구른뒤에디아루가를묻는다_결정188()
+        {
+            var errors = new List<string>();
+            void Grab(string msg, string stack, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) errors.Add(type + ": " + msg);
+            }
+
+            Application.logMessageReceived += Grab;
+            RenderTexture rt = null;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("Board", LoadSceneMode.Single);
+                ScreenBoot boot = null;
+                for (int i = 0; i < 30; i++)
+                {
+                    yield return null;
+                    boot = Object.FindAnyObjectByType<ScreenBoot>();
+                    if (boot != null && boot.Root != null && boot.Root.Stage.Root != null) break;
+                }
+                Assert.That(boot, Is.Not.Null, "씬에 ScreenBoot 없음");
+                var flow = boot.Flow;
+                boot.PointerFromMouse = false;
+                var stage = boot.Root.Stage;
+                rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                rt.Create();
+                boot.Root.SetTarget(rt);
+                for (int i = 0; i < 4; i++) yield return null;
+
+                var title = (TitleScreen)stage.Current;
+                int soloIndex = -1;
+                for (int i = 0; i < title.Shown.Count; i++) if (title.Shown[i].Id == TitleScreen.Solo) soloIndex = i;
+                Assert.That(title.Activate(soloIndex), Is.True);
+                yield return null;
+                var pilot = FlowPilot.Start(flow, SoloTrail.Catch);
+                yield return null;
+                Assert.That(flow.OnBoard, Is.True, "셋업을 끝내 보드에 있다");
+                int dialga = FateRules.CardKey(flow.Ctx, FateCard.Dialga);
+                flow.Rebase(st =>
+                {
+                    st.Decks[(int)DeckId.ChangeOfFate].Remove(dialga);
+                    st.Seats[0].FateHand.Add(dialga);
+                });
+                yield return null;
+
+                bool rolled = false, asked = false;
+                float t0 = Time.realtimeSinceStartup;
+                for (int guard = 0; guard < 40000 && Time.realtimeSinceStartup - t0 < 240f; guard++)
+                {
+                    flow.Skip(150);
+                    yield return null;
+                    var seq = flow.Fx != null ? flow.Fx.Sequencer : null;
+                    var roll = seq != null ? Sinnoh.Fx.BattleRoll.StepOf(seq.Current) : null;
+                    if (stage.Current is BattleScreen b0 && b0.RollBoardOn && roll != null && roll.Events.Count > 0 && roll.Events[0] is DiceRolled d && d.Kind == DiceKind.Capture) rolled = true;
+                    var battle = flow.Client.View.Battle;
+                    if (stage.Current is BattleScreen b && b.AskingFate && battle != null && battle.Step == BattleStep.Capture)
+                    {
+                        asked = true;
+                        Assert.That(rolled, Is.True, "포획 굴림 뒤의 디아루가 물음 앞에 포획 주사위가 굴림판에서 굴렀다");
+                        break;
+                    }
+                    FlowPilot.Step(flow, pilot);
+                }
+                Assert.That(asked, Is.True, "볼을 던진 뒤 굴린 뒤 창(디아루가)을 물었다");
+                Assert.That(errors, Is.Empty, string.Join("\n", errors));
+            }
+            finally
+            {
+                Application.logMessageReceived -= Grab;
+                if (rt != null) rt.Release();
+            }
+        }
+
+        /// <summary>
         /// 결정 80 N3 나: Esc는 맨 위 창의 [닫기]와 같은 길로 닫는다(스탬프 판 · 손패 창 · 기록 창 — 버리는 중인 손패 창처럼 답해야 하는 창은 닫지 않는다),
         /// 배틀 중에는 기둥의 [운명의 변화 n/5]로 손패를 보기만 한다(답은 나가지 않는다 · Esc로 닫힌다 · 배틀 화면은 Esc를 받지 않는다).
         /// </summary>

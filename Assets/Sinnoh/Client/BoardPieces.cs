@@ -234,6 +234,21 @@ namespace Sinnoh.Client
             return sheet != null;
         }
 
+        /// <summary>주인공(키)의 필드 도트 중 왼쪽(서)을 보고 선 프레임(공중날기 컷인 — 결정 167). 표나 행·그림이 없으면 false.</summary>
+        public static bool FieldSide(string protagonist, out Texture2D sheet, out int frame, out int size)
+        {
+            sheet = null;
+            frame = size = 0;
+            var json = GenAssets.Load<TextAsset>(FieldTableKey);
+            if (json == null) return false;
+            var row = Array.Find(JsonUtility.FromJson<FieldTable>(json.text).rows, r => r.key == protagonist);
+            if (row == null || row.w == null || row.w.Length == 0) return false;
+            sheet = GenAssets.Load<Texture2D>("Field/" + row.file);
+            frame = row.w[0];
+            size = row.fw;
+            return sheet != null;
+        }
+
         /// <summary>좌석 seat(0~5) 말의 깊이 당김 = DepthBias + (6 − seat) × SeatBiasStep.</summary>
         public static float BiasFor(int seat) => DepthBias + (PieceLayout.MaxSeats - seat) * SeatBiasStep;
 

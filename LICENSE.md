@@ -8,7 +8,7 @@ The contents fall into three parts with different rights holders. The permission
 
 ## 1. Work made for this project
 
-Covers: this project's code (`Assets/Sinnoh/` outside `Gen/`, `Tools/`, the shared UI kit `com.rekkon.uikit`), UI text, documents, and the graphics, shaders and sound-effect recipes made for it.
+Covers: this project's code (`Assets/Sinnoh/` outside `Gen/`, `Tools/`, the shared UI kit `com.rekkon.uikit`), UI text, the Korean translation (of the original's English game text, cards and rulebook), documents, and the graphics, shaders and sound-effect recipes made for it.
 
 Copyright © 2026 Rekkons
 
@@ -20,9 +20,9 @@ You may use, modify and share this part for free, provided that:
 
 It is provided "as is", without warranty of any kind, and the authors are not liable for any claim or damage arising from its use. This is not an OSI-approved open-source license.
 
-## 2. The original fan game and its Korean translation
+## 2. The original fan game
 
-Covers: the rules, game data, English game text, cards, board art and rulebook (Levatius — Steam Workshop 2652573878, https://github.com/Levatius/pokemon-legends), the Korean translation (3JA2 · 로씨온 — Steam Workshop 2679162224), and third-party assets used by the original (such as the PTU Models 3D figures — see `CREDITS.md`).
+Covers: the rules, game data, English game text, cards, board art and rulebook (Levatius — Steam Workshop 2652573878, https://github.com/Levatius/pokemon-legends) and third-party assets used by the original (such as the PTU Models 3D figures — see `CREDITS.md`).
 
 These works belong to their authors; this file grants no rights to them. Neither the original repository nor its Workshop pages carry a license, so this game follows the conditions the original author stated in comments on the original Workshop page:
 
@@ -32,7 +32,7 @@ These works belong to their authors; this file grants no rights to them. Neither
 >
 > "Just make sure to give credit if assets or code from the original are used"
 
-The Korean translation is used on the same conditions (non-profit, credit given). Any request from the original author, the translators or the other artists to change or remove their work will be followed.
+The Korean translation follows the same conditions (non-profit, credit given). Any request from the original author or the other artists to change or remove their work will be followed.
 
 This file grants no permission for the items in section 2. If you share a modified version of this project that includes them, please contact the original author directly for permission. If the original author asks for changes or removal, you must comply.
 

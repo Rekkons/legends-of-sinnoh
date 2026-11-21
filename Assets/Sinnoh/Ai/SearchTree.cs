@@ -75,6 +75,14 @@ namespace Sinnoh.Ai
         public ScoreWeights Score = StrongAgent.OldWeights;
         /// <summary>마감(null = 없음) — 반복마다 본다(StrongAgent의 예산).</summary>
         public System.Func<bool> Stop;
+        /// <summary>
+        /// 결정 197: 원칙 답과 짝지은 점수 차를 모을 곳(null = 모으지 않음) · 공통 난수의 표본 씨(0 = 끔 — 트리 밖 주사위는 표본의 AI 난수 그대로).
+        /// 공통 난수: 뿌리 답이 한 바퀴(답마다 한 번)를 도는 동안 모든 답이 같은 바퀴 번호의 수열로 트리 밖 주사위를 굴린다 — 답끼리 차이에서 주사위 잡음이 빠진다.
+        /// </summary>
+        public StrongAgent.Paired Pair;
+        public ulong Common;
+        readonly List<int> roundScore = new List<int>();
+        readonly List<bool> roundHas = new List<bool>();
 
         /// <summary>센 것(StrongAgent가 더해 읽는다).</summary>
         public long Simulations, Stuck, Cuts, Mismatch, Nodes;
@@ -105,11 +113,23 @@ namespace Sinnoh.Ai
             roots.Clear();
             for (int i = 0; i < legal.Count; i++) roots.Add(New());
             rng = random;
+            roundScore.Clear();
+            roundHas.Clear();
+            for (int i = 0; i < legal.Count; i++)
+            {
+                roundScore.Add(0);
+                roundHas.Add(false);
+            }
             int total = each * legal.Count;
             for (int t = 0; t < total; t++)
             {
                 if (Stop != null && Stop()) return false;
                 int i = t % legal.Count;
+                if (i == 0)
+                {
+                    Flush();   // 앞 바퀴의 짝지은 차
+                    if (Common != 0) rng = SampledRng.ForSample(Common, t / legal.Count);   // 공통 난수: 바퀴마다 새 수열, 바퀴 안의 답들은 같은 수열
+                }
                 sim.CopyFrom(root);
                 path.Clear();
                 cur = roots[i];
@@ -139,8 +159,21 @@ namespace Sinnoh.Ai
                 sum[i] += score;
                 count[i]++;
                 if (Wins != null) Wins[i] += win;
+                roundScore[i] = score;
+                roundHas[i] = true;
             }
+            Flush();
             return true;
+        }
+
+        // 한 바퀴(답마다 한 번)의 점수를 원칙 답과 짝지어 모은다(둘 다 굴렸을 때만) — 그리고 바퀴를 비운다
+        void Flush()
+        {
+            int same = Pair != null ? Pair.Same : -1;
+            if (same >= 0 && same < roundHas.Count && roundHas[same])
+                for (int k = 0; k < roundHas.Count; k++)
+                    if (roundHas[k]) Pair.Add(k, roundScore[k] - roundScore[same]);
+            for (int k = 0; k < roundHas.Count; k++) roundHas[k] = false;
         }
 
         /// <summary>굴리기 정책 자리에 끼우는 트리 따라가기: 트리 안이면 지금 노드(결정)에서 UCT로 고르고, 처음 닿은 노드면 트리를 나와 굴리기 정책으로.</summary>

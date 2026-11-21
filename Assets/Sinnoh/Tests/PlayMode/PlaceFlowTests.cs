@@ -454,7 +454,25 @@ namespace Sinnoh.Tests.PlayMode
                 stage.Tweens.Advance(1);   // 대기열이 항목을 시작한다
                 var step = FlyBeats.StepOf(flow.Fx.Sequencer.Current);
                 Assert.That(step, Is.Not.Null, "공중날기 단계가 재생 중이다");
-                stage.Tweens.Advance(step.StartMs + step.Ms / 2 - flow.Fx.Sequencer.LocalMs);
+                // 결정 167: 단계 앞의 비전기술 컷인 — 띠 · 찌르호크에 탄 내 주인공, 그동안 말은 떠난 마을에 · 택시 찌르호크는 아직 없다
+                var startAt = piece.localPosition;
+                stage.Tweens.Advance(step.StartMs + FlyCutinBeats.InMs - flow.Fx.Sequencer.LocalMs);
+                yield return null;
+                Assert.That(flow.FlyFx, Is.Not.Null);
+                Assert.That(flow.FlyFx.Shown && flow.FlyFx.Pose.Riders, Is.True, "컷인 띠 위로 찌르호크가 가운데에 왔다");
+                Assert.That(flow.FlyFx.RiderShown, Is.EqualTo(flow.Protagonist(0)), "탄 것은 그 좌석의 주인공");
+                Assert.That(flow.FlyFx.Element.resolvedStyle.display, Is.EqualTo(DisplayStyle.Flex));
+                Assert.That(stage.Root.Q("board-fly-cutin-bird"), Is.Not.Null, "찌르호크 도트");
+                Assert.That(stage.Root.Q("board-fly-cutin-band").resolvedStyle.height, Is.EqualTo(FlyCutinBeats.BandTexels * flow.FlyFx.Texel / (float)stage.Grade.PanelScale).Within(1f), "띠 = 80텍셀 × 정수배");
+                Assert.That(Vector3.Distance(piece.localPosition, startAt), Is.LessThan(1e-3f), "컷인 동안 말은 떠나지 않는다");
+                Assert.That(flow.BirdShown(out _), Is.False, "택시 찌르호크는 컷인 뒤에 내려온다");
+                Assert.That(flow.InputOpen, Is.False);
+                stage.Tweens.Advance(FlyBeats.CutinMs - FlyCutinBeats.InMs + 1);
+                yield return null;
+                Assert.That(flow.FlyFx.Shown, Is.False, "컷인이 끝나면 띠가 걷힌다");
+                Assert.That(flow.FlyFx.Element.resolvedStyle.display, Is.EqualTo(DisplayStyle.None));
+                Assert.That(flow.BirdShown(out _), Is.True, "이어서 택시");
+                stage.Tweens.Advance(step.StartMs + FlyBeats.CutinOf(step.Ms) + FlyBeats.TaxiMs(step.Ms) / 2 - flow.Fx.Sequencer.LocalMs);
                 yield return null;
                 Vector3 a = board.CellTop(from), b = board.CellTop(to);
                 var mid = Vector3.Lerp(a, b, 0.5f);

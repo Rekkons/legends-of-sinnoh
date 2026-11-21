@@ -192,9 +192,21 @@ namespace Sinnoh.Tests.PlayMode
                 Settle(flow);
                 Assert.That(client.View.Pokemon[eevee].Def, Is.EqualTo(to), "고른 모습으로");
                 int old = ctx.Cards.Pokemon[eeveeDef].Signature;
-                if (evolve.Now == EvolveScreen.Mode.Teach)
+                Assert.That(evolve.Now, Is.EqualTo(EvolveScreen.Mode.Teach), "이브이의 고유 기술은 진화형과 다르다 — 옛 기술을 묻는다");
                 {
                     yield return Fits(stage, evolve.Name);
+                    // 결정 181: 진화한 포켓몬이 지금 가진 기술 — ★ 고유 기술(누르지 않는 칸) + 칸 1·2(누를 수 있다)
+                    string sigName = stage.T(BattleFeed.MoveNameKey(ctx, ctx.Cards.Pokemon[to].Signature));
+                    var sig = stage.Root.Q("board-evolve-sig");
+                    Assert.That(sig, Is.Not.Null, "진화형의 고유 기술 줄");
+                    Assert.That(sig.Query<Label>().ToList().Exists(l => l.text.Contains(sigName)), Is.True, "고유 기술 이름 " + sigName);
+                    Assert.That(sig.ClassListContains("sn-party-press"), Is.False, "고유 기술은 고를 수 없다");
+                    Assert.That(stage.Root.Q("board-evolve-now"), Is.Not.Null, "「지금 기술」 머리");
+                    // 결정 186: 옛 기술 줄 · 고유 기술 칸의 마우스 오버 = 그 기술의 이름 + 효과(고유 기술은 「바꿀 수 없다」 한 줄을 더)
+                    EncounterFlowTests.TipIs(stage, stage.Root.Q("board-evolve-old").Q(className: "sn-enc-move"), ctx, old);
+                    EncounterFlowTests.TipIs(stage, sig, ctx, ctx.Cards.Pokemon[to].Signature, stage.T("screen.evolve.sig.tip"));
+                    for (int k = 0; k < PokemonState.MoveSlots; k++)
+                        Assert.That(stage.Root.Q("board-evolve-teach-" + k).ClassListContains("sn-party-press"), Is.True, "칸 " + (k + 1) + "을 고를 수 있다");
                     Assert.That(evolve.PressTeach(0), Is.True, "칸 1에 가르침");
                     yield return null;
                     Settle(flow);

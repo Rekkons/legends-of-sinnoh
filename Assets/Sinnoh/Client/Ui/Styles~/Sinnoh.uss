@@ -70,6 +70,11 @@
   types-weak: #a8e0a0;
   types-resist: #f0b4a8;
   types-immune: #404850;
+  grade-weak: #a8c8f0;
+  grade-moderate: #90d088;
+  grade-strong: #f09050;
+  grade-legendary: #f8d040;
+  grade-alpha: #e05040;
 }
 
 .kit-root {
@@ -138,6 +143,13 @@
   --sn-room-cover: $room-cover;
   --sn-tut-band: $tut-band;
   --sn-tut-fill: $white;
+  --sn-grade-weak: $grade-weak;
+  --sn-grade-moderate: $grade-moderate;
+  --sn-grade-strong: $grade-strong;
+  --sn-grade-legendary: $grade-legendary;
+  --sn-grade-alpha: $grade-alpha;
+  --sn-grade-ink: $edge;
+  --sn-grade-alpha-ink: $white;
   --sn-ink: $ink;
   --sn-types-weak: $types-weak;
   --sn-types-resist: $types-resist;
@@ -180,12 +192,21 @@
   background-color: var(--sn-foot);
   color: var(--sn-on-dark-muted);
 }
-/* 아래 띠 오른쪽: 원작 · 한국어판 글 + 판 번호(결정 148) */
+/* 아래 띠 오른쪽: 원작 글 + 판 번호(결정 148) */
 .sn-title-foot-right { flex-direction: row; align-items: center; }
 .kit-root .sn-title-version { margin-left: 12px; }
 /* 새 판 알림(결정 148 ① — 아래 띠 바로 위 오른쪽 작은 판 [가정]): 「새 버전 x.y.z」 + [받기] 한 줄 */
 .sn-title-update { position: absolute; right: 12px; bottom: 32px; flex-direction: row; align-items: center; }
 .kit-root .sn-title-update-text { margin-right: 10px; }
+/* 자동 업데이트(결정 161): 받는 중 · 실패는 세로 판 — 머리 줄(글 + MB) · 막대 줄(막대 + [취소]) · 까닭 한 줄 · 단추 줄 */
+.sn-title-update-wide { flex-direction: column; align-items: stretch; width: 300px; }
+.sn-title-update-row { flex-direction: row; align-items: center; }
+.kit-root .sn-title-update-amount { margin-left: auto; }
+.sn-title-update-bar { flex-grow: 1; height: 10px; margin-top: 4px; margin-right: 10px; border-width: 1px; border-color: var(--sn-edge); background-color: var(--sn-logo); }
+.sn-title-update-fill { height: 100%; width: 0; background-color: var(--sn-ability-blue); }
+.kit-root .sn-title-update-why { margin-top: 4px; }
+.sn-title-update-buttons { flex-direction: row; justify-content: flex-end; margin-top: 6px; }
+.sn-title-update-buttons > * { margin-left: 6px; }
 
 /* ── 화면 공용(S09·S12·S13) ── */
 /* 보드 위 머리글·안내 한 줄(어두운 바탕 위 밝은 글) */
@@ -342,6 +363,10 @@
 .kit-root .sn-hud-tools > * { margin-left: 4px; }
 .kit-root .sn-hud-tools-down .sn-hud-status { align-items: T(center, flex-start); padding: T(5px!, 4px!); padding-bottom: T(5px!, 39px!); }
 .kit-root .sn-hud-tools-down .sn-hud-tools { position: T(relative, absolute); left: T(0, 4px!); bottom: T(0, 4px!); }
+/* 버림 더미 단추(결정 196): 좌석 다섯 이상의 720 벌은 위 띠에 자리가 없다 — 기록 판 머리의 단추로 [가정 결정 196] */
+.kit-root .sn-hud-many #board-hud-discards { display: T(none, flex); }
+.kit-root #board-hud-log-discards { display: none; }
+.kit-root .sn-hud-many #board-hud-log-discards { display: T(flex, none); }
 /* 시간대 배지(결정 70 ⑥): 낮 = 밝은 하늘 · 저녁 = 노을 · 밤 = 짙은 남색(글자는 밝게) */
 .kit-root .sn-hud-time-day { background-color: var(--sn-time-day); }
 .kit-root .sn-hud-time-evening { background-color: var(--sn-time-evening); }
@@ -359,6 +384,12 @@
 .kit-root .sn-hud-res-item > Label { margin-left: 2px; }
 .kit-root .sn-hud-res-jp { flex-shrink: 0; margin-left: 2px; margin-right: 8px; padding: 0 8px; border-left-width: 1px; border-right-width: 1px; border-color: var(--sn-line); }
 .sn-hud-res-zero { opacity: 0.4; }
+.sn-hud-res-off { visibility: hidden; }   /* 배틀 화면이 떠 있는 동안(독보다 위로 솟아 반투명 덮개 아래로 비친다 — 코드가 건다) */
+/* 보드 돌리기 단추(결정 164): 아래 판 오른쪽 위에 얹은 작은 단추 둘(↺ Q · E ↻) — 자원 줄의 오른쪽 짝(판의 배치 밖이라 판 높이를 따라간다).
+   Q · E를 못 받는 때(창 · 메뉴 · 배틀 화면 · 글 칸 · 남의 행동 보기 창)는 코드가 숨기고, 카드 능력 두 줄로 판이 높아진 동안은 룰 설명서 옆 판(bottom 158)과 겹쳐 숨긴다 [가정] */
+.sn-hud-rotate { position: absolute; right: 0; bottom: 100%; margin-bottom: 2px; flex-direction: row; align-items: flex-end; }
+.kit-root .sn-hud-rotate > * { margin-left: 4px; }
+.sn-hud-rotate-off, .sn-hud-dock-tall > .sn-hud-rotate { display: none; }
 .sn-hud-party { flex-grow: 1; overflow: hidden; }
 .sn-hud-mons { flex-direction: row; margin-top: 4px; }
 .sn-hud-mon { flex-direction: row; align-items: center; margin-right: 10px; flex-shrink: 1; min-width: 0; overflow: hidden; }
@@ -375,6 +406,11 @@
 /* 파티 칸의 패시브 칩(T23 · T27 — 우두머리 · 비스트 부스트, 정비 판 카드와 같은 작은 칩): 넷 이하 = 체력 · 스피드 아래 한 줄.
    다섯 이상 = 칸 아래 끝(도트 + 글 폭)에 얹은 한 줄 — 칸 아래에 칩 높이만큼 자리를 내고, 칸보다 길면 칩 글이 「…」(전체 이름 · 효과는 마우스 오버) [가정 plan §5 #608] */
 .sn-hud-mon-passive { flex-direction: row; align-self: flex-start; margin-top: 2px; }
+/* 상태 이상(결정 180): 배틀과 같은 Pt 상태 그림(32×16 정수배)을 도트 오른쪽 위(제 이름 바로 왼쪽 — 왼쪽 칸의 글과 붙어 남의 것으로 읽히지 않게)에 세로로.
+   칸의 배치 밖이라 칸 폭 · 높이가 그대로다(넷째부터는 칸이 자른다) [가정]. left = 도트 폭 − 그림 폭 */
+.sn-hud-mon-status { position: absolute; left: T(32px!, 64px!); top: 0; flex-direction: column; align-items: flex-start; }
+.sn-hud-mons-many .sn-hud-mon-status { left: T(16px!, 32px!); }
+.kit-root .sn-hud-mon-status > .sn-status-icon { margin-bottom: 1px; }
 .sn-hud-mons-many .sn-hud-mon-passives { padding-bottom: 14px!; }
 .sn-hud-mons-many .sn-hud-mon-passive { position: absolute; left: 0; right: 0; bottom: 0; margin-top: 0; overflow: hidden; }
 .kit-root .sn-hud-mons-many .sn-hud-mon-passive > .sn-passive { flex-shrink: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; -unity-text-overflow-position: end; }
@@ -475,7 +511,7 @@
 .sn-battle-block { padding: 6px; margin-bottom: 6px; border-width: 1px; border-color: var(--sn-line); background-color: var(--sn-fill); }
 .sn-battle-line { flex-direction: row; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
 .kit-root .sn-battle-line > * { margin-right: 6px; }
-/* 기둥의 [운명의 변화 n/5](손패 훑어보기 — 결정 80 N3 나): 글 폭만큼만 */
+/* 독 차례 칸의 [운명의 변화 n/5](손패 훑어보기 — 결정 80 N3 나 · 자리 결정 170): 글 폭만큼만 */
 .sn-battle-fate { align-self: flex-start; }
 /* 도트 창 아래 틈: 큰 도트(전설·최종 진화)는 창을 아래 끝까지 채워 바로 밑 줄의 「대기」·「기술」 글자에 닿았다 */
 .sn-battle-mon { flex-direction: row; align-items: center; margin-bottom: 4px; }
@@ -488,6 +524,12 @@
 .kit-root .sn-battle-extra > * { margin-bottom: T(3px!, 4px!); }
 /* 타입·상태 그림(Pt 틀 32×16): 벌마다 정수배 */
 .sn-type-icon { width: T(32px!, 64px!); height: T(16px!, 32px!); flex-shrink: 0; }
+/* 상대 기술 칩 한 묶음(결정 187 [가정]): [타입][이름 위력][상성]이 붙어 선다 — 칩 줄이 꺾여도 묶음째 */
+.sn-battle-foe-move { flex-direction: row; align-items: center; flex-shrink: 0; margin-bottom: 2px; }
+.kit-root .sn-battle-foe-move > * { margin-right: 3px; }
+/* 알파 스트라이크 옆 배울 수 있는 타입(결정 182 [가정]): 타입 그림을 붙여 한 묶음 — 칩 줄 · 기술 줄 안에서 줄지 않는다 */
+.sn-battle-alpha-types { flex-direction: row; align-items: center; flex-shrink: 0; }
+.kit-root .sn-battle-alpha-types > .sn-type-icon { width: 32px!; height: 16px!; margin-right: 2px; }   /* 1080에서도 1배(정수배 — 줄 폭 안) */
 /* 우선권 토큰 그림(16×16 도트, 결정 73 ⑦): 벌마다 정수배 */
 .sn-token-icon { width: T(16px!, 32px!); height: T(16px!, 32px!); flex-shrink: 0; margin-left: 4px; }
 /* 상대 머리 줄(야생·갤럭시단은 글 한 줄뿐)은 처음부터 토큰 그림 높이 — 토큰이 넘어와도 줄이 늘지 않는다(결정 73 검토 반영) */
@@ -501,7 +543,8 @@
 .kit-root .sn-battle-logtext { flex-shrink: 1; flex-grow: 1; }
 
 .sn-battle-dock { position: absolute; left: 4px; right: 4px; bottom: 4px; height: 142px; flex-direction: row; }
-.sn-battle-turn { width: 200px; flex-shrink: 0; padding-right: 8px; }
+/* 차례 칸: 1080 벌은 조금 넓게(결정 170 — 맨 아래 단추 줄에 [넘기기]·[뒤로] + [운명의 변화 n/5]가 한 줄에 들게, 1080 벌 한글 글자는 24px라 배율보다 넓다) */
+.sn-battle-turn { width: T(200px!, 350px!); flex-shrink: 0; padding-right: 8px; }
 .sn-battle-moves { width: 480px; flex-shrink: 0; justify-content: space-between; }
 /* 남이 가리키는 기술 줄(방 판 — 결정 120): 테두리 색은 그 좌석 색(코드) */
 .sn-battle-move.sn-battle-move-peek { border-width: 3px; }
@@ -542,6 +585,24 @@
 .sn-battle-rolltag { position: absolute; translate: -50% -150%; }
 .sn-battle-calc-hp { flex-direction: row; align-items: center; margin-top: 6px; }
 .kit-root .sn-battle-calc-hp > * { margin-right: 6px; }
+/* 누가 맞았나(결정 171 ②): 맞은 포켓몬의 작은 도트 얼굴 + 이름표 + 「준 피해」·「받은 피해」 — 받은 피해는 오른쪽에 붙고 얼굴이 바깥(오른쪽) */
+.sn-battle-calc-body { flex-direction: row; align-items: center; margin-top: 2px; }
+.sn-battle-calc-taken { flex-direction: row-reverse; }
+.sn-battle-calc-col { flex-shrink: 1; }
+.sn-battle-calc-taken .sn-battle-calc-col { align-items: flex-end; }
+.sn-battle-calc-face { flex-shrink: 0; margin-right: 6px; }
+.sn-battle-calc-taken .sn-battle-calc-face { margin-right: 0; margin-left: 6px; }
+.sn-battle-calc-face .sn-mon { width: T(48px!, 96px!); height: T(48px!, 96px!); }
+.sn-battle-calc-face .sn-mon-canvas { left: T(-24px!, -48px!); top: T(-22px!, -44px!); }
+.sn-battle-calc-who { flex-direction: row; align-items: center; }
+.kit-root .sn-battle-calc-who > * { margin-right: 6px; }
+.sn-battle-calc-taken .sn-battle-calc-who { flex-direction: row-reverse; }
+.kit-root .sn-battle-calc-taken .sn-battle-calc-who > * { margin-right: 0; margin-left: 6px; }
+.sn-battle-calc-tag { padding: 0 6px; border-width: 1px; border-color: var(--sn-edge); }
+.sn-battle-calc-tag-foe { background-color: var(--sn-side-foe); }
+.kit-root .sn-battle-calc-tag Label { color: var(--sn-logo); }
+/* 차례 칸 맨 아래의 [운명의 변화 n/5](결정 170 — 스피드 · 운명 물음 칸 아래로 옮김) */
+.sn-battle-turn > .sn-battle-fate { margin-top: auto; }
 
 .sn-battle-result { position: absolute; left: 0; top: 0; right: 0; bottom: 0; align-items: center; justify-content: center; }
 .sn-battle-result-panel { width: 320px; align-items: center; }
@@ -789,6 +850,23 @@
 .sn-types-immune { background-color: var(--sn-types-immune); }
 .kit-root .sn-types-immune .sn-types-num { color: var(--sn-types-immune-ink); }
 .sn-types-side { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+/* 버림 더미 보기(결정 196 — DiscardScreen): 판은 상성 창 자리(sn-types-panel) · 왼쪽 덱 목록 · 오른쪽 카드 칸(쪽 넘김) */
+.sn-discards-body { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.sn-discards-decks { width: T(190px!, 320px!); flex-shrink: 0; margin-right: T(8px!, 12px!); }
+.sn-discards-deck { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 2px; padding: 2px 5px; border-width: 1px; border-color: var(--sn-line); background-color: var(--sn-logo); }
+.sn-discards-deck-picked { border-color: var(--sn-edge); background-color: var(--sn-pick-strong); }
+.sn-discards-right { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.sn-discards-pager { flex-direction: row; align-items: center; justify-content: flex-end; flex-shrink: 0; }
+.kit-root .sn-discards-pager > * { margin-left: 4px; }
+.sn-discards-list { flex-direction: row; flex-wrap: wrap; align-content: flex-start; flex-grow: 1; }
+.sn-discards-card { flex-direction: row; align-items: center; width: T(196px!, 300px!); height: T(40px!, 64px!); margin: 0 4px 4px 0; padding: 2px 4px; border-width: 1px; border-color: var(--sn-line); background-color: var(--sn-logo); overflow: hidden; }
+.kit-root .sn-discards-card > * { margin-right: 3px; }
+.sn-discards-art { width: T(34px!, 56px!); height: T(34px!, 56px!); flex-shrink: 0; overflow: hidden; align-items: center; justify-content: center; -unity-background-scale-mode: scale-to-fit; }
+.sn-discards-name { flex-shrink: 1; min-width: 0; overflow: hidden; }
+/* 기술 면(결정 196 덧): 칸 안의 기술 줄은 칸 높이에 맞춰 늘고 이름이 넘치면 「…」 */
+.kit-root .sn-discards-card > .sn-discards-move { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-top: 0; align-self: center; }
+.kit-root .sn-discards-move .sn-enc-move-name { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.kit-root .sn-discards-move .kit-muted { display: none; }   /* 「위력」 글은 빼고 값만 — 이름 자리(영어 이름이 「…」로만 남았다) */
 /* 창 밖 누르기를 받는 보이지 않는 막(기록 창 — 위 띠 · 아래 판은 덮지 않는다, T35) */
 .sn-field-catch { position: absolute; left: 0; right: 0; top: T(50px!, 95px!); bottom: 126px; }
 .sn-party-panel { position: absolute; left: 4px; right: 4px; top: T(56px!, 101px!); bottom: 130px; overflow: hidden; }
@@ -807,10 +885,15 @@
 .sn-party-card { flex-direction: row; align-items: center; }
 .sn-party-card:hover { background-color: var(--sn-pick); }
 .sn-party-card-info { margin-left: 4px; flex-shrink: 1; overflow: hidden; }
+/* 카드의 상태 이상(결정 180): 아래 판 파티 칸처럼 도트 위 왼쪽에 세로로 — 카드 배치 밖이라 열 높이를 늘리지 않는다 [가정] */
+.sn-party-status { position: absolute; left: 0; top: 0; flex-direction: column; align-items: flex-start; }
+.kit-root .sn-party-status > .sn-status-icon { margin-bottom: 1px; }
 .sn-party-line { flex-direction: row; align-items: center; flex-wrap: wrap; margin-top: 3px; }
 .kit-root .sn-party-line > * { margin-right: 4px; }
 /* 가방의 셈 줄(여행 점수 · 스탬프 · 조각 · 운명의 변화): 글 덩이 사이를 띄운다 — 1080 벌에서 「여행 점수 2여행 스탬프」로 붙어 읽혔다 */
 .kit-root .sn-party-counts > * { margin-right: T(10px, 20px); }
+/* 볼 줄 뒤에 잇는 규토리 머리: 앞 덩이와 띄운다 */
+.kit-root .sn-party-line > .sn-party-gap { margin-left: T(6px, 16px); }
 .sn-party-learn { margin-top: 2px; }
 .sn-party-move { margin-top: 4px; }
 /* 열 안의 기술 줄: 긴 이름은 잘리고 값은 남는다(전체 이름은 툴팁). 1080 벌은 글자가 커서 「위력」 꼬리표를 뺀다 */
@@ -840,6 +923,16 @@
 .sn-party-poolcard { width: 250px; margin-right: 6px; align-self: auto; }
 /* 기술 카드의 앞면 등급(T30) · 패시브 칩(T27) */
 .kit-root .sn-party-pooltier { margin-left: 4px; flex-shrink: 0; }
+/* 등급 상자의 색(결정 192 — MonParts.GradeBadge): 약함 파랑 → 보통 초록 → 강함 주황 → 전설 금 · 우두머리 빨강, 글자는 진한 먹(우두머리만 흰 글자) [가정] */
+.kit-root .sn-grade { color: var(--sn-grade-ink); }
+.kit-root .sn-grade-weak { background-color: var(--sn-grade-weak); }
+.kit-root .sn-grade-moderate { background-color: var(--sn-grade-moderate); }
+.kit-root .sn-grade-strong { background-color: var(--sn-grade-strong); }
+.kit-root .sn-grade-legendary { background-color: var(--sn-grade-legendary); }
+.kit-root .sn-grade-alpha { background-color: var(--sn-grade-alpha); color: var(--sn-grade-alpha-ink); }
+/* 조합표(결정 191 — PartyScreen.OpenRecipes): 정비 판 위를 덮는 보기 창, 줄은 제작 창의 레시피 줄 그대로 · 넘치면 세로 스크롤 [가정] */
+.sn-party-recipes { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.sn-party-recipes-scroll { flex-grow: 1; flex-shrink: 1; }
 /* 등급 배지(「Legendary」)가 카드 칸 밖으로 밀리지 않게 긴 기술 이름은 「…」(전체는 마우스 오버 — 넘침 전수 2) */
 .kit-root .sn-party-poolcard .sn-enc-move-name { flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }
 .kit-root .sn-passive { margin-right: 3px; }
@@ -947,6 +1040,10 @@
 .sn-evolve-slot { flex-direction: row; align-items: center; margin-top: 3px; padding: 2px 6px; border-width: 1px; border-bottom-width: 3px; border-color: var(--sn-edge); background-color: var(--sn-clear); }
 .kit-root .sn-evolve-slot > * { margin-right: 6px; }
 .sn-evolve-slot.sn-party-press:hover { background-color: var(--sn-pick); }
+/* 결정 181: 진화한 포켓몬의 ★ 고유 기술 — 칸 줄과 같은 자리 · 누르지 않는 칸이라 아래 두꺼운 테두리 없음 */
+.sn-evolve-slot.sn-evolve-fixed { border-bottom-width: 1px; border-color: var(--sn-line); background-color: var(--sn-fill); }
+/* 칸 안의 기술 줄은 남은 폭을 채운다(위 옛 기술 줄과 같은 폭 — 위력 값이 오른쪽 끝에 맞는다) */
+.kit-root .sn-evolve-slot > .sn-enc-move { flex-grow: 1; flex-shrink: 1; margin-right: 0; }
 .sn-evolve-keep { align-self: flex-end; margin-top: 4px; }
 .sn-evolve-buttons { flex-shrink: 0; align-items: stretch; }
 .kit-root .sn-evolve-buttons > * { margin-top: 2px; }
@@ -1235,6 +1332,8 @@
 .sn-deal-glow { position: absolute; left: -6px; top: -6px; right: -6px; bottom: -6px; border-width: 3px; border-color: var(--sn-pick-strong); opacity: 0; }
 /* ── M5 「맵 결과·배틀 안 연출」(04 §8-8 23·26~30·80행 — ResultFx: 보드 HUD 위의 판 · 74·75·81행 · 46행 — BattleScreen.Rows) ── */
 .sn-result-fx { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+/* 공중날기 컷인(결정 167): HUD 판을 덮는 층 — 띠 · 탄 것의 자리와 크기는 텍셀 × 정수배라 코드가 정한다(FlyCutin) */
+.sn-fly-cutin { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
 /* 결과 꼬리표: 토큰 위에 뜨는 이름 칩(한 줄) + 작은 둘째 줄. 폭은 가장 긴 글(「그라시데아 꽃」·「매 턴 운명의 변화 2장」)이 한 줄에 드는 값 */
 .sn-result-label { position: absolute; left: 0; top: 0; width: 240px; height: 48px; margin-left: -120px; margin-top: -48px; align-items: center; justify-content: flex-end; }
 .sn-result-label-head { flex-direction: row; align-items: center; }
@@ -1530,7 +1629,7 @@
 .kit-root.sn-lang-en .sn-hud-actions-card > .kit-badge, .kit-root.sn-lang-en .sn-hud-actions-card > .kit-btn { padding-left: 2px!; padding-right: 2px!; }
 .kit-root.sn-lang-en .sn-challenge-panel { width: 540px; margin-left: -270px; }
 .kit-root.sn-lang-en .sn-bless-side { width: T(380px!, 580px!); }
-.kit-root.sn-lang-en .sn-battle-turn { width: 240px; }
+.kit-root.sn-lang-en .sn-battle-turn { width: T(240px!, 380px!); }
 .kit-root.sn-lang-en .sn-battle-ub-card { width: T(140px!, 216px!); }
 .kit-root.sn-lang-en .sn-fate-pass { width: 156px; margin-left: -78px; }
 .kit-root.sn-lang-en .sn-ub-coin-face { width: T(76px!, 96px!); height: T(76px!, 96px!); border-radius: T(38px!, 48px!); }
@@ -1734,9 +1833,6 @@
 .kit-root .sn-book-li-mark { width: 22px; flex-shrink: 0; }
 .sn-book-q { margin-top: 8px; }
 .kit-root .sn-book-li-text { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }
-.sn-book-fixrow { flex-direction: row; align-items: flex-start; }
-.kit-root .sn-book-fixtext { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }
-.kit-root .sn-book-fixbadge { margin-left: 4px; flex-shrink: 0; }
 .sn-book-digital { flex-direction: row; align-items: flex-start; margin: 6px 8px 0 0; padding: 3px 4px; background-color: var(--sn-fill); }
 .kit-root .sn-book-digital-badge { margin-right: 6px; flex-shrink: 0; }
 .kit-root .sn-book-digital-text { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }

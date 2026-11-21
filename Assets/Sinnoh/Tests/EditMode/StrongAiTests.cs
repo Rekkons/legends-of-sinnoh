@@ -451,7 +451,7 @@ namespace Sinnoh.Tests.EditMode
         /// 강한 AI 1단계의 결정 지문(합성 장면 셋 × 시드 3, 갤럭시단 선택마다 굴리기 48): 선택 종류 · 답 · 굴리기 수를 섞은 값. 밑작업 코드(a68513c)에서 잰 값과 같아야 한다 —
         /// 속도 손보기(이벤트 없이 결과 읽기)가 결정을 바꾸지 않았다. 탐색을 일부러 바꾸는 묶음은 이 값을 새로 재어 고친다.
         /// </summary>
-        const ulong StageOneDigest = 0x41503FF4448CA267UL;
+        const ulong StageOneDigest = 0x4A4A4952CC986819UL;   // 결정 197: 잡음보다 작은 차이로는 원칙 답(옛 값 0x41503FF4448CA267)
 
         [Test]
         public void M8_강한AI결정지문은밑작업과같다()

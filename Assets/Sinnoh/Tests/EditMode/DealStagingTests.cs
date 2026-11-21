@@ -166,5 +166,43 @@ namespace Sinnoh.Tests.EditMode
             Assert.IsTrue(lines.Exists(l => l.Line.Key == BoardLog.K + "trade.offer" && l.Seat == me));
             Assert.IsTrue(lines.Exists(l => l.Line.Key == BoardLog.K + "trade.done" && l.Seat == them));
         }
+
+        [Test]
+        public void M10_남좌석의스탬프는배틀끝항목에서떼어받은차례대로보드항목으로선다_결정178()
+        {
+            // 좌석 0의 화면: 배틀 끝 단계 뒤에 내 스탬프 하나 · 좌석 1의 스탬프 둘(3 → 4)이 잇달아 실려 왔다
+            FxStep Stamp(int seat, int after)
+            {
+                var st = new FxStep { Row = DealRows.Stamp, Ms = PlayTiming.StampMs(1, 0) };
+                st.Events.Add(new StampGained { Seat = seat, CountBefore = after - 1, CountAfter = after });
+                return st;
+            }
+            var entry = new FxEntry { Seq = 9, Seat = 1 };
+            var end = new FxStep { Row = 700, Ms = 1200 };
+            end.Events.Add(new BattleEnded { Seat = 1 });
+            var steps = new[] { end, Stamp(0, 2), Stamp(1, 3), Stamp(1, 4) };
+            int t = 0;
+            foreach (var st in steps)
+            {
+                st.StartMs = t;
+                t += st.Ms;
+                entry.Steps.Add(st);
+                entry.Events.AddRange(st.Events);
+            }
+            entry.QueueMs = t;
+            var entries = new List<FxEntry> { entry };
+
+            Assert.AreEqual(2, DealRows.SplitOthers(entries, 0), "남의 스탬프 둘을 뗀다");
+            Assert.AreEqual(3, entries.Count);
+            Assert.AreEqual(2, entry.Steps.Count, "배틀 끝 항목에는 배틀 끝 · 내 스탬프(결과 창 위에 찍는다)");
+            Assert.AreEqual(0, StampBeats.Event(entry.Steps[1]).Seat);
+            Assert.AreEqual(3, StampBeats.Event(entries[1].Steps[0]).CountAfter, "받은 차례대로(3 → 4)");
+            Assert.AreEqual(4, StampBeats.Event(entries[2].Steps[0]).CountAfter);
+            Assert.AreEqual(0, entries[1].Steps[0].StartMs);
+            Assert.AreEqual(t, entries[0].LengthMs + entries[1].LengthMs + entries[2].LengthMs, "길이의 합은 그대로(P5)");
+            Assert.IsTrue(OtherActs.Shows(entries[1].Steps[0], 0, 2), "뗀 단계는 그 좌석 칩 꼬리표");
+            Assert.AreEqual("stamp", OtherActs.KeyOf(entries[1].Steps[0]));
+            Assert.AreEqual(0, DealRows.SplitOthers(entries, 0), "두 번 떼지 않는다");
+        }
     }
 }

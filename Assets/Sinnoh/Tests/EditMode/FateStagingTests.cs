@@ -40,7 +40,7 @@ namespace Sinnoh.Tests.EditMode
                 Assert.AreEqual(ms, PlayTiming.RowMs(e, row), e.GetType().Name + " 길이");
                 Assert.IsTrue(FxBuilt.Drawn(row), row + "행은 화면이 그린다");
             }
-            Assert.AreEqual(1600, PlayTiming.RerollMs(2), "주사위당 600 + 다시 세기 400");
+            Assert.AreEqual(4000, PlayTiming.RerollMs(2), "주사위당 1500 + 다시 세기 1000(결정 190 — 옛 600 · 400의 2.5배)");
         }
 
         [Test]

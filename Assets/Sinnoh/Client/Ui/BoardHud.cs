@@ -539,7 +539,7 @@ namespace Sinnoh.Client
         }
 
         long paintedHp;
-        int hover = -1, paintedSeat = -1, paintedRound = -1, paintedAct = int.MinValue, paintedLog = -1, hoverAny = -1, hoverInfo = -1, infoSeat = -1, infoCell = -1;
+        int hover = -1, paintedSeat = -1, paintedRound = -1, paintedAct = int.MinValue, paintedLog = -1, hoverAny = -1, hoverInfo = -1, infoSeat = -1, infoCell = -1, hoverLook;
 
         public BoardHud(GameFlow flow)
         {
@@ -766,6 +766,9 @@ namespace Sinnoh.Client
             // 타입 상성 · 상태 이상(플레이 시험 T5): 어느 화면에서든 — 창 · 배틀이 떠 있으면 그 위 정보 창 층에
             var types = Add(tools, Kit.Button(stage.T("screen.types.open"), KitButtonKind.Normal, () => flow.ToggleTypes()), "board-hud-types", null);
             stage.Tips.Hook(types, null, stage.T("screen.types.open.tip"), TipSide.Below, reading: true);
+            // 버림 더미(결정 196): 덱마다 버려진 카드 — 사당 이벤트로 버림 더미에서 가져오기 전에 본다. 좌석 다섯 이상의 720 벌은 위 띠에 자리가 없어(칩 이름 한글 6자 — 결정 112 Q15) 기록 판 머리의 단추(board-hud-log-discards)로 [가정 결정 196]
+            var discards = Add(tools, Kit.Button(stage.T("screen.discards.open"), KitButtonKind.Normal, () => flow.ToggleDiscards()), "board-hud-discards", null);
+            stage.Tips.Hook(discards, stage.T("screen.discards.title"), stage.T("screen.discards.open.tip"), TipSide.Below, reading: true);
             var book = Add(tools, Kit.Button(RulebookView.Help, KitButtonKind.Normal, () => flow.ToggleBookSide()), "board-hud-book", null);   // 룰 설명서 옆 판 S43 C(M9 — 6인 1080 위 띠 폭 때문에 글리프 하나)
             stage.Tips.Hook(book, stage.T("screen.rulebook.title"), stage.T("screen.rulebook.open.tip"), TipSide.Below, reading: true);
             var menu = Add(status, Kit.Button(stage.T("screen.board.menu"), KitButtonKind.Normal, () => flow.OpenMenu()), "board-hud-menu", null);
@@ -774,6 +777,8 @@ namespace Sinnoh.Client
             logBox = Add(page, Kit.Panel(stage.Skin), "board-hud-log", "sn-hud-log");
             var logHead = Add(logBox, new VisualElement(), null, "sn-hud-log-head");
             Add(logHead, Kit.Text(stage.T("screen.log.title"), Kit.F2), null, "kit-title");
+            var logDiscards = Add(logHead, Kit.Button(stage.T("screen.discards.title"), KitButtonKind.Normal, () => flow.ToggleDiscards()), "board-hud-log-discards", "sn-hud-log-discards");
+            stage.Tips.Hook(logDiscards, null, stage.T("screen.discards.open.tip"), TipSide.Below, reading: true);
             var logOpen = Add(logHead, Kit.Button(stage.T("screen.log.open"), KitButtonKind.Normal, () => flow.OpenLog()), "board-hud-log-open", null);
             stage.Tips.Hook(logOpen, null, stage.T("screen.log.open.tip"), TipSide.Below, reading: true);
             logLines = Add(logBox, new VisualElement(), "board-hud-log-lines", "sn-hud-log-lines");
@@ -784,6 +789,14 @@ namespace Sinnoh.Client
             actions = Add(dock, new VisualElement(), "board-hud-actions", "sn-hud-actions");
             // 내 자원 줄(결정 98): 규토리 일곱 색 · 여행 점수 · 볼 넷 — 아래 판 왼쪽 위에 얹은 띠(판의 배치 밖: 판이 한 줄 높아져도 따라 올라간다). 마우스를 올리지 않아도 늘 보인다
             res = Add(dock, Kit.Panel(stage.Skin), Res, "sn-hud-res");
+            // 보드 돌리기(결정 164): 아래 판 오른쪽 위에 얹은 작은 단추 둘(자원 줄의 오른쪽 짝 — 판의 배치 밖) — Q · E와 같은 함수(GameFlow.Turn), 키를 못 받는 때는 숨긴다(SyncTurn)
+            rotate = Add(dock, new VisualElement(), Rotate, "sn-hud-rotate");
+            var turnLeft = Add(rotate, Kit.Button(RotateLeftText, KitButtonKind.Normal, () => flow.Turn(-1)), RotateLeft, null);
+            stage.Tips.Hook(turnLeft, stage.T("screen.board.rotate.left"), null, TipSide.Above);
+            var turnRight = Add(rotate, Kit.Button(RotateRightText, KitButtonKind.Normal, () => flow.Turn(1)), RotateRight, null);
+            stage.Tips.Hook(turnRight, stage.T("screen.board.rotate.right"), null, TipSide.Above);
+            rotateShown = true;
+            SyncTurn();
 
             // 찾아보기의 「!」: 말 머리 위에 뜬다(자리는 연출이 도는 동안 옮기기로 맞춘다). 마우스를 받지 않는다
             bang = Add(page, new VisualElement { pickingMode = PickingMode.Ignore }, "board-hud-bang", "sn-hud-bang");
@@ -867,10 +880,43 @@ namespace Sinnoh.Client
             return page;
         }
 
+        // ── 보드 돌리기 단추(결정 164) ──
+
+        /// <summary>돌리기 단추 묶음 <c>board-hud-rotate</c>(아래 판 오른쪽 위) · ↺ <c>-left</c>(Q) · ↻ <c>-right</c>(E) — 튜토리얼 층도 늘 받는다(키처럼 카메라만 바꾼다).</summary>
+        public const string Rotate = "board-hud-rotate", RotateLeft = Rotate + "-left", RotateRight = Rotate + "-right";
+
+        // 단추 글: 돌리는 쪽 글리프 + 같은 일을 하는 키(키 글자는 언어와 무관 — 배틀 독의 단축키 배지처럼 코드에)
+        const string RotateLeftText = "↺ Q", RotateRightText = "E ↻";
+
+        VisualElement rotate;
+        bool rotateShown;
+
+        /// <summary>돌리기 단추가 보이나(키를 받는 때 — <see cref="GameFlow.CanTurn"/>, 남의 행동 보기 창이 아래 판을 덮는 동안은 숨김).</summary>
+        public bool RotateShown => rotateShown;
+
+        /// <summary>돌리기 단추를 Q · E를 받는 때에만 보이고, 자원 줄은 배틀 화면이 떠 있는 동안 숨긴다(프레임마다 — 화면 흐름의 Layout이 부른다).</summary>
+        public void SyncTurn()
+        {
+            if (rotate == null) return;
+            // 자원 줄(아래 판 위에 얹은 띠)은 배틀 화면이 떠 있는 동안 숨긴다 — 배틀 독보다 위로 솟아 반투명 덮개 아래로 글자가 비쳤다(M10)
+            bool resOn = !(flow.Stage.Current is BattleScreen);
+            if (res != null && resOn == res.ClassListContains(ResOff)) res.EnableInClassList(ResOff, !resOn);
+            bool show = flow.CanTurn && !flow.WatchShown;
+            if (show == rotateShown) return;
+            rotateShown = show;
+            rotate.EnableInClassList(RotateOff, !show);
+        }
+
+        /// <summary>돌리기 단추를 숨기는 클래스(USS — 카드 능력 두 줄로 아래 판이 높아진 동안도 같은 꼴로 숨긴다: 그때는 룰 설명서 옆 판과 자리가 겹친다).</summary>
+        public const string RotateOff = "sn-hud-rotate-off";
+
         // ── 내 자원 줄(결정 98) ──
 
         /// <summary>내 자원 줄의 요소 이름(튜토리얼 앵커로도 쓴다): 줄 <c>board-hud-res</c> · 칸 <c>-apricorn-&lt;색&gt;</c>·<c>-jp</c>·<c>-ball-&lt;n&gt;</c>, 0인 칸은 <see cref="ResZero"/>로 흐리다.</summary>
         public const string Res = "board-hud-res", ResZero = "sn-hud-res-zero";
+
+        /// <summary>자원 줄을 숨기는 클래스(배틀 화면이 떠 있는 동안 — <see cref="SyncTurn"/>).</summary>
+        public const string ResOff = "sn-hud-res-off";
 
         // 자원의 표시 값: 연출이 착지하기 전에는 붙잡아 둔 값(04 §8-3 — 공개 정보 카드와 같은 값)
         int ResOf(ResKind kind, int key, int now) => flow.Fx != null ? flow.Fx.Sequencer.Shown.Get(ShownKey.Resource(flow.Client.Seat, kind, key), now) : now;
@@ -998,6 +1044,7 @@ namespace Sinnoh.Client
             paintedFollowers = FollowerMask(view);
             // 좌석 다섯 이상(결정 112 Q15 — 칩 이름이 한글 6자 고정 폭): 1080 벌은 위 띠가 모자라 턴 배지를 뺀다(턴인 좌석은 칩 테두리 · 넘김 띠가 알린다 [가정 M7-89])
             seats.parent?.EnableInClassList(ManyClass, view.Seats.Length >= FollowIconSeats);
+            logBox?.EnableInClassList(ManyClass, view.Seats.Length >= FollowIconSeats);   // 720 벌의 버림 더미 단추 자리(결정 196 — USS)
             seats.parent?.EnableInClassList(ToolsDownClass, view.Seats.Length >= ToolsDownSeats);
             bool mine = view.ActiveSeat == client.Seat;
             turn.text = paintedSeat == client.Seat ? stage.T("screen.board.my_turn") : flow.SeatName(paintedSeat);
@@ -1032,18 +1079,18 @@ namespace Sinnoh.Client
             // [정비] 손잡이(04 §3-5 — 단축키 T): 내 턴이 아니어도, 걷기·턴 넘김 연출 중에도 열린다. 결정 125: 막 카드 같은 전원 차단 연출 중 · 창이 떠 있는 동안에도 열리고
             // 그때는 보기만 하는 판(흐린 단추 + 까닭 툴팁 — 누르면 정보 창 층에 연다)
             bool canMaint = flow.CanOpenParty, peek = flow.CanPeek;
-            var maint = Add(partyLeft, Kit.Button(stage.T("screen.board.maint"), KitButtonKind.Normal, () => flow.OpenParty()), "board-hud-maint", null);
+            var maint = Add(partyLeft, Kit.Button(stage.T("screen.board.maint"), KitButtonKind.Normal, () => flow.ToggleParty()), "board-hud-maint", null);   // 다시 누르면 닫힌다(결정 176 — T와 같은 함수)
             Peek(maint, peek, canMaint, "screen.board.maint.tip");
             paintedMaint = canMaint;
             // [트레이너 카드] → 트레이너 카드 판(S40). 트레이너 카드를 끈 판에서는 숨긴다. 여는 조건은 [정비]와 같다
             if (flow.HasTrainerCard(client.Seat))
             {
-                var card = Add(partyLeft, Kit.Button(stage.T("screen.board.trainer"), KitButtonKind.Normal, () => flow.OpenTrainer()), "board-hud-trainer", null);
+                var card = Add(partyLeft, Kit.Button(stage.T("screen.board.trainer"), KitButtonKind.Normal, () => flow.ToggleTrainer()), "board-hud-trainer", null);
                 Peek(card, peek, canMaint, "screen.board.trainer.tip");
             }
             // [운명의 변화 n/5] → 손패 창(S30 — 결정 75 A2 가). 장수는 카드가 손에 닿을 때 바뀐다(표시 값). 여는 조건은 [정비]와 같다
             paintedFate = ShownFate(me, client.Seat);
-            var fate = Add(partyLeft, Kit.Button(stage.T("screen.board.fate").Replace("{n}", paintedFate.ToString(inv)).Replace("{max}", FateRules.HandLimit.ToString(inv)), KitButtonKind.Normal, () => flow.OpenFate()), FateButton, null);
+            var fate = Add(partyLeft, Kit.Button(stage.T("screen.board.fate").Replace("{n}", paintedFate.ToString(inv)).Replace("{max}", FateRules.HandLimit.ToString(inv)), KitButtonKind.Normal, () => flow.ToggleFate()), FateButton, null);
             Peek(fate, peek, flow.CanOpenFate, "screen.board.fate.tip");
             // 칸 정보 줄(04 §3-6 — 목업 r3 「숲 · 온대 · 높이 1 · 초록 규토리 나무」): 마우스를 올린 칸, 없으면 고른 칸, 그것도 없으면 내가 선 칸(글은 아래에서 고른 칸이 정해진 뒤 넣는다). 목업은 「행동」 머리 아래 줄이지만 판이 낮아 파티 머리 줄의 오른쪽 끝에 둔다 [가정]
             cellInfo = Add(partyHead, Kit.Text("", Kit.F2), "board-hud-cell", "sn-hud-cell");
@@ -1062,6 +1109,10 @@ namespace Sinnoh.Client
                 var def = ctx.Cards.Pokemon[EvolveScreen.ShownDef(flow, id, pk.Def)];   // 진화 연출(39행)이 착지하기 전에는 진화 전 모습
                 var tile = Add(tiles, new VisualElement(), "board-hud-mon-" + i.ToString(inv), "sn-hud-mon");
                 tile.Add(mons != null ? mons.Front(def.Key) : new VisualElement());
+                // 상태 이상(결정 180): 배틀과 같은 Pt 상태 그림을 도트 왼쪽 위에 세로로 얹는다(칸의 배치 밖 — 칸 폭 · 높이가 그대로, 마우스 오버 = 이름 + 효과)
+                var status = new VisualElement { name = "board-hud-mon-" + i.ToString(inv) + "-status" };
+                status.AddToClassList("sn-hud-mon-status");
+                if (MonParts.StatusIcons(stage, status, pk, status.name, TipSide.Above, dock) > 0) tile.Add(status);
                 // 회복(8·17행)의 반짝임 — 칸을 덮는 흰 판(마우스를 받지 않는다, 연출이 opacity만 바꾼다)
                 FxUi.Fade(Add(tile, new VisualElement { pickingMode = PickingMode.Ignore }, "board-hud-mon-" + i.ToString(inv) + "-flash", "sn-hud-mon-flash"), 0f);
                 var info = Add(tile, new VisualElement(), null, "sn-hud-mon-info");
@@ -1147,9 +1198,9 @@ namespace Sinnoh.Client
             }
             // [스탬프 n/7] → 스탬프 판(S37): 「행동」 머리 줄의 오른쪽 끝(파티 머리 줄은 1080에서 칸 정보 줄까지 차 있다). 여는 조건은 [정비]와 같다.
             // 걷기 전 확인 중에는 이 자리에 오른쪽 클릭 안내가 선다(아래 MoveHint — 그동안은 숨긴다)
-            stampButton = Add(head, Kit.Button(stage.T("screen.board.stamp").Replace("{n}", StampRules.Count(me).ToString(inv)), KitButtonKind.Normal, () => flow.OpenStamp()), StampButton, "sn-hud-hint");
+            stampButton = Add(head, Kit.Button(stage.T("screen.board.stamp").Replace("{n}", StampRules.Count(me).ToString(inv)), KitButtonKind.Normal, () => flow.ToggleStamp()), StampButton, "sn-hud-hint");
             if (undoButton != null) stampButton.AddToClassList(AfterUndoClass);   // [무르기]가 오른쪽으로 민다 — 둘이 붙어 선다
-            stampButton.SetEnabled(paintedMaint);
+            stampButton.SetEnabled(paintedMaint || flow.StampOpen);   // 내 스탬프 판이 떠 있으면 다시 눌러 닫는다(결정 176)
             if (paintedMaint) stage.Tips.Hook(stampButton, null, stage.T("screen.board.stamp.tip"), TipSide.Above, reading: true, clear: dock);
 
             var used = Add(actions, new VisualElement(), "board-hud-used", "sn-hud-line");
@@ -1196,7 +1247,7 @@ namespace Sinnoh.Client
             if (flow.TradeWaiting) guide = "screen.board.guide.trade_wait";   // 내 거래 제안에 상대가 답하는 중(S41은 상대 화면에)
             else if (choice != null && BreachScreen.Owns(choice)) guide = BreachScreen.Releasing(view) ? "screen.board.guide.breach_release" : "screen.board.guide.breach";   // 균열 카드는 가운데 창(S58)이 받는다
             else if (choice != null && (BlessScreen.Owns(choice) || (choice.Kind == ChoiceKind.Respond && choice.Sub == ChoiceSub.Blessing))) guide = "screen.board.guide.bless";   // 축복 물음 · 동의는 축복 창 · 위 띠 물음이 받는다
-            else if (!open || choice == null || choice.Kind == ChoiceKind.Discard || (choice.Kind == ChoiceKind.Reward && choice.Sub == ChoiceSub.TrainerReward) || GameFlow.ShrineWaits(choice) || choice.Kind == ChoiceKind.Ending || EvolveScreen.Owns(choice) || CardRewardScreen.Owns(choice)) guide = "screen.board.guide.wait";   // 운명 손패 버리기는 손패 창(S30)이 위에서 받는다 · 트레이너전 승리 보상·사당 카드의 고르기는 화면이 생길 때까지 GameFlow가 기본값으로 넘긴다
+            else if (!open || choice == null || choice.Kind == ChoiceKind.Discard || (choice.Kind == ChoiceKind.Reward && choice.Sub == ChoiceSub.TrainerReward) || GameFlow.ShrineWaits(choice) || choice.Kind == ChoiceKind.Ending || EvolveScreen.Owns(choice) || CardRewardScreen.Takes(flow, choice)) guide = "screen.board.guide.wait";   // 운명 손패 버리기는 손패 창(S30)이 위에서 받는다 · 트레이너전 승리 보상·사당 카드의 고르기는 화면이 생길 때까지 GameFlow가 기본값으로 넘긴다
             else if (choice.Kind == ChoiceKind.MapAction && warps.Count > 0)
             {
                 // 펄기아 순간이동(14행): 갈 수 있는 칸 = 고른 효과의 답들의 칸. 칸을 누르면 그 답을 낸다
@@ -2039,8 +2090,15 @@ namespace Sinnoh.Client
                     }
                 }
             if (view != null && view.Roads.Contains(cell)) parts.Add(stage.T("screen.cell.road"));   // worker B가 놓은 길(감사 G5-1)
+            // 결정 179: 그 칸에 지금 보이는 UB · 네크로즈마(폼 이름까지) · 시련이 남은 호수 수호신
+            flow.BeastsAt(cell, beastKeys);
+            foreach (string key in beastKeys) parts.Add(stage.T("pokemon." + key));
+            int guardian = flow.GuardianAt(cell);
+            if (guardian >= 0) parts.Add(stage.T("pokemon." + ctx.Cards.Pokemon[guardian].Key));
             return string.Join(" · ", parts);
         }
+
+        readonly List<string> beastKeys = new List<string>();
 
         string FixtureText(FixtureDef f)
         {
@@ -2406,12 +2464,16 @@ namespace Sinnoh.Client
             if (seat < 0) return;
             var chip = seats.Q("board-hud-seat-" + (seat + 1).ToString(CultureInfo.InvariantCulture));
             if (chip == null) return;
+            string text = stage.T("screen.board.did." + key);
+            var stamp = step.Row == DealRows.Stamp ? StampBeats.Event(step) : null;   // 남의 스탬프(결정 178): 「스탬프 n/7」 — 잇달아 받으면 단계마다 수가 바뀐다
+            if (stamp != null) text = text.Replace("{n}", stamp.CountAfter.ToString(CultureInfo.InvariantCulture));
             var tag = chip.Q(DidName(seat));
             if (tag == null)
             {
-                tag = Add(chip, Kit.Badge(stage.T("screen.board.did." + key), KitBadgeKind.Gold, Kit.F2), DidName(seat), "sn-hud-did");
+                tag = Add(chip, Kit.Badge(text, KitBadgeKind.Gold, Kit.F2), DidName(seat), "sn-hud-did");
                 tag.pickingMode = PickingMode.Ignore;
             }
+            else if (tag is Label shown && shown.text != text) shown.text = text;
             float unit = stage.Grade.TokenHeight >= 1080 ? 1.5f : 1f;
             float alpha = OtherActs.Alpha(t, step.Ms, out float rise);
             FxUi.Move(tag, 0f, Mathf.Round(rise * OtherActs.RisePx * unit));
@@ -2545,14 +2607,18 @@ namespace Sinnoh.Client
         /// <summary>
         /// 마우스가 그 칸 위에 있다(−1 = 보드 밖·HUD 위). 갈 수 있는 칸이면 거기까지의 경로를 칠한다.
         /// stack = 마우스 아래 묶음 표지의 칸(없으면 −1): 공개 정보 카드는 그 칸의 것을 띄운다 — 표지는 마우스를 받지 않아 칸 정보 줄·경로·누르기는 표지 밑의 칸 그대로다.
+        /// figure = 마우스 아래 UB · 네크로즈마 · 호수 수호신 피규어의 칸(없으면 −1 — 결정 179): 칸 정보 줄 · 공개 정보 카드는 그 칸을 적고, 경로 · 누르기는 땅의 칸 그대로다.
+        /// 피규어가 연출로 옮겨 가거나 폼 · 시련이 바뀌면(<see cref="GameFlow.FigureLook"/>) 마우스가 그대로여도 다시 적는다.
         /// </summary>
-        public void Hover(int cell, int stack = -1)
+        public void Hover(int cell, int stack = -1, int figure = -1)
         {
-            int show = stack >= 0 ? stack : cell;
-            if (cell != hoverAny || show != hoverInfo)
+            int show = stack >= 0 ? stack : figure >= 0 ? figure : cell;
+            int line = figure >= 0 ? figure : cell, look = flow.FigureLook();
+            if (line != hoverAny || show != hoverInfo || look != hoverLook)
             {
-                hoverAny = cell;
+                hoverAny = line;
                 hoverInfo = show;
+                hoverLook = look;
                 var view = flow.Client != null ? flow.Client.View : null;
                 if (cellInfo != null && view != null) cellInfo.text = CellText(InfoCell(view.Seats[flow.Client.Seat].Cell));
                 if (infoSeat < 0)

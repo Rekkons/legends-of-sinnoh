@@ -1,0 +1,823 @@
+key	family	state	flag	en	ko
+ui.setup_panel.HOS_CAMPAIGN_LABEL	ui	new		Heart of Sinnoh Campaign	신오의 심장 캠페인
+ui.setup_panel.UB_CAMPAIGN_LABEL	ui	new		Ultra Burst Campaign	울트라 버스트 캠페인
+ui.setup_panel.START_GAME_LABEL	ui	new		Start Game	게임 시작
+ui.music_box.OFFLINE_LABEL	ui	new	이미 우리 번역(strings-ko.json)	Music Box	뮤직 박스
+ui.music_box.NOW_PLAYING_LABEL	ui	new	이미 우리 번역(strings-ko.json)	Now Playing: 	재생 중:
+ui.music_box.BATTLE_LABEL	ui	new		Battle! 	배틀!
+ui.music_box.PLAY_BUTTON_TOOLTIP	ui	new		Play	재생
+ui.music_box.PAUSE_BUTTON_TOOLTIP	ui	new		Pause	일시 정지
+ui.music_box.BACK_BUTTON_TOOLTIP	ui	new		Back	이전 곡
+ui.music_box.FORWARD_BUTTON_TOOLTIP	ui	new		Forward	다음 곡
+ui.music_box.SHUFFLE_BUTTON_TOOLTIP	ui	new		Toggle Shuffle	무작위 재생
+ui.music_box.REPEAT_BUTTON_TOOLTIP	ui	new		Toggle Repeat	반복 재생
+ui.pokedex.SEARCH_BUTTON_LABEL	ui	new		Search	찾아보기
+ui.pokedex.RETURN_BUTTON_LABEL	ui	new		Return	돌려놓기
+ui.pokedex.EVOLVE_BUTTON_LABEL	ui	new		Evolve	진화
+ui.pokedex.BATTLE_BUTTON_LABEL	ui	new		Battle!	배틀!
+ui.pokedex.CLOSE_BUTTON_LABEL	ui	new		Close Pokédex	도감 닫기
+ui.pokedex.OPEN_BUTTON_LABEL	ui	new		Open Pokédex	도감 열기
+ui.pokedex.SEARCH_NOT_ON_ENCOUNTER_MESSAGE	ui	new		 trainer token not on an encounter token.	의 트레이너 토큰이 조우 토큰 위에 없습니다.
+ui.pokedex.SEARCH_OUT_OF_POKEMON_MESSAGE	ui	new		Out of Pokémon for this biome, climate and encounter tier. You may claim any Apricorns here but your turn ends.	이 지형 · 기후 · 조우 등급의 포켓몬이 다 떨어졌습니다. 여기 있는 규토리는 가져갈 수 있지만 턴이 종료됩니다.
+ui.pokedex.RETURN_ALREADY_RUNNING_MESSAGE	ui	new		Return cards method currently running (if it is not, reloading the game should fix it).	카드를 돌려놓는 중입니다(멈춘 것 같으면 게임을 다시 불러오면 됩니다).
+ui.pokedex.EVOLVE_SLOT_MESSAGE	ui	new		Place a Pokémon in the slot above.	위 칸에 포켓몬을 놓으십시오.
+ui.pokedex.EVOLVE_RETURN_MESSAGE	ui	new		Return the currently searched Pokémon.	지금 찾아본 포켓몬을 돌려놓으십시오.
+ui.pokedex.EVOLVE_INVALID_MESSAGE	ui	new		This Pokémon does not evolve.	진화하지 않는 포켓몬입니다.
+ui.pokedex.EVOLVE_NOT_FOUND_MESSAGE	ui	new		 evolution card not found in the evolution deck.	의 진화 카드가 진화 포켓몬 덱에 없습니다.
+ui.pokedex.EMPTY_SLOT_MESSAGE	ui	new		The arena needs an empty slot.	투기장에 빈자리가 있어야 합니다.
+ui.arena_dice_roller.ROLL_BUTTON_LABEL	ui	new		Roll	굴리기
+ui.arena_dice_roller.DICE_BUTTON_LABEL	ui	new		 Dice	개
+ui.arena_dice_roller.DICE_BUTTON_TOOLTIP	ui	new		Toggle Attack Strength	위력 전환
+ui.arena_dice_roller.TYPE_BUTTON_TOOLTIP	ui	new		Toggle Attack Type	공격 타입 전환
+ui.arena_dice_roller.TYPE_RANGE_BUTTON_TOOLTIP	ui	new		Toggle All Types	전체 타입 전환
+ui.arena_dice_roller.FATIGUED_TOOLTIP	ui	new		Fatigued: Take 3 damage after each roll	전투 피로: 굴릴 때마다 데미지를 3 입습니다.
+ui.ub_control_panel.BREACH_STRENGTH_TOOLTIP	ui	new		Move Ultra Beasts	울트라 비스트 이동
+ui.ub_control_panel.BREACH_STRENGTH_INCREASES_MESSAGE	ui	new		The breach is growing stronger	균열이 점점 강해지고 있습니다.
+ui.ub_control_panel.ALREADY_MOVING_MESSAGE	ui	new		Ultra Beasts already moving.	울트라 비스트가 이미 이동 중입니다.
+ui.teleport.TELEPORT_BUTTON_TOOLTIP	ui	new	이미 우리 번역(strings-ko.json)	Teleport Here	여기로 순간이동
+ui.village.FLY_BUTTON_TOOLTIP_1	ui	new		Fly to 	공중날기
+ui.village.FLY_BUTTON_TOOLTIP_2	ui	new		[Costs 1 Apricorn]	[규토리 1개 소모]
+ui.village.ALREADY_FLYING_MESSAGE	ui	new		Someone is already flying (if they are not, reloading the game should fix it).	누군가 이미 날아가는 중입니다(아무도 날고 있지 않다면 게임을 다시 불러오면 됩니다).
+ui.errors.MISSING_DATA_NAME	ui	new		Missing Data	데이터 없음
+ui.errors.MISSING_DATA_DESCRIPTION	ui	new		Internal data for this card has been deleted. It can no longer be used in the arena. Try rewinding time.	이 카드의 내부 데이터가 지워져 더는 투기장에서 쓸 수 없습니다. 되돌리기를 해 보십시오.
+ui.tooltips.FLIP	ui	new		Flip	뒤집기
+pokemon.389:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Torterra (Noble Form)	토대부기 (수호신 폼)
+pokemon.392:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Infernape (Noble Form)	초염몽 (수호신 폼)
+pokemon.395:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Empoleon (Noble Form)	엠페르트 (수호신 폼)
+pokemon.398:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Staraptor (Noble Form)	찌르호크 (수호신 폼)
+pokemon.405:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Luxray (Noble Form)	렌트라 (수호신 폼)
+pokemon.407:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Roserade (Noble Form)	로즈레이드 (수호신 폼)
+pokemon.468:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Togekiss (Noble Form)	토게키스 (수호신 폼)
+pokemon.473:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Mamoswine (Noble Form)	맘모꾸리 (수호신 폼)
+pokemon.477:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Dusknoir (Noble Form)	야느와르몽 (수호신 폼)
+pokemon.483:1	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Dialga	디아루가
+pokemon.484:1	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Palkia	펄기아
+pokemon.487:1	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Giratina	기라티나
+pokemon.26:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Raichu (Noble Form)	라이츄 (수호신 폼)
+pokemon.68:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Machamp (Noble Form)	괴력몬 (수호신 폼)
+pokemon.365:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Walrein (Noble Form)	씨카이저 (수호신 폼)
+pokemon.474:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Porygon-Z (Noble Form)	폴리곤Z (수호신 폼)
+pokemon.609:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Chandelure (Noble Form)	샹델라 (수호신 폼)
+pokemon.724:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Decidueye (Noble Form)	모크나이퍼 (수호신 폼)
+pokemon.157:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Typhlosion (Noble Form)	블레이범 (수호신 폼)
+pokemon.503:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Samurott (Noble Form)	대검귀 (수호신 폼)
+pokemon.804:2	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Naganadel (Noble Form)	아고용 (수호신 폼)
+pokemon.480:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Uxie	유크시
+pokemon.481:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Mesprit	엠라이트
+pokemon.482:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Azelf	아그놈
+pokemon.793:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Nihilego	텅비드
+pokemon.794:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Buzzwole	매시붕
+pokemon.795:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Pheromosa	페로코체
+pokemon.796:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Xurkitree	전수목
+pokemon.797:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Celesteela	철화구야
+pokemon.798:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Kartana	종이신도
+pokemon.799:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Guzzlord	악식킹
+pokemon.805:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Stakataka	차곡차곡
+pokemon.806:0	pokemon_form	new	폼 이름 — 공식 폼 이름이 있으면 그것	Blacephalon	두파팡
+move.struggle_bug.text	move_text	new		When the user is next attacked, remove 1 critical hit from the roll.	사용자가 다음에 공격받을 때 그 굴림에서 급소를 1개 뺍니다.
+move.bug_bite.text	move_text	new		Consume an Apricorn from the bag of target. The target decides which one.	상대의 가방에서 규토리를 1개 소모합니다. 어느 규토리인지는 상대가 고릅니다.
+move.infatuate	move_name	new	이 게임만의 기술 — 공식 이름 없음	Infatuate	홀리기
+move.infatuate.text	move_text	new		Inflict both the Paralysed and Confused statuses on the target simultaneously.	상대를 마비와 혼란 상태로 동시에 만듭니다.
+move.u_turn.text	move_text	new		The user may switch out if possible.	가능하다면 사용자를 교체할 수 있습니다.
+move.lunge.text	move_text	new		This move can be used from your party: Switch the user in and then use this attack.	이 기술은 파티에서도 사용할 수 있습니다. 사용자를 교체해 내보낸 뒤 이 공격을 합니다.
+move.x_scissor.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.bug_buzz.text	move_text	new		If any status symbols are rolled: Inflict the Paralysed status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다.
+move.attack_order.text	move_text	new	이미 우리 번역(strings-ko.json)	If there is another non-fainted Bug-type Pokémon in your party, deal 2 extra damage.	내 파티에 기절하지 않은 다른 벌레 타입 포켓몬이 있으면 데미지를 2 더 줍니다.
+move.megahorn.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage but status symbols deal -1 damage.	급소마다 데미지 +1. 하지만 상태 이상 심볼마다 데미지 −1.
+move.topsy_turvy.text	move_text	new		Inflict both the Drowsy and Confused statuses on the target simultaneously.	상대를 졸음과 혼란 상태로 동시에 만듭니다.
+move.memento.text	move_text	new		Increase the battle fatigue of the target to 5.	상대의 전투 피로를 5로 올립니다.
+move.dark_void.text	move_text	new		Inflict both the Drowsy and Paralysed statuses on the target simultaneously.	상대를 졸음과 마비 상태로 동시에 만듭니다.
+move.bite.text	move_text	new		When the target is next attacked, add 1 regular hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 일반 타격을 1개 더합니다.
+move.night_slash.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.crunch.text	move_text	new		When the target is next attacked, add 1 regular hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 일반 타격을 1개 더합니다.
+move.hangry_wheel	move_name	new	이 게임만의 기술 — 공식 이름 없음	Hangry Wheel	배고픔휠
+move.hangry_wheel.text	move_text	new		You may consume 1 Apricorn to increase attack strength to 7 and to change to Full Belly Form if possible.	규토리 1개를 소모해 위력을 7로 올리고, 가능하다면 배부른 모양으로 폼체인지할 수 있습니다.
+move.night_daze.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Drowsy status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 졸음 상태로 만듭니다.
+move.chomp	move_name	new	이 게임만의 기술 — 공식 이름 없음	Chomp	우걱우걱
+move.chomp.text	move_text	new		When the target is next attacked, add 1 regular hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 일반 타격을 1개 더합니다.
+move.foul_play.text	move_text	new		Copy the attack strength of a move the target knows. Minimum 1 attack strength.	위력은 상대가 가진 기술 하나의 위력과 같고, 최소 1입니다.
+move.twister.text	move_text	new		Inflict the Paralysed status on the target.	상대를 마비 상태로 만듭니다.
+move.dual_chop.text	move_text	new	이미 우리 번역(strings-ko.json)	Regular hits deal +1 damage.	일반 타격마다 데미지 +1.
+move.dragon_breath.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다.
+move.spacial_rend.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage.	급소마다 데미지 +2.
+move.dragon_pulse.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal +1 damage.	상태 이상 심볼마다 데미지 +1.
+move.draco_meteor.text	move_text	new	이미 우리 번역(strings-ko.json)	During this attack and when the user is next attacked, status symbols deal +1 damage.	이번 공격 때와 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 +1.
+move.dragon_rush.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Paralysed status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 마비 상태로 만듭니다.
+move.renegade_fury	move_name	new	이 게임만의 기술 — 공식 이름 없음	Renegade Fury	반골의 분노
+move.renegade_fury.text	move_text	new		If the target faints, any remaining damage from this attack is applied to the next Pokémon switched in.	상대가 기절하면 이 공격의 남은 데미지를 다음에 나오는 포켓몬이 받습니다.
+move.outrage.text	move_text	new		Inflict the Confused status on the user. Deal any damage taken by the user during this attack to the target as well.	사용자를 혼란 상태로 만듭니다. 이 공격 중에 사용자가 받은 데미지를 상대에게도 똑같이 줍니다.
+move.roar_of_time.text	move_text	new		If this move was used last turn, attack strength is decreased to 2.	내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다.
+move.nuzzle.text	move_text	new		Inflict the Paralysed status on the target. If the target is already Paralysed, attack strength is increased to 3.	상대를 마비 상태로 만듭니다. 상대가 이미 마비 상태라면 위력이 3으로 오릅니다.
+move.ion_deluge.text	move_text	new		Inflict both the Paralysed and Poisoned statuses on the target simultaneously.	상대를 마비와 독 상태로 동시에 만듭니다.
+move.thunder_shock.text	move_text	new		Inflict the Paralysed status on the target.	상대를 마비 상태로 만듭니다.
+move.charge_beam.text	move_text	new		When the target is next attacked, add 1 critical hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 급소를 1개 더합니다.
+move.electro_wheel	move_name	new	이 게임만의 기술 — 공식 이름 없음	Electro Wheel	전기휠
+move.electro_wheel.text	move_text	new		If any status symbols are rolled: Inflict the Paralysed status on the target. Change to Hangry Form if possible.	상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다. 가능하다면 배고픈 모양으로 폼체인지합니다.
+move.volt_switch.text	move_text	new		The user may switch out if possible.	가능하다면 사용자를 교체할 수 있습니다.
+move.power_plant	move_name	new	이 게임만의 기술 — 공식 이름 없음	Power Plant	파워플랜트
+move.power_plant.text	move_text	new		Until the user switches out: Heal 1 damage at the end of your turns and add 1 regular hit to your attack rolls.	사용자가 교체될 때까지 내 차례가 끝날 때마다 체력을 1 회복하고, 공격 굴림에 일반 타격을 1개 더합니다.
+move.shocking_verity	move_name	new	이 게임만의 기술 — 공식 이름 없음	Shocking Verity	충격적인 진실
+move.shocking_verity.text	move_text	new		If any status symbols are rolled: Inflict the Paralysed status on the target and another Pokémon in the target party.	상태 이상 심볼이 하나라도 나오면 상대와 상대 파티의 다른 포켓몬 1마리를 마비 상태로 만듭니다.
+move.thunderbolt.text	move_text	new		If any status symbols are rolled: Inflict the Paralysed status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다.
+move.wild_charge.text	move_text	new		If the user knows another Electric-type move, deal 2 extra damage.	사용자가 다른 전기 타입 기술을 가지고 있으면 데미지를 2 더 줍니다.
+move.thunder_song	move_name	new	이 게임만의 기술 — 공식 이름 없음	Thunder Song	천둥의 노래
+move.thunder_song.text	move_text	new	이미 우리 번역(strings-ko.json)	For each other non-fainted Pokémon in your party with a Song move: Attack strength is increased by 1.	파티의 기절하지 않은 다른 포켓몬 가운데 노래 기술을 가진 포켓몬마다 위력 +1.
+move.thunder.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Paralysed status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 마비 상태로 만듭니다.
+move.zap_cannon.text	move_text	new	이미 우리 번역(strings-ko.json)	Inflict the Paralysed status on the target. Status symbols deal -1 damage.	상대를 마비 상태로 만듭니다. 상태 이상 심볼마다 데미지 −1.
+move.electro_ball.text	move_text	new		Attack strength is equal to half the current initiative of the user, rounded down. Maximum 5 attack strength.	위력은 사용자 현재 스피드의 절반(내림)이고, 최대 5입니다.
+move.sweet_kiss.text	move_text	new		Inflict the Confused status on the target. If the target is already Confused, attack strength is increased to 3.	상대를 혼란 상태로 만듭니다. 상대가 이미 혼란 상태라면 위력이 3으로 오릅니다.
+move.draining_kiss.text	move_text	new		Heal 1 damage and inflict the Drowsy status on the target.	체력을 1 회복하고 상대를 졸음 상태로 만듭니다.
+move.moonlight.text	move_text	new		Until the user switches out: Heal 2 damage at the end of your turns.	사용자가 교체될 때까지 내 차례가 끝날 때마다 체력을 2 회복합니다.
+move.flower_shield.text	move_text	new		When the user is next attacked, remove 1 critical hit from the roll.	사용자가 다음에 공격받을 때 그 굴림에서 급소를 1개 뺍니다.
+move.fairy_lock.text	move_text	new		Until the user switches out: All Pokémon can no longer switch out using move effects.	사용자가 교체될 때까지 모든 포켓몬은 기술 효과로 교체할 수 없습니다.
+move.play_rough.text	move_text	new		When the target next attacks, remove 1 regular hit from the roll.	상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.dazzling_gleam.text	move_text	new	이미 우리 번역(strings-ko.json)	When the target next attacks, status symbols deal -1 damage.	상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −1.
+move.moonblast.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Drowsy status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 졸음 상태로 만듭니다.
+move.mach_punch.text	move_text	new		Effect may be used once until the user switches out: The user may use a second move this turn.	사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다.
+move.revenge.text	move_text	new		For each fainted Pokémon in your party: Attack strength is increased by 1.	내 파티의 기절한 포켓몬마다 위력 +1.
+move.bulk_up.text	move_text	new		Until the user switches out: Add 2 regular hits to your attack rolls.	사용자가 교체될 때까지 공격 굴림에 일반 타격을 2개 더합니다.
+move.force_palm.text	move_text	new		Inflict the Paralysed status on the target but increase your battle fatigue by 2.	상대를 마비 상태로 만듭니다. 하지만 내 전투 피로가 2 오릅니다.
+move.triple_kick.text	move_text	new	이미 우리 번역(strings-ko.json)	Regular hits deal +1 damage.	일반 타격마다 데미지 +1.
+move.stinging_punch	move_name	new	이 게임만의 기술 — 공식 이름 없음	Stinging Punch	따끔따끔펀치
+move.stinging_punch.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage and for each critical hit rolled: Heal 2 damage.	급소마다 데미지 +1. 또한 급소마다 체력을 2 회복합니다.
+move.aura_sphere.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal +1 damage.	상태 이상 심볼마다 데미지 +1.
+move.sacred_sword.text	move_text	new		The dice rolled by this attack cannot be replaced or removed by any effect.	이 공격으로 굴린 주사위는 어떤 효과로도 바꾸거나 뺄 수 없습니다.
+move.high_jump_kick.text	move_text	new		Deals 4 extra damage to Flying-type Pokémon. For each status symbol rolled: The user takes 1 damage.	비행 타입 포켓몬에게는 데미지를 4 더 줍니다. 상태 이상 심볼마다 사용자는 데미지를 1 입습니다.
+move.close_combat.text	move_text	new	이미 우리 번역(strings-ko.json)	During this attack and when the user is next attacked, status symbols deal +1 damage.	이번 공격 때와 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 +1.
+move.seismic_toss.text	move_text	new		Attack strength is equal to half the base health of the target, rounded down. Maximum 7 attack strength.	위력은 상대 최대 체력의 절반(내림)이고, 최대 7입니다.
+move.will_o_wisp.text	move_text	new		Inflict the Burned status on the target. If the target is already Burned, attack strength is increased to 3.	상대를 화상 상태로 만듭니다. 상대가 이미 화상 상태라면 위력이 3으로 오릅니다.
+move.fire_lash.text	move_text	new		Inflict both the Burned and Poisoned statuses on the target simultaneously.	상대를 화상과 독 상태로 동시에 만듭니다.
+move.ember.text	move_text	new		Inflict the Burned status on the target.	상대를 화상 상태로 만듭니다.
+move.shell_trap.text	move_text	new		When the user is next attacked, the attacker takes 5 damage if any critical hits are rolled.	사용자가 다음에 공격받을 때 그 굴림에 급소가 하나라도 나오면 공격한 포켓몬은 데미지를 5 입습니다.
+move.fire_fang.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다.
+move.flame_wheel.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다.
+move.mystical_fire.text	move_text	new		Inflict the Burned status on the target. If the target is already Burned, this move deals double damage.	상대를 화상 상태로 만듭니다. 상대가 이미 화상 상태라면 이 기술의 데미지는 2배입니다.
+move.blazing_valor	move_name	new	이 게임만의 기술 — 공식 이름 없음	Blazing Valor	타오르는 용맹
+move.blazing_valor.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target and another Pokémon in the target party.	상태 이상 심볼이 하나라도 나오면 상대와 상대 파티의 다른 포켓몬 1마리를 화상 상태로 만듭니다.
+move.flamethrower.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다.
+move.lava_plume.text	move_text	new		If the user knows another Fire-type move, deal 2 extra damage.	사용자가 다른 불꽃 타입 기술을 가지고 있으면 데미지를 2 더 줍니다.
+move.magma_storm.text	move_text	new		Inflict the Burned status on the target. The target may no longer switch out or flee the battle.	상대를 화상 상태로 만듭니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.fiery_dance.text	move_text	new		Until the user switches out: Add 1 critical hit to your attack rolls.	사용자가 교체될 때까지 공격 굴림에 급소를 1개 더합니다.
+move.flare_blitz.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다.
+move.overheat.text	move_text	new	이미 우리 번역(strings-ko.json)	During this attack and when the user is next attacked, status symbols deal +1 damage.	이번 공격 때와 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 +1.
+move.fire_song	move_name	new	이 게임만의 기술 — 공식 이름 없음	Fire Song	불꽃의 노래
+move.fire_song.text	move_text	new	이미 우리 번역(strings-ko.json)	For each other non-fainted Pokémon in your party with a Song move: Attack strength is increased by 1.	파티의 기절하지 않은 다른 포켓몬 가운데 노래 기술을 가진 포켓몬마다 위력 +1.
+move.fire_blast.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 화상 상태로 만듭니다.
+move.inferno.text	move_text	new	이미 우리 번역(strings-ko.json)	Inflict the Burned status on the target. Status symbols deal -1 damage.	상대를 화상 상태로 만듭니다. 상태 이상 심볼마다 데미지 −1.
+move.raging_fury.text	move_text	new		Inflict the Confused status on the user. Deal any damage taken by the user during this attack to the target as well.	사용자를 혼란 상태로 만듭니다. 이 공격 중에 사용자가 받은 데미지를 상대에게도 똑같이 줍니다.
+move.mind_blown.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 3 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 3 입습니다.
+move.chest_thump	move_name	new	이 게임만의 기술 — 공식 이름 없음	Chest Thump	가슴치기
+move.chest_thump.text	move_text	new		Deal 2 damage to the user. Change to Zen Form if possible.	사용자는 데미지를 2 입습니다. 가능하다면 달마모드로 폼체인지합니다.
+move.eruption.text	move_text	new		Attack strength is equal to the current health of the user. Maximum 7 attack strength.	위력은 사용자의 현재 체력과 같고, 최대 7입니다.
+move.peck.text	move_text	new		When the target is next attacked, add 1 critical hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 급소를 1개 더합니다.
+move.chatter.text	move_text	new		Inflict the Confused status on the target. If the target is already Confused, this move deals double damage.	상대를 혼란 상태로 만듭니다. 상대가 이미 혼란 상태라면 이 기술의 데미지는 2배입니다.
+move.acrobatics.text	move_text	new		This move can be used from your party: Switch the user in and then use this attack.	이 기술은 파티에서도 사용할 수 있습니다. 사용자를 교체해 내보낸 뒤 이 공격을 합니다.
+move.air_cutter.text	move_text	new		When the target is next attacked, add 1 critical hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 급소를 1개 더합니다.
+move.wing_attack.text	move_text	new		When the target next attacks, remove 1 regular hit from the roll.	상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.air_slash.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.brave_bird.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다.
+move.sky_attack.text	move_text	new	이미 우리 번역(strings-ko.json)	If this move was used last turn, attack strength is decreased to 3. Critical hits deal +1 damage.	내 직전 차례에 이 기술을 썼다면 위력이 3으로 줄어듭니다. 급소마다 데미지 +1.
+move.destiny_bond.text	move_text	new		Attack strength is increased equal to the amount of damage taken last turn.	직전 차례에 받은 데미지만큼 위력이 오릅니다.
+move.confuse_ray.text	move_text	new		Inflict the Confused status on the target. If the target is already Confused, attack strength is increased to 3.	상대를 혼란 상태로 만듭니다. 상대가 이미 혼란 상태라면 위력이 3으로 오릅니다.
+move.shadow_sneak.text	move_text	new		Effect may be used once until the user switches out: The user may use a second move this turn.	사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다.
+move.lick.text	move_text	new		Inflict the Paralysed status on the target.	상대를 마비 상태로 만듭니다.
+move.ominous_wind.text	move_text	new		Until the user switches out: Add 1 critical hit and 1 status symbol to your attack rolls.	사용자가 교체될 때까지 공격 굴림에 급소 1개와 상태 이상 심볼 1개를 더합니다.
+move.hex.text	move_text	new		If the target has any status effects, this move deals double damage.	상대에게 상태 이상이 하나라도 있으면 이 기술의 데미지는 2배입니다.
+move.disguise	move_name	new	이 게임만의 기술 — 공식 이름 없음	Disguise	탈
+move.disguise.text	move_text	new		If this move was not used last turn, take at most 1 damage when the user is next attacked.	직전 차례에 이 기술을 쓰지 않았다면, 사용자가 다음에 공격받을 때 데미지를 최대 1만 받습니다.
+move.poltergeist.text	move_text	new		If the target has a held item, deal 1 extra damage and inflict the Paralysed status on the target.	상대에게 지닌물건이 있으면 데미지를 1 더 주고 상대를 마비 상태로 만듭니다.
+move.spirit_shackle.text	move_text	new		Increase the battle fatigue of the target by 2. The target may no longer switch out or flee the battle.	상대의 전투 피로를 2 올립니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.shadow_force.text	move_text	new	이미 우리 번역(strings-ko.json)	The target faints if they have 2 or less health remaining after this attack. Status symbols deal -1 damage.	이 공격 뒤 상대의 남은 체력이 2 이하면 상대는 기절합니다. 상태 이상 심볼마다 데미지 −1.
+move.menacing_moonraze	move_name	new	이 게임만의 기술 — 공식 이름 없음	Menacing Moonraze	섬뜩한 문레이즈
+move.menacing_moonraze.text	move_text	new		Inflict the Frozen status on the target. If the target is already Frozen, this move deals double damage.	상대를 얼음 상태로 만듭니다. 상대가 이미 얼음 상태라면 이 기술의 데미지는 2배입니다.
+move.grass_whistle.text	move_text	new		Inflict the Drowsy status on the target. If the target is already Drowsy, attack strength is increased to 3.	상대를 졸음 상태로 만듭니다. 상대가 이미 졸음 상태라면 위력이 3으로 오릅니다.
+move.stun_spore.text	move_text	new		Inflict the Paralysed status on the target. If the target is already Paralysed, attack strength is increased to 3.	상대를 마비 상태로 만듭니다. 상대가 이미 마비 상태라면 위력이 3으로 오릅니다.
+move.gather_sunlight	move_name	new	이 게임만의 기술 — 공식 이름 없음	Gather Sunlight	햇빛모으기
+move.gather_sunlight.text	move_text	new		Heal 3 damage. Change to Sunshine Form if possible.	체력을 3 회복합니다. 가능하다면 포지폼으로 폼체인지합니다.
+move.spore.text	move_text	new		Inflict the Drowsy status on the target.	상대를 졸음 상태로 만듭니다.
+move.razor_leaf.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.leaf_blade.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.bug_trap	move_name	new	이 게임만의 기술 — 공식 이름 없음	Bug Trap	벌레덫
+move.bug_trap.text	move_text	new		Deals 4 extra damage to Bug-type Pokémon. The target may no longer switch out or flee the battle.	벌레 타입 포켓몬에게는 데미지를 4 더 줍니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.giga_drain.text	move_text	new		Heal for half the damage dealt, rounded down.	이 공격으로 준 데미지의 절반(내림)만큼 체력을 회복합니다.
+move.eternal_glade	move_name	new	이 게임만의 기술 — 공식 이름 없음	Eternal Glade	영원한 숲
+move.eternal_glade.text	move_text	new		Your currently active effects that would last until the user switches out now last until the end of the battle.	지금 걸려 있는 내 효과 가운데 사용자가 교체될 때까지 이어지는 것은 이제 배틀이 끝날 때까지 이어집니다.
+move.wood_hammer.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다.
+move.leaf_storm.text	move_text	new	이미 우리 번역(strings-ko.json)	During this attack and when the user is next attacked, status symbols deal +1 damage.	이번 공격 때와 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 +1.
+move.seed_flare.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다.
+move.overcut	move_name	new	이 게임만의 기술 — 공식 이름 없음	Overcut	오버컷
+move.overcut.text	move_text	new		If the target faints, any remaining damage from this attack is applied to the next Pokémon switched in.	상대가 기절하면 이 공격의 남은 데미지를 다음에 나오는 포켓몬이 받습니다.
+move.power_whip.text	move_text	new		If this move was used last turn, attack strength is decreased to 3. Heal for half the damage dealt, rounded down.	내 직전 차례에 이 기술을 썼다면 위력이 3으로 줄어듭니다. 이 공격으로 준 데미지의 절반(내림)만큼 체력을 회복합니다.
+move.petal_dance.text	move_text	new		Inflict the Confused status on the user. Deal any damage taken by the user during this attack to the target as well.	사용자를 혼란 상태로 만듭니다. 이 공격 중에 사용자가 받은 데미지를 상대에게도 똑같이 줍니다.
+move.solar_beam.text	move_text	new		If this move was used last turn, attack strength is decreased to 2.	내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다.
+move.sand_tomb.text	move_text	new		Increase the battle fatigue of the target by 2. The target may no longer switch out or flee the battle.	상대의 전투 피로를 2 올립니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.bonemerang.text	move_text	new	이미 우리 번역(strings-ko.json)	Regular hits deal +1 damage.	일반 타격마다 데미지 +1.
+move.bulldoze.text	move_text	new		When the target is next attacked, add 2 status symbol to the roll.	상대가 다음에 공격받을 때 그 굴림에 상태 이상 심볼을 2개 더합니다.
+move.mud_bomb.text	move_text	new	이미 우리 번역(strings-ko.json)	When the target next attacks, status symbols deal -1 damage.	상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −1.
+move.headlong_rush.text	move_text	new	이미 우리 번역(strings-ko.json)	During this attack and when the user is next attacked, status symbols deal +1 damage.	이번 공격 때와 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 +1.
+move.earthquake.text	move_text	new	이미 우리 번역(strings-ko.json)	If 2 or more status symbols are rolled: Deal 2 damage to a Pokémon in the target party that is not the target.	상태 이상 심볼이 2개 이상 나오면 상대 파티의 다른 포켓몬 1마리에게 데미지를 2 줍니다.
+move.bone_rush.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal -2 damage.	상태 이상 심볼마다 데미지 −2.
+move.fissure.text	move_text	new	이미 우리 번역(strings-ko.json)	The target faints if they have 2 or less health remaining after this attack. Status symbols deal -1 damage.	이 공격 뒤 상대의 남은 체력이 2 이하면 상대는 기절합니다. 상태 이상 심볼마다 데미지 −1.
+move.avalanche.text	move_text	new		Inflict both the Frozen and Paralysed statuses on the target simultaneously.	상대를 얼음과 마비 상태로 동시에 만듭니다.
+move.powder_snow.text	move_text	new		Inflict the Frozen status on the target.	상대를 얼음 상태로 만듭니다.
+move.ice_fang.text	move_text	new		If any status symbols are rolled: Inflict the Frozen status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 얼음 상태로 만듭니다.
+move.frigid_ice	move_name	new	이 게임만의 기술 — 공식 이름 없음	Frigid Ice	혹한의 얼음
+move.frigid_ice.text	move_text	new		Until the user switches out: When the user is attacked, inflict the Frozen status on the attacker.	사용자가 교체될 때까지, 사용자가 공격받으면 공격한 포켓몬을 얼음 상태로 만듭니다.
+move.aurora_beam.text	move_text	new		When the target next attacks, remove 1 regular hit from the roll.	상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.chilling_acuity	move_name	new	이 게임만의 기술 — 공식 이름 없음	Chilling Acuity	냉철한 통찰
+move.chilling_acuity.text	move_text	new		If any status symbols are rolled: Inflict the Frozen status on the target and another Pokémon in the target party.	상태 이상 심볼이 하나라도 나오면 상대와 상대 파티의 다른 포켓몬 1마리를 얼음 상태로 만듭니다.
+move.ice_beam.text	move_text	new		If any status symbols are rolled: Inflict the Frozen status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 얼음 상태로 만듭니다.
+move.ice_punch.text	move_text	new		If any status symbols are rolled: Inflict the Frozen status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 얼음 상태로 만듭니다.
+move.mountain_gale.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage but status symbols deal -1 damage.	급소마다 데미지 +1. 하지만 상태 이상 심볼마다 데미지 −1.
+move.frost_song	move_name	new	이 게임만의 기술 — 공식 이름 없음	Frost Song	서리의 노래
+move.frost_song.text	move_text	new	이미 우리 번역(strings-ko.json)	For each other non-fainted Pokémon in your party with a Song move: Attack strength is increased by 1.	파티의 기절하지 않은 다른 포켓몬 가운데 노래 기술을 가진 포켓몬마다 위력 +1.
+move.blizzard.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Frozen status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 얼음 상태로 만듭니다.
+move.sheer_cold.text	move_text	new	이미 우리 번역(strings-ko.json)	Inflict the Frozen status on the target. Status symbols deal -1 damage.	상대를 얼음 상태로 만듭니다. 상태 이상 심볼마다 데미지 −1.
+move.flail.text	move_text	new		For every 2 damage taken by the user: Increase attack strength by 1.	사용자가 받은 데미지 2마다 위력 +1.
+move.soft_boiled.text	move_text	new		Heal 4 damage. If this move was used last turn, attack strength is increased to 4 but only heal 1 damage.	체력을 4 회복합니다. 내 직전 차례에 이 기술을 썼다면 위력이 4로 오르지만 체력은 1만 회복합니다.
+move.perish_song.text	move_text	new		Increase the battle fatigue of the user and the target to 5.	사용자와 상대의 전투 피로를 5로 올립니다.
+move.splash.text	move_text	new		Roll a status dice and inflict the result on the target.	상태 이상 주사위를 굴립니다. 나온 상태 이상이 상대에게 걸립니다.
+move.quick_attack.text	move_text	new		Effect may be used once until the user switches out: The user may use a second move this turn.	사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다.
+move.encore.text	move_text	new		If the user faints when it is next attacked, the user may use a final move before fainting.	사용자가 다음에 공격받아 기절하게 되면 기절하기 전에 마지막으로 기술을 1번 사용할 수 있습니다.
+move.sweet_scent.text	move_text	new	이미 우리 번역(strings-ko.json)	On the next attack or capture roll against the target, status symbols deal +1 damage.	상대를 노린 다음 공격이나 포획 굴림에서 상태 이상 심볼마다 데미지 +1.
+move.double_hit.text	move_text	new	이미 우리 번역(strings-ko.json)	Regular hits deal +1 damage.	일반 타격마다 데미지 +1.
+move.conversion.text	move_text	new		Until the user switches out: Add 1 critical hit and 1 status symbol to your attack rolls.	사용자가 교체될 때까지 공격 굴림에 급소 1개와 상태 이상 심볼 1개를 더합니다.
+move.tackle.text	move_text	new		When the target next attacks, remove 1 regular hit from the roll.	상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.extreme_speed.text	move_text	new		Effect may be used once until the user switches out: The user may use a second move this turn.	사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다.
+move.heal_bell.text	move_text	new		Heal 1 damage and all status effects from the user and from all Pokémon in your party.	사용자와 내 파티의 모든 포켓몬은 체력을 1 회복하고 상태 이상을 모두 고칩니다.
+move.headbutt.text	move_text	new		If any status symbols are rolled: Inflict the Paralysed status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다.
+move.swift.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal +1 damage.	상태 이상 심볼마다 데미지 +1.
+move.uproar.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal +1 damage. Heal any Drowsy status effects from the user and the target.	상태 이상 심볼마다 데미지 +1. 사용자와 상대의 졸음을 고칩니다.
+move.conversion_2.text	move_text	new		When the user is next attacked, remove 2 regular hits from the roll.	사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 2개 뺍니다.
+move.slash.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.take_down.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 1 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 1 입습니다.
+move.spit_up.text	move_text	new		Heal 2 damage. If this move was used last turn, decrease attack strength to 2.	체력을 2 회복합니다. 내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다.
+move.body_slam.text	move_text	new		If any status symbols are rolled: Inflict the Paralysed status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 마비 상태로 만듭니다.
+move.tri_attack.text	move_text	new		If any status symbols are rolled: Roll a status dice and inflict the result on the target.	상태 이상 심볼이 하나라도 나오면 상태 이상 주사위를 굴려 나온 상태 이상을 상대에게 겁니다.
+move.crush_grip.text	move_text	new		Inflict the Paralysed status on the target. The target may no longer switch out or flee the battle.	상대를 마비 상태로 만듭니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.double_edge.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다.
+move.thrash.text	move_text	new		Inflict the Confused status on the user. Deal any damage taken by the user during this attack to the target as well.	사용자를 혼란 상태로 만듭니다. 이 공격 중에 사용자가 받은 데미지를 상대에게도 똑같이 줍니다.
+move.explosion.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 3 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 3 입습니다.
+move.hyper_beam.text	move_text	new		If this move was used last turn, attack strength is decreased to 2.	내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다.
+move.toxic.text	move_text	new		Inflict the Poisoned status on the target. If the target is already Poisoned, attack strength is increased to 3.	상대를 독 상태로 만듭니다. 상대가 이미 독 상태라면 위력이 3으로 오릅니다.
+move.poison_sting.text	move_text	new		Inflict the Poisoned status on the target. When the user is next attacked, remove 2 regular hits from the roll.	상대를 독 상태로 만듭니다. 사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 2개 뺍니다.
+move.coil.text	move_text	new		Increase the battle fatigue of the target by 3. The target may no longer switch out or flee the battle.	상대의 전투 피로를 3 올립니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.poison_fang.text	move_text	new		Inflict the Poisoned status on the target.	상대를 독 상태로 만듭니다.
+move.poison_tail.text	move_text	new	이미 우리 번역(strings-ko.json)	Inflict the Poisoned status on the target. Critical hits deal +1 damage.	상대를 독 상태로 만듭니다. 급소마다 데미지 +1.
+move.venoshock.text	move_text	new		If the target has any status effects, this move deals double damage.	상대에게 상태 이상이 하나라도 있으면 이 기술의 데미지는 2배입니다.
+move.neurotoxin	move_name	new	이 게임만의 기술 — 공식 이름 없음	Neurotoxin	신경독
+move.neurotoxin.text	move_text	new		Inflict both the Poisoned and Drowsy statuses on the target simultaneously.	상대를 독과 졸음 상태로 동시에 만듭니다.
+move.barb_barrage.text	move_text	new		Inflict the Poisoned status on the target. If the target is already Poisoned, this move deals double damage.	상대를 독 상태로 만듭니다. 상대가 이미 독 상태라면 이 기술의 데미지는 2배입니다.
+move.cross_poison.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.poison_jab.text	move_text	new		If any status symbols are rolled: Inflict the Poisoned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 독 상태로 만듭니다.
+move.belch.text	move_text	new		You may consume 1 Apricorn to increase attack strength to 7.	규토리 1개를 소모해 위력을 7로 올릴 수 있습니다.
+move.sludge_wave.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Poisoned status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 독 상태로 만듭니다.
+move.zen_restoration	move_name	new	이 게임만의 기술 — 공식 이름 없음	Zen Restoration	좌선회복
+move.zen_restoration.text	move_text	new	이미 우리 번역(strings-ko.json)	Inflict the Drowsy status on the user. Heal 6 damage if the user has just become Drowsy. Change to Blazing Form if possible.	사용자를 졸음 상태로 만듭니다. 사용자가 방금 졸음 상태가 됐다면 체력을 6 회복합니다. 가능하다면 노말모드로 폼체인지합니다.
+move.teleport.text	move_text	new		The user may switch out. When the target next attacks, remove 2 regular hits from the roll.	사용자를 교체할 수 있습니다. 상대가 다음에 공격할 때 그 굴림에서 일반 타격을 2개 뺍니다.
+move.calm_mind.text	move_text	new		Deal extra damage equal to your current battle fatigue and then reset your battle fatigue to 0.	지금 내 전투 피로만큼 데미지를 더 주고, 전투 피로를 0으로 되돌립니다.
+move.confusion.text	move_text	new		Inflict the Confused status on the target.	상대를 혼란 상태로 만듭니다.
+move.imprison.text	move_text	new		The target may no longer change form, switch out or flee the battle.	상대는 이제 폼체인지하거나 교체하거나 배틀에서 도망칠 수 없습니다.
+move.kinesis.text	move_text	new	이미 우리 번역(strings-ko.json)	Copy the effect of a move the user or target knows.	사용자나 상대가 가진 기술 하나를 골라 그 효과를 씁니다.
+move.lunar_blessing.text	move_text	new	이미 우리 번역(strings-ko.json)	Heal 3 damage from the user. When the user is next attacked, status symbols deal -1 damage.	사용자는 체력을 3 회복합니다. 사용자가 다음에 공격받을 때 상태 이상 심볼마다 데미지 −1.
+move.barrier.text	move_text	new		When the user is next attacked, all critical hits damage the attacker instead of the user.	사용자가 다음에 공격받을 때 급소의 데미지는 모두 사용자 대신 공격한 포켓몬이 받습니다.
+move.psycho_cut.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.psyshield_bash.text	move_text	new		When the user is next attacked, remove 1 regular hit from the roll.	사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.take_heart.text	move_text	new		Heal any status effects. When the user is next attacked, remove 1 regular hit from the roll.	상태 이상을 모두 고칩니다. 사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.psychic.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Confused status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 혼란 상태로 만듭니다.
+move.prismatic_laser.text	move_text	new	이미 우리 번역(strings-ko.json)	If 2 or more status symbols are rolled: Deal 2 damage to all Pokémon in the target party that is not the target.	상태 이상 심볼이 2개 이상 나오면 상대 파티의 다른 모든 포켓몬에게 데미지를 2 줍니다.
+move.future_sight.text	move_text	new	이미 우리 번역(strings-ko.json)	Will there be more, less or an equal amount of critical hits rolled than status symbols? If incorrect, deal -3 damage.	급소가 상태 이상 심볼보다 많이 나올지, 적게 나올지, 같은 수로 나올지 예상합니다. 틀리면 데미지 −3.
+move.rampart_riposte	move_name	new	이 게임만의 기술 — 공식 이름 없음	Rampart Riposte	성벽의 반격
+move.rampart_riposte.text	move_text	new		Attack strength is increased equal to the amount of damage taken last turn.	직전 차례에 받은 데미지만큼 위력이 오릅니다.
+move.smack_down.text	move_text	new		Deals 2 extra damage to Flying-type Pokémon.	비행 타입 포켓몬에게는 데미지를 2 더 줍니다.
+move.ancient_power.text	move_text	new		Until the user switches out: Add 1 critical hit and 1 status symbol to your attack rolls.	사용자가 교체될 때까지 공격 굴림에 급소 1개와 상태 이상 심볼 1개를 더합니다.
+move.rollout.text	move_text	new		Each time this attack is used this battle, attack strength is increased by 1.	이번 배틀에서 이 기술을 쓸 때마다 위력이 1 오릅니다.
+move.repairing_rock	move_name	new	이 게임만의 기술 — 공식 이름 없음	Repairing Rock	바위고치기
+move.repairing_rock.text	move_text	new		Until the user switches out: Heal 2 damage at the end of your turns.	사용자가 교체될 때까지 내 차례가 끝날 때마다 체력을 2 회복합니다.
+move.power_gem.text	move_text	new		If any status symbols are rolled: Roll a status dice and inflict the result on the target.	상태 이상 심볼이 하나라도 나오면 상태 이상 주사위를 굴려 나온 상태 이상을 상대에게 겁니다.
+move.stone_edge.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage but status symbols deal -1 damage.	급소마다 데미지 +1. 하지만 상태 이상 심볼마다 데미지 −1.
+move.rock_blast.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal -2 damage.	상태 이상 심볼마다 데미지 −2.
+move.head_smash.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 3 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 3 입습니다.
+move.rock_wrecker.text	move_text	new		If this move was used last turn, attack strength is decreased to 2.	내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다.
+move.shelter.text	move_text	new		The user may switch out. When the target next attacks, remove 2 regular hits from the roll.	사용자를 교체할 수 있습니다. 상대가 다음에 공격할 때 그 굴림에서 일반 타격을 2개 뺍니다.
+move.kings_shield.text	move_text	new		When the user is next attacked, remove all regular hits from the roll. Change to Blade Form if possible.	사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 모두 뺍니다. 가능하다면 블레이드폼으로 폼체인지합니다.
+move.bullet_punch.text	move_text	new		Effect may be used once until the user switches out: The user may use a second move this turn.	사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다.
+move.lift_off	move_name	new	이 게임만의 기술 — 공식 이름 없음	Lift Off	이륙
+move.lift_off.text	move_text	new		Inflict the Burned status on the target. Each time this attack is used this battle, attack strength is increased by 1.	상대를 화상 상태로 만듭니다. 이번 배틀에서 이 기술을 쓸 때마다 위력이 1 오릅니다.
+move.metal_claw.text	move_text	new	이미 우리 번역(strings-ko.json)	Status symbols deal +1 damage.	상태 이상 심볼마다 데미지 +1.
+move.tempered_steel	move_name	new	이 게임만의 기술 — 공식 이름 없음	Tempered Steel	강철담금질
+move.tempered_steel.text	move_text	new		Until the user switches out: The user is immune to all status effects.	사용자가 교체될 때까지 어떤 상태 이상에도 걸리지 않습니다.
+move.steel_wing.text	move_text	new		When the user is next attacked, remove 1 regular hit from the roll.	사용자가 다음에 공격받을 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.anchor_shot.text	move_text	new		Deals 4 extra damage to Water-type Pokémon. The target may no longer switch out or flee the battle.	물 타입 포켓몬에게는 데미지를 4 더 줍니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.iron_tail.text	move_text	new		When the target is next attacked, add 1 regular hit to the roll.	상대가 다음에 공격받을 때 그 굴림에 일반 타격을 1개 더합니다.
+move.flash_cannon.text	move_text	new	이미 우리 번역(strings-ko.json)	When the target next attacks, status symbols deal -1 damage.	상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −1.
+move.temporal_guard	move_name	new	이 게임만의 기술 — 공식 이름 없음	Temporal Guard	시간의 수호
+move.temporal_guard.text	move_text	new	이미 우리 번역(strings-ko.json)	When the target next attacks, status symbols deal -2 damage.	상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −2.
+move.kings_blade	move_name	new	이 게임만의 기술 — 공식 이름 없음	King's Blade	킹블레이드
+move.kings_blade.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage. Change to Shield Form if possible.	급소마다 데미지 +1. 가능하다면 실드폼으로 폼체인지합니다.
+move.searing_sunraze	move_name	new	이 게임만의 기술 — 공식 이름 없음	Searing Sunraze	작열하는 선레이즈
+move.searing_sunraze.text	move_text	new		Inflict the Burned status on the target. If the target is already Burned, this move deals double damage.	상대를 화상 상태로 만듭니다. 상대가 이미 화상 상태라면 이 기술의 데미지는 2배입니다.
+move.heavy_slam.text	move_text	new		Attack strength is equal to half the base health of the user, rounded down. Maximum 5 attack strength.	위력은 사용자 최대 체력의 절반(내림)이고, 최대 5입니다.
+move.hidden_power.text	move_text	new		Choose any learnable type of the user as the type of this attack.	사용자가 배울 수 있는 타입 하나를 골라 이 공격의 타입으로 합니다.
+move.hidden_punch	move_name	new	이 게임만의 기술 — 공식 이름 없음	Hidden Punch	잠재펀치
+move.hidden_punch.text	move_text	new		Choose any learnable type of the user as the type of this attack.	사용자가 배울 수 있는 타입 하나를 골라 이 공격의 타입으로 합니다.
+move.multi_attack.text	move_text	new		Choose any learnable type of the user as the type of this attack. Ignores the effects of Prism Armour.	사용자가 배울 수 있는 타입 하나를 골라 이 공격의 타입으로 합니다. 프리즘 아머를 무시합니다.
+move.adaptive_cloak	move_name	new	이 게임만의 기술 — 공식 이름 없음	Adaptive Cloak	적응도롱
+move.adaptive_cloak.text	move_text	new	이미 우리 번역(strings-ko.json)	The user may change Cloak Form if possible. Now choose either base type of the user as the type of this attack.	가능하다면 다른 도롱 폼으로 폼체인지할 수 있습니다. 그 뒤 사용자의 기본 타입 둘 중 하나를 골라 이 공격의 타입으로 합니다.
+move.judgement.text	move_text	new		Choose any type, this attack becomes the chosen type.	아무 타입이나 하나 골라 이 공격의 타입으로 합니다.
+move.photon_geyser.text	move_text	new		Inflict any status effect on the target. If any status symbols are rolled: Inflict another status effect simultaneously.	상태 이상을 하나 골라 상대에게 겁니다. 상태 이상 심볼이 하나라도 나오면 다른 상태 이상 하나를 동시에 겁니다.
+move.mimic.text	move_text	new		Select a move from the target and then attack the target with this move.	상대의 기술 하나를 골라 그 기술로 상대를 공격합니다.
+move.metronome.text	move_text	new		Shuffle the Evolution Pokémon deck and then attack the target with the top move of the deck.	진화 포켓몬 덱을 섞은 뒤, 덱 맨 위 카드의 기술로 상대를 공격합니다.
+move.aqua_jet.text	move_text	new		Effect may be used once until the user switches out: The user may use a second move this turn.	사용자가 교체될 때까지 한 번만, 이번 차례에 기술을 하나 더 쓸 수 있습니다.
+move.water_gun.text	move_text	new		When the target next attacks, remove 1 regular hit from the roll.	상대가 다음에 공격할 때 그 굴림에서 일반 타격을 1개 뺍니다.
+move.razor_shell.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +1 damage.	급소마다 데미지 +1.
+move.water_pulse.text	move_text	new		If any status symbols are rolled: Inflict the Confused status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 혼란 상태로 만듭니다.
+move.flip_turn.text	move_text	new		The user may switch out if possible.	가능하다면 사용자를 교체할 수 있습니다.
+move.bubble_beam.text	move_text	new		When the target is next attacked, add 2 status symbols to the roll.	상대가 다음에 공격받을 때 그 굴림에 상태 이상 심볼 2개를 더합니다.
+move.octazooka.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage.	급소마다 데미지 +2.
+move.surf.text	move_text	new	이미 우리 번역(strings-ko.json)	For each other non-fainted Pokémon in your party with the move Surf: Attack strength is increased by 1.	파티의 기절하지 않은 다른 포켓몬 가운데 파도타기를 가진 포켓몬마다 위력 +1.
+move.scald.text	move_text	new		If any status symbols are rolled: Inflict the Burned status on the target.	상태 이상 심볼이 하나라도 나오면 상대를 화상 상태로 만듭니다.
+move.whirlpool.text	move_text	new		Increase the battle fatigue of the target by 2. The target may no longer switch out or flee the battle.	상대의 전투 피로를 2 올립니다. 이제 상대는 교체하거나 배틀에서 도망칠 수 없습니다.
+move.muddy_water.text	move_text	new	이미 우리 번역(strings-ko.json)	When the target next attacks, status symbols deal -1 damage.	상대가 다음에 공격할 때 상태 이상 심볼마다 데미지 −1.
+move.wave_crash.text	move_text	new	이미 우리 번역(strings-ko.json)	Critical hits deal +2 damage but for each critical hit rolled: The user takes 2 damage.	급소마다 데미지 +2. 하지만 급소마다 사용자는 데미지를 2 입습니다.
+move.hydro_pump.text	move_text	new		If 2 or more status symbols are rolled: Inflict the Confused status on the target.	상태 이상 심볼이 2개 이상 나오면 상대를 혼란 상태로 만듭니다.
+move.ripple_in_space	move_name	new	이 게임만의 기술 — 공식 이름 없음	Ripple in Space	공간의 물결
+move.ripple_in_space.text	move_text	new		If this move was used last turn, attack strength is decreased to 2.	내 직전 차례에 이 기술을 썼다면 위력이 2로 줄어듭니다.
+trainer_card.chef	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Chef	요리사
+trainer_card.delinquent	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Delinquent	무서운 아가씨
+trainer_card.diamond_acolyte	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Diamond Acolyte	다이아몬드 신도
+trainer_card.essentia	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Essentia	에스프리
+trainer_card.expert	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Expert	달인
+trainer_card.fairy_tale_girl	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Fairy Tale Girl	메르헨소녀
+trainer_card.gardener	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Gardener	정원사
+trainer_card.ginkgo_merchant	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Ginkgo Merchant	은행상회 상인
+trainer_card.hex_maniac	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Hex Maniac	오컬트마니아
+trainer_card.kindler	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Kindler	캠프파이어
+trainer_card.pearl_acolyte	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Pearl Acolyte	진주 신도
+trainer_card.platinum_acolyte	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Platinum Acolyte	백금 신도
+trainer_card.roller_skater	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Roller Skater	롤러스케이트
+trainer_card.scuba_diver	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Scuba Diver	다이버
+trainer_card.sky_trainer	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Sky Trainer	스카이트레이너
+trainer_card.team_aqua	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Team Aqua	아쿠아단 조무래기
+trainer_card.team_magma	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Team Magma	마그마단 조무래기
+trainer_card.team_rocket	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(classPlusName) — 후속작 공식 직업명이 있으면 그것	Team Rocket	로켓단 조무래기
+trainer_card.tourist	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Tourist	투어객
+trainer_card.triathlete	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Triathlete	트라이애슬리트
+trainer_card.undivided_acolyte	trainer_class	new	Pt · HGSS · BW · B2W2 원작 자산에 같은 직업 없음(notInRoms) — 후속작 공식 직업명이 있으면 그것	Undivided Acolyte	합일 신도
+trainer_ability.ace_trainer.1	trainer_ability_name	new		Team Builder	팀 빌더
+trainer_ability.ace_trainer.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	You may retry a Pokédex search once per encounter. Additionally, Battle Items only need 1 of each Apricorn on the recipe to craft.	조우마다 한 번, 도감 찾아보기를 다시 할 수 있습니다. 또 배틀 아이템은 레시피의 규토리가 종류마다 1개씩만 있으면 만들 수 있습니다.
+trainer_ability.ace_trainer.2	trainer_ability_name	new		Competitive Edge	경쟁 우위
+trainer_ability.ace_trainer.2.text	trainer_ability_text	new		Your Strong Pokémon gain +1 initiative.	강한 포켓몬은 스피드 +1.
+trainer_ability.aroma_lady.1	trainer_ability_name	new		Sweet Scent	달콤한향기
+trainer_ability.aroma_lady.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During capture attempts at Apricorn Trees, replace 1 status symbol with 1 regular hit.	규토리 나무에서 포획을 시도할 때 상태 이상 심볼 1개를 일반 타격 1개로 바꿉니다.
+trainer_ability.aroma_lady.2	trainer_ability_name	new		Natural Remedy	자연 요법
+trainer_ability.aroma_lady.2.text	trainer_ability_text	new		When you attack with a Grass-type or Fairy-type move, the user heals for half the damage dealt, rounded up.	풀 타입이나 페어리 타입 기술로 공격하면 사용자는 준 데미지의 절반(올림)만큼 회복합니다.
+trainer_ability.artist.1	trainer_ability_name	new		Detailed Sketch	세밀한 스케치
+trainer_ability.artist.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	After defeating a wild Pokémon, you may teach its move to any Pokémon in your party regardless of their learnable move types.	야생 포켓몬을 쓰러뜨린 뒤 그 기술을 내 파티의 어느 포켓몬에게든 가르칠 수 있습니다. 배울 수 있는 기술 타입은 따지지 않습니다.
+trainer_ability.artist.2	trainer_ability_name	new		Finished Masterpiece	완성된 걸작
+trainer_ability.artist.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	If your party has a move of every type, all your moves gain +2 attack strength. Typeless moves and abilities act as wildcards and can be considered as any type towards achieving this effect.	내 파티에 모든 타입의 기술이 있으면 내 모든 기술은 위력 +2. 타입 없음 기술과 특성은 와일드카드라서, 이 조건을 채울 때 아무 타입으로나 셀 수 있습니다.
+trainer_ability.backpacker.1	trainer_ability_name	new		Portable Tent	휴대용 텐트
+trainer_ability.backpacker.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	After any battle, fully restore a Pokémon in your party.	어떤 배틀이든 끝나면 내 파티의 포켓몬 1마리를 완전히 회복합니다.
+trainer_ability.backpacker.2	trainer_ability_name	new		Holding Capacity	수납 용량
+trainer_ability.backpacker.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Pokémon can now hold and use up to two Held Items so long as they are not the same item.	이제 내 포켓몬은 서로 다른 지닌물건이라면 2개까지 지니고 쓸 수 있습니다.
+trainer_ability.beauty.1	trainer_ability_name	new		Lady Luck	행운의 여신
+trainer_ability.beauty.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During all your rolls, critical hits deal +2 damage but status symbols deal -1 damage.	내 모든 굴림에서 급소마다 데미지 +2. 하지만 상태 이상 심볼마다 데미지 −1.
+trainer_ability.beauty.2	trainer_ability_name	new		Natural Charisma	타고난 카리스마
+trainer_ability.beauty.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you attack with a Normal-type or Dark-type move, status symbols deal +1 damage.	노말 타입이나 악 타입 기술로 공격하면 상태 이상 심볼마다 데미지 +1.
+trainer_ability.bird_keeper.1	trainer_ability_name	new		Bird Whistle	새 피리
+trainer_ability.bird_keeper.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	You may fly to a village from any tile by discarding 1 Apricorn. There cannot be any Team Galactic Grunts on the target village.	규토리 1개를 소모해 어느 칸에서든 마을로 공중날기를 할 수 있습니다. 갈 마을에 갤럭시단 조무래기가 없어야 합니다. 이 날기는 공중날기와 합쳐 한 턴에 한 번입니다.
+trainer_ability.bird_keeper.2	trainer_ability_name	new		Evasive Manoeuvres	회피 기동
+trainer_ability.bird_keeper.2.text	trainer_ability_text	new		Your Flying-type Pokémon take no damage from attacks that would only deal 2 or less damage to them.	비행 타입 포켓몬은 받을 데미지가 2 이하인 공격으로는 데미지를 받지 않습니다.
+trainer_ability.black_belt.1	trainer_ability_name	new		Super Training	슈퍼 트레이닝
+trainer_ability.black_belt.1.text	trainer_ability_text	new		After defeating a wild Pokémon, gain 2 extra Journey Points.	야생 포켓몬을 쓰러뜨리면 여행 점수를 2점 더 얻습니다.
+trainer_ability.black_belt.2	trainer_ability_name	new		Fighting Spirit	투지
+trainer_ability.black_belt.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During your turn whilst outside of battle, you may inflict the Burned status on your Pokémon. Replace the effect of Burned when applied to your Fighting-type Pokémon: Increase the total damage you deal by 2.	내 턴에 배틀 밖에서 내 포켓몬을 화상 상태로 만들 수 있습니다. 내 격투 타입 포켓몬의 화상은 효과가 다음으로 바뀝니다: 내가 주는 총 데미지 +2.
+trainer_ability.bug_catcher.1	trainer_ability_name	new		Catching Frenzy	포획 삼매경
+trainer_ability.bug_catcher.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	After capturing a Bug-type Pokémon, gain 2 extra Journey Points and immediately start an extra turn. Cannot be repeated on the extra turn.	벌레 타입 포켓몬을 포획하면 여행 점수를 2점 더 얻고 곧바로 턴을 한 번 더 시작합니다. 그 추가 턴에는 다시 일어나지 않습니다.
+trainer_ability.bug_catcher.2	trainer_ability_name	new		Bug Specialist	벌레 전문가
+trainer_ability.bug_catcher.2.text	trainer_ability_text	new		Your Bug-type Pokémon gain +2 initiative and +1 attack strength to their Bug-type moves.	벌레 타입 포켓몬은 스피드 +2. 벌레 타입 기술은 위력 +1.
+trainer_ability.chef.1	trainer_ability_name	new		Ingredient Expert	식재료 전문가
+trainer_ability.chef.1.text	trainer_ability_text	new		You may freely convert the Apricorns in your bag for different Apricorns of the same tier.	가방의 규토리를 같은 등급의 다른 규토리로 마음대로 바꿀 수 있습니다.
+trainer_ability.chef.2	trainer_ability_name	new		Masterwork Stew	일품 스튜
+trainer_ability.chef.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Costs 1 of every Apricorn: Your Pokémon gain +1 attack strength to their moves that are the same type as them. Lasts until the end of battle.	규토리를 색마다 1개씩 소모: 내 포켓몬이 자기와 같은 타입의 기술을 쓰면 위력 +1. 배틀이 끝날 때까지 이어집니다.
+trainer_ability.collector.1	trainer_ability_name	new		Stamp Collector	스탬프 수집가
+trainer_ability.collector.1.text	trainer_ability_text	new		When claiming any stamp reward, you may claim the reward twice.	스탬프 보상을 받을 때 그 보상을 두 번 받을 수 있습니다.
+trainer_ability.collector.2	trainer_ability_name	new		Pokémon Collector	포켓몬 수집가
+trainer_ability.collector.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	The moves gained from stamp rewards can be added to your party as Pokémon instead. Additionally, when you discard any Pokémon or moves, add them to your stamp rewards move pool.	스탬프 보상으로 받은 기술은 대신 포켓몬으로 내 파티에 넣을 수 있습니다. 또 포켓몬을 놓아주거나 기술을 버리면 그것을 내 스탬프 보상 기술 카드에 더합니다.
+trainer_ability.delinquent.1	trainer_ability_name	new		Offering Thief	공물 도둑
+trainer_ability.delinquent.1.text	trainer_ability_text	new		When another trainer makes a Shrine Offering, gain the Apricorn they discard.	다른 트레이너가 사당에 공물을 바치면 그 트레이너가 바친 규토리를 내가 얻습니다.
+trainer_ability.delinquent.2	trainer_ability_name	new		Intimidating Posture	위압적인 자세
+trainer_ability.delinquent.2.text	trainer_ability_text	new		Your Dark-type Pokémon and Poison-type Pokémon take 2 less damage from attacks.	악 타입 포켓몬과 독 타입 포켓몬은 공격으로 받는 데미지 −2.
+trainer_ability.diamond_acolyte.1	trainer_ability_name	new		Temporal Devotion	시간의 신앙
+trainer_ability.diamond_acolyte.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, become a Follower of Dialga for the rest of the game. Your Follower token always counts as 2 of the cards needed for Dialga's Play 3 effect.	해금되면 남은 게임 동안 디아루가의 추종자가 됩니다. 내 추종자 토큰은 디아루가의 3장 사용 효과에 필요한 카드 가운데 늘 2장으로 셉니다.
+trainer_ability.diamond_acolyte.2	trainer_ability_name	new		Chosen of Dialga	디아루가가 택한 자
+trainer_ability.diamond_acolyte.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, search the Legendary Pokémon deck for Dialga and add it to your party. Temporarily decrease the health and initiative of Dialga by 1 for each Shard you are currently missing or for every 3 Ultra Beasts undefeated.	해금되면 전설 포켓몬 덱에서 디아루가를 찾아 내 파티에 넣습니다. 지금 얻지 못한 조각 1개마다, 또는 쓰러뜨리지 못한 울트라 비스트 3마리마다 디아루가의 체력과 스피드가 일시적으로 1씩 줄어듭니다.
+trainer_ability.dragon_tamer.1	trainer_ability_name	new		Apex Hatchling	정점의 아기 드래곤
+trainer_ability.dragon_tamer.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, search the Weak Pokémon deck for a Dragon-type Pokémon and add it to your party. This Pokémon receives the Apex Dragon held item which cannot be unequipped. Your Apex Dragon costs an extra 5 Journey Points to evolve at all stages.	해금되면 약한 포켓몬 덱에서 드래곤 타입 포켓몬 1마리를 찾아 내 파티에 넣습니다. 이 포켓몬은 지닌물건 정점의 드래곤을 받고, 이 지닌물건은 뗄 수 없습니다. 내 정점의 드래곤은 진화할 때마다 여행 점수가 5점 더 듭니다.
+trainer_ability.dragon_tamer.2	trainer_ability_name	new		Apex Strength	정점의 힘
+trainer_ability.dragon_tamer.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Apex Dragon now gains +6 health, +2 initiative and +1 attack strength to its moves.	이제 내 정점의 드래곤은 체력 +6, 스피드 +2, 기술 위력 +1.
+trainer_ability.essentia.1	trainer_ability_name	new		Planning Ahead	미리 세운 계획
+trainer_ability.essentia.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	After a battle, you may use any movement you have remaining but cannot interact with anything else this turn.	배틀이 끝난 뒤 남은 이동력으로 이동할 수 있습니다. 하지만 이번 턴에는 그 밖의 일은 할 수 없습니다.
+trainer_ability.essentia.2	trainer_ability_name	new		Opportune Strike	절호의 일격
+trainer_ability.essentia.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you start a battle against a wild Pokémon, if you have not moved anywhere yet this turn, your first attack against them deals double damage.	야생 포켓몬과 배틀을 시작할 때 이번 턴에 아직 아무 데도 움직이지 않았다면, 그 포켓몬에게 하는 첫 공격은 데미지가 2배입니다.
+trainer_ability.expert.1	trainer_ability_name	new		Shrine Keeper	사당지기
+trainer_ability.expert.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you make a Shrine Offering, draw 1 extra Shrine Event card. This only gives you more choices, you still play the same number of Shrine Event cards as you would normally.	사당에 공물을 바칠 때 사당 이벤트 카드를 1장 더 뽑습니다. 고를 거리만 늘 뿐, 쓰는 사당 이벤트 카드 수는 평소와 같습니다.
+trainer_ability.expert.2	trainer_ability_name	new		Legendary Protector	전설의 수호자
+trainer_ability.expert.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When Beast Boost triggers, your Legendary Pokémon heal 3 damage, reset their battle fatigue to 0 and increase the attack strength of their next attack by 2.	비스트 부스트가 발동하면 내 전설 포켓몬은 체력을 3 회복하고, 전투 피로가 0으로 돌아가며, 다음 공격의 위력이 2 오릅니다.
+trainer_ability.fairy_tale_girl.1	trainer_ability_name	new		Wishing Star	소원의 별
+trainer_ability.fairy_tale_girl.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Pokémon heal 1 extra damage whenever they are healed by any effect.	내 포켓몬은 어떤 효과로든 회복할 때마다 데미지를 1 더 회복합니다.
+trainer_ability.fairy_tale_girl.2	trainer_ability_name	new		Day Dreamer	몽상가
+trainer_ability.fairy_tale_girl.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During your turn whilst outside of battle, you may inflict the Drowsy status on your Pokémon. Replace the effect of Drowsy when applied to your Fairy-type Pokémon: At the end of your turns during battle, heal 1 damage.	내 턴에 배틀 밖에서 내 포켓몬을 졸음 상태로 만들 수 있습니다. 내 페어리 타입 포켓몬의 졸음은 효과가 다음으로 바뀝니다: 배틀 중 내 차례가 끝날 때마다 체력을 1 회복합니다.
+trainer_ability.fisherman.1	trainer_ability_name	new		Super Rod	대단한낚싯대
+trainer_ability.fisherman.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During capture attempts at Apricorn Reefs, replace 1 status symbol with 1 regular hit. After capturing a wild Pokémon at an Apricorn Reef, roll and then add a Catch Size dice to them.	규토리 산호에서 포획을 시도할 때 상태 이상 심볼 1개를 일반 타격 1개로 바꿉니다. 규토리 산호에서 야생 포켓몬을 포획하면 월척 주사위를 굴려 그 포켓몬에게 붙입니다.
+trainer_ability.fisherman.2	trainer_ability_name	new		Catch of the Day	오늘의 월척
+trainer_ability.fisherman.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Pokémon now gain health equal to their Catch Size. Additionally, for the cost of 2 Journey Points: Increase the Catch Size of a Pokémon in your party to its next level.	이제 내 포켓몬은 월척 크기만큼 체력이 늘어납니다. 또 여행 점수 2점을 소모해 내 파티 포켓몬 1마리의 월척 크기를 한 단계 올릴 수 있습니다.
+trainer_ability.gardener.1	trainer_ability_name	new		Pick Apricorn	규토리 따기
+trainer_ability.gardener.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may gain 1 Apricorn from an Apricorn Tree you are standing on.	한 턴에 한 번, 내가 서 있는 규토리 나무에서 규토리를 1개 얻을 수 있습니다.
+trainer_ability.gardener.2	trainer_ability_name	new		Trimmed Form	가지치기
+trainer_ability.gardener.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Grass-type Pokémon and Rock-type Pokémon gain +3 initiative but -2 health.	풀 타입 포켓몬과 바위 타입 포켓몬은 스피드 +3. 하지만 최대 체력 −2.
+trainer_ability.gentleman.1	trainer_ability_name	new		Amulet Coin	부적금화
+trainer_ability.gentleman.1.text	trainer_ability_text	new		After capturing or defeating a wild Pokémon, gain double the amount of Apricorns.	야생 포켓몬을 포획하거나 쓰러뜨린 뒤 얻는 규토리가 2배가 됩니다.
+trainer_ability.gentleman.2	trainer_ability_name	new		Cherish Ball	프레셔스볼
+trainer_ability.gentleman.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, you receive the Cherish Ball. When the Cherish Ball is used to capture a wild Pokémon, it automatically captures that Pokémon. Additionally, if you release the captured Pokémon, you get the Cherish Ball back.	해금되면 프레셔스볼을 받습니다. 프레셔스볼로 야생 포켓몬을 포획하면 반드시 잡힙니다. 또 그 포켓몬을 놓아주면 프레셔스볼이 돌아옵니다.
+trainer_ability.ginkgo_merchant.1	trainer_ability_name	new		Trade Monopoly	거래 독점
+trainer_ability.ginkgo_merchant.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When another trainer uses the current Ginkgo Trade, gain the Apricorns they discard.	다른 트레이너가 지금 놓인 은행상회 거래를 쓰면 그 트레이너가 내준 규토리를 내가 얻습니다.
+trainer_ability.ginkgo_merchant.2	trainer_ability_name	new		Disposable Assets	가처분 자산
+trainer_ability.ginkgo_merchant.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Before attacking, you may discard 1 Apricorn to temporarily change the base attack strength of a move this turn to 4/5/6 based on the tier of the Apricorn used. For example, 1 Black Apricorn would be required to change the attack strength of a move to 6.	공격하기 전에 규토리 1개를 소모해, 이번 차례에 쓸 기술의 기본 위력을 그 규토리의 등급에 따라 잠시 4/5/6으로 바꿀 수 있습니다. 예를 들어 기술의 위력을 6으로 바꾸려면 검정 규토리 1개가 필요합니다.
+trainer_ability.guitarist.1	trainer_ability_name	new	이미 우리 번역(strings-ko.json)	Ramp Up	볼륨 업
+trainer_ability.guitarist.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, you receive an Amplifier dice. For every status symbol you roll, increase your Amplifier dice by 1. You may reset the Amplifier dice to add its value as damage to any attack. Your Amplifier dice value persists between battles.	해금되면 앰프 주사위를 받습니다. 굴림에서 상태 이상 심볼이 나올 때마다 앰프 주사위를 1 올립니다. 눈금만큼 한 공격의 데미지를 더하고 0으로 되돌릴 수 있습니다. 앰프 주사위의 눈금은 배틀이 끝나도 남습니다.
+trainer_ability.guitarist.2	trainer_ability_name	new	이미 우리 번역(strings-ko.json)	Amplifier Overload	앰프 과부하
+trainer_ability.guitarist.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you attack with an Electric-type move, you may double the value of your Amplifier dice when its used. Afterwards, you can no longer use your Amplifier dice during this battle.	전기 타입 기술로 공격할 때 앰프 주사위를 쓰면 그 눈금을 2배로 할 수 있습니다. 그러면 이 배틀에서는 더 이상 앰프 주사위를 쓸 수 없습니다.
+trainer_ability.hex_maniac.1	trainer_ability_name	new		Unstable Magic	불안정한 마법
+trainer_ability.hex_maniac.1.text	trainer_ability_text	new		When inflicting any status effects, you may instead roll the status dice to inflict the new status effect it lands on.	상태 이상을 걸 때 대신 상태 이상 주사위를 굴려, 나온 새 상태 이상을 걸 수 있습니다.
+trainer_ability.hex_maniac.2	trainer_ability_name	new		Spell Caster	주술사
+trainer_ability.hex_maniac.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	You may inflict additional status effects onto a target so long as the target does not have that status effect already. Additionally, your Ghost-type moves gain +1 attack strength.	상대가 아직 그 상태 이상이 아니라면 상태 이상을 겹쳐 걸 수 있습니다. 또 고스트 타입 기술은 위력 +1.
+trainer_ability.hiker.1	trainer_ability_name	new		Hiking Gear	등산 장비
+trainer_ability.hiker.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may move up to 2 Mountain tiles in a row for free. Additionally, you can move onto any tile regardless of its elevation.	한 턴에 한 번, 산 칸을 2칸까지 이어서 이동력을 쓰지 않고 이동할 수 있습니다. 또 높이와 상관없이 어느 칸으로든 이동할 수 있습니다.
+trainer_ability.hiker.2	trainer_ability_name	new		Sturdy Footing	단단한 발디딤
+trainer_ability.hiker.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Rock-type Pokémon and Ground-type Pokémon gain +4 health but -1 initiative.	바위 타입 포켓몬과 땅 타입 포켓몬은 체력 +4. 하지만 스피드 −1.
+trainer_ability.interviewers.1	trainer_ability_name	new		Big Scoop	대특종
+trainer_ability.interviewers.1.text	trainer_ability_text	new		Whenever another trainer gains a Journey Stamp, you may instantly move to that trainer to challenge them to a battle. If you win the battle, you may also gain that Journey Stamp.	다른 트레이너가 여행 스탬프를 얻을 때마다 곧바로 그 트레이너에게 가서 배틀을 걸 수 있습니다. 배틀에서 이기면 나도 그 여행 스탬프를 얻을 수 있습니다.
+trainer_ability.interviewers.2	trainer_ability_name	new		Equipment Check	장비 점검
+trainer_ability.interviewers.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During your turn whilst outside of battle, you may swap your taught moves between the Pokémon in your party. The Pokémon you give the move to must be able to learn it.	내 턴에 배틀 밖에서 가르친 기술을 내 파티의 포켓몬끼리 서로 바꿀 수 있습니다. 기술을 받는 포켓몬은 그 기술을 배울 수 있어야 합니다.
+trainer_ability.kindler.1	trainer_ability_name	new		Gather Firewood	장작 모으기
+trainer_ability.kindler.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may remove any Apricorn Tree from the map to add 3 Burned status effects to your bag as Firewood.	한 턴에 한 번, 원하면 규토리 나무 하나를 없애고 가방에 장작을 3개 추가합니다.
+trainer_ability.kindler.2	trainer_ability_name	new		Burning Ignition	맹렬한 점화
+trainer_ability.kindler.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you attack with a Fire-type move, you may inflict the Burned status effect and deal 2 damage to the opposing Pokémon by using 1 Firewood from your bag.	불꽃 타입 기술로 공격할 때 가방의 장작 1개를 소모해 상대 포켓몬을 화상 상태로 만들고 데미지를 2 줄 수 있습니다.
+trainer_ability.lady.1	trainer_ability_name	new		Noble Heritage	고귀한 혈통
+trainer_ability.lady.1.text	trainer_ability_text	new		When unlocked, gain 7 Journey Points. Additionally, the Evolve Costs of your Pokémon are reduced by 2.	해금되면 여행 점수를 7점 얻습니다. 또 내 포켓몬의 진화 비용이 2점 줄어듭니다.
+trainer_ability.lady.2	trainer_ability_name	new		Hyper Potion	고급상처약
+trainer_ability.lady.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per battle, heal all damage and status effects from a non-fainted Pokémon in your party.	배틀마다 한 번, 내 파티에서 기절하지 않은 포켓몬 1마리의 데미지와 상태 이상을 모두 회복합니다.
+trainer_ability.ninja_boy.1	trainer_ability_name	new		Surprise Attack	기습
+trainer_ability.ninja_boy.1.text	trainer_ability_text	new		When you have Initiative Advantage, you may use it to go first regardless of actual initiative values.	우선권 토큰을 가지고 있으면 실제 스피드와 상관없이 그 토큰을 써서 먼저 행동할 수 있습니다.
+trainer_ability.ninja_boy.2	trainer_ability_name	new		Toxin Dart	독화살
+trainer_ability.ninja_boy.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Inflict either the Poisoned, Confused or Drowsy status effects on the opposing Pokémon whenever you use Initiative Advantage.	우선권 토큰을 쓸 때마다 상대 포켓몬에게 독 · 혼란 · 졸음 가운데 하나의 상태 이상을 겁니다.
+trainer_ability.parasol_lady.1	trainer_ability_name	new		Weather Forecast	일기 예보
+trainer_ability.parasol_lady.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, place the Weather Wheel in the middle of the arena on a Weather of your choice. Any trainer may change the Weather by discarding 3 Journey Points at a Shrine. All moves that match the Weather type gain +2 attack strength.	해금될 때 날씨를 하나 골라 날씨 휠을 투기장 가운데에 놓습니다. 어느 트레이너든 사당에서 여행 점수 3점을 소모해 날씨를 바꿀 수 있습니다. 날씨와 타입이 같은 기술은 모두 위력 +2.
+trainer_ability.parasol_lady.2	trainer_ability_name	new		Utility Umbrella	만능우산
+trainer_ability.parasol_lady.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Pokémon take 2 less damage from moves that match the current Weather.	내 포켓몬은 지금 날씨와 타입이 같은 기술에 맞으면 데미지를 2 덜 받습니다.
+trainer_ability.pearl_acolyte.1	trainer_ability_name	new		Spatial Devotion	공간의 신앙
+trainer_ability.pearl_acolyte.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, become a Follower of Palkia for the rest of the game. Your Follower token always counts as 2 of the cards needed for Palkia's Play 3 effect.	해금될 때 남은 게임 내내 펄기아의 추종자가 됩니다. 펄기아 카드의 3장 사용 효과에서 내 추종자 토큰은 언제나 카드 2장 몫을 합니다.
+trainer_ability.pearl_acolyte.2	trainer_ability_name	new		Chosen of Palkia	펄기아가 택한 자
+trainer_ability.pearl_acolyte.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, search the Legendary Pokémon deck for Palkia and add it to your party. Temporarily decrease the health and initiative of Palkia by 1 for each Shard you are currently missing or for every 3 Ultra Beasts undefeated.	해금될 때 전설 포켓몬 덱에서 펄기아를 찾아 내 파티에 넣습니다. 아직 얻지 못한 조각 1개마다, 또는 아직 쓰러뜨리지 못한 울트라 비스트 3마리마다 펄기아의 체력과 스피드가 일시적으로 1씩 줄어듭니다.
+trainer_ability.picnicker.1	trainer_ability_name	new		Woodland Explorer	숲 탐험가
+trainer_ability.picnicker.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may move up to 2 Forest tiles in a row for free. Additionally, you may fly to Campsites from any tile by discarding 1 Apricorn.	한 턴에 한 번, 숲 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다. 또 어느 칸에서든 규토리 1개를 소모해 야영지로 날아갈 수 있습니다. 이 날기는 공중날기와 합쳐 한 턴에 한 번입니다.
+trainer_ability.picnicker.2	trainer_ability_name	new		Picnic Basket	피크닉 바구니
+trainer_ability.picnicker.2.text	trainer_ability_text	new		When crafting an Apricorn Stew, you may gain the effect of another Apricorn Stew for free.	규토리 스튜를 만들 때, 다른 규토리 스튜 하나의 효과도 무료로 얻을 수 있습니다.
+trainer_ability.platinum_acolyte.1	trainer_ability_name	new		Renegade Devotion	반골의 신앙
+trainer_ability.platinum_acolyte.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, become a Follower of Giratina for the rest of the game. Your Follower token always counts as 2 of the cards needed for Giratina's Play 3 effect.	해금될 때 남은 게임 내내 기라티나의 추종자가 됩니다. 기라티나 카드의 3장 사용 효과에서 내 추종자 토큰은 언제나 카드 2장 몫을 합니다.
+trainer_ability.platinum_acolyte.2	trainer_ability_name	new		Chosen of Giratina	기라티나가 택한 자
+trainer_ability.platinum_acolyte.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, search the Legendary Pokémon deck for Giratina and add it to your party. Temporarily decrease the health and initiative of Giratina by 1 for each Shard you are currently missing or for every 3 Ultra Beasts undefeated.	해금될 때 전설 포켓몬 덱에서 기라티나를 찾아 내 파티에 넣습니다. 아직 얻지 못한 조각 1개마다, 또는 아직 쓰러뜨리지 못한 울트라 비스트 3마리마다 기라티나의 체력과 스피드가 일시적으로 1씩 줄어듭니다.
+trainer_ability.poke_fan.1	trainer_ability_name	new		Cute Charm	헤롱헤롱바디
+trainer_ability.poke_fan.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Weak Pokémon can at most take 3 damage from a single attack.	내 약한 포켓몬은 한 번의 공격에서 데미지를 최대 3까지만 받습니다.
+trainer_ability.poke_fan.2	trainer_ability_name	new		Loyalty Card	단골 카드
+trainer_ability.poke_fan.2.text	trainer_ability_text	new		When crafting a Battle Item, you may gain another Battle Item for free.	배틀 아이템을 만들 때, 배틀 아이템 하나를 무료로 더 얻을 수 있습니다.
+trainer_ability.poke_maniac.1	trainer_ability_name	new		Pokémon Disguise	포켓몬 변장
+trainer_ability.poke_maniac.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When attacking, you may use the signature move of the opposing Pokémon against them.	공격할 때, 상대 포켓몬의 고유 기술을 그 포켓몬에게 쓸 수 있습니다.
+trainer_ability.poke_maniac.2	trainer_ability_name	new		Uncanny Substitute	기묘한 대타출동
+trainer_ability.poke_maniac.2.text	trainer_ability_text	new		When unlocked, you receive the Substitute held item. The Pokémon with the Substitute held item attached may be switched in from your party just before any damage is applied from an opposing attack.	해금될 때 지닌물건 대타출동을 받습니다. 대타출동을 지닌 포켓몬은 상대 공격의 데미지가 들어가기 바로 전에 파티에서 교체해 나올 수 있습니다.
+trainer_ability.pokemon_breeder.1	trainer_ability_name	new		Egg Move	교배 기술
+trainer_ability.pokemon_breeder.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When evolving a Weak Pokémon, you may instead teach the move of its evolution to the pre-evolution as an Egg Move. This Pokémon can no longer evolve.	약한 포켓몬을 진화시킬 때, 진화하는 대신 진화형의 기술을 교배 기술로 진화 전 포켓몬에게 가르칠 수 있습니다. 그 포켓몬은 더는 진화할 수 없습니다.
+trainer_ability.pokemon_breeder.2	trainer_ability_name	new		Almost Perfect IVs	거의 완벽한 개체값
+trainer_ability.pokemon_breeder.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Pokémon that were taught an Egg Move gain +5 health and +5 initiative.	교배 기술을 배운 내 포켓몬은 체력 +5, 스피드 +5.
+trainer_ability.pokemon_ranger.1	trainer_ability_name	new		Pokémon Ranch	포켓몬 목장
+trainer_ability.pokemon_ranger.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	You may use any locked party slots to store your Pokémon but these Pokémon cannot be used in battle. In the Ultra Burst campaign, you may store up to 2 Distortion Breach cards in each empty slot.	잠긴 파티 칸에 포켓몬을 맡겨 둘 수 있지만, 그 포켓몬은 배틀에 나갈 수 없습니다. 울트라 버스트 캠페인에서는 빈 파티 칸마다 왜곡 균열 카드를 2장까지 넣어 둘 수 있습니다.
+trainer_ability.pokemon_ranger.2	trainer_ability_name	new		Trusty Companions	든든한 동료
+trainer_ability.pokemon_ranger.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Moderate Pokémon gain +1 health and +1 initiative for each locked party slot that you unlock. In the Ultra Burst campaign, you get the maximum of +3 health and +3 initiative immediately.	잠긴 파티 칸을 하나 열 때마다 내 적당한 포켓몬은 체력 +1, 스피드 +1. 울트라 버스트 캠페인에서는 최대치인 체력 +3, 스피드 +3을 바로 얻습니다.
+trainer_ability.psychic.1	trainer_ability_name	new		Telekinetic Reach	염력의 손길
+trainer_ability.psychic.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may interact with something from up to 2 tiles away.	한 턴에 한 번, 2칸 안의 칸에서 할 일을 그 칸에 가지 않고 할 수 있습니다.
+trainer_ability.psychic.2	trainer_ability_name	new		Subtle Manipulation	은밀한 조작
+trainer_ability.psychic.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you attack with a Psychic-type or Ghost-type move, you may change the result of 1 dice rolled to any other value.	에스퍼 타입이나 고스트 타입 기술로 공격할 때, 굴린 주사위 1개의 눈을 원하는 다른 눈으로 바꿀 수 있습니다.
+trainer_ability.roller_skater.1	trainer_ability_name	new		Roller Skates	롤러스케이트
+trainer_ability.roller_skater.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may move up to 2 Plains tiles in a row for free. Additionally, non-Legendary wild Pokémon can now only flee after defeating two of your Pokémon.	한 턴에 한 번, 평원 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다. 또 전설이 아닌 야생 포켓몬은 내 포켓몬을 2마리 쓰러뜨려야 도망칠 수 있습니다.
+trainer_ability.roller_skater.2	trainer_ability_name	new		Protective Gear	보호 장구
+trainer_ability.roller_skater.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Pokémon can at most take 6 damage from a single attack.	내 포켓몬은 한 번의 공격에서 데미지를 최대 6까지만 받습니다.
+trainer_ability.ruin_maniac.1	trainer_ability_name	new		Artifact Hunter	유물 사냥꾼
+trainer_ability.ruin_maniac.1.text	trainer_ability_text	new		Once per turn, you may reveal 1 Special Hidden Spot anywhere on the map. If it is an Artifact, you may instantly move to it and attach it to a Pokémon in your party.	한 턴에 한 번, 보드 어디에 있든 특별한 숨겨진 장소 1개를 공개할 수 있습니다. 그것이 유물이면 곧바로 그 칸으로 가서 내 파티의 포켓몬에게 지니게 할 수 있습니다.
+trainer_ability.ruin_maniac.2	trainer_ability_name	new		Artifact Expert	유물 전문가
+trainer_ability.ruin_maniac.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Artifacts gain +1 attack strength to their bonuses and cannot be taken by other trainers.	내 유물은 위력 보너스가 1씩 더 늘고, 다른 트레이너에게 빼앗기지 않습니다.
+trainer_ability.scientist.1	trainer_ability_name	new		Field Observation	야외 관찰
+trainer_ability.scientist.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, search at an Apricorn Tree, Apricorn Reef or Distortion Gate without starting a battle. You may now directly teach all the moves searched to any Pokémon in your party that can learn them.	한 턴에 한 번, 규토리 나무 · 규토리 산호 · 왜곡 게이트에서 배틀을 시작하지 않고 찾아볼 수 있습니다. 그때 나온 기술은 모두 내 파티에서 배울 수 있는 포켓몬에게 바로 가르칠 수 있습니다.
+trainer_ability.scientist.2	trainer_ability_name	new		Weakness Analysis	약점 분석
+trainer_ability.scientist.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When attacking, your damage from positive type effectiveness is increased by 1.	공격할 때, 유리한 타입 상성으로 더해지는 데미지가 1 늘어납니다.
+trainer_ability.scuba_diver.1	trainer_ability_name	new		Sunken Treasure	가라앉은 보물
+trainer_ability.scuba_diver.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn whilst on an Ocean tile, shuffle the Hidden Spot discard pile and then draw the top Hidden Spot. Place the drawn Hidden Spot on the tile you are on, you may then interact with it as usual.	한 턴에 한 번, 바다 칸에 있을 때 버린 숨겨진 장소 더미를 섞어 1장을 뽑아 내 칸에 놓습니다. 그 뒤 평소처럼 열지 고를 수 있습니다.
+trainer_ability.scuba_diver.2	trainer_ability_name	new		Scuba Dive	스쿠버 다이빙
+trainer_ability.scuba_diver.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	After you attack with a Water-type move, the user may switch out and then heal all status effects.	물 타입 기술로 공격한 뒤, 사용자는 교체해 물러난 다음 상태 이상을 모두 회복할 수 있습니다.
+trainer_ability.sky_trainer.1	trainer_ability_name	new		Wing Suit	윙슈트
+trainer_ability.sky_trainer.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	You may move to adjacent tiles that are 2 or more elevations lower than your current tile. After doing so, you may move up to 4 additional tiles in a row so long as your elevation does not increase.	지금 칸보다 높이가 2 이상 낮은 이웃 칸으로 갈 수 있습니다. 그렇게 내려간 뒤에는 높이가 오르지 않는 한 연달아 4칸까지 더 갈 수 있습니다.
+trainer_ability.sky_trainer.2	trainer_ability_name	new		Air Superiority	제공권
+trainer_ability.sky_trainer.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Your Flying-type Pokémon gain +1 attack strength to all their moves so long as they are not against another Flying-type Pokémon.	내 비행 타입 포켓몬은 비행 타입이 아닌 포켓몬과 싸울 때 모든 기술의 위력 +1.
+trainer_ability.swimmer.1	trainer_ability_name	new		Swift Swim	쓱쓱
+trainer_ability.swimmer.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may move up to 2 Ocean tiles in a row for free. Additionally, your Water-type Pokémon gain +1 initiative.	한 턴에 한 번, 바다 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다. 또 내 물 타입 포켓몬은 스피드 +1.
+trainer_ability.swimmer.2	trainer_ability_name	new		Butterfly Technique	접영
+trainer_ability.swimmer.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When you attack with a Water-type move, you may change its type to either Bug-type or Flying-type.	물 타입 기술로 공격할 때, 그 기술의 타입을 벌레 타입이나 비행 타입으로 바꿀 수 있습니다.
+trainer_ability.team_aqua.1	trainer_ability_name	new		Submarine Dive	잠수함 잠항
+trainer_ability.team_aqua.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	If you are standing on an Ocean tile at the end of your turn, you may instantly move to any other Ocean tile.	내 턴이 끝날 때 바다 칸에 서 있으면, 곧바로 다른 바다 칸 어디로든 옮겨 갈 수 있습니다.
+trainer_ability.team_aqua.2	trainer_ability_name	new		Primordial Sea	시작의바다
+trainer_ability.team_aqua.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During your battles, all Water-type moves gain +1 attack strength and all Water-type Pokémon take 1 less damage when attacked.	내 배틀 동안 모든 물 타입 기술은 위력 +1. 물 타입 포켓몬은 모두 공격받을 때 데미지를 1 덜 받습니다.
+trainer_ability.team_magma.1	trainer_ability_name	new		Magma Tunnels	마그마 터널
+trainer_ability.team_magma.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	If you are standing on a Mountain tile at the end of your turn, you may instantly move to any other Mountain tile.	내 턴이 끝날 때 산 칸에 서 있으면, 곧바로 다른 산 칸 어디로든 옮겨 갈 수 있습니다.
+trainer_ability.team_magma.2	trainer_ability_name	new		Desolate Land	끝의대지
+trainer_ability.team_magma.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During your battles, all Fire-type moves gain +1 attack strength and all Fire-type Pokémon take 1 less damage when attacked.	내 배틀 동안 모든 불꽃 타입 기술은 위력 +1. 불꽃 타입 포켓몬은 모두 공격받을 때 데미지를 1 덜 받습니다.
+trainer_ability.team_rocket.1	trainer_ability_name	new		Pokémon Thief	포켓몬 도둑
+trainer_ability.team_rocket.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	During a battle with another trainer, you can attempt to capture their Pokémon but with -2 to your capture rolls. The captured Pokémon keeps everything it currently has attached.	다른 트레이너와 배틀할 때 그 트레이너의 포켓몬을 포획해 볼 수 있지만, 포획 굴림에 −2가 붙습니다. 잡힌 포켓몬은 지금 붙어 있는 것을 모두 그대로 가지고 옵니다.
+trainer_ability.team_rocket.2	trainer_ability_name	new		Blasting Off	로켓 발사
+trainer_ability.team_rocket.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When one of your Pokémon faints, deal 2 damage to the opposing Pokémon. If you are out of usable Pokémon, you may travel to any tile on the map and are automatically fully restored at the start of your next turn.	내 포켓몬이 기절하면 상대 포켓몬에게 데미지를 2 줍니다. 쓸 수 있는 포켓몬이 없게 되면 보드의 원하는 칸으로 갈 수 있고, 다음 내 턴이 시작될 때 저절로 모두 회복합니다.
+trainer_ability.tourist.1	trainer_ability_name	new		Landmark Tour	랜드마크 투어
+trainer_ability.tourist.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, place the Landmark Tour sheet in your hand. Once at each Artifact Legendary Location, stamp it on your Landmark Tour sheet to search for the Legendary Pokémon there and make a clone of its card. These cards become your Legendary Snaps and are kept next to your trainer area.	해금될 때 랜드마크 투어 시트를 받습니다. 유물이 필요한 전설 장소마다 한 번, 시트에 도장을 찍고 그곳의 전설 포켓몬을 찾아 그 카드를 복사합니다. 복사한 카드는 내 기념사진이 됩니다.
+trainer_ability.tourist.2	trainer_ability_name	new		Holiday Album	여행 앨범
+trainer_ability.tourist.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	You may teach the Legendary Snaps you have collected as moves to any Pokémon in your party that can learn them. Additionally, if you complete your Landmark Tour sheet, gain 30 Journey Points.	모은 기념사진을 배울 수 있는 내 파티의 포켓몬에게 기술로 가르칠 수 있습니다. 또 랜드마크 투어 시트를 다 채우면 여행 점수 30점을 얻습니다.
+trainer_ability.triathlete.1	trainer_ability_name	new		Swim Bike Run	트라이애슬론
+trainer_ability.triathlete.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Once per turn, you may move up to 2 non-Mountain tiles in a row for free.	한 턴에 한 번, 산이 아닌 칸을 연달아 2칸까지 이동력 소모 없이 갈 수 있습니다.
+trainer_ability.triathlete.2	trainer_ability_name	new		Triple Threat	삼중 위협
+trainer_ability.triathlete.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When your Pokémon knows moves of 3 different types, you may change the type of your attack to any of those 3 types. Works for Typeless moves too.	내 포켓몬이 서로 다른 3가지 타입의 기술을 알고 있으면, 공격 타입을 그 3가지 중 하나로 바꿀 수 있습니다. 타입 없음 기술도 한 타입으로 칩니다.
+trainer_ability.undivided_acolyte.1	trainer_ability_name	new		Eternal Devotion	영원의 신앙
+trainer_ability.undivided_acolyte.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When unlocked, replace your Follower token with the Follower of Arceus token for the rest of the game. A Follower of Arceus is counted as a Follower of all three Gods of Sinnoh at the same time.	해금될 때 남은 게임 내내 내 추종자 토큰을 아르세우스의 추종자 토큰으로 바꿉니다. 아르세우스의 추종자는 신오의 세 신 모두의 추종자로 동시에 칩니다.
+trainer_ability.undivided_acolyte.2	trainer_ability_name	new		Judgement of Arceus	아르세우스의 심판
+trainer_ability.undivided_acolyte.2.text	trainer_ability_text	new		After attacking, the opposing Pokémon faints if they have 2 or less health remaining.	공격한 뒤, 상대 포켓몬의 남은 체력이 2 이하이면 그 포켓몬은 기절합니다.
+trainer_ability.veteran.1	trainer_ability_name	new		Wilderness Expert	황야 전문가
+trainer_ability.veteran.1.text	trainer_ability_text	new		When you find an Apricorn Stash, gain 2 extra Apricorns of the same type and move 1 additional tile this turn.	규토리 더미를 찾으면 같은 색 규토리를 2개 더 얻고, 이번 턴에 1칸 더 이동할 수 있습니다.
+trainer_ability.veteran.2	trainer_ability_name	new		Gale Force	질풍의 힘
+trainer_ability.veteran.2.text	trainer_ability_text	new		When you attack with an Ice-type or Dragon-type move, you may add up to 2 status symbols to roll.	얼음 타입이나 드래곤 타입 기술로 공격할 때, 굴림에 상태 이상 심볼을 2개까지 더할 수 있습니다.
+trainer_ability.worker.1	trainer_ability_name	new		Civil Engineer	토목 기사
+trainer_ability.worker.1.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	Costs 2 Journey Points: You may build Roads on any non-Ocean tiles you move onto this turn. All trainers can move through any number of interconnected Roads for 1 tile move. Roads are built by drawing them with the Pen tool.	여행 점수 2점 소모: 이번 턴에 밟은 칸과 밟을 칸 가운데 바다가 아닌 칸마다 도로를 놓을 수 있습니다. 모든 트레이너는 서로 이어진 도로를 몇 칸이든 이동력 1로 지나갈 수 있습니다.
+trainer_ability.worker.2	trainer_ability_name	new		Road Works	도로 공사
+trainer_ability.worker.2.text	trainer_ability_text	new	이미 우리 번역(strings-ko.json)	When your Steel-type Pokémon are switched in, increase the battle fatigue of the opposing Pokémon by 3 and prevent them from switching out or fleeing the battle.	내 강철 타입 포켓몬이 교체해 나오면, 상대 포켓몬의 전투 피로가 3 늘고 그 포켓몬은 교체하거나 배틀에서 도망칠 수 없습니다.
+trainer_ability.youngster.1	trainer_ability_name	new		Childhood Friends	소꿉친구
+trainer_ability.youngster.1.text	trainer_ability_text	new		Your Weak Pokémon gain +1 health and +1 initiative.	내 약한 포켓몬은 체력 +1, 스피드 +1.
+trainer_ability.youngster.2	trainer_ability_name	new		Career Options	진로 선택
+trainer_ability.youngster.2.text	trainer_ability_text	new		When unlocked, draw 5 trainer cards from the deck and swap this card with one of the drawn cards. Triggers the "when unlocked" effects on the new trainer card.	해금될 때 덱에서 트레이너 카드 5장을 뽑아, 이 카드를 뽑은 카드 1장과 바꿉니다. 새 트레이너 카드의 “해금될 때” 효과가 발동합니다.
+village.nesburgh	fixture_name	new	공식 이름이 있으면 그것	Nesburgh Village	네스버그마을
+village.sinnome	fixture_name	new	공식 이름이 있으면 그것	Sinnome Village	시노메마을
+village.stark	fixture_name	new	공식 이름이 있으면 그것	Stark Village	하드마을
+legendary_site.westbreeze_ruins	fixture_name	new	공식 이름이 있으면 그것	Westbreeze Ruins	서풍 유적
+legendary_site.lake_verity_cavern	fixture_name	new	공식 이름이 있으면 그것	Lake Verity Cavern	진실호수의 공동
+legendary_site.temple_of_the_sea	fixture_name	new	공식 이름이 있으면 그것	The Temple of the Sea	바다의 신전
+legendary_site.grand_chateau	fixture_name	new	공식 이름이 있으면 그것	The Grand Chateau	그랜드 샤토
+legendary_site.valley_ruins	fixture_name	new	공식 이름이 있으면 그것	Valley Ruins	계곡 유적
+legendary_site.temple_of_sinnoh	fixture_name	new	공식 이름이 있으면 그것	The Temple of Sinnoh	신오신전
+legendary_site.lake_acuity_cavern	fixture_name	new	공식 이름이 있으면 그것	Lake Acuity Cavern	예지호수의 공동
+legendary_site.hallowed_tower	fixture_name	new	공식 이름이 있으면 그것	The Hallowed Tower	신령탑
+legendary_site.magma_chamber	fixture_name	new	공식 이름이 있으면 그것	The Magma Chamber	마그마의 방
+legendary_site.lake_valor_cavern	fixture_name	new	공식 이름이 있으면 그것	Lake Valor Cavern	입지호수의 공동
+legendary_site.firelilly_ruins	fixture_name	new	공식 이름이 있으면 그것	Firelilly Ruins	파이어릴리 유적
+legendary_site.garden_of_gratitude	fixture_name	new	공식 이름이 있으면 그것	The Garden of Gratitude	감사의 화원
+legendary_shrine.frostsong_shrine	fixture_name	new	공식 이름이 있으면 그것	Frostsong Shrine	서리노래 사당
+legendary_shrine.moonglade_shrine	fixture_name	new	공식 이름이 있으면 그것	Moonglade Shrine	달빛공터 사당
+legendary_shrine.thundersong_shrine	fixture_name	new	공식 이름이 있으면 그것	Thundersong Shrine	천둥노래 사당
+legendary_shrine.origin_shrine	fixture_name	new	공식 이름이 있으면 그것	Origin Shrine	시작의 사당
+legendary_shrine.colossus_shrine	fixture_name	new	공식 이름이 있으면 그것	Colossus Shrine	거상 사당
+legendary_shrine.timeless_shrine	fixture_name	new	공식 이름이 있으면 그것	Timeless Shrine	시간의 사당
+legendary_shrine.firesong_shrine	fixture_name	new	공식 이름이 있으면 그것	Firesong Shrine	불꽃노래 사당
+gate.westbreeze_main	fixture_name	new	공식 이름이 있으면 그것	Westbreeze Gate	서풍 게이트
+gate.snowdrift_main	fixture_name	new	공식 이름이 있으면 그것	Snowdrift Gate	눈더미 게이트
+gate.deepmarsh_main	fixture_name	new	공식 이름이 있으면 그것	Deepmarsh Gate	깊은 늪 게이트
+gate.lilly_main	fixture_name	new	공식 이름이 있으면 그것	Lilly Gate	릴리 게이트
+gate.westbreeze_distortion	fixture_name	new	공식 이름이 있으면 그것	Westbreeze Gate	서풍 게이트
+gate.snowdrift_distortion	fixture_name	new	공식 이름이 있으면 그것	Snowdrift Gate	눈더미 게이트
+gate.deepmarsh_distortion	fixture_name	new	공식 이름이 있으면 그것	Deepmarsh Gate	깊은 늪 게이트
+gate.lilly_distortion	fixture_name	new	공식 이름이 있으면 그것	Lilly Gate	릴리 게이트
+hidden_spot.black_apricorn_stash	item_name	new	공식 이름이 있으면 그것	Black Apricorn Stash	검정 규토리 더미
+hidden_spot.blue_apricorn_stash	item_name	new	공식 이름이 있으면 그것	Blue Apricorn Stash	파랑 규토리 더미
+hidden_spot.campsite	item_name	new	공식 이름이 있으면 그것	Campsite	야영지
+hidden_spot.fallen_star	item_name	new	공식 이름이 있으면 그것	Fallen Star	떨어진 별
+hidden_spot.green_apricorn_stash	item_name	new	공식 이름이 있으면 그것	Green Apricorn Stash	초록 규토리 더미
+hidden_spot.pink_apricorn_stash	item_name	new	공식 이름이 있으면 그것	Pink Apricorn Stash	분홍 규토리 더미
+hidden_spot.red_apricorn_stash	item_name	new	공식 이름이 있으면 그것	Red Apricorn Stash	빨강 규토리 더미
+hidden_spot.white_apricorn_stash	item_name	new	공식 이름이 있으면 그것	White Apricorn Stash	하양 규토리 더미
+hidden_spot.yellow_apricorn_stash	item_name	new	공식 이름이 있으면 그것	Yellow Apricorn Stash	노랑 규토리 더미
+item.alpha_pokemon	item_name	new	공식 이름이 있으면 그것	Alpha Pokémon	우두머리 포켓몬
+item.gracidea_flower	item_name	new	공식 이름이 있으면 그것	Gracidea Flower	그라시데아꽃
+item.icesteel_core	item_name	new	공식 이름이 있으면 그것	Icesteel Core	얼음강철 코어
+item.rockice_core	item_name	new	공식 이름이 있으면 그것	Rockice Core	바위얼음 코어
+item.seafarer_egg	item_name	new	공식 이름이 있으면 그것	Seafarer Egg	항해자의 알
+item.secret_key	item_name	new	공식 이름이 있으면 그것	Secret Key	비밀의열쇠
+item.steelrock_core	item_name	new	공식 이름이 있으면 그것	Steelrock Core	강철바위 코어
+item.adamant_artifact	item_name	new	공식 이름이 있으면 그것	Adamant Artifact	큰금강옥
+item.griseous_artifact	item_name	new	공식 이름이 있으면 그것	Griseous Artifact	백금옥
+item.lustrous_artifact	item_name	new	공식 이름이 있으면 그것	Lustrous Artifact	큰백옥
+item.blast_crystal	item_name	new	공식 이름이 있으면 그것	Blast Crystal	폭발 수정
+item.choice_band	item_name	new	공식 이름이 있으면 그것	Choice Band	구애머리띠
+item.eviolite	item_name	new	공식 이름이 있으면 그것	Eviolite	진화의휘석
+item.heart_of_sinnoh	item_name	new	공식 이름이 있으면 그것	Heart of Sinnoh	신오의 심장
+item.lucky_egg	item_name	new	공식 이름이 있으면 그것	Lucky Egg	행복의알
+item.scroll_of_nobility	item_name	new	공식 이름이 있으면 그것	Scroll of Nobility	수호신의 두루마리
+item.star_shield	item_name	new	공식 이름이 있으면 그것	Star Shield	별의 방패
+item.swiftness_sash	item_name	new	공식 이름이 있으면 그것	Swiftness Sash	신속의 띠
+item.greater_ball	item_name	new	공식 이름이 있으면 그것	Greater Ball	수퍼볼
+item.keystone_ball	item_name	new	공식 이름이 있으면 그것	Keystone Ball	키스톤볼
+item.ultimate_ball	item_name	new	공식 이름이 있으면 그것	Ultimate Ball	하이퍼볼
+item.seafarer_egg.text	item_text	new		Increase the attack strength of Psychic and Water type moves by 1. Lets you encounter Manaphy at the Temple of the Sea.	에스퍼 타입 기술과 물 타입 기술의 위력 +1. 바다의 신전에서 마나피와 조우할 수 있습니다.
+item.odd_keystone.text	item_text	new		Increase the attack strength of Dark and Ghost type moves by 1. Lets you encounter Spiritomb at the Hallowed Tower.	악 타입 기술과 고스트 타입 기술의 위력 +1. 신령탑에서 화강돌과 조우할 수 있습니다.
+item.magma_stone.text	item_text	new		Increase the attack strength of Fire and Ground type moves by 1. Lets you encounter Heatran at the Magma Chamber.	불꽃 타입 기술과 땅 타입 기술의 위력 +1. 마그마의 방에서 히드런과 조우할 수 있습니다.
+item.secret_key.text	item_text	new		Increase the attack strength of Ghost and Electric type moves by 1. Lets you encounter Rotom at the Grand Chateau.	고스트 타입 기술과 전기 타입 기술의 위력 +1. 그랜드 샤토에서 로토무와 조우할 수 있습니다.
+item.gracidea_flower.text	item_text	new		Increase the attack strength of Grass and Flying type moves by 1. Lets you encounter Shaymin at the Garden of Gratitude.	풀 타입 기술과 비행 타입 기술의 위력 +1. 감사의 화원에서 쉐이미와 조우할 수 있습니다.
+item.rockice_core.text	item_text	new		Increases the attack strength of Rock and Ice type moves by 1. Lets you encounter Regirock at Valley Ruins and Regice at Westbreeze Ruins.	바위 타입 기술과 얼음 타입 기술의 위력 +1. 계곡 유적에서 레지락과, 서풍 유적에서 레지아이스와 조우할 수 있습니다.
+item.icesteel_core.text	item_text	new		Increases the attack strength of Ice and Steel type moves by 1. Lets you encounter Regice at Westbreeze Ruins and Registeel at Firelilly Ruins.	얼음 타입 기술과 강철 타입 기술의 위력 +1. 서풍 유적에서 레지아이스와, 파이어릴리 유적에서 레지스틸과 조우할 수 있습니다.
+item.steelrock_core.text	item_text	new		Increases the attack strength of Steel and Rock type moves by 1. Lets you encounter Registeel at Firelilly Ruins and Regirock at Valley Ruins.	강철 타입 기술과 바위 타입 기술의 위력 +1. 파이어릴리 유적에서 레지스틸과, 계곡 유적에서 레지락과 조우할 수 있습니다.
+item.adamant_artifact.text	item_text	new		Prevents the effects of Celestial Aura when Dialga is encountered.	디아루가와 조우하면 천상의 오라가 걸리지 않습니다.
+item.lustrous_artifact.text	item_text	new		Prevents the effects of Celestial Aura when Palkia is encountered.	펄기아와 조우하면 천상의 오라가 걸리지 않습니다.
+item.griseous_artifact.text	item_text	new		Prevents the effects of Celestial Aura when Giratina is encountered.	기라티나와 조우하면 천상의 오라가 걸리지 않습니다.
+item.heart_of_sinnoh.text	item_text	new		The restored Heart of Sinnoh. This held item is required to battle Cyrus.	복구된 신오의 심장입니다. 이 지닌물건이 있어야 태홍과 배틀할 수 있습니다.
+item.scroll_of_nobility.text	item_text	new		Allows any fully evolved Starter Pokémon to use its Noble Form (State 2) when held.	끝까지 진화한 스타팅 포켓몬이 지니면 수호신 폼(상태 2)으로 폼체인지할 수 있습니다.
+item.alpha_pokemon.text	item_text	new		Increases the health of the user by 4 and reclassifies it as a Legendary Pokémon (Alpha Strike · Beast Boost · capture on 6+ · 4 Journey Points). It is bound to the Pokémon and cannot be unequipped.	사용자의 체력이 4 늘고, 전설 포켓몬으로 분류됩니다(알파 스트라이크 · 비스트 부스트 · 6 이상이면 포획 · 여행 점수 4). 이 지닌물건은 그 포켓몬에게서 뗄 수 없습니다.
+item.poke_ball.text	item_text	new		Roll 3 dice when rolling to capture.	포획 굴림에서 주사위 3개를 굴립니다.
+item.greater_ball.text	item_text	new		Roll 4 dice when rolling to capture.	포획 굴림에서 주사위 4개를 굴립니다.
+item.ultimate_ball.text	item_text	new		Roll 5 dice when rolling to capture.	포획 굴림에서 주사위 5개를 굴립니다.
+item.keystone_ball.text	item_text	new		Roll 6 dice when rolling to capture.	포획 굴림에서 주사위 6개를 굴립니다.
+item.restoring_stew	item_name	new	공식 이름이 있으면 그것	Restoring Stew	회복 스튜
+item.restoring_stew.text	item_text	new		Fully restore your entire party.	내 파티의 포켓몬을 모두 완전히 회복합니다.
+item.alluring_stew	item_name	new	공식 이름이 있으면 그것	Alluring Stew	매혹적인 스튜
+item.alluring_stew.text	item_text	new		Replace any 1 status symbol with 1 regular hit once during your next wild encounter.	다음 야생 배틀에서 한 번, 아무 상태 이상 심볼 1개를 일반 타격 1개로 바꿉니다.
+item.zesty_stew	item_name	new	공식 이름이 있으면 그것	Zesty Stew	자극적인 스튜
+item.zesty_stew.text	item_text	new		Move 3 additional tiles this turn whilst preventing Alpha Pokémon from battling you.	이번 턴에는 3칸 더 이동할 수 있고, 우두머리 포켓몬이 배틀을 걸어오지 않습니다.
+item.infused_stew	item_name	new	공식 이름이 있으면 그것	Infused Stew	우러난 스튜
+item.infused_stew.text	item_text	new		Discard only half of the Journey Points needed to evolve 1 Pokémon this turn, rounded down.	이번 턴에 포켓몬 1마리를 진화시킬 때 필요한 여행 점수의 절반(내림)만 소모합니다.
+item.blast_crystal.text	item_text	new		Only on the first attack against the user, deal 1 damage to the attacker and prevent them from switching out this turn.	사용자가 처음 공격받을 때만, 공격한 포켓몬에게 데미지를 1 주고 그 포켓몬이 이번 턴에 교체하지 못하게 합니다.
+item.star_shield.text	item_text	new		Only on the first attack against the user, the user takes 2 less damage and is immune to any status effects inflicted this turn.	사용자가 처음 공격받을 때만, 그 공격의 데미지 −2. 또 이번 턴에는 어떤 상태 이상에도 걸리지 않습니다.
+item.lucky_egg.text	item_text	new		When the user attacks, replace 2 status symbols with 1 critical hit if possible.	사용자의 공격에서 상태 이상 심볼이 2개 있으면 급소 1개로 바꿉니다.
+item.eviolite.text	item_text	new		When the user is attacked, remove 2 regular hits. Only works on Weak/Moderate Pokémon or Pokémon that are not fully evolved.	사용자가 공격받으면 일반 타격을 2개 없앱니다. 약한 · 적당한 포켓몬이나 아직 끝까지 진화하지 않은 포켓몬에게만 효과가 있습니다.
+item.swiftness_sash.text	item_text	new		Increase the initiative of the user by 2 but decrease the attack strength of your moves by 1. Minimum 1 attack strength.	사용자의 스피드 +2. 하지만 기술의 위력 −1. 위력은 최소 1입니다.
+item.choice_band.text	item_text	new		Increase the attack strength of a move by 1, but the user may only use this move until switched out.	기술 하나의 위력 +1. 하지만 교체될 때까지 사용자는 그 기술만 쓸 수 있습니다.
+stamp.1	stamp	new		Journey Stamp 1	여행 스탬프 1
+stamp.1.text	stamp	new		You fail to capture a wild Pokémon 2 turns in a row during a battle.	배틀 중 2차례 연속으로 야생 포켓몬 포획에 실패합니다.
+stamp.2	stamp	new		Journey Stamp 2	여행 스탬프 2
+stamp.2.text	stamp	new		You win a battle against another trainer or an Ultra Beast.	다른 트레이너나 울트라 비스트와의 배틀에서 이깁니다.
+stamp.3	stamp	new		Journey Stamp 3	여행 스탬프 3
+stamp.3.text	stamp	new		You have at least 1 of every Apricorn type in your bag.	가방에 규토리가 종류마다 1개 이상 있습니다.
+stamp.4	stamp	new		Journey Stamp 4	여행 스탬프 4
+stamp.4.text	stamp	new		You have captured a Legendary Pokémon.	전설 포켓몬을 포획했습니다.
+stamp.5	stamp	new		Journey Stamp 5	여행 스탬프 5
+stamp.5.text	stamp	new		You have 3 or more held items equipped in your party.	내 파티에 지닌물건이 3개 이상 있습니다.
+stamp.6	stamp	new		Journey Stamp 6	여행 스탬프 6
+stamp.6.text	stamp	new		You have been victorious at a Swarm Battle.	무리 배틀에서 승리했습니다.
+stamp.7	stamp	new		Journey Stamp 7	여행 스탬프 7
+stamp.7.text	stamp	new		You have 3 different Change of Fate cards in your hand.	손에 서로 다른 운명의 변화 카드가 3장 있습니다.
+item.apex_dragon	item_name	new	공식 이름이 있으면 그것	Apex Dragon	정점의 드래곤
+item.apex_dragon.text	item_text	new		Requires Apex Strength: The user gains +6 health, +2 initiative and +1 attack strength to its moves.	정점의 힘이 있을 때: 사용자의 체력 +6 · 스피드 +2 · 기술의 위력 +1.
+item.substitute.text	item_text	new		The user may be switched in from your party just before any damage is applied from an opposing attack.	상대 공격의 데미지가 들어가기 직전에 사용자가 파티에서 교체해 나올 수 있습니다.
+item.weather_wheel	item_name	new	공식 이름이 있으면 그것	Weather Wheel	날씨 휠
+item.weather_wheel.text	item_text	new		All moves that match the Weather type gain +2 attack strength.	날씨와 타입이 같은 기술은 모두 위력 +2.
+item.weather_wheel_base	item_name	new	공식 이름이 있으면 그것	Weather Wheel Base	날씨 휠 받침
+item.weather_wheel_base.text	item_text	new		Base of the Weather Wheel: Sun (Fire), Snow (Ice), Rain (Water), Sandstorm (Rock).	날씨 휠의 받침입니다. 쾌청(불꽃) · 눈(얼음) · 비(물) · 모래바람(바위).
+item.amplifier	item_name	new	공식 이름이 있으면 그것	Amplifier	앰프 주사위
+item.amplifier.text	item_text	new		A dice with faces 0, 1, 2, 3, 4 and 5.	면이 0 · 1 · 2 · 3 · 4 · 5인 주사위입니다.
+item.catch_size_dice	item_name	new	공식 이름이 있으면 그것	Catch Size Dice	월척 주사위
+item.catch_size_dice.text	item_text	new		Requires Catch of the Day: The user gains health equal to their Catch Size.	오늘의 월척이 있을 때: 사용자의 체력이 월척 크기만큼 늘어납니다.
+item.health_dice	item_name	new	공식 이름이 있으면 그것	Health Dice	체력 주사위
+item.health_dice.text	item_text	new		A dice with faces -2, -1, 1, 2, 3 and 4 for tracking health bonuses.	면이 −2 · −1 · 1 · 2 · 3 · 4인 주사위로, 체력 보너스를 기록합니다.
+item.initiative_dice	item_name	new	공식 이름이 있으면 그것	Initiative Dice	스피드 주사위
+item.initiative_dice.text	item_text	new		A dice with faces -2, -1, 1, 2, 3 and 4 for tracking initiative bonuses.	면이 −2 · −1 · 1 · 2 · 3 · 4인 주사위로, 스피드 보너스를 기록합니다.
+item.cherish_ball	item_name	new	공식 이름이 있으면 그것	Cherish Ball	프레셔스볼
+item.cherish_ball.text	item_text	new		When the Cherish Ball is used to capture a wild Pokémon, it automatically captures that Pokémon. Additionally, if you release the captured Pokémon, you get the Cherish Ball back. Flip over when the Pokémon faints.	프레셔스볼로 야생 포켓몬을 포획하려 하면 그 포켓몬은 무조건 포획됩니다. 또 그렇게 잡은 포켓몬을 놓아주면 프레셔스볼이 돌아옵니다. 그 포켓몬이 기절하면 뒤집습니다.
+item.landmark_tour	item_name	new	공식 이름이 있으면 그것	Landmark Tour	랜드마크 투어
+item.landmark_tour.text	item_text	new		Once at each Artifact Legendary Location, stamp it on your Landmark Tour sheet to search for the Legendary Pokémon there and make a clone of its card.	유물이 필요한 전설 장소마다 한 번, 랜드마크 투어 시트에 도장을 찍고 그곳의 전설 포켓몬을 찾아 그 카드의 복제본을 만듭니다.
+item.follower_of_arceus	item_name	new	공식 이름이 있으면 그것	Follower of Arceus	아르세우스의 추종자
+item.follower_of_arceus.text	item_text	new		Follower token of Arceus.	아르세우스의 추종자 토큰입니다.
+act.incursion	card_name	new		The Incursion	침입
+act.incursion.text.1	card_text	new		In the future, a pivotal battle for the fate of the world has been lost.	미래에서는 세계의 운명이 걸린 결정적인 배틀에서 패하고 말았습니다.
+act.incursion.text.2	card_text	new		By harnessing the powers of the legendary Pokémon Dialga and Palkia, Team Galactic have travelled to our own time to shatter the Heart of Sinnoh, a primordial jewel that embodies the spirit of the world.	갤럭시단은 전설 포켓몬 디아루가와 펄기아의 힘을 이용해 우리 시대로 건너왔습니다. 세계의 혼이 깃든 태초의 보석, 신오의 심장을 산산조각 내기 위해서입니다.
+act.incursion.text.3	card_text	new		To prevent retribution whilst their plans are finalised, grunts have been dispatched to subdue the villages of the region.	계획이 마무리될 때까지 반격을 막으려고, 갤럭시단은 이 지방의 마을들을 억누를 조무래기들을 보냈습니다.
+act.incursion.text.4	card_text	new		Place one “Team Galactic Grunts” token on the home village of each trainer face-up. You cannot fly to or from a village with this token on. Draw the Act I card.	트레이너마다 고향 마을에 “갤럭시단 조무래기” 토큰을 1개씩 앞면으로 놓습니다. 이 토큰이 있는 마을은 공중날기로 가거나 떠날 수 없습니다. 1막 카드를 뽑습니다.
+act.journey	card_name	new		The Journey	여정
+act.journey.text.1	card_text	new		Members of your village are hesitant to make a stand against Team Galactic. Set out on a journey to catch and train a small team capable of liberating your home.	내 마을 사람들은 갤럭시단에 맞서기를 주저하고 있습니다. 여행을 떠나 포켓몬을 잡고 길러, 고향을 해방할 수 있는 작은 팀을 꾸리십시오.
+act.journey.text.2	card_text	new		As you leave, you grab 3 Red Apricorns to construct some Poké Balls with.	길을 나서며 몬스터볼을 만들 빨강 규토리 3개를 챙깁니다.
+act.journey.text.3	card_text	new		Objective: Defeat the 2 Team Galactic Grunts at your home village.	목표: 내 고향 마을의 갤럭시단 조무래기 2마리를 쓰러뜨립니다.
+act.journey.text.4	card_text	new		Reward: +2 Movement per Turn	보상: 매 턴 이동력 +2
+act.journey.text.5	card_text	new		Once one trainer completes this objective: Draw the Act II card and flip over the tokens at each of the three lakes.	트레이너 한 명이 이 목표를 이루면 2막 카드를 뽑고, 세 호수의 토큰을 모두 뒤집습니다.
+act.shards	card_name	new		The Shards	조각
+act.shards.text.1	card_text	new		The Shards needed to restore the Heart are bestowed by the three mysterious Lake Guardians.	신비로운 호수의 수호신 셋이 심장 복구에 필요한 조각을 내려 줍니다.
+act.shards.text.2	card_text	new		Knowing this, Team Galactic have deployed their commanders to Lake Verity, Lake Acuity and Lake Valor to prevent anyone from collecting these Shards.	이를 알아챈 갤럭시단은 누구도 조각을 모으지 못하도록 진실호수 · 예지호수 · 입지호수에 간부들을 배치했습니다.
+act.shards.text.3	card_text	new		Objective: Defeat the Galactic Commanders at each lake to collect all three Shards.	목표: 호수마다 갤럭시단 간부를 쓰러뜨려 조각 3개를 모두 모읍니다.
+act.shards.text.4	card_text	new		Reward: +1 Party Slot per Shard	보상: 조각 1개마다 파티 칸 +1
+act.shards.text.5	card_text	new		Once one trainer completes this objective: Draw the Act III card and flip over the token at the Temple of Sinnoh.	트레이너 한 명이 이 목표를 이루면 3막 카드를 뽑고, 신오신전의 토큰을 뒤집습니다.
+act.heart	card_name	new		The Heart	심장
+act.heart.text.1	card_text	new		Without the power of the Heart, Arceus falls under the control of Cyrus and the world begins to reshape itself according to the machinations of its new God.	심장의 힘이 없는 아르세우스는 태홍에게 조종당하고, 세계는 새로운 신의 계략대로 모습을 바꾸기 시작합니다.
+act.heart.text.2	card_text	new		Restore the Heart of Sinnoh at the Origin Shrine then proceed to the Temple of Sinnoh to confront Cyrus.	시작의 사당에서 신오의 심장을 복구한 뒤, 신오신전으로 가서 태홍과 맞서십시오.
+act.heart.text.3	card_text	new		Objective: Defeat Cyrus at the Temple of Sinnoh.	목표: 신오신전에서 태홍을 이깁니다.
+act.heart.text.4	card_text	new		Reward: Draw the Ending card	보상: 종막 카드 뽑기
+act.heart.text.5	card_text	new		Once one trainer completes this objective: They draw the Ending card.	트레이너 한 명이 이 목표를 이루면 그 트레이너가 종막 카드를 뽑습니다.
+act.choice	card_name	new		The Choice	선택
+act.choice.text.1	card_text	new		Is it over? Arceus, awaking from its control, looks expectantly at the restored Heart of Sinnoh you hold in your hands.	이제 끝난 걸까요? 조종에서 풀려난 아르세우스가 내가 손에 든 복구된 신오의 심장을 기대에 찬 눈으로 바라봅니다.
+act.choice.text.2	card_text	new		But with this power, surely the world could be changed... for the better? Someone like Cyrus would never be able to rise again... right?	하지만 이 힘이라면 세상을 바꿀 수 있지 않을까요... 더 나은 쪽으로? 태홍 같은 자가 다시는 일어서지 못하게... 그렇죠?
+act.choice.text.3	card_text	new		Hero of Sinnoh: Return the Heart to Arceus.	신오의 영웅: 심장을 아르세우스에게 되돌려 줍니다.
+act.choice.text.4	card_text	new		Traitor of Sinnoh: Claim the Heart of Sinnoh. Challenge and defeat each of your fellow trainers in battle to be crowned as the undisputed strongest trainer.	신오의 배신자: 신오의 심장을 차지합니다. 동료 트레이너 모두에게 배틀을 걸어 이기고, 누구도 반박할 수 없는 최강의 트레이너로 등극합니다.
+home_village.stark	card_name	new		Stark Village	하드마을
+home_village.stark.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.snowpoint.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.sunyshore.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.nesburgh	card_name	new		Nesburgh Village	네스버그마을
+home_village.nesburgh.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.celestic.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.canalave.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.eterna.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.sinnome	card_name	new		Sinnome Village	시노메마을
+home_village.sinnome.text.1	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+home_village.ultra_megalopolis.text.1	card_text	new		Ultra Burst Campaign Only	울트라 버스트 캠페인 전용
+home_village.ultra_megalopolis.text.2	card_text	new		Choose your starter	스타팅 포켓몬을 고르십시오
+shrine_event.fateful_encounter	card_name	new		Fateful Encounter	운명적인 만남
+shrine_event.fateful_encounter.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.fateful_encounter.text.2	card_text	new		Draw 1/2/3 Change of Fate cards.	운명의 변화 카드 1/2/3장을 뽑습니다.
+shrine_event.unexpected_gift	card_name	new		Unexpected Gift	뜻밖의 선물
+shrine_event.unexpected_gift.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.unexpected_gift.text.2	card_text	new		Gain any 1/2/3 Apricorns.	원하는 규토리를 1/2/3개 얻습니다.
+shrine_event.equivalent_exchange	card_name	new		Equivalent Exchange	등가 교환
+shrine_event.equivalent_exchange.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.equivalent_exchange.text.2	card_text	new		You may replace up to a Weak/Moderate/Strong Pokémon in your party with any wild Pokémon of the same encounter tier whilst keeping everything else attached.	내 파티에서 조우 등급이 약한/적당한/강한 이하인 포켓몬 1마리를 같은 조우 등급의 원하는 야생 포켓몬으로 바꿀 수 있습니다. 붙어 있던 것은 모두 새 포켓몬에게 그대로 남습니다.
+shrine_event.ancient_wisdom	card_name	new		Ancient Wisdom	고대의 지혜
+shrine_event.ancient_wisdom.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.ancient_wisdom.text.2	card_text	new		You may learn a move from a discarded Pokémon with encounter tier up to Moderate/Strong/Legendary.	버려진 포켓몬 가운데 조우 등급이 적당한/강한/전설 이하인 포켓몬의 기술을 1개 배울 수 있습니다.
+shrine_event.splendid_banquet	card_name	new		Splendid Banquet	성대한 연회
+shrine_event.splendid_banquet.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.splendid_banquet.text.2	card_text	new		Use 1/2/3 Apricorn Stew effects for free this turn. You cannot choose the same stew effect more than once.	이번 턴에 규토리 스튜 효과 1/2/3개를 무료로 사용합니다. 같은 스튜 효과는 한 번만 고를 수 있습니다.
+shrine_event.hidden_treasure	card_name	new		Hidden Treasure	숨겨진 보물
+shrine_event.hidden_treasure.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.hidden_treasure.text.2	card_text	new		Gain a Greater Ball/Ultimate Ball/Keystone Ball.	수퍼볼/하이퍼볼/키스톤볼 1개를 얻습니다.
+shrine_event.tranquil_moment	card_name	new		Tranquil Moment	고요한 한때
+shrine_event.tranquil_moment.text.1	card_text	new		4+ trainers: Choose another trainer to also get this effect	트레이너 4명 이상: 이 효과를 함께 받을 다른 트레이너를 1명 고릅니다.
+shrine_event.tranquil_moment.text.2	card_text	new		Gain 2/4/6 Journey Points.	여행 점수를 2/4/6 얻습니다.
+shrine_event.song_of_frost	card_name	new		A Song of Frost	서리의 노래
+shrine_event.song_of_frost.text.1	card_text	new		All trainers gain 3 Blue Apricorns. Place the Articuno token on the Frostsong Shrine.	모든 트레이너가 파랑 규토리를 3개씩 얻습니다. 서리노래 사당에 프리져 토큰을 놓습니다.
+shrine_event.song_of_thunder	card_name	new		A Song of Thunder	천둥의 노래
+shrine_event.song_of_thunder.text.1	card_text	new		All trainers gain 3 Yellow Apricorns. Place the Zapdos token on the Thundersong Shrine.	모든 트레이너가 노랑 규토리를 3개씩 얻습니다. 천둥노래 사당에 썬더 토큰을 놓습니다.
+shrine_event.song_of_fire	card_name	new		A Song of Fire	불꽃의 노래
+shrine_event.song_of_fire.text.1	card_text	new		All trainers gain 3 Red Apricorns. Place the Moltres token on the Firesong Shrine.	모든 트레이너가 빨강 규토리를 3개씩 얻습니다. 불꽃노래 사당에 파이어 토큰을 놓습니다.
+shrine_event.visitor_from_afar	card_name	new		A Visitor from Afar	먼 곳에서 온 손님
+shrine_event.visitor_from_afar.text.1	card_text	new		All trainers gain 2 Green Apricorns. Place the Celebi token on the Timeless Shrine.	모든 트레이너가 초록 규토리를 2개씩 얻습니다. 시간의 사당에 세레비 토큰을 놓습니다.
+shrine_event.shadow_emerges	card_name	new		A Shadow Emerges	나타나는 그림자
+shrine_event.shadow_emerges.text.1	card_text	new		All trainers gain 1 Black Apricorn. Place the Darkrai token on the Moonglade Shrine (replaces the Cresselia token).	모든 트레이너가 검정 규토리를 1개씩 얻습니다. 다크라이 토큰을 달빛공터 사당에 놓습니다(크레세리아 토큰을 대신합니다).
+shrine_event.beacon_of_light	card_name	new		A Beacon of Light	빛의 봉화
+shrine_event.beacon_of_light.text.1	card_text	new		All trainers gain 2 Pink Apricorns. Place the Cresselia token on the Moonglade Shrine (replaces the Darkrai token).	모든 트레이너가 분홍 규토리를 2개씩 얻습니다. 크레세리아 토큰을 달빛공터 사당에 놓습니다(다크라이 토큰을 대신합니다).
+shrine_event.giant_awakens	card_name	new		A Giant Awakens	깨어나는 거인
+shrine_event.giant_awakens.text.1	card_text	new		All trainers gain 2 White Apricorns. Place the Regigigas token on the Colossus Shrine.	모든 트레이너가 하양 규토리를 2개씩 얻습니다. 거상 사당에 레지기가스 토큰을 놓습니다.
+shrine_event.celestial_fracture	card_name	new		Celestial Fracture	천상의 균열
+shrine_event.celestial_fracture.text.1	card_text	new		All trainers draw 1 Change of Fate card and may change their Follower token in secret. After revealing, place the God of Sinnoh token with the most Followers on the Origin Shrine (you choose if tied).	모든 트레이너가 운명의 변화 카드를 1장씩 뽑고, 몰래 추종자 토큰을 바꿀 수 있습니다. 공개한 뒤 추종자가 가장 많은 신오의 신 토큰을 시작의 사당에 놓습니다(동점이면 내가 고릅니다).
+change_of_fate.dialga.text.1	card_text	new		Reroll 1	재굴림 1
+change_of_fate.dialga.text.2	card_text	new		Play 3: Reroll Any	3장 사용: 원하는 주사위 재굴림
+change_of_fate.palkia.text.1	card_text	new		Teleport 3	순간이동 3
+change_of_fate.palkia.text.2	card_text	new		Play 3: Teleport Anywhere	3장 사용: 어디로든 순간이동
+change_of_fate.giratina.text.1	card_text	new		Sacrifice 2	희생 2
+change_of_fate.giratina.text.2	card_text	new		Play 3: Sacrifice All	3장 사용: 모두 희생
+change_of_fate.arceus.text.1	card_text	new		Wildcard	와일드카드
+change_of_fate.arceus.text.2	card_text	new		Play 3: Blessing of Arceus	3장 사용: 아르세우스의 축복
+ginkgo_trade.1	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.2	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.3	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.4	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.5	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.6	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.7	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.8	card_name	new		Ginkgo Trade	은행상회 거래
+ginkgo_trade.9	card_name	new		Ginkgo Trade	은행상회 거래
+distortion_breach.reckless_assault	card_name	new		Reckless Assault	무모한 돌격
+distortion_breach.reckless_assault.text.1	card_text	new		You must attach this ability to a Pokémon in your party.	이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다.
+distortion_breach.reckless_assault.text.2	card_text	new		When the user attacks or is attacked, positive type effectiveness damage is increased by 2.	사용자가 공격하거나 공격받을 때, 유리한 타입 상성으로 더해지는 데미지가 2 늘어납니다.
+distortion_breach.rapid_strikes	card_name	new		Rapid Strikes	재빠른 공격
+distortion_breach.rapid_strikes.text.1	card_text	new		You must attach this ability to a Pokémon in your party.	이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다.
+distortion_breach.rapid_strikes.text.2	card_text	new		The user always goes first but reduces its moves with greater than 3 total attack strength to 3 attack strength.	사용자는 언제나 먼저 행동합니다. 하지만 총 위력이 3을 넘는 기술은 위력이 3으로 줄어듭니다.
+distortion_breach.gravitational_drag	card_name	new		Gravitational Drag	중력 끌림
+distortion_breach.gravitational_drag.text.1	card_text	new		You must attach this ability to a Pokémon in your party.	이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다.
+distortion_breach.gravitational_drag.text.2	card_text	new		Reduce the initiative of the user by 3 but increase the base health of the user by 3.	사용자는 스피드 −3. 하지만 최대 체력 +3.
+distortion_breach.nimble_frame	card_name	new		Nimble Frame	날렵한 몸
+distortion_breach.nimble_frame.text.1	card_text	new		You must attach this ability to a Pokémon in your party.	이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다.
+distortion_breach.nimble_frame.text.2	card_text	new		When the user attacks, it takes 1 damage, but may switch out afterwards. Does not affect the current turn order.	사용자는 공격할 때 데미지를 1 입지만, 공격한 뒤 교체할 수 있습니다. 지금의 차례 순서는 바뀌지 않습니다.
+distortion_breach.chromatic_union	card_name	new		Chromatic Union	색채 융합
+distortion_breach.chromatic_union.text.1	card_text	new		You must attach this ability to a Pokémon in your party.	이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다.
+distortion_breach.chromatic_union.text.2	card_text	new		The moves of the user are now Typeless, but their attack strengths are increased by 1.	사용자의 기술은 모두 타입 없음이 됩니다. 대신 위력이 1 오릅니다.
+distortion_breach.status_overload	card_name	new		Status Overload	상태 과부하
+distortion_breach.status_overload.text.1	card_text	new		You must attach this ability to a Pokémon in your party.	이 특성을 내 파티의 포켓몬 1마리에게 반드시 붙여야 합니다.
+distortion_breach.status_overload.text.2	card_text	new		When the user switches in, roll a status dice and inflict the result on both the user and the target.	사용자가 배틀에 나올 때 상태 이상 주사위를 1개 굴려, 나온 결과를 사용자와 상대 모두에게 겁니다.
+ultra_onslaught.1	card_name	new		Ultra Onslaught	울트라 온슬롯
+ultra_onslaught.1.text.1	card_text	new		Do not attack this turn.	이번 턴에는 공격하지 않습니다.
+ultra_onslaught.1.text.2	card_text	new		Heal 4 damage and all status effects.	체력을 4 회복하고 상태 이상을 모두 없앱니다.
+ultra_onslaught.2	card_name	new		Ultra Onslaught	울트라 온슬롯
+ultra_onslaught.2.text.1	card_text	new		Replace all status symbols with critical hits.	상태 이상 심볼을 모두 급소로 바꿉니다.
+ultra_onslaught.3	card_name	new		Ultra Onslaught	울트라 온슬롯
+ultra_onslaught.3.text.1	card_text	new		Immediately trigger the effects of Beast Boost. If Beast Boost is already active, add to its effect.	곧바로 비스트 부스트의 효과를 발동합니다. 비스트 부스트가 이미 발동 중이면 그 효과에 더합니다.
+ultra_onslaught.4	card_name	new		Ultra Onslaught	울트라 온슬롯
+ultra_onslaught.4.text.1	card_text	new		When next attacked, all regular hits damage the attacker as well.	다음에 공격받을 때, 일반 타격은 모두 공격한 포켓몬에게도 데미지를 줍니다.
+ultra_onslaught.5	card_name	new		Ultra Onslaught	울트라 온슬롯
+ultra_onslaught.5.text.1	card_text	new		Use Alpha Strike twice this turn.	이번 턴에는 알파 스트라이크를 2번 씁니다.
+ultra_onslaught.6	card_name	new		Ultra Onslaught	울트라 온슬롯
+ultra_onslaught.6.text.1	card_text	new		Deal double damage to the opposing Pokémon if they have any Distortion Breach cards attached.	왜곡 균열 카드가 붙은 상대 포켓몬에게는 데미지를 2배로 줍니다.

@@ -14,7 +14,7 @@ namespace Sinnoh.Fx
     public static class WorkRows
     {
         public const int Bank = 180, Craft = 360, Stew = 370, Evolve = 390;
-        /// <summary>정비 보기(38·40·41행 — 남 좌석의 지닌물건 · 기술 · 놓아주기 · 순서, 결정 120): 남 화면만 길이가 있다(PlayTiming.MaintRow).</summary>
+        /// <summary>정비 보기(38·40·41행 — 남 좌석의 지닌물건 · 기술 · 놓아주기 · 순서, 결정 120): 남 화면만 길이가 있다(PlayTiming.MaintRow). 남의 정비는 그 좌석 칩 꼬리표만이고 판 보기 창은 사당 보상(<see cref="Gift"/>)만 연다(결정 177).</summary>
         public const int Maint = PlayTiming.MaintRow;
 
         /// <summary>이 묶음이 그리는 행인가.</summary>
@@ -92,6 +92,7 @@ namespace Sinnoh.Fx
                 case CardRows.Unlock: return "unlock";   // M6 「트레이너 카드 해금 연출」: 남 좌석의 해금 · 카드 바꾸기 · 능력 사용(결정 80 마 꼴)
                 case CardRows.Swap: return "swap";
                 case CardRows.Ability: return "ability";
+                case DealRows.Stamp: return "stamp";   // 남 좌석의 여행 스탬프(47행 — 결정 178): 「스탬프 n/7」(n = 받은 뒤 수, BoardHud가 채운다)
                 default: return null;
             }
         }

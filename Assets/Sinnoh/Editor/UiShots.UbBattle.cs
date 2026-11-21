@@ -21,6 +21,7 @@ namespace Sinnoh.Editor
             Screen("row-87-wipe", s => UbWipe(s)),
             Battle("row-87-intro", s => UbIntro(s)),
             Battle("battle-ub-turn", s => UbMyTurn(s, UbAt(s, Beast, prism: 4))),
+            Battle("battle-ub-prism-tip", s => { var f = UbAt(s, Beast, prism: 4); UbMyTurn(s, f); f.Stage.Tips.Show(f.Stage.Root.Q("battle-foe-prism")); TipHas(f, "screen.battle.prism.title"); }),   // 상대 기둥 프리즘 칩의 마우스 오버 = 효과(결정 193)
             // 88행: 프리즘 아머가 막음(UB 쪽 6개 — 차례마다 −3) → UB를 쓰러뜨려 1개가 울트라 비스트 쪽으로 → 결과 창의 줄
             Battle("row-88-block", s => Seen(FightInto(s, UbAt(s, Beast, prism: 6), st => st.Row == UbBattleRows.Prism, 150), b => b.BlockShown > 0f, "프리즘 −n")),
             Battle("row-88-move", s => Seen(FightInto(s, UbAt(s, Beast), st => st.Row == UbBattleRows.PrismMove, 600), b => b.MoveShown > 0f, "프리즘이 옮겨 가는 판")),
@@ -45,6 +46,8 @@ namespace Sinnoh.Editor
             // 92행 호수 시련(입지호수 · 아그놈 — 의지의 시련): 내 차례(면역 · 의지의 시련 0/2 · 독 회색 [포획 불가] · DS 면역 막) → 진행 → 넘김(막이 깨지고 「시련 통과!」)
             Battle("battle-trial", s => UbMyTurn(s, UbAt(s, Lake, team: true))),
             Battle("row-92-progress", s => TrialProgressOnly(s)),   // 진행만 보이는 단계(넘기기 전 — M6 「연출 목록 채우기」, UiShots.Fill.cs)
+            // 결정 194: 「무모한 돌격」이 붙은 내 포켓몬이 표 상성이 유리한 기술로 UB를 친 계산 줄 — 「상성 +n」 · 「무모한 돌격 +2」로 나뉜다
+            Battle("battle-calc-reckless", s => RecklessCalc(s)),
             Battle("row-92-pass", s => Seen(FightInto(s, UbAt(s, Lake, team: true), st => st.Row == UbBattleRows.Trial && UbRows.First<TrialProgress>(st) is TrialProgress p && p.Done, 800), b => b.BannerShown > 0f, "시련 통과")),
         };
 
@@ -76,6 +79,56 @@ namespace Sinnoh.Editor
             DealSettle(s, flow, MyMap);
             if (!flow.Hud.Press(BoardHud.Search)) throw new InvalidOperationException(foe + " 칸에서 [찾아보기]가 거절됐다");
             return flow;
+        }
+
+        // 결정 194: 무모한 돌격 몫이 실린 계산 단계 끝(칸이 다 켜진 모습) — 둘째 상성 칸의 이름 · 값, 첫 칸 = 「상성」 단정
+        static void RecklessCalc(UiShot s)
+        {
+            var ctx = s.Board.Ctx;
+            int sig = -1;
+            var flow = UbAt(s, Beast, more: st => sig = PickReckless(ctx, st));
+            FightInto(s, flow, st => st.Events.Exists(e => e is DamageBreakdown db && Array.Exists(db.Steps, x => x.Kind == DamageStepKind.Effectiveness && x.Source.Kind == SourceKind.BreachCard)), -100, sig);
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+            var root = flow.Stage.Root;
+            var split = root.Q("battle-calc-matchup-1") ?? throw new InvalidOperationException("계산 줄에 둘째 상성 칸이 없다");
+            var first = root.Q("battle-calc-matchup-0") ?? throw new InvalidOperationException("계산 줄에 상성 칸이 없다");
+            string card = flow.Stage.T(ctx.Decks.CardIds[BreachRules.CardOf(ctx, BreachKind.RecklessAssault)]);
+            var a = split.Query<Label>().ToList();
+            var b = first.Query<Label>().ToList();
+            if (a[0].text != card || a[1].text != "+" + BreachRules.RecklessBonus || b[0].text != flow.Stage.T("screen.battle.calc.effectiveness"))
+                throw new InvalidOperationException("상성 칸: 「" + b[0].text + " " + b[1].text + "」 · 「" + a[0].text + " " + a[1].text + "」");
+            if (split.resolvedStyle.visibility != Visibility.Visible) throw new InvalidOperationException("둘째 상성 칸이 아직 켜지지 않았다");
+            var bad = WorkUi.Overflows(root.Q("battle-calc-chips"));
+            if (bad.Count > 0) throw new InvalidOperationException("계산 줄 글 넘침: " + string.Join(" / ", bad));
+        }
+
+        // 결정 194 확인 판(PlayMode UbBreachFlowTests.Reckless와 같은 꼴): 체력이 가장 작은 UB에게 고유 기술의 표 상성이 유리한 포켓몬 중 체력이 가장 큰 것 하나 + 첫 칸에 「무모한 돌격」 · 그 UB 칸
+        static int PickReckless(Ctx ctx, GameState st)
+        {
+            TokenState weak = null;
+            foreach (var t in st.Tokens)
+                if (t.Kind == TokenKind.UltraBeast && t.Cell >= 0 && (weak == null || ctx.Cards.Pokemon[t.Def].Health < ctx.Cards.Pokemon[weak.Def].Health)) weak = t;
+            if (weak == null) throw new InvalidOperationException("UB 토큰이 없다");
+            var ub = ctx.Cards.Pokemon[weak.Def].Types;
+            int pick = -1;
+            for (int i = 0; i < ctx.Cards.Pokemon.Count; i++)
+            {
+                var def = ctx.Cards.Pokemon[i];
+                int m = def.Signature;
+                if (m < 0 || m >= ctx.Cards.Moves.Count || ctx.Cards.Moves[m].AttackStrength == null) continue;
+                var type = BattleRules.MoveType(ctx, m);
+                if (type == PokemonType.Typeless || TypeChart.Bonus(type, ub[0], ub.Count > 1 ? ub[1] : PokemonType.Typeless) <= 0) continue;
+                if (pick < 0 || def.Health > ctx.Cards.Pokemon[pick].Health) pick = i;
+            }
+            if (pick < 0) throw new InvalidOperationException("유리한 포켓몬이 없다");
+            var me = st.Seats[0];
+            for (int i = 0; i < me.Party.Length; i++) me.Party[i] = -1;
+            int mon = PokemonRules.Spawn(st, pick, 0, (int)DeckId.Legendary);
+            PokemonRules.AddToParty(me, mon);
+            st.Pokemon[mon].Breach[0] = BreachRules.CardOf(ctx, BreachKind.RecklessAssault);
+            me.Cell = weak.Cell;
+            return ctx.Cards.Pokemon[pick].Signature;
         }
 
         static int FoeCell(Ctx ctx, GameState st, UbFoe foe)

@@ -52,7 +52,7 @@ namespace Sinnoh.Fx
             Row<Crafted>(WorkRows.Craft);
             Row<StewEaten>(WorkRows.Stew);
             Row<Evolved>(WorkRows.Evolve);
-            Row<ItemHeld>(WorkRows.Maint);        // 38·40·41행 정비: 남 화면만 정비 판 보기(결정 120)
+            Row<ItemHeld>(WorkRows.Maint);        // 38·40·41행 정비: 남 화면만 길이가 있다 — 그 좌석 칩 꼬리표 「정비」(결정 177 — 보기 창은 열지 않는다)
             Row<MoveTaught>(WorkRows.Maint);
             Row<MoveForgotten>(WorkRows.Maint);
             Row<Released>(WorkRows.Maint);

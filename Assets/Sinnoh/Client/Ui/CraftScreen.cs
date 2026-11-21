@@ -212,10 +212,7 @@ namespace Sinnoh.Client
                 stage.Tips.Hook(badge, null, stage.T("screen.craft.stew.tip"), TipSide.Below, reading: true);
             }
             var items = ctx.Items.Items;
-            var order = new List<int>();
-            for (int i = 0; i < items.Count; i++) if (items[i].Kind == kind && items[i].Recipe != null) order.Add(i);
-            if (kind == ItemKind.Ball) order.Sort((a, b) => CraftRules.BallOf(ctx, a).CompareTo(CraftRules.BallOf(ctx, b)));   // 볼은 등급 순(몬스터볼 → 키스톤볼), 나머지는 데이터 순
-            foreach (int i in order)
+            foreach (int i in Order(ctx, kind))
             {
                 var d = items[i];
                 int item = i;
@@ -249,6 +246,51 @@ namespace Sinnoh.Client
                 stage.Tips.Hook(row.Box, stage.T(d.Key), stage.TOrNull(d.Key + ".text"), TipSide.Above, reading: true);
                 rows[item] = row;
             }
+        }
+
+        /// <summary>그 종류의 레시피 아이템(볼은 등급 순 — 몬스터볼 → 키스톤볼, 나머지는 데이터 순).</summary>
+        public static List<int> Order(Ctx ctx, ItemKind kind)
+        {
+            var items = ctx.Items.Items;
+            var order = new List<int>();
+            for (int i = 0; i < items.Count; i++) if (items[i].Kind == kind && items[i].Recipe != null) order.Add(i);
+            if (kind == ItemKind.Ball) order.Sort((a, b) => CraftRules.BallOf(ctx, a).CompareTo(CraftRules.BallOf(ctx, b)));
+            return order;
+        }
+
+        /// <summary>
+        /// 조합표(결정 191 — 정비 판의 [조합표]): 이 창의 레시피 줄과 같은 꼴(그림 · 이름 · 재료 규토리 — 그 좌석이 내는 재료)을 보기 전용으로 into에 단다.
+        /// 누를 단추 · 가진 수 · 연출은 없고, 효과 문구는 줄의 마우스 오버. 요소 이름 <c>board-party-recipe-&lt;아이템&gt;</c>. 돌려주는 값 = 줄 수.
+        /// </summary>
+        public static int Book(UiStage stage, GameFlow flow, int seat, VisualElement into)
+        {
+            var cols = Add(into, new VisualElement(), null, "sn-craft-cols");
+            var left = Add(cols, new VisualElement(), null, "sn-craft-col");
+            var right = Add(cols, new VisualElement(), null, "sn-craft-col");
+            return BookSection(stage, flow, seat, left, ItemKind.Ball, "screen.craft.balls")
+                 + BookSection(stage, flow, seat, left, ItemKind.Stew, "screen.craft.stews")
+                 + BookSection(stage, flow, seat, right, ItemKind.Held, "screen.craft.held");
+        }
+
+        static int BookSection(UiStage stage, GameFlow flow, int seat, VisualElement col, ItemKind kind, string title)
+        {
+            var ctx = flow.Ctx;
+            var view = flow.Client.View;
+            var head = Add(col, new VisualElement(), null, "sn-party-line");
+            Add(head, Kit.Text(stage.T(title), Kit.F2), null, "kit-title");
+            var order = Order(ctx, kind);
+            foreach (int i in order)
+            {
+                var d = ctx.Items.Items[i];
+                var box = Add(col, new VisualElement(), "board-party-recipe-" + Short(d), "sn-craft-row");
+                var iconBox = Add(box, new VisualElement { pickingMode = PickingMode.Ignore }, null, "sn-craft-iconbox");
+                Icon(iconBox, IconKey(d), "sn-icon");
+                Add(box, Kit.Text(stage.T(d.Key), Kit.F2), null, "sn-craft-name").pickingMode = PickingMode.Ignore;
+                var cost = Add(box, new VisualElement { pickingMode = PickingMode.Ignore }, null, "sn-craft-cost");
+                foreach (var color in TrainerRules.Recipe(view, ctx, seat, d)) Apricorn(cost, color, "sn-craft-apricorn");
+                stage.Tips.Hook(box, stage.T(d.Key), stage.TOrNull(d.Key + ".text"), TipSide.Above, reading: true);
+            }
+            return order.Count;
         }
 
         /// <summary>그 좌석이 이번 턴에 그 기록(행동·스튜)을 남겼나(보기의 공개 기록).</summary>

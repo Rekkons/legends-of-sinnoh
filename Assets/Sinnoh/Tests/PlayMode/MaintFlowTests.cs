@@ -584,5 +584,199 @@ namespace Sinnoh.Tests.PlayMode
                 }
             }
         }
+        /// <summary>
+        /// 결정 195(11-21 「비스트 부스트나 알파스트라이크 있는 칸이면 빈칸으로 표시하지 마」): 전설 특수기술을 가진 포켓몬의 빈 기술 칸은 「빈 칸」이 아니라
+        /// 알파 스트라이크(칸 1 — 배우는 타입 그림) · 비스트 부스트(칸 2)로 보인다 — 정비 판 · 기술 카드를 집은 가르치기 · 카드 확대(MonScreen).
+        /// </summary>
+        [UnityTest]
+        public IEnumerator M10_전설특수기술이차지한빈칸은알파스트라이크와비스트부스트로보인다_결정195()
+        {
+            var errors = new List<string>();
+            void Grab(string msg, string stack, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) errors.Add(type + ": " + msg);
+            }
+
+            Application.logMessageReceived += Grab;
+            RenderTexture rt = null;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("Board", LoadSceneMode.Single);
+                ScreenBoot boot = null;
+                for (int i = 0; i < 30; i++)
+                {
+                    yield return null;
+                    boot = Object.FindAnyObjectByType<ScreenBoot>();
+                    if (boot != null && boot.Root != null && boot.Root.Stage.Root != null) break;
+                }
+                Assert.That(boot != null && boot.Root != null, Is.True, "화면 뿌리 없음(Gen 글꼴·창틀 — rebuild-all)");
+                var flow = boot.Flow;
+                boot.PointerFromMouse = false;
+                var stage = boot.Root.Stage;
+                rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                rt.Create();
+                boot.Root.SetTarget(rt);
+                for (int i = 0; i < 4; i++) yield return null;
+                FlowPilot.Start(flow, SoloTrail.Kit);
+                yield return null;
+                flow.Skip(flow.OpeningMs);
+                yield return null;
+                int seat = flow.Client.Seat, starter = flow.Client.View.Seats[seat].Party[0];
+                flow.Rebase(st =>
+                {
+                    var pk = st.Pokemon[starter];
+                    pk.HasLegendaryMove = true;
+                    for (int k = 0; k < pk.Moves.Length; k++) pk.Moves[k] = -1;
+                });
+                yield return null;
+                flow.Skip(flow.OpeningMs);
+                yield return null;
+                var pkv = flow.Client.View.Pokemon[starter];
+                Assert.That(LegendRules.TacticAt(pkv, 0), Is.EqualTo(LegendTactic.AlphaStrike), "엔진: 칸 1 = 알파 스트라이크");
+                string alpha = stage.T("screen.battle.move.alpha_strike"), beast = stage.T("screen.passive.beast_boost");
+                var learn = new List<int>();
+                LegendRules.AlphaTypes(flow.Ctx, pkv, learn);
+
+                void Slot(VisualElement row, string name, string where)
+                {
+                    Assert.That(row, Is.Not.Null, where);
+                    Assert.That(row.ClassListContains(MonParts.LegendSlotClass) || row.Q(className: MonParts.LegendSlotClass) != null, Is.True, where + ": 전설 특수기술 칸");
+                    Assert.That(row.Query<Label>().ToList().Exists(l => l.text == name), Is.True, where + ": 「" + name + "」");
+                    Assert.That(row.Query<Label>().ToList().Exists(l => l.text == stage.T("screen.party.slot.empty")), Is.False, where + ": 「빈 칸」이 아니다");
+                }
+
+                // 정비 판
+                for (int i = 0; i < 300 && !flow.CanOpenParty; i++)
+                {
+                    flow.Skip(100);
+                    yield return null;
+                }
+                Assert.That(flow.OpenParty(), Is.True, "정비 판");
+                yield return null;
+                yield return null;
+                var party = (PartyScreen)stage.Current;
+                Slot(stage.Root.Q("board-party-slot-0-1"), alpha, "정비 판 칸 1");
+                Slot(stage.Root.Q("board-party-slot-0-2"), beast, "정비 판 칸 2");
+
+                // 기술 카드를 집어 가르칠 칸을 고르는 중에도 그대로(가르치면 덮인다 — 마우스 오버)
+                Assert.That(party.PickMove(0), Is.True, "기술 카드를 집는다");
+                yield return null;
+                Slot(stage.Root.Q("board-party-slot-0-1"), alpha, "가르치기 칸 1");
+
+                // 카드 확대
+                party.PickMove(0);
+                yield return null;
+                Assert.That(flow.OpenMon(starter, seat), Is.True, "카드 확대");
+                yield return null;
+                yield return null;
+                Slot(stage.Root.Q("mon-detail-move-1"), alpha, "카드 확대 칸 1");
+                Assert.That(stage.Root.Q("mon-detail-move-1").Q(className: MonParts.LegendSlotClass).Query(className: "sn-type-icon").ToList().Count, Is.EqualTo(learn.Count), "알파 스트라이크 = 배우는 타입 그림");
+                Slot(stage.Root.Q("mon-detail-move-2"), beast, "카드 확대 칸 2");
+                Assert.That(errors, Is.Empty, string.Join(" | ", errors));
+            }
+            finally
+            {
+                Application.logMessageReceived -= Grab;
+                var b = Object.FindAnyObjectByType<ScreenBoot>();
+                if (b != null && b.Root != null) b.Root.SetTarget(null);
+                if (rt != null)
+                {
+                    rt.Release();
+                    Object.Destroy(rt);
+                }
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator M10_결정180_독걸린포켓몬은아래판파티칸과정비판에독아이콘이서고마을회복뒤에는사라진다()
+        {
+            // 결정 180(2026-11-21 「정비창 안 연 상태에서 하단에 내포켓몬들 상태에서 상태이상도 보여야 해」): 배틀 밖에도 남는 상태 이상을 아래 판 파티 칸에 배틀과 같은 그림으로.
+            // 판 = SoloTrail.Kit의 첫 턴(고향 마을) — 스타팅 포켓몬에 독을 건 뒤 [마을] → 전체 회복
+            var errors = new List<string>();
+            void Grab(string msg, string stack, LogType type)
+            {
+                if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) errors.Add(type + ": " + msg);
+            }
+
+            Application.logMessageReceived += Grab;
+            RenderTexture rt = null;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync("Board", LoadSceneMode.Single);
+                ScreenBoot boot = null;
+                for (int i = 0; i < 30; i++)
+                {
+                    yield return null;
+                    boot = Object.FindAnyObjectByType<ScreenBoot>();
+                    if (boot != null && boot.Root != null && boot.Root.Stage.Root != null) break;
+                }
+                Assert.That(boot != null && boot.Root != null, Is.True, "화면 뿌리 없음(Gen 글꼴·창틀 — rebuild-all)");
+                var flow = boot.Flow;
+                boot.PointerFromMouse = false;
+                var stage = boot.Root.Stage;
+                rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+                rt.Create();
+                boot.Root.SetTarget(rt);
+                for (int i = 0; i < 4; i++) yield return null;
+                FlowPilot.Start(flow, SoloTrail.Kit);
+                yield return null;
+                flow.Rebase(st => st.Pokemon[st.Seats[0].Party[0]].Status = StatusEffect.Poisoned);
+                for (int guard = 0; guard < 60 && !flow.InputOpen; guard++)
+                {
+                    flow.Skip(500);
+                    yield return null;
+                }
+                Assert.That(flow.InputOpen, Is.True, "첫 턴의 입력");
+                var client = flow.Client;
+                int starter = client.View.Seats[client.Seat].Party[0];
+                Assert.That(client.View.Pokemon[starter].Status, Is.EqualTo(StatusEffect.Poisoned));
+
+                // 아래 판 파티 칸: 독 그림 하나(배틀과 같은 IconArt 키) · 마우스 오버 = 이름 + 효과
+                var icon = stage.Root.Q("board-hud-mon-0-status-poisoned");
+                Assert.That(icon, Is.Not.Null, "파티 칸의 독 아이콘");
+                Assert.That(stage.Root.Q("board-hud-mon-0-status").Query(className: "sn-status-icon").ToList().Count, Is.EqualTo(1), "걸린 상태 하나 = 아이콘 하나");
+                Assert.That(icon.style.backgroundImage.value.texture, Is.SameAs(GenAssets.Load<Texture2D>(IconArt.Status(StatusEffect.Poisoned))), "배틀 상태 배지와 같은 그림");
+                stage.Tips.Show(icon);
+                var tipText = stage.Tips.Element.Query<Label>().ToList().ConvertAll(l => l.text.Replace("⁠", ""));
+                Assert.That(tipText, Does.Contain(stage.T("screen.status.poisoned")), "툴팁 머리 = 상태 이름");
+                Assert.That(tipText.Exists(t => t.Contains(stage.T("screen.status.poisoned.tip").Replace("⁠", ""))), Is.True, "툴팁 본문 = 짧은 효과: " + string.Join(" | ", tipText));
+                stage.Tips.Hide();
+
+                // 정비 판(S18)의 같은 카드에도 같은 그림
+                Assert.That(flow.OpenParty(), Is.True);
+                yield return null;
+                Assert.That(stage.Root.Q("board-party-status-0-poisoned"), Is.Not.Null, "정비 판 카드의 독 아이콘");
+                flow.CloseParty();
+                yield return null;
+
+                // [마을] → 전체 회복(상태 이상도 풀린다, S3_3): 칸의 아이콘이 사라진다
+                Assert.That(flow.OpenVillage(), Is.True, "고향 마을의 마을 창");
+                var village = flow.Top as VillageScreen;
+                Assert.That(village, Is.Not.Null);
+                Assert.That(village.PressHeal(), Is.True, "전체 회복");
+                for (int guard = 0; guard < 40 && client.View.Pokemon[starter].Status != StatusEffect.None; guard++)
+                {
+                    flow.Skip(250);
+                    yield return null;
+                }
+                flow.Skip(3000);
+                yield return null;
+                Assert.That(client.View.Pokemon[starter].Status, Is.EqualTo(StatusEffect.None), "회복으로 독이 풀렸다");
+                Assert.That(stage.Root.Q("board-hud-mon-0-status"), Is.Null, "회복 뒤에는 파티 칸에 상태 아이콘이 없다");
+                Assert.That(stage.Root.Q("board-hud-mon-0"), Is.Not.Null, "파티 칸은 그대로");
+                Assert.That(errors, Is.Empty, "에러 로그: " + string.Join(" | ", errors));
+            }
+            finally
+            {
+                Application.logMessageReceived -= Grab;
+                var b = Object.FindAnyObjectByType<ScreenBoot>();
+                if (b != null && b.Root != null) b.Root.SetTarget(null);
+                if (rt != null)
+                {
+                    rt.Release();
+                    Object.Destroy(rt);
+                }
+            }
+        }
     }
 }

@@ -68,6 +68,10 @@ namespace Sinnoh.Editor
                 RoomFit(s, flow, "title-foot");
                 foreach (var other in new[] { "title-menu", "title-desc", "title-foot", "title-logo" }) Apart(root, "title-update", other);
             }),
+            // 자동 업데이트(결정 161 4-3): [업데이트] 알림 · 받는 중(메뉴를 막는 덮개 + 막대 + MB + [취소]) · 실패(까닭 한 줄 + [다시 시도] · [받기]) — 서버 없이 상자만(GameFlow.FakeUpdate)
+            Screen("title-update-auto", s => UpdateBox(s, UpdateStep.Idle, "title-update-do")),
+            Screen("title-update-progress", s => UpdateBox(s, UpdateStep.Fetch, "title-update-cancel")),
+            Screen("title-update-fail", s => UpdateBox(s, UpdateStep.Failed, "title-update-retry")),
             // ── 저장 화면(04 §9-12): 임시 폴더에 저장을 만들어 찍고 지운다(사용자의 저장 폴더에 쓰지 않는다) ──
             Screen("title-continue", s => WithSaves(s, flow => flow.OpenTitle())),   // 저장이 있는 타이틀: 「이어하기」가 켜지고 가장 최근 판의 요약이 적힌다
             Screen("save-list", s => WithSaves(s, flow => flow.OpenSaves())),        // S04: 판 둘 + 읽을 수 없는 저장 하나
@@ -404,6 +408,7 @@ namespace Sinnoh.Editor
             Screen("battle-wild", s => Trail(s, SoloTrail.Defeat, f => Battle(f, b => b.Open && b.Moves.Count > 0))),   // 야생 배틀의 내 차례(볼이 없어 [가방]은 회색 — 실제 진행)
             Screen("battle-calc-held", s => Trail(s, SoloTrail.Defeat, f => Battle(f, b => b.Rolling && b.CalcHeld))),   // 야생 배틀: 다음 굴림판이 떠도 앞 공격의 계산 줄(데미지 · 체력 변화)이 남아 있다(결정 70 ⑧)
             Screen("battle-teach", s => Trail(s, SoloTrail.Defeat, f => Battle(f, b => b.ShowsResult && b.AskingReward && b.Ready))),            // 격파 뒤: 기술 가르치기 묻기
+            Screen("battle-teach-tip", BattleTeachTip),                                                                                           // 결정 186: 칸 1에 기술이 든 격파 판 — 원래 기술 칸 단추에 마우스(이름 + 효과)
             Screen("battle-taught", s => Trail(s, SoloTrail.Defeat, f => Battle(f, b => b.ShowsResult && !b.AskingReward && f.Battle.Taught != null), false)),   // 가르친 뒤의 결과 창
             Screen("battle-coral", s => Trail(s, SoloTrail.Coral, f => Battle(f, b => b.AskingReward && b.Ready))),             // 야생이 도망칠 때: 받을 규토리 색 묻기
             Screen("battle-fled", s => Trail(s, SoloTrail.Coral, f => Battle(f, b => b.ShowsResult && !b.AskingReward), false)),      // 도망친 뒤의 결과 창
@@ -458,6 +463,22 @@ namespace Sinnoh.Editor
             Screen("board-party-teach", s =>                                     // 기술 카드를 집은 모습: 배울 수 있는 포켓몬의 기술 칸만 빛난다
             {
                 if (!Maint(s).PickMove(0)) throw new InvalidOperationException("기술 카드가 집히지 않았다");
+            }),
+            Screen("legend-slot-party", Fit(s => LegendMaint(s))),               // 결정 195: 전설 특수기술을 가진 스타팅 포켓몬 — 빈 칸 1 = 알파 스트라이크(배우는 타입 그림) · 칸 2 = 비스트 부스트
+            Screen("legend-slot-teach", s =>                                     // 기술 카드를 집고 칸 1에 마우스: 「이 칸을 채우면 알파 스트라이크가 사라집니다.」
+            {
+                var party = LegendMaint(s);
+                if (!party.PickMove(0)) throw new InvalidOperationException("기술 카드가 집히지 않았다");
+                s.Made.Layout(s.Width, s.Height);
+                s.Panel.Tick(3);
+                s.Made.Stage.Tips.Show(s.Made.Stage.Root.Q("board-party-slot-0-1"));
+            }),
+            Screen("legend-slot-mon", s =>                                       // 카드 확대(MonScreen): 칸 1 · 2 = 전설 특수기술 + 효과 · 채우면 사라진다 줄
+            {
+                LegendMaint(s);
+                var flow = s.Made;
+                if (!flow.OpenMon(flow.Client.View.Seats[flow.Client.Seat].Party[0], flow.Client.Seat)) throw new InvalidOperationException("카드 확대가 열리지 않았다");
+                if (flow.Stage.Root.Q("mon-detail-move-1")?.Q(className: MonParts.LegendSlotClass) == null) throw new InvalidOperationException("카드 확대 칸 1이 전설 특수기술이 아니다");
             }),
             Screen("board-party-drag", s =>                                      // 끌어 놓는 중(결정 70 ⑪): 기술 카드를 끌어 빛나는 칸 위 — 카드 그림이 포인터를 따라온다(결정 73 ④)
             {
@@ -530,7 +551,7 @@ namespace Sinnoh.Editor
                 var village = Freed(s);
                 var flow = s.Made;
                 if (!village.PickDest(FirstDest(village)) || !village.PressFly()) throw new InvalidOperationException("공중날기가 거절됐다");
-                flow.Stage.Tweens.Advance(1600);
+                flow.Stage.Tweens.Advance(Sinnoh.Fx.FlyBeats.CutinMs + 1600);
                 if (!flow.BirdShown(out _)) throw new InvalidOperationException("공중날기 동안 찌르호크가 말을 태우고 날지 않는다(결정 126)");
             }),
             Screen("board-flown", s =>                                           // 날아간 뒤: 도착 마을 · 「이번 턴」에 공중날기 · 기록 줄
@@ -538,7 +559,7 @@ namespace Sinnoh.Editor
                 var village = Freed(s);
                 var flow = s.Made;
                 if (!village.PickDest(FirstDest(village)) || !village.PressFly()) throw new InvalidOperationException("공중날기가 거절됐다");
-                flow.Stage.Tweens.Advance(3200 + BoardReadyMs);
+                flow.Stage.Tweens.Advance(Sinnoh.Rules.Session.PlayTiming.FlyMs + BoardReadyMs);
             }),
             // ── 제작·은행·진화(M5 「제작·은행·진화 화면」 — 04 S24·S26·S27 · §8-8 18·21·36·37·39행 · 16행 Seek): 손본 판(SoloTrail.Work — 규토리 일곱 색 셋씩 · 여행 점수 20 · 파티 첫 칸 이브이)의 첫 턴 ──
             Screen("board-craft", Fit(s => CraftOpen(s))),                                                                    // 제작 창(S26): 가진 규토리 · 볼 · 스튜(턴당 1회) · 지닌물건
@@ -587,8 +608,16 @@ namespace Sinnoh.Editor
             Screen("board-evolve-done", Fit(s => Evolving(s, Sinnoh.Rules.Session.PlayTiming.EvolveMs - 100))),          // 진화 뒤 모습의 제 색
             Screen("board-evolve-skip", Fit(EvolveSkipped)),                                                             // 결정 84 L11: 오가는 중 스페이스 바 → 착지(진화 뒤 제 색 + 「축하합니다!」)
             Screen("board-evolve-teach", Fit(s => Evolving(s, Sinnoh.Rules.Session.PlayTiming.EvolveMs + BoardReadyMs))), // 옛 기술(p.5): 칸 1 · 칸 2에 가르치거나 [가르치지 않기]
-            Screen("board-fly-lift", s => Flying(s, 300)),                                                           // 16행 Seek: [출발] 뒤 제자리에서 떠오르는 중
-            Screen("board-fly-land", s => Flying(s, 3050)),                                                          // 16행 Seek: 도착 마을에 내려앉는 중
+            Screen("board-evolve-teach-now", Fit(s => EvolveTeachNow(s, false))),                                       // 결정 181: 해금 덮개가 끝난 옛 기술 물음 — 진화형의 ★ 고유 기술 + 칸 1·2(지금 기술)
+            Screen("board-evolve-teach-now-filled", Fit(s => EvolveTeachNow(s, true))),                                 // 결정 181: 칸 1에 기술이 있는 판 — 바꿀 기술이 칸에 보인다
+            Screen("board-evolve-teach-tip", Fit(s =>                                                                     // 결정 186: 그 판의 칸 1(지금 기술)에 마우스 — 기술 이름 + 효과 + 안내 한 줄
+            {
+                EvolveTeachNow(s, true);
+                var p = s.Made.Client.View.Pokemon[s.Made.Client.Choice(R.ChoiceKind.Reward).Options[0]];
+                MoveTipShown(s, s.Made.Stage.Root.Q("board-evolve-teach-0"), p.Moves[0], s.Made.Stage.Root.Q("board-evolve-panel"));
+            })),
+            Screen("board-fly-lift", s => Flying(s, Sinnoh.Fx.FlyBeats.CutinMs + 300)),                                                           // 16행 Seek: [출발] 뒤 제자리에서 떠오르는 중
+            Screen("board-fly-land", s => Flying(s, Sinnoh.Fx.FlyBeats.CutinMs + 3050)),                                                          // 16행 Seek: 도착 마을에 내려앉는 중
             Screen("board-trainer", Fit(s =>                                       // 트레이너 카드 판(S40): 브론즈 — 능력 둘 다 잠김
             {
                 var flow = ToBoard(s, BoardReadyMs);
@@ -601,7 +630,7 @@ namespace Sinnoh.Editor
                 var village = Freed(s);
                 var flow = s.Made;
                 if (!village.PickDest(FirstDest(village)) || !village.PressFly()) throw new InvalidOperationException("공중날기가 거절됐다");
-                flow.Stage.Tweens.Advance(3200 + 60);
+                flow.Stage.Tweens.Advance(Sinnoh.Rules.Session.PlayTiming.FlyMs + 60);
             }),
             Screen("fx-spot-star", s => Reveal(s, ToSpot(s), 192 + 130, true)),     // [공개] 뒤 앞면으로 바뀐 바로 뒤: 토큰 둘레의 반짝임
             // HUD·셋업 화면 위의 이펙트는 칸의 자리(배치)를 읽는다 — 그 순간 1ms 앞에서 패널을 한 번 돌려 배치를 세운 뒤 마저 보낸다
@@ -735,9 +764,10 @@ namespace Sinnoh.Editor
             Screen("row-14-land", s => FateWarp(s, Sinnoh.Fx.FateRows.Teleport, 1350)),      // 도착 칸 위에서 떨어져 내려앉는 중(도착 칸의 분홍 고리)
             Screen("row-43-ask", s => FateBattle(s, SoloTrail.Fate, true)),      // 굴린 뒤 창: 독의 운명 줄 — 주사위 칩(첫째·둘째를 골랐다) · 디아루가 [1장]·[3장] · 아르세우스 칩 · [넘기기]
             Screen("row-45-pass3", s => FateBattlePlayed(s, SoloTrail.Fate, Sinnoh.Fx.FateRows.Play, 600)),     // 디아루가 3장: 세 장이 돌며 하나로 합쳐지는 중(금빛 둘레 — 아르세우스 섞임)
-            Screen("row-43-reroll", s => FateBattlePlayed(s, SoloTrail.Fate, Sinnoh.Fx.FateRows.Reroll, 300)), // 재굴림: 독의 주사위 줄에서 고른 주사위가 글리치 중
-            Screen("row-43-locked", s => FateBattlePlayed(s, SoloTrail.Fate, Sinnoh.Fx.FateRows.Reroll, 1300)), // 첫 주사위는 새 면으로 고정, 둘째가 글리치 중
-            Screen("battle-fate-button", Clean(s => FateView(s, false), "battle-info")),   // 결정 80 N3 나: 배틀 기둥의 [운명의 변화 n/5](손패 훑어보기)
+            Screen("row-43-reroll", s => FateBattlePlayed(s, SoloTrail.Fate, Sinnoh.Fx.FateRows.Reroll, 750)), // 재굴림: 독의 주사위 줄에서 고른 주사위가 글리치 중
+            Screen("row-43-locked", s => FateBattlePlayed(s, SoloTrail.Fate, Sinnoh.Fx.FateRows.Reroll, 2100)), // 첫 주사위는 새 면으로 고정, 둘째가 글리치 중
+            Screen("row-43-end", s => FateBattlePlayed(s, SoloTrail.Fate, Sinnoh.Fx.FateRows.Reroll, -200)),    // 결정 190: 단계 끝 200ms 전 — 모두 새 면으로 고정, 다시 세기
+            Screen("battle-fate-button", Clean(s => FateView(s, false), "battle-dock")),   // 결정 80 N3 나: [운명의 변화 n/5](손패 훑어보기 — 결정 170로 독 차례 칸 맨 아래) · 운명 창이 열린 붐비는 차례 칸
             Screen("battle-fate-view", Fit(s => FateView(s, true))),                       // 누른 뒤: 배틀 화면 위의 손패 창 — 보기만(사용 단추 없음 · 「배틀 중에는 확인만 …」)
             Screen("row-44-ask", s => FateBattle(s, SoloTrail.FateGiratina, false)),   // 굴리기 전 창: 기라티나 [1장]
             Screen("row-44-shadow", s => FateBattlePlayed(s, SoloTrail.FateGiratina, Sinnoh.Fx.FateRows.Sacrifice, 1300)),   // 검은 그림자가 감싸고 체력이 빠진 뒤 위력 +1
@@ -988,10 +1018,36 @@ namespace Sinnoh.Editor
                 if (!shrine.PickOption(0) || !shrine.Confirm()) throw new InvalidOperationException("배울 기술 고르기가 거절됐다");
                 ShrineSettle(s, s.Made, f => f.Stage.Current is ShrineScreen sh && sh.Shown == ShrineScreen.Mode.Teach && sh.Open);
             })),
+            Screen("board-shrine-teach-tip", Fit(s =>                             // 결정 186: 칸 1에 기술(전설의 고유 기술)이 든 포켓몬 — 바꿀 원래 기술 칩에 마우스(이름 + 효과)
+            {
+                int given = -1;
+                var shrine = ShrineSeats(s, 2, ShrineScreen.Mode.Move, st =>
+                {
+                    ShrineDiscards(st);
+                    var ctx = s.Made.Ctx;
+                    given = ctx.Cards.Pokemon[ctx.Deck(Sinnoh.Rules.DeckId.Legendary).Cards[0].Card].Signature;
+                    st.Pokemon[st.Seats[0].Party[0]].Moves[0] = given;
+                }, Sinnoh.Rules.ShrineRules.AncientWisdom);
+                if (!shrine.PickOption(0) || !shrine.Confirm()) throw new InvalidOperationException("배울 기술 고르기가 거절됐다");
+                ShrineSettle(s, s.Made, f => f.Stage.Current is ShrineScreen sh && sh.Shown == ShrineScreen.Mode.Teach && sh.Open);
+                var teach = (ShrineScreen)s.Made.Stage.Current;
+                VisualElement chip = null;
+                for (int i = 0; i < teach.Options.Count && chip == null; i++)
+                    if (teach.Options[i].Kind == R.AnswerKind.Pick && s.Made.Client.View.Pokemon[teach.Options[i].Target].Moves[teach.Options[i].Arg] == given)
+                        chip = s.Made.Stage.Root.Q("board-shrine-opt-" + (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                MoveTipShown(s, chip, given, s.Made.Stage.Root.Q("board-shrine-panel"));
+            })),
             Screen("board-hud-party-1", s => PartyOf(s, 1)),                     // 아래 판 파티 1·3·5·6마리(사용자 지적 11-16 — 5·6마리에서 이름·체력·스피드가 잘리지 않게)
             Screen("board-hud-party-3", s => PartyOf(s, 3)),
             Screen("board-hud-party-5", s => PartyOf(s, 5)),
             Screen("board-hud-party-6", s => PartyOf(s, 6)),
+            // 파티 칸의 상태 이상(결정 180): 첫 칸 독 + 마비 · 끝 칸(스타팅) 화상 — 배틀과 같은 그림이 도트 위 칸 안에, 정비 판(S18) · 남 좌석 판(S39)도 같은 그림
+            Screen("board-hud-party-status", s => PartyOf(s, 6, status: true)),
+            Screen("board-hud-party-status-3", s => PartyOf(s, 3, status: true)),
+            Screen("board-hud-party-status-tip", s => { PartyOf(s, 6, status: true); StatusTip(s, "board-hud-mon-0-status-poisoned"); }),
+            Screen("board-party-status", Fit(s => { PartyOf(s, 6, status: true); PartyStatus(s, -1); })),
+            Screen("board-party-other-status", Fit(s => PartyStatus(s, 1))),
+            Screen("board-party-max", Fit(PartyMax)),                            // 정비 판의 가장 긴 열(PlayMode LeftoverFlowTests): 전설 셋 — 상태 둘 · 빈 칸 둘 = 전설 특수기술 · 지닌물건 둘 · 유물 [폼체인지] · 배우는 타입 넷 — 가방 칸이 판 안
             // 내 자원 줄(결정 98 — 아래 판 왼쪽 위 띠: 규토리 일곱 색 · 여행 점수 · 볼 넷이 늘 보인다): 기본 판 · 두 자리 수 + 파티 여섯 · 6인 · UB 6인(칩 판) · 튜토리얼 S203(앵커)
             Screen("board-hud-res", s => { ToBoard(s, BoardReadyMs); ResClear(s); }),
             Screen("board-hud-res-rich", s => PartyOf(s, 6, true)),
@@ -1047,7 +1103,7 @@ namespace Sinnoh.Editor
         {
             var step = Queued(flow, st => st.Row == row);
             if (step == null) throw new InvalidOperationException(row + "행 단계가 대기열에 없다");
-            TickedInto(s, flow, step, ms);
+            TickedInto(s, flow, step, ms < 0 ? step.Ms + ms : ms);   // 음수 = 단계 끝에서 거꾸로
         }
 
         // 그 단계의 시작에서 ms 지난 순간으로 — 단계 시작에서 한 번 배치를 세운 뒤 보낸다(운명 카드가 날아가는 [운명의 변화] 단추의 자리는 배치에서 읽는다 — 한 번에 길게 보내면 아직 배치 전이다)
@@ -1233,7 +1289,7 @@ namespace Sinnoh.Editor
                 throw new InvalidOperationException("파티 여섯의 출전 포켓몬 고르기까지 가지 못했다(화면 " + (flow.Stage.Current != null ? flow.Stage.Current.Name : "보드") + ")");
         }
 
-        static void PartyOf(UiShot s, int n, bool rich = false)
+        static void PartyOf(UiShot s, int n, bool rich = false, bool status = false)
         {
             var flow = s.Flow();
             var pilot = FlowPilot.Start(flow, SoloTrail.Kit);
@@ -1246,6 +1302,7 @@ namespace Sinnoh.Editor
                 for (int i = 0; i < n - 1 && i < SoloTrail.Team.Length; i++)
                     Sinnoh.Rules.PokemonRules.AddToParty(seat, Sinnoh.Rules.PokemonRules.Spawn(st, flow.Ctx.Cards.PokemonIds.IndexOf(SoloTrail.Team[i]), 0, (int)Sinnoh.Rules.DeckId.Legendary));
                 Sinnoh.Rules.PokemonRules.AddToParty(seat, starter);
+                if (status) Afflicted(st, 0);
                 if (!rich) return;
                 for (int c = 0; c < seat.Apricorns.Length; c++) seat.Apricorns[c] = 12;   // 자원 줄의 가장 넓은 꼴: 두 자리 수 · 여행 점수 세 자리
                 for (int b = 0; b < seat.Balls.Length; b++) seat.Balls[b] = 10;
@@ -1283,7 +1340,153 @@ namespace Sinnoh.Editor
                     }
                 }
             }
+            HudStatus(s, flow);
             ResClear(s);
+        }
+
+        // 결정 180 견본: 그 좌석 파티의 첫 칸 = 독 + 마비(동시에 둘 — Status2), 끝 칸 = 화상(파티가 하나면 첫 칸만)
+        static void Afflicted(Sinnoh.Rules.GameState st, int seat)
+        {
+            var party = st.Seats[seat].Party;
+            int first = -1, last = -1;
+            foreach (int id in party)
+            {
+                if (id < 0) continue;
+                if (first < 0) first = id;
+                last = id;
+            }
+            st.Pokemon[first].Status = Sinnoh.Rules.StatusEffect.Poisoned;
+            st.Pokemon[first].Status2 = Sinnoh.Rules.StatusEffect.Paralysed;
+            if (last != first) st.Pokemon[last].Status = Sinnoh.Rules.StatusEffect.Burned;
+        }
+
+        // 그 칸의 상태 아이콘(결정 180)이 걸린 상태와 같은 수 · 같은 순서 · 지금 언어의 그림(IconArt)인지, 자리가 칸 안인지 단정한다. 아이콘 수
+        static int StatusIconsCheck(GameFlow flow, VisualElement box, VisualElement within, Sinnoh.Rules.PokemonState pk, string what)
+        {
+            var want = new List<Sinnoh.Rules.StatusEffect>();
+            Sinnoh.Rules.StatusRules.Statuses(pk, want);
+            var icons = box != null ? box.Query(className: "sn-status-icon").ToList() : new List<VisualElement>();
+            if (icons.Count != want.Count) throw new InvalidOperationException(what + ": 상태 아이콘 " + icons.Count + " ≠ 걸린 상태 " + want.Count);
+            for (int k = 0; k < want.Count; k++)
+            {
+                var tex = GenAssets.Load<Texture2D>(IconArt.Status(want[k]));
+                if (tex == null || icons[k].style.backgroundImage.value.texture != tex) throw new InvalidOperationException(what + ": 상태 아이콘 " + k + "이 " + IconArt.Status(want[k]) + " 그림이 아니다");
+                var b = icons[k].worldBound;
+                var w = within.worldBound;
+                if (b.width <= 0f || b.xMin < w.xMin - 0.5f || b.xMax > w.xMax + 0.5f || b.yMin < w.yMin - 0.5f || b.yMax > w.yMax + 0.5f)
+                    throw new InvalidOperationException(what + ": 상태 아이콘 " + icons[k].name + "이 칸 밖이다(" + b + " · 칸 " + w + ")");
+            }
+            return want.Count;
+        }
+
+        // 아래 판 파티 칸(결정 180): 상태가 있는 칸만 아이콘 줄이 있고, 아이콘은 도트 위(칸 안 · 글 칸을 덮지 않는다)
+        static void HudStatus(UiShot s, GameFlow flow)
+        {
+            var root = flow.Stage.Root;
+            var me = flow.Client.View.Seats[flow.Client.Seat];
+            int total = 0;
+            for (int i = 0; i < me.Party.Length; i++)
+            {
+                if (me.Party[i] < 0) continue;
+                var pk = flow.Client.View.Pokemon[me.Party[i]];
+                var tile = root.Q("board-hud-mon-" + i);
+                var row = root.Q("board-hud-mon-" + i + "-status");
+                if ((row != null) != (pk.Status != Sinnoh.Rules.StatusEffect.None)) throw new InvalidOperationException("파티 칸 " + i + " 상태 줄 " + (row != null ? "있음" : "없음") + " · 상태 " + pk.Status);
+                if (row == null) continue;
+                total += StatusIconsCheck(flow, row, tile, pk, "파티 칸 " + i);
+                var info = tile.Q(className: "sn-hud-mon-info");
+                foreach (var icon in row.Children())
+                    if (info != null && icon.worldBound.Overlaps(info.worldBound)) throw new InvalidOperationException("파티 칸 " + i + ": 상태 아이콘이 이름 · 체력 칸을 덮는다");
+            }
+            if (total > 0) UnityEngine.Debug.Log("[UiShots] party-status 아이콘 " + total);
+        }
+
+        // 아이콘의 마우스 오버(이름 + 짧은 효과): 툴팁이 화면 안 · 아래 판을 덮지 않는다
+        static void StatusTip(UiShot s, string icon)
+        {
+            var flow = s.Made;
+            var root = flow.Stage.Root;
+            var target = root.Q(icon) ?? throw new InvalidOperationException("요소 없음: " + icon);
+            flow.Stage.Tips.Show(target);
+            s.Panel.Tick(3);
+            var t = flow.Stage.Tips.Element.worldBound;
+            if (t.yMin < -0.5f || t.yMax > root.worldBound.yMax + 0.5f || t.xMin < -0.5f || t.xMax > root.worldBound.xMax + 0.5f || t.Overlaps(root.Q("board-hud-dock").worldBound))
+                throw new InvalidOperationException("상태 툴팁이 화면 밖이거나 아래 판을 덮는다(" + t + ")");
+            var text = string.Join(" ", flow.Stage.Tips.Element.Query<Label>().ToList().ConvertAll(l => l.text.Replace("⁠", "")));   // 한글 줄바꿈 이음표(U+2060)를 뺀다
+            if (!text.Contains(flow.Stage.T("screen.status.poisoned.tip"))) throw new InvalidOperationException("상태 툴팁에 효과 글이 없다: " + text);
+        }
+
+        // 정비 판(S18 — seat < 0) · 남 좌석 판(S39 — 좌석 2): 카드의 상태 줄 board-party-status-<i>가 같은 그림
+        static void PartyStatus(UiShot s, int seat)
+        {
+            var flow = seat < 0 ? s.Made : MyTurn(s, 2, st => Afflicted(st, seat));
+            if (!flow.OpenParty(seat)) throw new InvalidOperationException("정비 판이 열리지 않았다");
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+            var root = flow.Stage.Root;
+            var view = flow.Client.View;
+            var party = view.Seats[seat < 0 ? flow.Client.Seat : seat].Party;
+            int total = 0;
+            for (int i = 0; i < party.Length; i++)
+            {
+                if (party[i] < 0) continue;
+                var pk = view.Pokemon[party[i]];
+                var row = root.Q("board-party-status-" + i);
+                if ((row != null) != (pk.Status != Sinnoh.Rules.StatusEffect.None)) throw new InvalidOperationException("정비 판 칸 " + i + " 상태 줄 " + (row != null ? "있음" : "없음") + " · 상태 " + pk.Status);
+                if (row == null) continue;
+                total += StatusIconsCheck(flow, row, root.Q("board-party-mon-" + i), pk, "정비 판 칸 " + i);
+            }
+            if (total < 2) throw new InvalidOperationException("정비 판 상태 아이콘 " + total + " < 2");
+            if (!(flow.Front is PartyScreen)) throw new InvalidOperationException("맨 앞 창이 정비 판이 아니다");
+            if (seat >= 0) OwnerCheck(flow, root.Q(FaceBox.OwnerName), seat, flow.Front.Name);
+        }
+
+        // 정비 판의 가장 긴 열: 전설 셋(전설 특수기술 있음 · 기술 없음 = 빈 칸 둘이 전설 특수기술 ·배우는 타입 넷 · 독 + 화상 · 유물 + 둘째 지닌물건(backpacker R) · [폼체인지]) + 찌르꼬(애크러뱃).
+        // 열이 길어도 아래 가방 칸의 마지막 줄까지 판 안에 든다(글 넘침은 Fit — 가방 줄이 부모 칸 밖이면 거기서 걸린다)
+        static void PartyMax(UiShot s)
+        {
+            var ctx = s.Board.Ctx;
+            var flow = Seats(s, 1, state =>
+            {
+                var st = state.Seats[0];
+                st.TrainerCard = ctx.Cards.TrainerCardIds.IndexOf("backpacker");
+                st.TrainerCardTier = R.TrainerRules.Gold;
+                GiveTeam(ctx, state, "483:1", "484:1", "487:1", "396:0");
+                string[] relics = { "item.adamant_artifact", "item.lustrous_artifact", "item.griseous_artifact" };
+                for (int i = 0; i < relics.Length; i++)
+                {
+                    var pk = state.Pokemon[st.Party[i]];
+                    pk.HeldItem = ItemOf(ctx, relics[i]);
+                    pk.HeldItem2 = ItemOf(ctx, i == 0 ? "item.choice_band" : "item.lucky_egg");
+                    pk.Status = R.StatusEffect.Poisoned;
+                    pk.Status2 = R.StatusEffect.Burned;
+                    pk.HasLegendaryMove = true;   // 전설 특수기술(알파 스트라이크 · 비스트 부스트)이 빈 칸 둘을 차지한다
+                }
+                state.Pokemon[st.Party[3]].Moves[0] = ctx.Cards.MoveIds.IndexOf("acrobatics");
+            });
+            if (!flow.OpenParty()) throw new InvalidOperationException("정비 판이 열리지 않았다");
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+            var root = flow.Stage.Root;
+            for (int i = 0; i < 3; i++)
+            {
+                if (root.Q("board-party-status-" + i)?.Query(className: "sn-status-icon").ToList().Count != 2) throw new InvalidOperationException("칸 " + i + ": 상태 아이콘 둘이 아니다");
+                if (root.Q("board-party-form-" + i) == null) throw new InvalidOperationException("칸 " + i + ": [폼체인지]가 없다");
+                if (root.Q("board-party-item2-" + i) == null) throw new InvalidOperationException("칸 " + i + ": 둘째 지닌물건 칸이 없다");
+                for (int k = 1; k <= 2; k++)
+                    if (root.Q("board-party-slot-" + i + "-" + k)?.ClassListContains(MonParts.LegendSlotClass) != true) throw new InvalidOperationException("칸 " + i + "-" + k + ": 전설 특수기술 줄이 아니다");
+            }
+            // 물음 줄까지 선 모습(PlayMode 시험이 넘침을 보는 순간 — [폼체인지] → 「…폼체인지하겠습니까?」)
+            if (!((PartyScreen)flow.Stage.Current).PressForm(0)) throw new InvalidOperationException("[폼체인지] 물음이 뜨지 않았다");
+            s.Panel.Tick(3);
+            var panel = root.Q("board-party-panel").worldBound;
+            var bag = root.Q("board-party-bag");
+            var last = bag[bag.childCount - 1].worldBound;
+            var col = root.Q("board-party-col-0");
+            var rows = new List<string>();
+            foreach (var c in col.Children()) rows.Add(c.worldBound.height.ToString("0"));
+            Debug.Log("[UiShots] party-max 열 " + col.worldBound.height.ToString("0") + "(" + string.Join("+", rows) + ") · 물음 " + root.Q("board-party-ask").worldBound.height.ToString("0") + " · 가방 " + bag.worldBound.height.ToString("0") + " · 가방 끝 " + last.yMax.ToString("0") + " · 판 끝 " + panel.yMax.ToString("0"));
+            if (last.yMax > bag.worldBound.yMax + 0.5f || bag.worldBound.yMax > panel.yMax + 0.5f) throw new InvalidOperationException("가방 칸의 끝 줄이 판 밖이다(" + last + " · 가방 " + bag.worldBound + " · 판 " + panel + ")");
         }
 
         // 내 자원 줄(결정 98): 줄이 보이고 화면 안에 있고, 아래 판 · 기록 판 · 위 띠 · UB 칩 판과 겹치지 않고, 칸 열둘(규토리 7 · 여행 점수 · 볼 4)이 줄 안에 있으며 글이 잘리지 않는다
@@ -1908,6 +2111,98 @@ namespace Sinnoh.Editor
             s.Made.Stage.Tweens.Advance(ms);
         }
 
+        // 결정 181: 스타팅 포켓몬 진화 뒤 옛 기술 물음 — 해금 덮개(48행)가 끝날 때까지 보낸 뒤, 진화형의 ★ 고유 기술 줄(누르지 않음) + 칸 1·2(누를 수 있음)가 판 안 · 화면 안
+        //   filled = 스타팅 포켓몬의 칸 1에 이브이의 고유 기술을 넣어 둔 판(바꿀 기술이 있는 칸)
+        static void EvolveTeachNow(UiShot s, bool filled)
+        {
+            var flow = WorkBoard(s);
+            if (filled)
+            {
+                flow.Rebase(st =>
+                {
+                    var party = st.Seats[0].Party;
+                    st.Pokemon[party[1]].Moves[0] = flow.Ctx.Cards.Pokemon[st.Pokemon[party[0]].Def].Signature;
+                });
+                flow.Stage.Tweens.Advance(BoardReadyMs);
+                flow.Layout(s.Width, s.Height);
+            }
+            var opened = EvolveOpen(s, flow);
+            if (!opened.PressEvolve(opened.Listed[1])) throw new InvalidOperationException("스타팅 포켓몬의 진화가 거절됐다");
+            flow.Stage.Tweens.Advance(Sinnoh.Rules.Session.PlayTiming.EvolveMs + BoardReadyMs);
+            flow.Stage.Tweens.Advance(20000);
+            s.Panel.Tick(3);
+            var evolve = flow.Stage.Current as EvolveScreen;
+            if (evolve == null || evolve.Now != EvolveScreen.Mode.Teach) throw new InvalidOperationException("옛 기술 물음이 아니다: " + (evolve != null ? evolve.Now.ToString() : "창 없음"));
+            if (flow.Fx != null && flow.Fx.Sequencer.Current != null) throw new InvalidOperationException("연출이 아직 돈다");
+            var root = flow.Stage.Root;
+            var panel = root.Q("board-evolve-panel") ?? throw new InvalidOperationException("진화 판이 없다");
+            var sig = root.Q("board-evolve-sig") ?? throw new InvalidOperationException("고유 기술 줄이 없다");
+            if (root.Q("board-evolve-now") == null) throw new InvalidOperationException("「지금 기술」 머리가 없다");
+            if (sig.ClassListContains("sn-party-press")) throw new InvalidOperationException("고유 기술 줄을 누를 수 있다");
+            var ctx = flow.Ctx;
+            int pokemon = flow.Client.Choice(R.ChoiceKind.Reward).Options[0];
+            string sigName = flow.Stage.T(Sinnoh.Fx.BattleFeed.MoveNameKey(ctx, ctx.Cards.Pokemon[flow.Client.View.Pokemon[pokemon].Def].Signature));
+            if (!sig.Query<Label>().ToList().Exists(l => l.text.Contains(sigName))) throw new InvalidOperationException("고유 기술 줄에 " + sigName + "이(가) 없다");
+            int had = flow.Client.View.Pokemon[pokemon].Moves[0];
+            if (filled != (had >= 0)) throw new InvalidOperationException("칸 1 기술 = " + had);
+            if (filled && root.Q("board-evolve-teach-0").Q(className: "sn-enc-move") == null) throw new InvalidOperationException("칸 1에 지금 기술 줄이 없다");
+            var screen = root.worldBound;
+            foreach (string name in new[] { "board-evolve-sig", "board-evolve-teach-0", "board-evolve-teach-1", "board-evolve-keep" })
+            {
+                var e = root.Q(name) ?? throw new InvalidOperationException("요소 없음: " + name);
+                if (name.StartsWith("board-evolve-teach-", StringComparison.Ordinal) && !e.ClassListContains("sn-party-press")) throw new InvalidOperationException(name + "을(를) 누를 수 없다");
+                var at = e.worldBound;
+                if (at.xMin < panel.worldBound.xMin - 0.5f || at.xMax > panel.worldBound.xMax + 0.5f || at.yMax > panel.worldBound.yMax + 0.5f) throw new InvalidOperationException(name + "이(가) 판 밖으로 나간다");
+            }
+            if (panel.worldBound.yMax > screen.yMax + 1f) throw new InvalidOperationException("진화 판이 화면 밖으로 나간다: " + panel.worldBound + " / " + screen);
+        }
+
+        // 결정 186: 그 요소에 마우스를 올린 모습 — 툴팁이 걸렸고 제목 = 기술 이름 · 본문이 있고 · 툴팁이 화면 안 · 판(clear)을 덮지 않는다
+        static void MoveTipShown(UiShot s, VisualElement target, int move, VisualElement panel)
+        {
+            var flow = s.Made;
+            if (target == null) throw new InvalidOperationException("툴팁을 볼 요소가 없다");
+            s.Panel.Tick(3);
+            flow.Stage.Tips.Show(target);
+            s.Panel.Tick(3);
+            var tips = flow.Stage.Tips;
+            if (tips.Target != target) throw new InvalidOperationException(target.name + "에 툴팁이 걸리지 않았다");
+            var labels = tips.Element.Query<Label>().ToList();
+            string want = flow.Stage.T(Sinnoh.Fx.BattleFeed.MoveNameKey(flow.Ctx, move));
+            if (labels.Count < 2 || labels[0].text != want || string.IsNullOrEmpty(labels[labels.Count - 1].text)) throw new InvalidOperationException(target.name + " 툴팁 = 「" + (labels.Count > 0 ? labels[0].text : "") + "」 ≠ " + want);
+            var at = tips.Element.worldBound;
+            var screen = flow.Stage.Root.worldBound;
+            if (at.xMin < screen.xMin - 1f || at.yMin < screen.yMin - 1f || at.xMax > screen.xMax + 1f || at.yMax > screen.yMax + 1f) throw new InvalidOperationException("툴팁이 화면 밖: " + at);
+            if (panel != null && at.Overlaps(panel.worldBound)) throw new InvalidOperationException("툴팁이 판을 덮는다: " + at + " / " + panel.worldBound);
+        }
+
+        // 결정 186: 스타팅 포켓몬의 칸 1에 기술을 넣어 둔 격파 판(SoloTrail.Defeat) — 결과 창의 기술 가르치기에서 원래 기술이 든 칸 단추에 마우스
+        static void BattleTeachTip(UiShot s)
+        {
+            var flow = s.Flow();
+            var pilot = FlowPilot.Start(flow, SoloTrail.Defeat);
+            int given = -1;
+            flow.Rebase(st =>
+            {
+                var p = st.Pokemon[st.Seats[0].Party[0]];
+                int sig = flow.Ctx.Cards.Pokemon[p.Def].Signature;
+                for (int m = 0; m < flow.Ctx.Cards.Moves.Count && given < 0; m++)
+                    if (m != sig && flow.Stage.TOrNull(Sinnoh.Fx.BattleFeed.MoveNameKey(flow.Ctx, m) + ".text") != null) given = m;
+                p.Moves[0] = given;
+            });
+            flow.Layout(s.Width, s.Height);
+            if (!FlowPilot.Run(flow, pilot, () => Battle(flow, b => b.ShowsResult && b.AskingReward && b.Ready), ms => Pass(flow, ms), BattleStepMs, BattleStepMax * 10, true))
+                throw new InvalidOperationException("칸 1에 기술을 넣은 격파 판이 기술 가르치기까지 가지 못했다(화면 " + (flow.Stage.Current != null ? flow.Stage.Current.Name : "보드") + ")");
+            var battle = (BattleScreen)flow.Stage.Current;
+            VisualElement button = null;
+            for (int i = 0; i < battle.Rewards.Count; i++)
+            {
+                var a = battle.Rewards[i];
+                if (a.Kind == R.AnswerKind.Pick && flow.Client.View.Pokemon[a.Target].Moves[a.Arg] == given) button = flow.Stage.Root.Q("battle-reward-" + (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+            MoveTipShown(s, button, given, flow.Stage.Root.Q("battle-result-panel"));
+        }
+
         // 결정 84 L11: 흰 실루엣이 오가는 중(2000ms)에 스페이스 바(GameFlow.SkipKey) → 착지로 건너뛴 뒤 한 프레임
         static void EvolveSkipped(UiShot s)
         {
@@ -1919,7 +2214,7 @@ namespace Sinnoh.Editor
             if (!evolve.Pose.To || evolve.Pose.Message != 2 || evolve.Pose.White != 0f) throw new InvalidOperationException("건너뛴 뒤가 착지 모습이 아니다(" + evolve.PoseMs + "ms)");
         }
 
-        // 조무래기를 이긴 판의 공중날기 [출발] 뒤 ms(16행 — 3200)
+        // 조무래기를 이긴 판의 공중날기 [출발] 뒤 ms(16행 — 컷인 1400 + 택시 3200, 결정 167)
         static void Flying(UiShot s, int ms)
         {
             var village = Freed(s);
@@ -2050,6 +2345,33 @@ namespace Sinnoh.Editor
         {
             var flow = Trail(s, SoloTrail.Kit, f => f.InputOpen && Sinnoh.Rules.PokemonRules.PartyCount(f.Client.View.Seats[f.Client.Seat]) >= 3);
             if (!flow.OpenParty()) throw new InvalidOperationException("정비 판이 열리지 않았다");
+            return (PartyScreen)flow.Stage.Current;
+        }
+
+        // 결정 195: Maint 판에서 첫 포켓몬(스타팅)에게 전설 특수기술을 주고 배운 기술을 비운 뒤 정비 판을 다시 연다 — 칸 1 · 2가 전설 특수기술 줄인지 단정
+        static PartyScreen LegendMaint(UiShot s)
+        {
+            Maint(s);
+            var flow = s.Made;
+            int starter = flow.Client.View.Seats[flow.Client.Seat].Party[0];
+            flow.Rebase(st =>
+            {
+                var pk = st.Pokemon[starter];
+                pk.HasLegendaryMove = true;
+                for (int k = 0; k < pk.Moves.Length; k++) pk.Moves[k] = -1;
+            });
+            flow.Stage.Tweens.Advance(BoardReadyMs);
+            flow.Layout(s.Width, s.Height);
+            for (int i = 0; i < 200 && !flow.CanOpenParty; i++) Pass(flow, 250);
+            if (!flow.OpenParty()) throw new InvalidOperationException("정비 판이 다시 열리지 않았다");
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+            foreach (var (slot, key) in new[] { ("board-party-slot-0-1", "screen.battle.move.alpha_strike"), ("board-party-slot-0-2", "screen.passive.beast_boost") })
+            {
+                var row = flow.Stage.Root.Q(slot);
+                if (row == null || !row.ClassListContains(MonParts.LegendSlotClass) || !row.Query<Label>().ToList().Exists(l => l.text == flow.Stage.T(key)))
+                    throw new InvalidOperationException(slot + "이 전설 특수기술 줄(" + flow.Stage.T(key) + ")이 아니다");
+            }
             return (PartyScreen)flow.Stage.Current;
         }
 
@@ -2639,7 +2961,7 @@ namespace Sinnoh.Editor
         /// <summary>보드 위에 얹히는 화면(패널 바탕이 투명): 보드 씬을 같은 크기로 그린 그림 위에 겹쳐 찍는다 — 실행 중에는 같은 씬의 3D 보드가 패널 아래에 보인다.</summary>
         public static readonly HashSet<string> OverBoard = new HashSet<string>
         {
-            "title", "title-web", "title-host", "title-update", "solo", "solo-overwrite", "solo-tip", "settings", "solo-protagonist", "settings-job", "settings-lang", "menu-settings-lang", "board-hud-job", "board-hud-walk-job", "board-hud-nocards", "setup-village", "setup-village-picked", "setup-pick", "setup-pick-picked", "setup-pick-long", "game-board",
+            "title", "title-web", "title-host", "title-update", "title-update-auto", "title-update-progress", "title-update-fail", "solo", "solo-overwrite", "solo-tip", "settings", "solo-protagonist", "settings-job", "settings-lang", "menu-settings-lang", "board-hud-job", "board-hud-walk-job", "board-hud-nocards", "setup-village", "setup-village-picked", "setup-pick", "setup-pick-picked", "setup-pick-long", "game-board",
             "setup-village-glide", "setup-village-drop", "setup-village-landed", "setup-deal", "setup-pick-locked", "setup-card-locked", "setup-starter-open", "setup-starter-shown", "setup-card-reveal", "board-spots-drop", "board-spots-placed",
             "board-hud-myturn", "board-hud", "board-hud-hover", "board-hud-tip", "board-hud-walk", "board-hud-walked", "board-hud-band", "board-hud-cut", "board-hud-round2", "board-hud-tip-end",
             "board-menu", "board-menu-ask", "board-menu-unsaved", "board-menu-ask-unsaved", "board-menu-failed", "board-menu-ask-failed", "board-resumed", "title-continue", "save-list", "save-delete-ask", "save-list-empty",
@@ -2648,13 +2970,13 @@ namespace Sinnoh.Editor
             "act-card-drop", "act-card-prologue", "board-grunts-drop", "act-card-1", "board-log", "board-info-seat", "board-info-grunt", "board-info-spot", "board-tokens-close", "board-tokens-yaw",
             "battle-select", "battle-hover", "battle-roll", "battle-enemy-turn", "battle-result", "battle-result-win",
             "board-hud-search", "encounter", "encounter-2", "encounter-1", "encounter-hover",
-            "battle-wild", "battle-teach", "battle-taught", "battle-coral", "battle-fled", "battle-bag", "battle-captured", "battle-sendin", "battle-sendin-6", "battle-switch", "battle-partyfull",
+            "battle-wild", "battle-teach", "battle-teach-tip", "battle-taught", "battle-coral", "battle-fled", "battle-bag", "battle-captured", "battle-sendin", "battle-sendin-6", "battle-switch", "battle-partyfull",
             "board-hud-bang", "encounter-flip", "enter-wipe", "battle-intro", "battle-capture", "battle-capture-shake", "battle-capture-ok", "battle-result-lines",
             "board-party-plain", "board-party", "board-party-teach", "board-party-ask", "board-party-item", "mon-detail",
             "board-village", "board-village-used", "board-village-fly", "board-fly-map", "board-fly-map-why", "board-fly-map-chip", "board-fly", "board-flown", "board-trainer", "board-spot", "board-spot-flip", "board-spot-revealed",
             "board-craft", "board-craft-suck", "board-craft-make", "board-craft-plus", "board-craft-stew", "board-craft-done", "encounter-craft-button", "encounter-craft",
             "board-village-bank", "board-village-bank-trade", "board-village-bank-flip", "board-village-bank-used",
-            "board-evolve", "board-evolve-half", "board-evolve-branch", "board-evolve-start", "board-evolve-white", "board-evolve-flash", "board-evolve-done", "board-evolve-skip", "board-evolve-teach", "board-fly-lift", "board-fly-land",
+            "board-evolve", "board-evolve-half", "board-evolve-branch", "board-evolve-start", "board-evolve-white", "board-evolve-flash", "board-evolve-done", "board-evolve-skip", "board-evolve-teach", "board-evolve-teach-now", "board-evolve-teach-now-filled", "board-evolve-teach-tip", "board-fly-lift", "board-fly-land",
             "board-spot-stash-flip", "board-spot-stash-face", "board-spot-star-flip", "board-spot-star-face", "board-spot-relic-flip", "board-spot-relic-face",
             "board-spot-alpha-flip", "board-spot-alpha-face", "board-spot-camp-flip", "board-spot-camp-face",
             "board-path-spot", "board-path-spot-tip", "board-path-via", "board-path-via-tip", "board-spot-walk", "board-spot-walk-tip", "board-spot-walk-passed",
@@ -2666,14 +2988,15 @@ namespace Sinnoh.Editor
             "row-94-heart-offer", "row-94-heart-spin", "row-94-heart-merge", "row-04-act3", "row-04-finale", "row-95-ask", "row-95-ask-tip", "row-95-hero-burn", "row-95-traitor-red",
             "row-96-order", "row-96-chips", "row-97-result-mons", "row-97-result", "row-97-traitor-won", "row-97-trail",
             "row-42-discard", "row-42-discard-pick", "row-42-tear", "board-fate-hand", "board-fate-hand-tip", "row-14-warp-pick", "row-45-pass", "row-14-warp", "row-14-land",
-            "battle-fate-button", "battle-fate-view", "row-34-chips6", "row-43-ask", "row-45-pass3", "row-43-reroll", "row-43-locked", "row-44-ask", "row-44-shadow",
+            "battle-fate-button", "battle-fate-view", "row-34-chips6", "row-43-ask", "row-45-pass3", "row-43-reroll", "row-43-locked", "row-43-end", "legend-slot-party", "legend-slot-teach", "legend-slot-mon", "row-44-ask", "row-44-shadow",
             "row-07-star", "row-07-star-flip", "row-08-fate", "row-98-challenge", "row-98-trade", "row-98-trade-many", "row-98-timeout",
             "board-stamp", "board-stamp-none", "board-stamp-full", "board-stamp-tip", "row-47-drop", "row-47-slam", "row-47-rewards", "row-47-cards", "row-70-stamp", "board-challenge", "row-51-bang", "row-51-slide", "row-51-vs", "row-51-hold", "board-trade-button", "board-trade", "board-trade-picked", "board-trade-full", "board-trade-bad", "board-trade-wait", "row-52-gather", "row-52-cross", "row-52-glow", "board-trade-offturn", "board-trade-pick", "board-trade-pick-picked", "board-trainer-platinum", "board-trainer-undivided",
             "board-shrine-button", "board-shrine-offer", "board-shrine-offer-named", "board-shrine-offer-picked", "row-31-fly", "row-31-pillar", "row-31-cards", "board-shrine-pick", "board-shrine-pick-tip", "row-32-bless",
             "board-shrine-apricorns", "board-shrine-follower", "row-34-flip", "row-34-tally", "row-34-bolt", "row-34-fall", "row-34-land", "row-34-spark", "row-34-chip",
             "row-32-share", "row-32-beam", "row-34-seats", "row-34-wait", "row-34-tie", "row-33-dark", "row-33-fall", "row-33-land", "row-33-rain",
-            "board-shrine-stews", "board-shrine-exchange", "board-shrine-exchange-card", "board-shrine-move", "board-shrine-teach",
+            "board-shrine-stews", "board-shrine-exchange", "board-shrine-exchange-card", "board-shrine-move", "board-shrine-teach", "board-shrine-teach-tip",
             "board-hud-party-1", "board-hud-party-3", "board-hud-party-5", "board-hud-party-6",
+            "board-hud-party-status", "board-hud-party-status-3", "board-hud-party-status-tip", "board-party-status", "board-party-other-status", "board-party-max",
             "board-hud-res", "board-hud-res-rich", "board-hud-res-6", "board-hud-res-ub6", "board-hud-res-tut",
             "tut-layer-center", "tut-layer-hole", "tut-layer-cell", "tut-layer-hint", "tut-layer-lost", "tut-layer-bot", "tut-layer-lines",
             "tut-main-ch0", "tut-main-ch1", "tut-main-ch2", "tut-main-ch3", "tut-main-ch4", "tut-main-ch5", "tut-main-ch6", "tut-main-ch7", "tut-main-ch7-preview2", "tut-main-ch7-preview3", "tut-anchors", "tut-ext-e01", "tut-ext-e02", "tut-ext-e08",
@@ -2794,6 +3117,35 @@ namespace Sinnoh.Editor
         }
 
         static KeyValuePair<string, Action<UiShot>> Screen(string name, Action<UiShot> build) => new KeyValuePair<string, Action<UiShot>>(name, build);
+
+        // 자동 업데이트 알림 상자 한 단계(결정 161 — 서버 · 설치 없이 GameFlow.FakeUpdate): 상자 · 그 단추가 있고 화면 안 · 글 넘침 없음 · 메뉴 · 설명 창 · 아래 띠 · 로고와 안 겹침,
+        // 받는 중이면 덮개가 화면을 덮고 메뉴를 누르지 못한다, 실패는 까닭 한 줄(가장 긴 「한도」 줄). 주소를 열면 실패
+        static void UpdateBox(UiShot s, UpdateStep step, string button)
+        {
+            var flow = s.Flow();
+            flow.OpenUrl = url => throw new InvalidOperationException("캡처가 주소를 열었다: " + url);
+            flow.OpenTitle(TitleScreen.Solo);
+            flow.FakeUpdate("0.2.0", step, 12900000, 30198989, step == UpdateStep.Failed ? flow.Stage.T("screen.title.update.fail.later") : null);
+            s.Panel.Tick(3);
+            var root = flow.Stage.Root;
+            var title = (TitleScreen)flow.Stage.Current;
+            if (!title.UpdateShown || title.UpdateStepShown != step) throw new InvalidOperationException("알림 상자가 " + step + " 단계가 아니다");
+            if (root.Q<Button>(button) == null) throw new InvalidOperationException("단추 없음: " + button);
+            RoomFit(s, flow, "title-update");
+            foreach (var other in new[] { "title-menu", "title-desc", "title-foot", "title-logo" }) Apart(root, "title-update", other);
+            bool blocked = root.Q("title-update-block") != null;
+            if (blocked != (step == UpdateStep.Fetch)) throw new InvalidOperationException("덮개가 " + (blocked ? "있다" : "없다") + ": " + step);
+            if (step == UpdateStep.Fetch)
+            {
+                if (root.Q<Label>("title-update-amount")?.text != "12.3 / 28.8 MB") throw new InvalidOperationException("MB 글: " + root.Q<Label>("title-update-amount")?.text);
+                var fill = root.Q("title-update-fill").worldBound.width / root.Q("title-update-bar").worldBound.width;
+                if (fill < 0.38f || fill > 0.48f) throw new InvalidOperationException("막대 채움 " + fill);
+                if (title.Activate(0)) throw new InvalidOperationException("받는 동안 메뉴가 눌렸다");
+                var block = root.Q("title-update-block").worldBound;
+                if (!block.Contains(root.Q("title-menu").worldBound.center)) throw new InvalidOperationException("덮개가 메뉴를 덮지 않는다");
+            }
+            if (step == UpdateStep.Failed && root.Q<Button>("title-update-get") == null) throw new InvalidOperationException("실패에 [받기] 없음");
+        }
 
         static Action<UiShot> Gallery(string tipTarget) => s =>
         {
@@ -3009,6 +3361,15 @@ namespace Sinnoh.Editor
             return new RectInt((width - w) / 2, top + (height - top - dock - h) / 2, w, h);
         }
 
+        // 그려지나: 자신은 보이고(visibility), 자신과 위 요소 모두 display가 있고 불투명도가 0이 아니다
+        static bool Drawn(VisualElement el)
+        {
+            if (el.resolvedStyle.visibility != Visibility.Visible) return false;
+            for (var e = el; e != null; e = e.parent)
+                if (e.resolvedStyle.display == DisplayStyle.None || e.resolvedStyle.opacity <= 0f) return false;
+            return true;
+        }
+
         // 찍은 화면에서 더 보는 것: 배틀 화면이면 DS 요소의 자리·크기(§4-3)와 그 안이 그려졌는지(무대·도트·상자 — 색이 여럿)
         static void Inspect(string screen, UiShot shot, Color32[] px, List<string> fails)
         {
@@ -3044,6 +3405,37 @@ namespace Sinnoh.Editor
                 shot.Panel.Tick(3);
                 foreach (string name in new[] { "battle-dock", "battle-info" })
                     foreach (string bad in WorkUi.Overflows(shot.Panel.Root.Q(name))) fails.Add($"{at} 글자 넘침({name}): {bad}");
+                // 결정 170: [운명의 변화 n/5]는 독 차례 칸 안(스피드 줄 아래) — 칸 밖으로 밀려나거나 위 줄과 겹치지 않는다
+                var fateButton = shot.Panel.Root.Q(BattleScreen.FateButton);
+                var turnBox = shot.Panel.Root.Q("battle-turn");
+                if (fateButton != null)
+                {
+                    // 단추는 차례 칸의 마지막 줄(혼자 서거나 · 단추 하나뿐인 맨 아래 단추 줄 옆)
+                    var line = fateButton.parent == turnBox ? fateButton : fateButton.parent;
+                    if (turnBox == null || line.parent != turnBox) fails.Add($"{at} [운명의 변화]가 독 차례 칸에 없다");
+                    else
+                    {
+                        var fb = fateButton.worldBound;
+                        var tb = turnBox.worldBound;
+                        if (fb.xMin < tb.xMin - 0.5f || fb.xMax > tb.xMax + 0.5f || fb.yMin < tb.yMin - 0.5f || fb.yMax > tb.yMax + 0.5f) fails.Add($"{at} [운명의 변화]가 차례 칸 밖으로 나간다({fb} · 칸 {tb})");
+                        int at2 = turnBox.IndexOf(line);
+                        if (at2 > 0 && turnBox[at2 - 1].worldBound.yMax > line.worldBound.yMin + 0.5f) fails.Add($"{at} [운명의 변화] 줄이 위 줄({turnBox[at2 - 1].name})과 겹친다");
+                    }
+                }
+                // 결정 169: 포켓몬 칸의 마우스 오버 카드는 화면 안 · 독과 DS를 가리지 않는다
+                var monTip = battle.MonTipElement;
+                if (battle.MonTipShown >= 0 && monTip != null && monTip.panel != null)
+                {
+                    var mt = monTip.worldBound;
+                    var screenBox = shot.Panel.Root.worldBound;
+                    if (mt.xMin < screenBox.xMin - 0.5f || mt.yMin < screenBox.yMin - 0.5f || mt.xMax > screenBox.xMax + 0.5f || mt.yMax > screenBox.yMax + 0.5f) fails.Add($"{at} 포켓몬 카드가 화면 밖으로 나간다({mt})");
+                    foreach (string other in new[] { "battle-dock", "battle-ds-frame" })
+                    {
+                        var o = shot.Panel.Root.Q(other);
+                        if (o != null && o.worldBound.Overlaps(mt)) fails.Add($"{at} 포켓몬 카드가 {other}을 가린다(카드 {mt} · {o.worldBound})");
+                    }
+                    foreach (string bad in WorkUi.Overflows(monTip)) fails.Add($"{at} 글자 넘침(mon-tip): {bad}");
+                }
                 // 독의 포켓몬 고르기 줄(내보내기·교체): 칸이 줄 밖으로 넘치면 말없이 잘려 누를 수 없다(M5 마감 검토 — 파티 6)
                 shot.Panel.Root.Query<VisualElement>(className: "sn-battle-bench").ForEach(row =>
                 {
@@ -3066,6 +3458,27 @@ namespace Sinnoh.Editor
                     {
                         if (badge.worldBound.yMax > scrim.worldBound.yMin + 0.5f) fails.Add($"{at} 보호 배지 {badge.name}이 배틀 화면 덮개에 가린다(아래 {badge.worldBound.yMax} · 덮개 위 {scrim.worldBound.yMin})");
                     });
+                // 덮개는 반투명이라 그 아래 보드 HUD 요소(board-hud-*)는 숨었거나 배틀 판(독 · 기둥 · DS 틀)에 다 가려야 한다(M10 — 아래 판 위 자원 줄 글자가 독 위로 비쳤다)
+                var hud = shot.Panel.Root.Q("board-hud-dock")?.parent;
+                if (scrim != null && hud != null)
+                {
+                    var covers = new List<Rect>();
+                    foreach (string name in new[] { "battle-dock", "battle-info", "battle-log", "battle-ds-frame" })
+                    {
+                        var c = shot.Panel.Root.Q(name);
+                        if (c != null && Drawn(c)) covers.Add(c.worldBound);
+                    }
+                    float top = scrim.worldBound.yMin;
+                    hud.Query<VisualElement>().ForEach(el =>
+                    {
+                        if (el.name == null || !el.name.StartsWith("board-hud", StringComparison.Ordinal)) return;
+                        var r = el.worldBound;
+                        if (r.width < 1f || r.height < 1f || r.yMin < top - 0.5f || !Drawn(el)) return;
+                        foreach (var c in covers)
+                            if (r.xMin >= c.xMin - 0.5f && r.yMin >= c.yMin - 0.5f && r.xMax <= c.xMax + 0.5f && r.yMax <= c.yMax + 0.5f) return;
+                        fails.Add($"{at} HUD 요소 {el.name}이 배틀 화면 덮개 아래로 비친다({r})");
+                    });
+                }
                 // 기둥의 도트 창이 바로 밑 줄(「대기」·「기술」)에 닿지 않는다(큰 도트는 창을 아래 끝까지 채운다 — looks-bugs 4)
                 foreach (string side in new[] { "battle-info-me", "battle-info-foe" })
                 {

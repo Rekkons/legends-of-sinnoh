@@ -1,5 +1,5 @@
 {"schema":1,"note":"설명서 그림 71(M9 「설명서 그림」, 결정 35): 원작 룰북 PDF 쪽에서 예시 그림만 자를 칸. key = 설명서 그림 키(Data/Json/rulebook.<lang>.json figure 블록), page = 원본 쪽, rect = [x, y, w, h] — 쪽을 폭 width px로 렌더한 그림의 px(왼쪽 위 (0,0), y 아래로), parts = 떨어진 조각 여럿을 왼쪽부터 gap px 띄워 가로로 잇는다. round = 둥근 아이콘 하나(rect) — 내접 원 밖을 투명하게(설명서 표 줄 머리 아이콘, 결정 143 ③). lang = 그림 속 글이 언어마다 달라 ko(한국어판) · en(영문 원본)에서 따로 자른다 — 없으면 한 벌(shared PDF). 이름표 · 캡션은 설명서 글에 옮겨 두어 칸 밖에 둔다(plan §5 #340). 두 PDF는 같은 쪽 배치(한국어판 = 영문 슬라이드 위에 글만 바꿈)라 칸은 언어 공통. build.mjs rulebook 묶음(Tools/assets/rulebook.mjs)이 Gen/Rulebook으로 자른다 — 칸을 고치면 Logs/Review/m9/rulebook-figs/ 시트로 다시 본다","width":2400,"sources":{"ko":"Research/raw/rules-a.pdf","en":"Research/raw/original-gh/Rulebook-en-master.pdf"},"shared":"en","gap":8,"rows":[
-{"key":"intro.welcome/cover","page":1,"rect":[540,166,1326,874],"fill":[[1756,166,114,60]],"lang":true},
+{"key":"intro.welcome/cover","page":1,"rect":[540,166,1326,874],"fill":[[1756,166,114,60]]},
 {"key":"pokemon.card/roselia","page":4,"rect":[449,214,344,604]},
 {"key":"pokemon.tiers/icons","page":4,"rect":[626,1018,484,100]},
 {"key":"pokemon.apricorns/tree","page":4,"rect":[1310,1072,120,128]},
@@ -12,8 +12,8 @@
 {"key":"pokemon.legendary/alpha","page":6,"rect":[691,1068,96,91]},
 {"key":"pokemon.legendary/ultra_beasts","page":6,"rect":[842,1068,94,91]},
 {"key":"pokemon.legendary/ultra_burst","page":6,"rect":[991,1068,96,91]},
-{"key":"pokemon.forms/cherrim","page":6,"rect":[1310,384,436,204],"lang":true},
-{"key":"pokemon.forms/shaymin","page":6,"rect":[1806,390,456,186],"lang":true},
+{"key":"pokemon.forms/cherrim","page":6,"rect":[1310,384,436,204]},
+{"key":"pokemon.forms/shaymin","page":6,"rect":[1806,390,456,186]},
 {"key":"automation.bag/buttons","page":7,"rect":[744,379,354,204]},
 {"key":"automation.fly/staraptor","page":7,"rect":[744,617,354,203]},
 {"key":"automation.types/dice_roller","page":7,"rect":[744,852,354,350]},

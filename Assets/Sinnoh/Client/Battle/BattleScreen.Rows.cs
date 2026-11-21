@@ -190,7 +190,9 @@ namespace Sinnoh.Client
                 }
                 row.SetEnabled(open);
                 stage.OnTap(row, SoundKeys.Decide, e => PressPartyMove(index));
-                if (open) stage.Tips.Hook(row, stage.T(nameKey), stage.TOrNull(nameKey + ".text"), TipSide.Above, reading: true, clear: dock);
+                // 마우스 오버 = 쓰는 포켓몬의 카드(결정 169 — 이 기술의 효과 문구도 그 카드의 기술 줄에 있다). 포켓몬을 모르면 기술 효과 툴팁
+                if (user.Exists) HookMon(row, user.Id);
+                else if (open) stage.Tips.Hook(row, stage.T(nameKey), stage.TOrNull(nameKey + ".text"), TipSide.Above, reading: true, clear: dock);
             }
             for (int i = shown; i < MoveRows; i++) Add(list, new VisualElement(), null, "sn-battle-move").AddToClassList("sn-battle-move-empty");
         }
@@ -357,6 +359,7 @@ namespace Sinnoh.Client
                 if (status != null) row.Add(Kit.Badge(stage.T(status), KitBadgeKind.Red, Kit.F1));
                 row.SetEnabled(open);
                 stage.OnTap(row, SoundKeys.Decide, e => PressAbility(index));
+                HookMon(row, id);   // 마우스 오버 = 그 포켓몬 카드(결정 169)
             }
             for (int i = shown; i < cells; i++)
             {
@@ -365,6 +368,9 @@ namespace Sinnoh.Client
                 empty.AddToClassList("sn-battle-move-half");
             }
         }
+
+        /// <summary>상성 0의 표시(기호라 문자열 표에 두지 않는다 — 결정 199 ②).</summary>
+        public const string Even = "±0";
 
         static PokemonType AlphaType(ChoiceAnswer a) => a.Values != null && a.Values.Count > 0 ? (PokemonType)a.Values[0] : PokemonType.Typeless;
 
@@ -387,7 +393,8 @@ namespace Sinnoh.Client
                 {
                     var types = flow.Ctx.Cards.Pokemon[foe.Def].Types;
                     int bonus = TypeChart.Bonus(type, types[0], types.Count > 1 ? types[1] : PokemonType.Typeless);
-                    if (bonus != 0) row.Add(Kit.Badge(Signed(bonus), bonus > 0 ? KitBadgeKind.Ok : KitBadgeKind.Red, Kit.F2));
+                    // 표 상성만(균열 카드 보너스는 계산 줄이 따로 보인다) — 0도 「±0」으로 적는다(결정 199 ②)
+                    row.Add(Kit.Badge(bonus == 0 ? Even : Signed(bonus), bonus > 0 ? KitBadgeKind.Ok : bonus < 0 ? KitBadgeKind.Red : KitBadgeKind.Plain, Kit.F2));
                 }
                 row.SetEnabled(open);
                 stage.OnTap(row, SoundKeys.Decide, e => PressAlpha(index));
@@ -566,6 +573,7 @@ namespace Sinnoh.Client
             var left = block.Q("battle-foe-left");
             if (left != null) left.RemoveFromHierarchy();
             var roster = state.Battle.Sides[1 - feed.MySide].Roster;
+            swarmCells.Clear();
             var head = Add(block, new VisualElement(), "battle-swarm", "sn-battle-line");
             Add(head, Kit.Text(stage.T("screen.battle.swarm"), Kit.F2), null, "kit-muted");
             var slots = Add(block, new VisualElement(), "battle-swarm-slots", "sn-battle-swarm");
@@ -592,10 +600,34 @@ namespace Sinnoh.Client
                     var name = Add(slot, Kit.Text(BoardHud.ShortName(stage.T("pokemon." + flow.Ctx.Cards.Pokemon[def].Key)), Kit.F2), null, "sn-battle-swarm-name");
                     if (done) name.AddToClassList("kit-muted");
                     if (caught) slot.Add(Kit.Badge(stage.T("screen.battle.swarm.caught"), KitBadgeKind.Ok, Kit.F2));
+                    HookSwarm(slot, id, state);   // 마우스 오버 = 그 포켓몬 카드(결정 199 ① — 무리 셋은 공개 정보, 아직 안 나온 · 잡은 · 쓰러진 칸도)
                 }
                 else slot.Add(Kit.Text(stage.T(caught ? "screen.battle.swarm.caught" : "screen.battle.swarm.done"), Kit.F2));
                 swarmSlots.Add(slot);
             }
+        }
+
+        readonly Dictionary<VisualElement, Action> swarmCells = new Dictionary<VisualElement, Action>();
+
+        // 무리 칸의 포켓몬 카드(결정 199 ①): 배틀 포켓몬 카드와 같은 내용(기록 기둥 위). 나온 포켓몬은 화면이 그리는 지금 체력 · 스피드, 아직 안 나온 것은 보기 값 그대로
+        void HookSwarm(VisualElement el, int id, GameState state)
+        {
+            if (monTip == null || el == null || state == null || id < 0 || id >= state.Pokemon.Count || state.Pokemon[id].Def < 0) return;
+            var pk = state.Pokemon[id];
+            var mon = Shown(id);
+            int hp = mon.Exists ? mon.Hp : PokemonRules.Hp(flow.Ctx, pk);
+            int speed = mon.Exists ? mon.Speed : flow.Ctx.Cards.Pokemon[pk.Def].Initiative;
+            monTip.HookMon(el, pk, hp, speed, logBox);
+            swarmCells[el] = () => monTip.ShowMon(el, pk, hp, speed, logBox);
+        }
+
+        /// <summary>무리 줄의 n번째 칸(1부터 — <c>battle-swarm-slot-n</c>)에 마우스를 올린 것처럼 카드를 띄운다(캡처 · 시험). 그 칸이 없으면 false.</summary>
+        public bool HoverSwarm(int n)
+        {
+            var el = info != null ? info.Q("battle-swarm-slot-" + n.ToString(CultureInfo.InvariantCulture)) : null;
+            if (el == null || !swarmCells.TryGetValue(el, out var show)) return false;
+            show();
+            return true;
         }
 
         // 덧칩의 움직임(74·75·81행 · 24행): 응징 구슬·배지 · 자물쇠 톡 · 진행 점 톡 · 명단이 하나씩 선다
@@ -710,6 +742,8 @@ namespace Sinnoh.Client
             var cur = seq != null ? seq.Current : null;
             var state = feed.Source;
             EnemyAura = PlayerAura = AuraKind.None;
+            EnemyMotes = PlayerMotes = 0;
+            staying = false;
             FormShown = false;
             for (int k = 0; k < 2; k++)
             {
@@ -785,6 +819,8 @@ namespace Sinnoh.Client
                             if (e is FatigueChanged f && f.Cause == FatigueCause.BeastBoost && f.PokemonId == mon.Id) aura = AuraBeats.Boost(local - tired.StartMs, tired.Ms);
                 }
                 if (!aura.On && formStep != null && formStep.Row == ResultRows.Form) aura = new AuraPose { Kind = AuraKind.Form, Px = ds.White > 0.5f ? 2 : 0, Type = -1 };
+                // 비스트 부스트가 쌓여 있는 동안(결정 184): 옅은 붉은 오라 — 우두머리 · 천상의 오라 · 팬 폼보다 앞 [가정 결정 184 ②]
+                if (!aura.On && ds.Standing && BoostStack(mon.Id, state, seq, cur) > 0) aura = AuraBeats.BoostStay();
                 if (!aura.On && state != null && mon.Id < state.Pokemon.Count && state.Pokemon[mon.Id].Alpha && ds.Standing)
                 {
                     // 우두머리(77행): 인트로에서 선 뒤 처음 1초는 굵게, 그 뒤 얇게 남는다
@@ -809,6 +845,7 @@ namespace Sinnoh.Client
                     aura.Kind = AuraKind.Fan;
                 }
                 if (enemy) EnemyAura = aura.Kind; else PlayerAura = aura.Kind;
+                PaintBoost(scene, ds, mon.Id, enemy, state, seq, cur);
             }
             // 응징 · 교체 불가(결정 80 L16 나): 기둥의 칩과 같은 값(드러난 이벤트에서 — FillExtras)을 체력 상자 옆의 작은 그림으로도
             if (scene.Enemy != null)
@@ -818,6 +855,67 @@ namespace Sinnoh.Client
             }
             if (scene.Player != null) scene.Player.Locked = lockText[0] != null;
             PaintUb(scene);
+        }
+
+        /// <summary>지금 DS에 찍힌 비스트 부스트 빛 알갱이 수(상대 · 내 쪽 — 결정 184, 확인용).</summary>
+        public int EnemyMotes { get; private set; }
+        public int PlayerMotes { get; private set; }
+
+        static readonly Color32 MoteEdge = new Color32(0x90, 0x30, 0x10, 0xFF), MoteInk = new Color32(0xFF, 0x78, 0x30, 0xFF), MoteCore = new Color32(0xFF, 0xF4, 0xB0, 0xFF);
+        readonly List<Mote> motes = new List<Mote>();
+        bool staying;   // 오르는 알갱이를 그렸다 — 늘 도는 시계(Ambient)가 그 박자마다 다시 그린다
+        MonArt art;
+
+        // 그 포켓몬 쪽에 쌓인 비스트 부스트(보기) — 그 쌓이는 단계(641)가 대기열에 아직 남았으면 0(단계가 끝나야 남는 오라 · 오르는 알갱이를 그린다)
+        int BoostStack(int id, GameState state, FxSequencer seq, FxEntry cur)
+        {
+            int stack = 0;
+            if (state != null && state.Battle != null)
+                foreach (var side in state.Battle.Sides)
+                    if (side.Active == id) stack = side.BeastBoost;
+            return stack > 0 && !BoostMotes.Ahead(seq != null ? seq.Queued : null, cur, local, id) ? stack : 0;
+        }
+
+        // 비스트 부스트(결정 184): 새로 쌓이는 단계(641)의 앞에는 터짐, 그 쪽에 쌓여 있는 동안(그 단계가 다 지난 뒤 — 보기는 이미 쌓인 값)은 발 둘레에서 몸 높이만큼 오르는 알갱이.
+        // 쌓인 것은 출전 포켓몬이 다음에 공격하거나 나가면(교체 · 기절 · 배틀 끝) 보기에서 0이 되어 지워진다. 알갱이 = 어두운 주황 1px 테두리 + 주황 몸 + 밝은 심
+        void PaintBoost(DsScene scene, DsMon ds, int id, bool enemy, GameState state, FxSequencer seq, FxEntry cur)
+        {
+            if (ds == null || !ds.Standing || ds.Sink > 0f) return;
+            motes.Clear();
+            var foot = enemy ? DsStage.EnemyFoot : DsStage.PlayerFoot;
+            int x = foot.x + ds.Dx, y = foot.y + ds.Dy;
+            // 도트 크기(도트 표의 조각 — 발 줄 위 줄 수 = 몸 높이, 폭의 반 = 둘레)
+            if (art == null) art = MonArt.Load();
+            int body = enemy ? 56 : 80, half = enemy ? 28 : 40;
+            if (art != null && ds.Key != null && art.TryPiece(ds.Key, !enemy, out _, out var rect, out var pivot))
+            {
+                body = Mathf.Min(rect.height, pivot.y);
+                half = rect.width / 2;
+            }
+            var burst = BoostMotes.StepOf(cur, id);
+            if (burst != null && local >= burst.StartMs && local < burst.EndMs) BoostMotes.Burst(local - burst.StartMs, x, y, body, motes, !enemy);
+            int stack = BoostStack(id, state, seq, cur);
+            if (stack > 0)
+            {
+                BoostMotes.Stay(ambientMs, x, y, half, body, stack, motes);
+                staying = true;
+            }
+            if (motes.Count == 0) return;
+            if (scene.Over == null) scene.Over = new List<DsRect>();
+            foreach (var m in motes)
+            {
+                byte a = (byte)Mathf.RoundToInt(Mathf.Clamp01(m.Alpha) * 255f);
+                if (a == 0) continue;
+                int s = m.Size, x0 = m.X - s / 2, y0 = m.Y - s / 2;
+                var edge = MoteEdge; edge.a = a;
+                var ink = MoteInk; ink.a = a;
+                var core = MoteCore; core.a = a;
+                scene.Over.Add(new DsRect { X = x0 - 1, Y = y0 - 1, W = s + 2, H = s + 2, Color = edge });   // 바깥 1px 테두리(배경과 구분)
+                scene.Over.Add(new DsRect { X = x0, Y = y0, W = s, H = s, Color = ink });
+                int c = s >= 3 ? s - 2 : 1;
+                scene.Over.Add(new DsRect { X = x0 + (s - c) / 2, Y = y0 + (s - c) / 2, W = c, H = c, Color = core });   // 밝은 심
+            }
+            if (enemy) EnemyMotes = motes.Count; else PlayerMotes = motes.Count;
         }
 
         // ── 트레이너 배틀 승리 보상(46행 — Reward/TrainerReward: 상대 유물 하나 또는 운명 최대 2장) ──

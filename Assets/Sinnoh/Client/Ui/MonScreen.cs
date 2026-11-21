@@ -128,7 +128,7 @@ namespace Sinnoh.Client
             Add(panel, Kit.Text(stage.T("screen.mon.sig"), Kit.F2), null, "kit-muted");
             Move(0, def.Signature, true);
             Add(panel, Kit.Text(stage.T("screen.mon.learned"), Kit.F2), null, "kit-muted");
-            for (int k = 0; k < pk.Moves.Length; k++) Move(k + 1, pk.Moves[k], false, k < pk.Breach.Length ? pk.Breach[k] : -1);
+            for (int k = 0; k < pk.Moves.Length; k++) Move(k + 1, pk.Moves[k], false, k < pk.Breach.Length ? pk.Breach[k] : -1, pk);
 
             // 지닌물건
             Add(panel, Kit.Text(stage.T("screen.mon.item"), Kit.F2), null, "kit-muted");
@@ -154,7 +154,7 @@ namespace Sinnoh.Client
             }
         }
 
-        void Move(int at, int move, bool star, int breach = -1)
+        void Move(int at, int move, bool star, int breach = -1, PokemonState pk = null)
         {
             var box = Add(panel, new VisualElement(), "mon-detail-move-" + at.ToString(CultureInfo.InvariantCulture), "sn-mon-move");
             if (move < 0 && breach >= 0)
@@ -163,6 +163,14 @@ namespace Sinnoh.Client
                 box.Add(MonParts.BreachRow(stage, flow.Ctx, breach, null));
                 string key = flow.Ctx.Decks.CardIds[breach];
                 Add(box, Kit.Wrapped(MonParts.BreachText(stage, key), Kit.F2), null, "sn-mon-text");
+                return;
+            }
+            var legend = move < 0 && pk != null && at > 0 ? MonParts.TacticRow(stage, flow.Ctx, pk, at - 1, null) : null;
+            if (legend != null)
+            {
+                // 전설 특수기술이 차지한 빈 칸(결정 195): 이름 · 타입 그림 + 효과 · 채우면 사라진다를 줄로(큰 보기라 툴팁에 숨기지 않는다)
+                box.Add(legend);
+                Add(box, Kit.Wrapped(MonParts.TacticTip(stage, LegendRules.TacticAt(pk, at - 1)), Kit.F2), null, "sn-mon-text");
                 return;
             }
             if (move < 0)

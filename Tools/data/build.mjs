@@ -5,6 +5,7 @@
 //                                       xlsx → pokemon·moves·trainer_cards.json(lib/cube.mjs),
 //                                       effects/moves.json(손으로 옮긴 기술 효과) → effects.json + reports/effects-todo.tsv(lib/effects.mjs, M3-f),
 //                                       카드 Lua·언어 모듈·원작 자산 이름·세이브 → strings.ko·strings.en.json(lib/strings.mjs),
+//                                       authored/ko/<묶음>.json(영문에서 다시 옮긴 한국어, 결정 163) → 3JA2 · 로씨온 글을 덮음 + reports/retranslate-ko.tsv(lib/retranslate.mjs),
 //                                       PokeAPI move_names.csv(+ 대조용 원작 자산 기술 이름 Pt·B2W2) → 현행 공식 한국어 기술명 + reports/move-names-ko.tsv(lib/move-names.mjs, 결정 43 ⑩·44 ②),
 //                                       카드 Lua + authored/dex-ko.json → Research/roster.csv(lib/roster.mjs, 종 이름 → 도감 번호),
 //                                       authored/tutorial/<id>.json + tutorial-ko.json → Data/Json/tutorial/<id>.json + 문자열 tutorial.*(lib/tutorial.mjs, M6.5),
@@ -30,6 +31,7 @@ import { readCards, mergeCards, cardStrings, mergeItems } from './lib/authored.m
 import { checkDuplicateKeys, selfTestDuplicateKeys } from './lib/dupkeys.mjs';
 import { buildTutorial } from './lib/tutorial.mjs';
 import { buildRulebook } from './lib/rulebook.mjs';
+import { selfTestRetranslate } from './lib/retranslate.mjs';
 import { creditsTable } from '../assets/lib/credits.mjs';
 import { srcPath } from '../sources.mjs';
 import { cli } from '../cli.mjs';
@@ -209,6 +211,7 @@ function buildAll() {
   files['manifest.json'] = JSON.stringify({ schema: 1, tables, contentTables, contentHash, inputs }, null, 2) + '\n';
   console.log(`고정물 ${fixtures.rows.length}개를 칸에 붙임(최대 거리 ${fixtures.maxDistance.toFixed(3)})`);
   console.log(strings.moveNamesSummary);
+  console.log(strings.retranslateSummary);
   console.log(rulebook.summary);
   console.log(`이미지 전용 카드 ${cards.length}면 verified ${cards.filter(r => r.verified).length}, 아이템 ${itemTable.rows.length}행(레시피 ${itemTable.rows.filter(r => r.recipe).length})`);
   console.log(`기술 효과 ${effects.implemented}/${cube.moves.length}종(절 ${effects.rows.length}), 미구현 ${cube.moves.length - effects.implemented}종 → reports/effects-todo.tsv`);
@@ -234,7 +237,7 @@ function writeChanged(dir, files) {
 
 // 모르는 선택(--chek 오타 등)으로 쓰지 않게 만들기 전에 거른다(종료 코드 2), --help는 사용법만
 if (process.argv.includes('--self-test')) {
-  const bad = [...selfTestDuplicateKeys(), ...selfTestLanguagePair()];
+  const bad = [...selfTestDuplicateKeys(), ...selfTestLanguagePair(), ...selfTestRetranslate()];
   for (const b of bad) console.error('실패: ' + b);
   console.log(bad.length ? `build self-test: ${bad.length}건 실패` : 'build self-test: OK');
   process.exit(bad.length ? 1 : 0);

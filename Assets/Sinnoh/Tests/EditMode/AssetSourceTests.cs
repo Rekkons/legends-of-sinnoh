@@ -194,7 +194,7 @@ namespace Sinnoh.Tests.EditMode
                     }
                 }
             }
-            Assert.AreEqual(34, entries, "손 표 항목(원작 9 · 한국어판 2 · 원작 자산 6 · 공개 6 · 도구 11)");
+            Assert.AreEqual(32, entries, "손 표 항목(원작 9 · 원작 자산 6 · 공개 6 · 도구 11 — 한국어판은 결정 172로 뺌)");
             Assert.Greater(urls, 40);
         }
 

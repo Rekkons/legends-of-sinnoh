@@ -103,6 +103,7 @@ namespace Sinnoh.Client
             if (runner.Session == null || flow.Session != runner.Session) throw new InvalidOperationException("화면 흐름이 진행기의 판에 들어가 있지 않다(TutorialRunner.Hand 뒤에 연다)");
             var t = new TutorialLayer(flow) { Runner = runner };
             flow.ClickGate = t.PassAt;
+            flow.KeyGate = t.PassKey;
             flow.Ticked += t.Tick;
             t.lastMs = flow.NowMs;
             t.Tick();
@@ -182,6 +183,7 @@ namespace Sinnoh.Client
             stopped = true;
             flow.Ticked -= Tick;
             if (flow.ClickGate == (Func<Vector2, bool>)PassAt) flow.ClickGate = null;
+            if (flow.KeyGate == (Func<VisualElement, bool>)PassKey) flow.KeyGate = null;
             Unhook();
             layer.RemoveFromHierarchy();
         }
@@ -235,6 +237,15 @@ namespace Sinnoh.Client
             return false;
         }
 
+        /// <summary>단축키로 누르는 요소(배틀 독 — <see cref="GameFlow.KeyGate"/>, 결정 164)를 받나: 그 요소의 가운데를 누른 클릭과 같은 판정(받으면 다음 부분으로 옮긴다). 안 받으면 hint를 띄운다.</summary>
+        public bool PassKey(VisualElement target)
+        {
+            if (target == null) return false;
+            if (Passes(target.worldBound.center, target, Click)) return true;
+            Hint(true);
+            return false;
+        }
+
         // 클릭 판정: 말풍선은 늘 · 단계가 떠 있지 않으면 늘 · 게임 메뉴·끝내기 창·끝 창이 떠 있으면 늘(층을 숨긴다 — 07 T63) · 배틀 결과 창 [확인]은 늘(T63) · [다음] 단계는 말풍선과 앵커의 창 닫기 단추만(T130) ·
         // 구멍이 있으면 구멍(또는 앵커 요소) 안만 · 구멍이 없는 입력 단계(앵커 없음 · 가운데 모드)는 모두
         // 지금 비추는 한 부분만 받는다(결정 99 ① · 07 T180): 그 부분을 누르면(뗄 때 · ClickEvent) 다음 부분으로 옮긴다 — 칸 부분과 마지막 부분은 옮기지 않는다.
@@ -267,7 +278,7 @@ namespace Sinnoh.Client
             if (stopped || ended || !Shown || flow.MenuUp) return true;
             if (target != null && (target == bubble || bubble.Contains(target))) return true;
             for (var e = target; e != null; e = e.parent)
-                if (e.name == ResultOk) return true;
+                if (e.name == ResultOk || e.name == BoardHud.Rotate) return true;   // 보드 돌리기 단추(결정 164)는 Q · E처럼 늘 — 카메라만 바꾼다
             var step = Runner.Step;
             bool nextStep = step.Advance == StepAdvance.Next || step.Advance == StepAdvance.Demo;
             bool hit = false;

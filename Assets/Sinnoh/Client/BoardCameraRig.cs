@@ -6,7 +6,7 @@ namespace Sinnoh.Client
     /// <summary>
     /// 보드 카메라 뼈대(M4-2b, 04 §3-2 안 ① + d3-3 §3): 원근 세로 시야 30° [가정 M4-2a], 기울기 55° 고정, 60° 단위 6방향, 줌 3단.
     /// 줌 = 화면 가운데 칸 폭(1080에서 51 / 130 / 245 px) → 바라보는 점까지 거리 d = 2.2 × 540 / (W × tan 15°) = 86.9 / 34.1 / 18.1.
-    /// 입력(Input System): Q·E 방향, 휠 줌 — <see cref="InputEnabled"/>가 꺼져 있으면 듣지 않는다. 걷는 말 따라가기와 마우스로 끌어 옮기기는 화면 흐름이 <see cref="LookAt"/>으로 한다(결정 57 ① · 결정 66 ②).
+    /// 입력(Input System): Q·E 방향(보드 HUD의 돌리기 단추도 같은 <see cref="Turn"/>), 휠 줌 — <see cref="InputEnabled"/>가 꺼져 있으면 듣지 않는다. 걷는 말 따라가기와 마우스로 끌어 옮기기는 화면 흐름이 <see cref="LookAt"/>으로 한다(결정 57 ① · 결정 66 ②).
     /// 자유 회전은 없다(결정 66 ②로 거둠). 평면 지도는 M4-3 이후.
     /// </summary>
     [RequireComponent(typeof(Camera))]
@@ -85,21 +85,27 @@ namespace Sinnoh.Client
         /// <summary>Q · E 돌리기를 받나 — 글 칸에 글을 치는 동안 끈다(<c>GameFlow.Typing</c>, M9 다듬기 P22).</summary>
         public bool KeysEnabled { get; set; } = true;
 
+        /// <summary>방향을 60° × step 돌린다(줌 · 보는 점은 그대로) — Q · E와 보드 HUD 돌리기 단추(<c>GameFlow.Turn</c>, 결정 164)가 같이 부른다.</summary>
+        public void Turn(int step)
+        {
+            if (step != 0) Set(zoom, yaw + step, target);
+        }
+
         void Update()
         {
             if (!InputEnabled) return;
-            int y = yaw, z = (int)zoom;
             var kb = Keyboard.current;
             if (kb != null && KeysEnabled)
             {
-                if (kb.qKey.wasPressedThisFrame) y--;
-                if (kb.eKey.wasPressedThisFrame) y++;
+                if (kb.qKey.wasPressedThisFrame) Turn(-1);
+                if (kb.eKey.wasPressedThisFrame) Turn(1);
             }
+            int z = (int)zoom;
             var mouse = Mouse.current;
             float scroll = mouse != null && WheelEnabled ? mouse.scroll.ReadValue().y : 0f;
             if (scroll > 0f) z = Mathf.Min(z + 1, (int)Zoom.Close);
             else if (scroll < 0f) z = Mathf.Max(z - 1, (int)Zoom.Full);
-            if (y != yaw || z != (int)zoom) Set((Zoom)z, y, target);
+            if (z != (int)zoom) Set((Zoom)z, yaw, target);
         }
     }
 }

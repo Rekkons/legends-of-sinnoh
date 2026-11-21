@@ -238,15 +238,15 @@ namespace Sinnoh.Tests.EditMode
                 var restRot = scratch[die].Rot;
                 Assert.AreEqual((0f, 0f, 0f), (scratch[die].Stretch.X, scratch[die].Stretch.Y, scratch[die].Stretch.Z), "글리치 전에는 그대로");
 
-                // 들어오는 80ms: 떠오르기만 한다(자세 · 몸은 그대로)
-                scene.Pose(5000 + 40, scratch, out _);
+                // 들어오는 200ms(결정 190 — 옛 80의 2.5배): 떠오르기만 한다(자세 · 몸은 그대로)
+                scene.Pose(5000 + 100, scratch, out _);
                 Assert.AreEqual(rest.Y + DiceRollScene.GlitchLift * 0.5f, scratch[die].Pos.Y, 1e-4f);
                 Assert.AreEqual(0f, scratch[die].Stretch.X);
 
-                // 지직(80 ~ 480): 제자리(가로 · 깊이)에서 떠 있고, 몸의 한 축이 늘고 나머지 둘이 준다 · 30ms마다 달라진다 · 다른 주사위는 그대로
+                // 지직(200 ~ 1200): 제자리(가로 · 깊이)에서 떠 있고, 몸의 한 축이 늘고 나머지 둘이 준다 · 75ms마다 달라진다 · 다른 주사위는 그대로
                 var seen = new HashSet<(float, float, float)>();
                 bool turned = false;
-                for (int u = 80; u < 480; u += 10)
+                for (int u = 200; u < 1200; u += 10)
                 {
                     scene.Pose(5000 + u, scratch, out var g);
                     var p = scratch[die];
@@ -262,17 +262,17 @@ namespace Sinnoh.Tests.EditMode
                     seen.Add((p.Stretch.X, p.Stretch.Y, p.Stretch.Z));
                     if (Math.Abs(Q4Dot(p.Rot, restRot)) < 0.999f) turned = true;
                     Assert.AreEqual(0f, scratch[other].Stretch.X, "고르지 않은 주사위는 그대로");
-                    scene.Pose(5000 + Math.Max(80, u / 30 * 30), scratch, out _);
-                    Assert.AreEqual((p.Stretch.X, p.Stretch.Y, p.Stretch.Z), (scratch[die].Stretch.X, scratch[die].Stretch.Y, scratch[die].Stretch.Z), "30ms 칸 안에서는 같은 꼴");
+                    scene.Pose(5000 + Math.Max(200, u / 75 * 75), scratch, out _);
+                    Assert.AreEqual((p.Stretch.X, p.Stretch.Y, p.Stretch.Z), (scratch[die].Stretch.X, scratch[die].Stretch.Y, scratch[die].Stretch.Z), "75ms 칸 안에서는 같은 꼴");
                 }
                 Assert.That(seen.Count, Is.GreaterThanOrEqualTo(4), "몸의 꼴이 여러 번 바뀐다");
                 Assert.IsTrue(turned, "멈춘 자세에서 벗어난다(되감기 · 면 깜빡임)");
 
-                // 고정(480): 제자리 · 제 꼴 · 새 면
-                scene.Pose(5000 + 480, scratch, out _);
+                // 고정(1200): 제자리 · 제 꼴 · 새 면
+                scene.Pose(5000 + 1200, scratch, out _);
                 Assert.AreEqual(rest.Y, scratch[die].Pos.Y, 1e-4f, "내려앉았다");
                 Assert.AreEqual((0f, 0f, 0f), (scratch[die].Stretch.X, scratch[die].Stretch.Y, scratch[die].Stretch.Z));
-                Assert.AreEqual(C, scene.ShownFace(1, 5000 + 480, scratch));
+                Assert.AreEqual(C, scene.ShownFace(1, 5000 + 1200, scratch));
             }
         }
 
@@ -299,14 +299,14 @@ namespace Sinnoh.Tests.EditMode
                 var shown = scratch[die].Pos;
                 Assert.AreEqual((shown.X, shown.Y, shown.Z), (rest.X, rest.Y, rest.Z));
                 var startFace = round % 4 == 0 ? S : C;
-                Assert.AreEqual(startFace, scene.ShownFace(2, 5000 + 79, scratch), "들어오는 80ms 동안은 면 그대로");
-                scene.Pose(5000 + 79, scratch, out g);
+                Assert.AreEqual(startFace, scene.ShownFace(2, 5000 + 199, scratch), "들어오는 200ms 동안은 면 그대로");
+                scene.Pose(5000 + 199, scratch, out g);
                 Assert.IsTrue(g.On);
                 Assert.AreEqual(die, g.Die);
                 Assert.AreEqual((shown.X, shown.Y, shown.Z), (g.Center.X, g.Center.Y, g.Center.Z), "글리치 가운데 = 멈춘 주사위 자리");
                 Assert.AreEqual(0f, g.Ghost);
 
-                scene.Pose(5000 + 300, scratch, out g);
+                scene.Pose(5000 + 750, scratch, out g);
                 Assert.IsTrue(g.On);
                 Assert.AreEqual(0.24f, g.Amt);
                 Assert.AreEqual(1f, g.Clock);
@@ -314,11 +314,11 @@ namespace Sinnoh.Tests.EditMode
                 Assert.That(Math.Abs(scratch[die].Pos.Z - rest.Z), Is.LessThanOrEqualTo(0.0301f));
                 Assert.AreEqual(0f, scratch[die].Flash);
 
-                scene.Pose(5000 + 480, scratch, out g);
-                Assert.IsTrue(g.On, "600까지 고리가 남는다");
+                scene.Pose(5000 + 1200, scratch, out g);
+                Assert.IsTrue(g.On, "1500까지 고리가 남는다");
                 Assert.AreEqual(1f, scratch[die].Flash, "고정 + 번쩍");
                 Assert.AreEqual(rest.X, scratch[die].Pos.X, 1e-4f);
-                Assert.AreEqual(to, scene.ShownFace(2, 5000 + 480, scratch));
+                Assert.AreEqual(to, scene.ShownFace(2, 5000 + 1200, scratch));
                 scene.Pose(5000 + DiceRollScene.GlitchMs, scratch, out g);
                 Assert.IsFalse(g.On);
                 Assert.AreEqual(0f, scratch[die].Flash);

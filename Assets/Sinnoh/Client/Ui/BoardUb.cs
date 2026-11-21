@@ -95,6 +95,8 @@ namespace Sinnoh.Client
             status.Insert(at + 2, bless);
             // 축복 칩을 누르면 축복 판(S59 — 결정 84 M4 가, M6). 균열 칩 · 프리즘 칩은 마우스 오버만
             stage.OnTap(bless, SoundKeys.Decide, e => PressBless(), () => flow.CanOpenBless);
+            // 균열 칩을 누르면 판의 UB를 찾는다(결정 189 ② — 카메라가 다음 UB로 · 그 바닥 고리가 번쩍임, GameFlow.FindBeast)
+            stage.OnTap(gauge, SoundKeys.Select, e => flow.FindBeast(), () => flow.CanFindBeast);
             foreach (var e in new VisualElement[] { gauge, prism, bless }) e.style.display = DisplayStyle.None;
             // 좌석이 RowSeats 이상이면 위 띠 폭이 모자라(1080 벌 좌석 칩 다섯·여섯 + 상태 판) 칩을 상태 판 바로 아래 오른쪽의 작은 판으로 옮긴다
             this.status = status;
@@ -228,7 +230,7 @@ namespace Sinnoh.Client
                 paintedPrism = ub.PrismUltraBurst;
                 paintedPrism2 = ub.PrismUltraBeast;
                 prism.text = PrismText(stage, ub.PrismUltraBurst, ub.PrismUltraBeast);   // 「프리즘 n / UB m」 — UB 쪽 수도 칩에(결정 87 V15)
-                stage.Tips.Hook(prism, stage.T("screen.board.ub.prism.title"), Lines(stage.T("screen.board.ub.prism.tip.1").Replace("{a}", ub.PrismUltraBurst.ToString(inv)).Replace("{b}", ub.PrismUltraBeast.ToString(inv)), stage.T("screen.board.ub.prism.tip.2")), TipSide.Below, reading: true);
+                stage.Tips.Hook(prism, stage.T("screen.board.ub.prism.title"), Lines(stage.T("screen.board.ub.prism.tip.1").Replace("{a}", ub.PrismUltraBurst.ToString(inv)).Replace("{b}", ub.PrismUltraBeast.ToString(inv)), stage.T("screen.board.ub.prism.tip.effect"), stage.T("screen.board.ub.prism.tip.2")), TipSide.Below, reading: true);   // 효과(p.24 — 결정 193)
             }
             paintedBreach = int.MinValue;
             var seq = flow.Fx != null ? flow.Fx.Sequencer : null;
@@ -297,7 +299,8 @@ namespace Sinnoh.Client
             // 마우스 오버의 「다음 10%까지 · 다음 UB 턴」은 보기 값으로 센다(연출 중에는 끝 값 — 다 보인 뒤 바로 맞는다)
             int now = UbGauge.Breach(view.Tokens);
             string tip = Lines(stage.T("screen.board.ub.breach.tip.1"), stage.T("screen.board.ub.breach.tip.2"),
-                stage.T("screen.board.ub.breach.tip.3").Replace("{need}", need.ToString(inv)), stage.T("screen.board.ub.breach.tip.4").Replace("{moves}", UltraBurstRules.TotalMoves(now).ToString(inv)));
+                stage.T("screen.board.ub.breach.tip.3").Replace("{need}", need.ToString(inv)), stage.T("screen.board.ub.breach.tip.4").Replace("{moves}", UltraBurstRules.TotalMoves(now).ToString(inv)),
+                stage.T("screen.board.ub.breach.tip.find"));
             stage.Tips.Hook(gauge, stage.T("screen.board.ub.breach.title").Replace("{n}", shown.ToString(inv)), tip, TipSide.Below, reading: true);
         }
 

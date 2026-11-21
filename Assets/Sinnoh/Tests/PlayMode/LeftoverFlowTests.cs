@@ -102,7 +102,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(party.Forms(lead0), Is.EqualTo(new List<int> { dialga }), "기본 폼으로는 언제든 돌아간다");
                 flow.Skip(400);
                 Assert.That(party.PressForm(0), Is.True);
-                Assert.That(party.AskText, Is.EqualTo("디아루가를 신오의 신으로 폼체인지하겠습니까?"));
+                Assert.That(party.AskText, Is.EqualTo("디아루가를 기본 폼으로 폼체인지하겠습니까?")); // 결정 163: 영문 카드 이름 「Dialga」 그대로 — 꼬리 없는 기본 폼은 screen.party.form.base
                 party.Cancel();
                 flow.CloseParty();
                 yield return null;

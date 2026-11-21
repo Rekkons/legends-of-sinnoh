@@ -87,7 +87,8 @@ namespace Sinnoh.Tests.EditMode
             // 봇 판(신오의 심장 · 울트라 버스트)의 가상 응답자에 VirtualAgents(원칙 + 강한 AI — 세기 「강함」)를 꽂고 규칙 옵션은 원작 원칙(NonPlayerMovePolicy.Principle — 결정 122의 옵션):
             // 갤럭시단 배틀 · 명단 = 강한 AI가 굴린다, 그 밖(UB · 네크로즈마 · 전설 · 우두머리 · 신 · 시련 · 무리 · 배틀 밖) = 굴리기 0 · 답이 원칙 답과 같다.
             // 보통 야생 배틀은 가상 응답자 물음이 없다(기술 하나 — 합법 답이 하나면 엔진이 바로 둔다, BattleFlow.SelectAction)
-            var strong = new StrongAgent { MaxSimulations = 8 };
+            // 원칙 답 문턱(결정 197)은 끈다: 갤럭시단 결정이 바뀌면 봇 판의 흐름이 바뀌어 전설 배틀이 안 나온다 — 이 시험은 「누가 굴리나 · 원칙 답인가」만 본다
+            var strong = new StrongAgent { MaxSimulations = 8, Margin = 0 };
             var watch = new VirtualWatch(new VirtualAgents { Principle = new PrincipleAgent(), Strong = strong, GalacticLevel = GalacticAiLevel.Strong }, strong);
             foreach (var (campaign, seats, seed) in PrincipleGames)
             {
@@ -185,6 +186,138 @@ namespace Sinnoh.Tests.EditMode
                 Assert.LessOrEqual(timed.MaxMs, TimedAgent.Deadline + 200, "결정 시간 2초 안");
             }
             Report("M9 결정 122 포획률 · 결정 시간: " + string.Join(" / ", lines));
+        }
+
+        /// <summary>결정 197 장면의 좌석 포켓몬 한 마리: 카드 키 · 잃은 체력 · 배운 기술 둘(null = 빈 칸).</summary>
+        struct RoomMon
+        {
+            public string Key, Move0, Move1;
+            public int Damage;
+            public RoomMon(string key, int damage, string m0, string m1) { Key = key; Damage = damage; Move0 = m0; Move1 = m1; }
+        }
+
+        // 실제 방 판(11-21)의 좌석 파티 — 장면마다 앞 = 나와 있는 포켓몬
+        static readonly RoomMon Skuntank = new RoomMon("435:0", 0, "headbutt", "neurotoxin"), Snorlax = new RoomMon("143:0", 0, "stinging_punch", null), Lickitung = new RoomMon("108:0", 0, "ice_fang", null),
+            Mamoswine = new RoomMon("464:0", 0, "rampart_riposte", "infatuate");
+
+        /// <summary>
+        /// 결정 197 장면(실제 방 판 11-21의 같은 꼴 — 손으로): 혼자 판 좌석 0의 파티(앞 = 나와 있는 포켓몬) 대 UB 하나의 UB 배틀에서 UB 쪽 기술 고르기가 열린 호스트 원본.
+        /// 좌석의 첫 행동은 기본 답으로 넘기고, UB 쪽 물음이 열리면 체력 · 상태를 그 장면 값으로 맞춘다.
+        /// </summary>
+        GameState RoomScene(string ub, int ubDamage, StatusEffect ubStatus, params RoomMon[] party)
+        {
+            var s = Battles.Game(ctx, 1);
+            s.Seats[0].OpenSlots = s.Seats[0].Party.Length;
+            var ids = new List<int>();
+            foreach (var m in party)
+            {
+                int id = Scene.Give(s, ctx, 0, m.Key);
+                var p = s.Pokemon[id];
+                p.Moves[0] = m.Move0 != null ? ctx.Cards.MoveIds.IndexOf(m.Move0) : -1;
+                p.Moves[1] = m.Move1 != null ? ctx.Cards.MoveIds.IndexOf(m.Move1) : -1;
+                Assert.IsFalse(m.Move0 != null && p.Moves[0] < 0 || m.Move1 != null && p.Moves[1] < 0, m.Key + " 기술");
+                ids.Add(id);
+            }
+            int u = Scene.Spawn(s, ctx, ub, SeatId.UltraBeast);
+            s.Pokemon[u].HasLegendaryMove = true;   // UB는 전설 특수기술(알파 스트라이크 · 비스트 부스트)을 가진다 — 맵의 UB 토큰에서 나온 것처럼
+            Battles.Start(s, ctx, null, BattleKind.UltraBeast, 0, SeatId.UltraBeast, -1, u);
+            var seen = new List<string>();
+            for (int guard = 0; guard < 40; guard++)
+            {
+                var c = s.Pending.Find(x => !x.Answered);
+                Assert.IsNotNull(c, "열린 선택 — 지난 선택: " + string.Join(", ", seen));
+                seen.Add($"{c.Seat}:{c.Kind}/{c.Sub}");
+                if (c.Seat == SeatId.UltraBeast && c.Kind == ChoiceKind.BattleAction)
+                {
+                    for (int i = 0; i < party.Length; i++)
+                    {
+                        s.Pokemon[ids[i]].Damage = party[i].Damage;
+                        s.Pokemon[ids[i]].Status = StatusEffect.None;
+                    }
+                    s.Pokemon[u].Damage = ubDamage;
+                    s.Pokemon[u].Status = ubStatus;
+                    Assert.AreEqual(ids[0], s.Battle.Sides[0].Active, "좌석 쪽에 나와 있는 포켓몬");
+                    return s;
+                }
+                var pick = c.Default.Clone();
+                if ((c.Kind == ChoiceKind.SendIn || c.Kind == ChoiceKind.NextPokemon) && c.Seat == 0)
+                {
+                    var legal = new List<ChoiceAnswer>();
+                    Engine.Legal(s, ctx, c, legal);
+                    pick = legal.Find(a => a.Kind == AnswerKind.Pick && a.Target == ids[0]) ?? pick;
+                }
+                Battles.Answer(s, ctx, c, pick, null);
+            }
+            Assert.Fail("UB 쪽 기술 고르기가 열리지 않았다: " + string.Join(", ", seen));
+            return null;
+        }
+
+        /// <summary>그 장면의 UB 쪽 물음에 「강함」 한 벌(시계 없음 — 굴리기 한도로 끝나 결정적)을 씨 seed로 물은 답.</summary>
+        AgentDecision StrongOn(GameState s, StrongAgent agent, ulong seed)
+        {
+            var c = s.Pending.Find(x => !x.Answered && x.Seat == SeatId.UltraBeast);
+            var view = Engine.ViewFor(s, c.Seat);
+            return agent.Decide(new AgentInput { View = view, Choice = view.Pending.Find(x => x.Id == c.Id), Ctx = ctx, PublicLog = new List<GameEvent>() }, new AgentBudget { Seed = seed });
+        }
+
+        static string AnswerName(Ctx cx, ChoiceAnswer a) =>
+            a.Target == BattleRules.AlphaStrike && a.Values.Count > 0 ? "알파 " + (PokemonType)a.Values[0] : a.Target >= 0 ? cx.Cards.Moves[a.Target].Key : a.ToString();
+
+        /// <summary>결정 197 장면 넷: (이름, 장면, 원칙 답과 같아야 하나 — null = 같은 답이기만).</summary>
+        IEnumerable<(string name, GameState scene, bool? principle)> RoomScenes()
+        {
+            // 664: 철화구야(강철/비행, 독) 대 스컹탱크(독/악, 체력 가득) — 이륙(고유 기술) · 알파 강철/비행/풀/불꽃
+            yield return ("664 철화구야 대 스컹탱크", RoomScene("797:0", 0, StatusEffect.Poisoned, Skuntank, new RoomMon("395:1", 9, "hidden_power", "powder_snow"), Mamoswine, Snorlax,
+                new RoomMon("389:1", 10, "spore", "bite"), Lickitung), true);
+            // 516 · 526 · 533: 페로코체(벌레/격투) 대 토대부기 · 엠페르트 — 매혹(고유 기술) · 알파 벌레/격투/비행/얼음
+            yield return ("516 페로코체 대 토대부기", RoomScene("795:0", 0, StatusEffect.None, new RoomMon("389:1", 0, "spore", "bite"), new RoomMon("395:1", 0, "hidden_power", null),
+                new RoomMon("464:0", 0, "rampart_riposte", null), new RoomMon("143:0", 0, null, null), Skuntank, Lickitung), null);
+            yield return ("526 페로코체(졸림) 대 엠페르트", RoomScene("795:0", 0, StatusEffect.Drowsy, new RoomMon("395:1", 0, "hidden_power", null), new RoomMon("464:0", 0, "rampart_riposte", null),
+                new RoomMon("143:0", 0, null, null), new RoomMon("389:1", 10, "spore", "bite"), Skuntank, Lickitung), null);
+            yield return ("533 페로코체(졸림) 대 엠페르트(체력 2)", RoomScene("795:0", 8, StatusEffect.Drowsy, new RoomMon("395:1", 7, "hidden_power", null), new RoomMon("464:0", 0, "rampart_riposte", null),
+                new RoomMon("143:0", 0, null, null), new RoomMon("389:1", 10, "spore", "bite"), Skuntank, Lickitung), null);
+        }
+
+        /// <summary>결정 197 장면마다 물어 볼 씨.</summary>
+        const int RoomSeeds = 4;
+
+        [Test]
+        public void M10_결정197_실제방판장면은씨가달라도같은답이고철화구야는이륙()
+        {
+            // 실제 방 판(11-21): 강한 AI가 원칙 답(고유 기술)에서 굴리기 잡음보다 작은 차이로 벗어나 씨마다 답이 바뀌었다(664 — 이륙 · 알파 풀 · 이륙).
+            // 짝지은 차이(공통 난수)가 표준오차 × StrongAgent.Margin을 넘을 때만 벗어나면, 같은 장면은 씨가 달라도 같은 답 — 664는 원칙 답(이륙)
+            var lines = new List<string>();
+            foreach (var (name, scene, principle) in RoomScenes())
+            {
+                var c = scene.Pending.Find(x => !x.Answered && x.Seat == SeatId.UltraBeast);
+                var legal = new List<ChoiceAnswer>();
+                Engine.Legal(scene, ctx, c, legal);
+                var p = PrincipleAgent.Choose(Engine.ViewFor(scene, c.Seat), ctx, c, legal).Answer;
+                if (principle == true) Assert.AreEqual(ctx.Cards.MoveIds.IndexOf("lift_off"), p.Target, $"{name}: 원칙 답 = 고유 기술 이륙");
+                var answers = new List<string>();
+                var before = new List<string>();
+                ChoiceAnswer first = null;
+                for (ulong seed = 1; seed <= RoomSeeds; seed++)
+                {
+                    var old = StrongAgent.Strong();
+                    old.Margin = 0;
+                    old.CommonDice = false;   // 결정 197 전 셈(보고 줄만)
+                    var o = StrongOn(scene, old, seed);
+                    before.Add($"{AnswerName(ctx, o.Answer)}({o.Reason?.Power}% +{o.Reason?.Bonus})");
+                    var flatOld = StrongOn(scene, new StrongAgent { MaxSimulations = 4000, Margin = 0 }, seed);
+                    var flatNew = StrongOn(scene, new StrongAgent { MaxSimulations = 4000 }, seed);
+                    before.Add($"[평평 4000 전 {AnswerName(ctx, flatOld.Answer)} +{flatOld.Reason?.Bonus} 후 {AnswerName(ctx, flatNew.Answer)}]");
+                    // 664: 진단(평평 · 굴리기 4000)에서도 씨마다 원칙 답(이륙) — 옛 셈은 씨에 따라 알파 강철
+                    if (principle == true) Assert.IsTrue(flatNew.Answer.SameAs(p), $"{name}: 평평 4000 씨 {seed}의 답 {AnswerName(ctx, flatNew.Answer)} — 원칙 답이어야 한다");
+                    var d = StrongOn(scene, StrongAgent.Strong(), seed);
+                    answers.Add($"{AnswerName(ctx, d.Answer)}({d.Reason?.Power}% +{d.Reason?.Bonus})");
+                    if (first == null) first = d.Answer;
+                    Assert.IsTrue(d.Answer.SameAs(first), $"{name}: 씨 {seed}의 답 {AnswerName(ctx, d.Answer)} ≠ 씨 1의 답 {AnswerName(ctx, first)}");
+                }
+                if (principle == true) Assert.IsTrue(first.SameAs(p), $"{name}: 원칙 답 {AnswerName(ctx, p)}이어야 한다 — {AnswerName(ctx, first)}");
+                lines.Add($"{name}: 원칙 {AnswerName(ctx, p)} · 강함 전 {string.Join(" · ", before)} → 후 {string.Join(" · ", answers)}");
+            }
+            Report("M10 결정 197 실제 방 판 장면: " + string.Join(" / ", lines));
         }
 
         /// <summary>원칙 AI 점검의 봇 판: UB · 네크로즈마(울트라 버스트) · 전설 · 우두머리(신오의 심장)가 모두 나오는 판.</summary>

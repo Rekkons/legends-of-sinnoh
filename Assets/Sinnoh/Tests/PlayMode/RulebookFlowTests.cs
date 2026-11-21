@@ -141,21 +141,11 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(b.Hits, Is.Empty);
             Assert.That(stage.Root.Q("rulebook-chapter-overview"), Is.Not.Null, "비우면 목차");
 
-            // 「고침」 배지: 고친 곳마다 하나 · 마우스 오버 = 영문 원본 · 한국어판 원문(근거 ID는 플레이어에게 보이지 않는다 — 결정 145)
-            var village = book.Find("overview.village");
-            Assert.That(village.Fixes.Count, Is.GreaterThanOrEqualTo(1));
-            Assert.That(b.Show(village.Key), Is.True);
+            // 결정 163: 한국어도 영문 원본에서 옮긴 글이라 「고침」 배지가 없다 — 옛 고침 자리(은행상회 A4)의 글은 그대로 보인다
+            Assert.That(b.Show("overview.village"), Is.True);
             yield return null;
-            Assert.That(b.View.Fixes.Count, Is.EqualTo(village.Fixes.Count), "고친 곳마다 배지");
-            var badge = stage.Root.Q("rulebook-fix-" + village.Fixes[0].No);
-            Assert.That(badge, Is.Not.Null);
-            stage.Tips.Show(badge);
-            yield return null;
-            string tip = Texts(stage.Tips.Element);
-            StringAssert.DoesNotContain(village.Fixes[0].Ruling, tip);
-            StringAssert.Contains(village.Fixes[0].En, tip);
-            StringAssert.Contains(village.Fixes[0].Ko, tip);
-            stage.Tips.Hide();
+            StringAssert.Contains("하나 또는 둘 다", Texts(stage.Root.Q("rulebook-body")));
+            Assert.That(stage.Root.Query<VisualElement>().Where(e => e.name != null && e.name.StartsWith("rulebook-fix-", StringComparison.Ordinal)).ToList(), Is.Empty, "고침 배지 없음");
 
             // cards 블록: 게임 표에서 그린다
             Assert.That(b.Show("recipes.balls"), Is.True);

@@ -307,7 +307,7 @@ namespace Sinnoh.Tests.EditMode
                 Assert.IsTrue(ko.TryGet(k, out var v) && System.Text.RegularExpressions.Regex.IsMatch(v, "[가-힣]"), "strings.ko " + k);
             }
             Assert.AreEqual("Stark Village", en["village.stark"]);
-            Assert.AreEqual("무쇠시티", ko["village.stark"]);
+            Assert.AreEqual("하드마을", ko["village.stark"], "팬 마을 Stark Village(결정 163 — 본편 무쇠시티와 다른 곳)");
             Assert.AreEqual("Seafarer Egg", en["item.seafarer_egg"]);
         }
 

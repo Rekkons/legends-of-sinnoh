@@ -15,6 +15,9 @@ namespace Sinnoh.Rules
     /// - 전설 장소(p.4 「Artifact Legendary Pokémon: Can only be encountered at their home location if you are holding the matching Artifact」): 맞는 유물을 가진 좌석이 그 칸에서 찾아보기 →
     ///   전설 덱의 그 카드와 BattleKind.Legendary 배틀. 지거나 도망·기권이면 카드는 덱으로(다시 도전할 수 있다 — 원작 커뮤니티 확인), 쓰러뜨리면 버림 더미.
     /// </summary>
+    /// <summary>빈 배운 기술 칸을 차지한 전설 특수기술(<see cref="LegendRules.TacticAt"/>).</summary>
+    public enum LegendTactic { None, AlphaStrike, BeastBoost }
+
     public static class LegendRules
     {
         /// <summary>비스트 부스트: 피로 −3, 다음 공격 공격력 +1(p.6).</summary>
@@ -34,6 +37,22 @@ namespace Sinnoh.Rules
 
         /// <summary>비스트 부스트가 있나: 전설 특수기술을 가졌고 배운 기술이 하나 이하다(둘째 기술이 덮는다).</summary>
         public static bool HasBeastBoost(PokemonState p) => p.HasLegendaryMove && Learned(p) <= 1;
+
+        /// <summary>
+        /// 그 배운 기술 칸(slot)이 비었고(기술 · 균열 카드 없음) 남은 전설 특수기술이 그 자리를 차지하나(결정 195 — 화면이 「빈 칸」 대신 그린다): 빈 칸을 앞에서부터
+        /// 알파 스트라이크 → 비스트 부스트 순으로 채운다(배운 기술 수로 세는 <see cref="HasAlphaStrike"/> · <see cref="HasBeastBoost"/> 그대로 — 그 칸을 채우면 알파 스트라이크가 먼저 덮인다).
+        /// </summary>
+        public static LegendTactic TacticAt(PokemonState p, int slot)
+        {
+            if (p == null || !p.HasLegendaryMove || slot < 0 || slot >= p.Moves.Length || p.Moves[slot] >= 0 || p.Breach[slot] >= 0) return LegendTactic.None;
+            int ordinal = 0;
+            for (int k = 0; k < slot; k++)
+                if (p.Moves[k] < 0 && p.Breach[k] < 0) ordinal++;
+            var left = new List<LegendTactic>(2);
+            if (HasAlphaStrike(p)) left.Add(LegendTactic.AlphaStrike);
+            if (HasBeastBoost(p)) left.Add(LegendTactic.BeastBoost);
+            return ordinal < left.Count ? left[ordinal] : LegendTactic.None;
+        }
 
         /// <summary>알파 스트라이크로 고를 수 있는 타입(그 포켓몬 카드의 배울 수 있는 타입, 카드 순서 · 같은 타입은 한 번).</summary>
         public static void AlphaTypes(Ctx ctx, PokemonState p, List<int> into)

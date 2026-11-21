@@ -39,7 +39,47 @@ namespace Sinnoh.Editor
             Screen("row-15-line", s => GateInto(s, 760)),
             Screen("row-15-rise", s => GateInto(s, 1150)),
             Screen("row-15-land", s => GateInto(s, 1450)),
+            // 결정 189 ① UB · 네크로즈마 발밑 붉은 바닥 고리(지역 줌 — 첫 UB) · ② 균열 칩 누름(찾기): 다가가는 중(150ms — 첫 번쩍임) · 다가간 뒤 둘째 번쩍임(600ms) · 다시 눌러 다음 UB(150ms)
+            Screen("ub-ring", s => UbRing(s, -1)),
+            Screen("ub-find-mid", s => UbRing(s, 150)),
+            Screen("ub-find-flash", s => UbRing(s, 600)),
+            Screen("ub-find-next", s => UbRing(s, 150, 2)),
         };
+
+        // 결정 189: 고리가 선 UB마다 하나(자리 = 피규어의 땅) — ms < 0이면 첫 UB를 지역 줌으로, 아니면 균열 칩을 presses번 누르고(앞 찾기는 끝까지) 마지막 누름에서 ms 지난 순간
+        static void UbRing(UiShot s, int ms, int presses = 1)
+        {
+            var flow = UbGame(s);
+            var rings = s.Board.Rings;
+            int n = flow.BeastsShown.Count;
+            if (rings == null || n != UbState.Beasts + 1 || rings.Points.Count != n) throw new InvalidOperationException("바닥 고리 " + (rings != null ? rings.Points.Count : -1) + " · 선 UB " + n + " ≠ 10");
+            for (int i = 0; i < n; i++)
+                if ((rings.Points[i] - flow.BeastGrounds[i]).sqrMagnitude > 1e-6f || rings.Lit[i]) throw new InvalidOperationException("고리 " + i + "가 UB의 땅에 없거나 번쩍인다");
+            if (ms < 0)
+            {
+                s.Rig.Set(BoardCameraRig.Zoom.Region, s.Rig.Yaw, flow.BeastGrounds[0]);
+                flow.Layout(s.Width, s.Height);
+                s.Panel.Tick(3);
+                return;
+            }
+            for (int p = 0; p < presses; p++)
+            {
+                if (p > 0) Pass(flow, GameFlow.FindMs);
+                if (!flow.FindBeast()) throw new InvalidOperationException("균열 칩 누름(찾기)이 거절됐다");
+            }
+            if (flow.Found != flow.BeastsShown[(presses - 1) % n]) throw new InvalidOperationException("누를 때마다 다음 UB가 아니다: " + flow.Found);
+            var from = s.Rig.Target;
+            Pass(flow, ms);
+            int at = -1;
+            for (int i = 0; i < n && at < 0; i++) if (flow.BeastsShown[i] == flow.Found) at = i;
+            bool wantLit = ms < GameFlow.FindMs && (ms / GameFlow.FindFlashMs) % 2 == 0;
+            for (int i = 0; i < n; i++)
+                if (rings.Lit[i] != (i == at && wantLit)) throw new InvalidOperationException("고리 " + i + " 번쩍임 " + rings.Lit[i] + " (" + ms + "ms)");
+            float left = (s.Rig.Target - flow.FoundPoint).magnitude;
+            if (ms >= GameFlow.CameraCatchMs ? left > 1e-3f : left < 1e-3f || (s.Rig.Target - from).magnitude < 1e-3f) throw new InvalidOperationException("카메라 보는 점이 " + ms + "ms에 맞지 않는다(남은 거리 " + left + ")");
+            flow.Layout(s.Width, s.Height);
+            s.Panel.Tick(3);
+        }
 
         // 울트라 버스트 4인 판을 셋업 뒤(prepare로 손봐) 내 첫 턴 입력이 열린 때까지
         static GameFlow UbGame(UiShot s, Action<GameState> prepare = null, int seats = UbSeats, SoloSettings settings = null)

@@ -2,7 +2,7 @@
 
 # 제3자 고지 — Pokémon: Legends of Sinnoh 디지털판
 
-이 게임(Pokémon: Legends of Sinnoh 디지털판 — 비공식 포켓몬스터 팬 게임)의 배포본에 들어가는 오픈소스 · 제3자 소프트웨어와 그 고지 · 라이선스 전문입니다. 이 게임 자체의 라이선스는 `LICENSE.ko.md`, 그림 · 소리 · 번역의 출처와 작가는 `CREDITS.ko.md`에 있습니다.
+이 게임(Pokémon: Legends of Sinnoh 디지털판 — 비공식 포켓몬스터 팬 게임)의 배포본에 들어가는 오픈소스 · 제3자 소프트웨어와 그 고지 · 라이선스 전문입니다. 이 게임 자체의 라이선스는 `LICENSE.ko.md`, 그림 · 소리의 출처와 작가는 `CREDITS.ko.md`에 있습니다.
 
 전문은 절마다 적은 원본 파일 그대로입니다.
 

@@ -111,8 +111,8 @@ namespace Sinnoh.Client
             Scene = DiceRollScene.Plan(entry, library.Clip(pick), pick.Mirror, (int)variant.Seed);
             if (variant.Reroll >= 0)
             {
-                // 재굴림 이벤트는 M5다(43행). 여기서는 세기가 끝나고 600 뒤에 건다
-                RerollAtMs = Scene.CountMs + PlayTiming.DiceCountPerMs.Value * n + 600;
+                // 재굴림 이벤트는 M5다(43행). 여기서는 글리치가 세기 끝 1200 뒤에 끝나게 건다(결정 190 — 글리치가 600 → 1500으로 길어져도 견본 항목 길이 안에서 끝난다)
+                RerollAtMs = Scene.CountMs + PlayTiming.DiceCountPerMs.Value * n + 1200 - DiceRollScene.GlitchMs;
                 Scene.AddReroll(RerollAtMs, variant.Reroll, variant.RerollTo);
             }
 

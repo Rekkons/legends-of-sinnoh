@@ -44,9 +44,8 @@ namespace Sinnoh.Tests.EditMode
                 table.Where(r => r.rest.Contains("\"round\":true")).Select(r => r.key), "둥근 아이콘(내접 원 밖 투명)으로 자르는 그림");
             foreach (var r in table)
                 Assert.That(r.rest.StartsWith("\"rect\":[") ^ r.rest.StartsWith("\"parts\":[["), r.key + ": rect 하나 또는 parts");
-            // 그림 속 글이 언어마다 다른 것(한국어판이 영문 슬라이드 위 글만 바꿈 — 나머지 그림의 카드 글은 두 판 모두 영어)
-            CollectionAssert.AreEquivalent(new[] { "intro.welcome/cover", "pokemon.forms/cherrim", "pokemon.forms/shaymin" },
-                table.Where(r => r.rest.Contains("\"lang\":true")).Select(r => r.key), "언어별로 자르는 그림");
+            // 결정 163: 그림은 모두 영문 원본 PDF 한 벌(한국어판 PDF의 그림 — 표지 · 체리꼬 · 쉐이미 — 은 쓰지 않는다)
+            CollectionAssert.IsEmpty(table.Where(r => r.rest.Contains("\"lang\":")).Select(r => r.key), "언어별로 자르는 그림 없음");
         }
 
         [Test]

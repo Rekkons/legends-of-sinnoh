@@ -301,7 +301,7 @@ namespace Sinnoh.Editor
                 ("row-42-tear", SoloTrail.Fate, FateRows.Discard, new[] { 100, 300, 500 }),
                 ("row-45-pass", SoloTrail.Fate, FateRows.Play, new[] { 90, 300, 520 }),
                 ("row-45-pass3", SoloTrail.Fate, FateRows.Play, new[] { 300, 700, 1100 }),
-                ("row-43-reroll", SoloTrail.Fate, FateRows.Reroll, new[] { 200, 520, 900, 1250 }),
+                ("row-43-reroll", SoloTrail.Fate, FateRows.Reroll, new[] { 500, 1300, 2250, 3125 }),   // 결정 190: 옛 200 · 520 · 900 · 1250의 2.5배
                 ("row-44-sacrifice", SoloTrail.FateGiratina, FateRows.Sacrifice, new[] { 300, 800, 1300 }),
                 ("row-07-star", SoloTrail.Fate, FateRows.Star, new[] { 150, 300, 520, 700 }),   // 날아옴(0~450) · 뒤집힘(~600) · 장수가 톡(~780)
             })

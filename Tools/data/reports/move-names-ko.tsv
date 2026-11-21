@@ -1,7 +1,7 @@
 key	en	id	ko_3ja2	ko	diff	src	note
 move.struggle_bug	Struggle Bug	522	벌레의저항	벌레의저항	same	pokeapi:522	
 move.bug_bite	Bug Bite	450	벌레먹음	벌레먹기	changed	pokeapi:450	원작 자산(Pt) 「벌레먹음」
-move.infatuate	Infatuate		얼빼기	얼빼기	same	3ja2	이 게임만의 기술
+move.infatuate	Infatuate		얼빼기	홀리기	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.u_turn	U-Turn	369	유턴	유턴	same	pokeapi:369	
 move.lunge	Lunge	679	덤벼들기	덤벼들기	same	pokeapi:679	
 move.x_scissor	X-Scissor	404	시저크로스	시저크로스	same	pokeapi:404	
@@ -14,9 +14,9 @@ move.dark_void	Dark Void	464	다크홀	다크홀	same	pokeapi:464
 move.bite	Bite	44	물기	물기	same	pokeapi:44	
 move.night_slash	Night Slash	400	깜짝베기	깜짝베기	same	pokeapi:400	
 move.crunch	Crunch	242	깨물어부수기	깨물어부수기	same	pokeapi:242	
-move.hangry_wheel	Hangry Wheel		배고픔휠	배고픔휠	same	3ja2	이 게임만의 기술
+move.hangry_wheel	Hangry Wheel		배고픔휠	배고픔휠	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.night_daze	Night Daze	539	나이트버스트	나이트버스트	same	pokeapi:539	
-move.chomp	Chomp		우걱우걱	우걱우걱	same	3ja2	이 게임만의 기술
+move.chomp	Chomp		우걱우걱	우걱우걱	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.foul_play	Foul Play	492	속임수	속임수	same	pokeapi:492	
 move.twister	Twister	239	회오리	회오리	same	pokeapi:239	
 move.dual_chop	Dual Chop	530	더블촙	더블촙	same	pokeapi:530	
@@ -25,20 +25,20 @@ move.spacial_rend	Spacial Rend	460	공간절단	공간절단	same	pokeapi:460
 move.dragon_pulse	Dragon Pulse	406	용의파동	용의파동	same	pokeapi:406	
 move.draco_meteor	Draco Meteor	434	용성군	용성군	same	pokeapi:434	
 move.dragon_rush	Dragon Rush	407	드래곤다이브	드래곤다이브	same	pokeapi:407	
-move.renegade_fury	Renegade Fury		반골의분노	반골의 분노	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.renegade_fury	Renegade Fury		반골의분노	반골의 분노	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.outrage	Outrage	200	역린	역린	same	pokeapi:200	
 move.roar_of_time	Roar of Time	459	시간의포효	시간의포효	same	pokeapi:459	
 move.nuzzle	Nuzzle	609	볼부비부비	볼부비부비	same	pokeapi:609	
 move.ion_deluge	Ion Deluge	569	플라스마샤워	플라스마샤워	same	pokeapi:569	
 move.thunder_shock	Thunder Shock	84	전기쇼크	전기쇼크	same	pokeapi:84	
 move.charge_beam	Charge Beam	451	차지빔	차지빔	same	pokeapi:451	
-move.electro_wheel	Electro Wheel		전기휠	전기휠	same	3ja2	이 게임만의 기술
+move.electro_wheel	Electro Wheel		전기휠	전기휠	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.volt_switch	Volt Switch	521	볼트체인지	볼트체인지	same	pokeapi:521	
-move.power_plant	Power Plant		파워플랜트	파워플랜트	same	3ja2	이 게임만의 기술
-move.shocking_verity	Shocking Verity		충격적인진실	충격적인 진실	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.power_plant	Power Plant		파워플랜트	파워플랜트	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
+move.shocking_verity	Shocking Verity		충격적인진실	충격적인 진실	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.thunderbolt	Thunderbolt	85	10만볼트	10만볼트	same	pokeapi:85	
 move.wild_charge	Wild Charge	528	와일드볼트	와일드볼트	same	pokeapi:528	
-move.thunder_song	Thunder Song		천둥의노래	천둥의 노래	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.thunder_song	Thunder Song		천둥의노래	천둥의 노래	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.thunder	Thunder	87	번개	번개	same	pokeapi:87	
 move.zap_cannon	Zap Cannon	192	전자포	전자포	same	pokeapi:192	
 move.electro_ball	Electro Ball	486	일렉트릭볼	일렉트릭볼	same	pokeapi:486	
@@ -55,7 +55,7 @@ move.revenge	Revenge	279	리벤지	리벤지	same	pokeapi:279
 move.bulk_up	Bulk Up	339	벌크업	벌크업	same	pokeapi:339	
 move.force_palm	Force Palm	395	발경	발경	same	pokeapi:395	
 move.triple_kick	Triple Kick	167	트리플킥	트리플킥	same	pokeapi:167	
-move.stinging_punch	Stinging Punch		따끔따끔펀치	따끔따끔펀치	same	3ja2	이 게임만의 기술
+move.stinging_punch	Stinging Punch		따끔따끔펀치	따끔따끔펀치	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.aura_sphere	Aura Sphere	396	파동탄	파동탄	same	pokeapi:396	
 move.sacred_sword	Sacred Sword	533	성스러운칼	성스러운칼	same	pokeapi:533	
 move.high_jump_kick	High Jump Kick	136	무릎차기	무릎차기	same	pokeapi:136	
@@ -68,19 +68,19 @@ move.shell_trap	Shell Trap	704	트랩셸	트랩셸	same	pokeapi:704
 move.fire_fang	Fire Fang	424	불꽃엄니	불꽃엄니	same	pokeapi:424	
 move.flame_wheel	Flame Wheel	172	화염자동차	화염바퀴	changed	pokeapi:172	원작 자산(Pt) 「화염자동차」
 move.mystical_fire	Mystical Fire	595	매지컬플레임	매지컬플레임	same	pokeapi:595	
-move.blazing_valor	Blazing Valor		타오르는용맹	타오르는 용맹	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.blazing_valor	Blazing Valor		타오르는용맹	타오르는 용맹	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.flamethrower	Flamethrower	53	화염방사	화염방사	same	pokeapi:53	
 move.lava_plume	Lava Plume	436	분연	분연	same	pokeapi:436	
 move.magma_storm	Magma Storm	463	마그마스톰	마그마스톰	same	pokeapi:463	
 move.fiery_dance	Fiery Dance	552	불꽃춤	불꽃춤	same	pokeapi:552	
 move.flare_blitz	Flare Blitz	394	플레어드라이브	플레어드라이브	same	pokeapi:394	
 move.overheat	Overheat	315	오버히트	오버히트	same	pokeapi:315	
-move.fire_song	Fire Song		불꽃의노래	불꽃의 노래	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.fire_song	Fire Song		불꽃의노래	불꽃의 노래	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.fire_blast	Fire Blast	126	불대문자	불대문자	same	pokeapi:126	
 move.inferno	Inferno	517	연옥	연옥	same	pokeapi:517	
 move.raging_fury	Raging Fury	833	맹렬한분노	대격분	changed	pokeapi:833	
 move.mind_blown	Mind Blown	720	마인드폭탄	깜짝헤드	changed	pokeapi:720	
-move.chest_thump	Chest Thump		가슴치기	가슴치기	same	3ja2	이 게임만의 기술
+move.chest_thump	Chest Thump		가슴치기	가슴치기	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.eruption	Eruption	284	분화	분화	same	pokeapi:284	
 move.peck	Peck	64	쪼기	쪼기	same	pokeapi:64	
 move.chatter	Chatter	448	수다	수다	same	pokeapi:448	
@@ -96,24 +96,24 @@ move.shadow_sneak	Shadow Sneak	425	야습	야습	same	pokeapi:425
 move.lick	Lick	122	핥기	핥기	same	pokeapi:122	
 move.ominous_wind	Ominous Wind	466	괴상한바람	괴상한바람	same	pokeapi:466	
 move.hex	Hex	506	병상첨병	병상첨병	same	pokeapi:506	
-move.disguise	Disguise		위장	위장	same	3ja2	이 게임만의 기술
+move.disguise	Disguise		위장	탈	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.poltergeist	Poltergeist	809	폴터가이스트	폴터가이스트	same	pokeapi:809	
 move.spirit_shackle	Spirit Shackle	662	그림자꿰메기	그림자꿰매기	changed	pokeapi:662	
 move.shadow_force	Shadow Force	467	섀도다이브	섀도다이브	same	pokeapi:467	
-move.menacing_moonraze	Menacing Moonraze		위협적인문레이즈	위협적인 문레이즈	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.menacing_moonraze	Menacing Moonraze		위협적인문레이즈	섬뜩한 문레이즈	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.grass_whistle	Grass Whistle	320	풀피리	풀피리	same	pokeapi:320	
 move.stun_spore	Stun Spore	78	저리가루	저리가루	same	pokeapi:78	
-move.gather_sunlight	Gather Sunlight		햇빛모으기	햇빛모으기	same	3ja2	이 게임만의 기술
+move.gather_sunlight	Gather Sunlight		햇빛모으기	햇빛모으기	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.spore	Spore	147	버섯포자	버섯포자	same	pokeapi:147	
 move.razor_leaf	Razor Leaf	75	잎날가르기	잎날가르기	same	pokeapi:75	
 move.leaf_blade	Leaf Blade	348	리프블레이드	리프블레이드	same	pokeapi:348	
-move.bug_trap	Bug Trap		벌레덫	벌레덫	same	3ja2	이 게임만의 기술
+move.bug_trap	Bug Trap		벌레덫	벌레덫	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.giga_drain	Giga Drain	202	기가드레인	기가드레인	same	pokeapi:202	
-move.eternal_glade	Eternal Glade		영원한숲	영원한 숲	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.eternal_glade	Eternal Glade		영원한숲	영원한 숲	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.wood_hammer	Wood Hammer	452	우드해머	우드해머	same	pokeapi:452	
 move.leaf_storm	Leaf Storm	437	리프스톰	리프스톰	same	pokeapi:437	
 move.seed_flare	Seed Flare	465	시드플레어	시드플레어	same	pokeapi:465	
-move.overcut	Overcut		오버컷	오버컷	same	3ja2	이 게임만의 기술
+move.overcut	Overcut		오버컷	오버컷	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.power_whip	Power Whip	438	파워휩	파워휩	same	pokeapi:438	
 move.petal_dance	Petal Dance	80	꽃잎댄스	꽃잎댄스	same	pokeapi:80	
 move.solar_beam	Solar Beam	76	솔라빔	솔라빔	same	pokeapi:76	
@@ -128,13 +128,13 @@ move.fissure	Fissure	90	땅가르기	땅가르기	same	pokeapi:90
 move.avalanche	Avalanche	419	눈사태	눈사태	same	pokeapi:419	
 move.powder_snow	Powder Snow	181	눈싸라기	눈싸라기	same	pokeapi:181	
 move.ice_fang	Ice Fang	423	얼음엄니	얼음엄니	same	pokeapi:423	
-move.frigid_ice	Frigid Ice		서늘한얼음	서늘한 얼음	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.frigid_ice	Frigid Ice		서늘한얼음	혹한의 얼음	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.aurora_beam	Aurora Beam	62	오로라빔	오로라빔	same	pokeapi:62	
-move.chilling_acuity	Chilling Acuity		날카로운예지	날카로운 예지	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.chilling_acuity	Chilling Acuity		날카로운예지	냉철한 통찰	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.ice_beam	Ice Beam	58	냉동빔	냉동빔	same	pokeapi:58	
 move.ice_punch	Ice Punch	8	냉동펀치	냉동펀치	same	pokeapi:8	
 move.mountain_gale	Mountain Gale	836	산의강풍	빙산바람	changed	pokeapi:836	
-move.frost_song	Frost Song		얼음의노래	얼음의 노래	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.frost_song	Frost Song		얼음의노래	서리의 노래	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.blizzard	Blizzard	59	눈보라	눈보라	same	pokeapi:59	
 move.sheer_cold	Sheer Cold	329	절대영도	절대영도	same	pokeapi:329	
 move.flail	Flail	175	바둥바둥	바둥바둥	same	pokeapi:175	
@@ -169,13 +169,13 @@ move.coil	Coil	489	똬리틀기	똬리틀기	same	pokeapi:489
 move.poison_fang	Poison Fang	305	독엄니	맹독엄니	changed	pokeapi:305	원작 자산(Pt) 「독엄니」
 move.poison_tail	Poison Tail	342	포이즌테일	포이즌테일	same	pokeapi:342	
 move.venoshock	Venoshock	474	베놈쇼크	베놈쇼크	same	pokeapi:474	
-move.neurotoxin	Neurotoxin		신경독	신경독	same	3ja2	이 게임만의 기술
+move.neurotoxin	Neurotoxin		신경독	신경독	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.barb_barrage	Barb Barrage	839	바늘 공격	독침천발	changed	pokeapi:839	
 move.cross_poison	Cross Poison	440	크로스포이즌	크로스포이즌	same	pokeapi:440	
 move.poison_jab	Poison Jab	398	독찌르기	독찌르기	same	pokeapi:398	
 move.belch	Belch	562	트림	트림	same	pokeapi:562	
 move.sludge_wave	Sludge Wave	482	오물웨이브	오물웨이브	same	pokeapi:482	
-move.zen_restoration	Zen Restoration		좌선회복	좌선회복	same	3ja2	이 게임만의 기술
+move.zen_restoration	Zen Restoration		좌선회복	좌선회복	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.teleport	Teleport	100	순간이동	순간이동	same	pokeapi:100	
 move.calm_mind	Calm Mind	347	명상	명상	same	pokeapi:347	
 move.confusion	Confusion	93	염동력	염동력	same	pokeapi:93	
@@ -189,11 +189,11 @@ move.take_heart	Take Heart	850	브레이브차지	브레이브차지	same	pokeap
 move.psychic	Psychic	94	사이코키네시스	사이코키네시스	same	pokeapi:94	
 move.prismatic_laser	Prismatic Laser	711	프리즘레이저	프리즘레이저	same	pokeapi:711	
 move.future_sight	Future Sight	248	미래예지	미래예지	same	pokeapi:248	
-move.rampart_riposte	Rampart Riposte		성벽의반격	성벽의 반격	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.rampart_riposte	Rampart Riposte		성벽의반격	성벽의 반격	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.smack_down	Smack Down	479	떨어뜨리기	떨어뜨리기	same	pokeapi:479	
 move.ancient_power	Ancient Power	246	원시의힘	원시의힘	same	pokeapi:246	
 move.rollout	Rollout	205	구르기	구르기	same	pokeapi:205	
-move.repairing_rock	Repairing Rock		바위고치기	바위고치기	same	3ja2	이 게임만의 기술
+move.repairing_rock	Repairing Rock		바위고치기	바위고치기	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.power_gem	Power Gem	408	파워젬	파워젬	same	pokeapi:408	
 move.stone_edge	Stone Edge	444	스톤에지	스톤에지	same	pokeapi:444	
 move.rock_blast	Rock Blast	350	락블레스트	록블라스트	changed	pokeapi:350	원작 자산(Pt) 「락블레스트」
@@ -202,21 +202,21 @@ move.rock_wrecker	Rock Wrecker	439	암석포	암석포	same	pokeapi:439
 move.shelter	Shelter	842	껍질	농성	changed	pokeapi:842	
 move.kings_shield	King's Shield	588	킹실드	킹실드	same	pokeapi:588	
 move.bullet_punch	Bullet Punch	418	불릿펀치	불릿펀치	same	pokeapi:418	
-move.lift_off	Lift Off		리프트 오프	리프트 오프	same	3ja2	이 게임만의 기술
+move.lift_off	Lift Off		리프트 오프	이륙	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.metal_claw	Metal Claw	232	메탈크로우	메탈클로	changed	pokeapi:232	원작 자산(Pt) 「메탈크로우」
-move.tempered_steel	Tempered Steel		강철담금질	강철담금질	same	3ja2	이 게임만의 기술
+move.tempered_steel	Tempered Steel		강철담금질	강철담금질	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.steel_wing	Steel Wing	211	강철날개	강철날개	same	pokeapi:211	
 move.anchor_shot	Anchor Shot	677	앵커숏	앵커샷	changed	pokeapi:677	
 move.iron_tail	Iron Tail	231	아이언테일	아이언테일	same	pokeapi:231	
 move.flash_cannon	Flash Cannon	430	러스터캐논	러스터캐논	same	pokeapi:430	
-move.temporal_guard	Temporal Guard		시간의수호	시간의 수호	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
-move.kings_blade	King's Blade		킹블레이드	킹블레이드	same	3ja2	이 게임만의 기술
-move.searing_sunraze	Searing Sunraze		이글거리는선레이즈	이글거리는 선레이즈	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.temporal_guard	Temporal Guard		시간의수호	시간의 수호	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
+move.kings_blade	King's Blade		킹블레이드	킹블레이드	same	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
+move.searing_sunraze	Searing Sunraze		이글거리는선레이즈	작열하는 선레이즈	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.heavy_slam	Heavy Slam	484	헤비봄버	헤비봄버	same	pokeapi:484	
 move.hidden_power	Hidden Power	237	잠재파워	잠재파워	same	pokeapi:237	
-move.hidden_punch	Hidden Punch		히든 펀치	히든 펀치	same	3ja2	이 게임만의 기술
+move.hidden_punch	Hidden Punch		히든 펀치	잠재펀치	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.multi_attack	Multi-Attack	718	멀티어택	멀티어택	same	pokeapi:718	
-move.adaptive_cloak	Adaptive Cloak		적응망토	적응망토	same	3ja2	이 게임만의 기술
+move.adaptive_cloak	Adaptive Cloak		적응망토	적응도롱	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)
 move.judgement	Judgement	449	심판	심판의뭉치	changed	pokeapi:449	원작 철자 Judgement = Judgment
 move.photon_geyser	Photon Geyser	722	포톤가이저	포톤가이저	same	pokeapi:722	
 move.mimic	Mimic	102	흉내내기	흉내내기	same	pokeapi:102	
@@ -234,4 +234,4 @@ move.whirlpool	Whirlpool	250	바다회오리	바다회오리	same	pokeapi:250
 move.muddy_water	Muddy Water	330	탁류	탁류	same	pokeapi:330	
 move.wave_crash	Wave Crash	834	웨이브 크러쉬	웨이브태클	changed	pokeapi:834	
 move.hydro_pump	Hydro Pump	56	하이드로펌프	하이드로펌프	same	pokeapi:56	
-move.ripple_in_space	Ripple in Space		공간의물결	공간의 물결	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.ripple_in_space	Ripple in Space		공간의물결	공간의 물결	changed	ours	이 게임만의 기술 · 영문에서 옮김(결정 163)

@@ -198,7 +198,7 @@ namespace Sinnoh.Client
                 card.style.transformOrigin = new TransformOrigin(Length.Percent(50), Length.Percent(100));   // 늘이기 기준 = 아래 가운데(닿을 때 바닥에서 눌린다)
                 var top = Add(card, new VisualElement(), null, "sn-enc-top");
                 Icon(top, "Cards/Generator/encounter_icons/" + cardGrade.ToString().ToLowerInvariant() + ".png", "sn-enc-grade");
-                top.Add(Kit.Badge(stage.T("screen.encounter.grade." + cardGrade.ToString().ToLowerInvariant()), KitBadgeKind.Ok, Kit.F2));
+                top.Add(MonParts.GradeBadge(stage, cardGrade.ToString().ToLowerInvariant(), Kit.F2) ?? new Label());   // 등급 색(결정 192)
                 // 카드마다 포획률(결정 105 — 등급 배지 옆: 등급이 섞인 왜곡된 나무에서도 카드별로 보인다. 위 줄의 공통 칩은 등급이 같을 때만)
                 int cardRate = BattleRules.CatchRate(cardGrade, false);
                 var cardRateChip = Add(top, Kit.Badge(stage.T("screen.encounter.rate").Replace("{n}", cardRate.ToString(inv)), KitBadgeKind.Silver, Kit.F2), "encounter-card-" + n + "-rate", null);

@@ -126,6 +126,71 @@ namespace Sinnoh.Tests.PlayMode
 
         ShrineScreen Shrine => stage.Current as ShrineScreen;
 
+        /// <summary>결정 186: 고대의 지혜로 배울 기술을 고른 뒤 바꿀 칸 — 원래 기술이 든 칩에 마우스를 올리면 그 기술의 이름 + 효과가 뜬다.</summary>
+        [UnityTest]
+        public IEnumerator M10_고대의지혜가르치기에서원래기술칩에마우스를올리면그기술의이름과효과가뜬다_결정186()
+        {
+            int given = -1;
+            yield return Seats(2, st =>
+            {
+                SoloTrail.PrepareShrine(flow.Ctx, st, 0, ShrineRules.AncientWisdom);
+                var deck = st.Decks[(int)DeckId.Moderate];
+                var pile = st.Discards[(int)DeckId.Moderate];
+                for (int i = 0; i < 12 && deck.Count > 0; i++)
+                {
+                    pile.Add(deck[deck.Count - 1]);
+                    deck.RemoveAt(deck.Count - 1);
+                }
+                given = flow.Ctx.Cards.Pokemon[flow.Ctx.Deck(DeckId.Legendary).Cards[0].Card].Signature;   // 버려진 보통 카드의 기술과 겹치지 않는 기술
+                st.Pokemon[st.Seats[0].Party[0]].Moves[0] = given;
+            });
+            yield return Offer();
+            yield return Until(() => Shrine != null && Shrine.Shown == ShrineScreen.Mode.Move && Shrine.Open, "배울 기술 고르기");
+            Assert.That(Shrine.PickOption(0) && Shrine.Confirm(), Is.True, "배울 기술");
+            yield return Until(() => Shrine != null && Shrine.Shown == ShrineScreen.Mode.Teach && Shrine.Open, "바꿀 기술 칸");
+            int tips = 0;
+            for (int i = 0; i < Shrine.Options.Count; i++)
+            {
+                var a = Shrine.Options[i];
+                if (a.Kind != AnswerKind.Pick || flow.Client.View.Pokemon[a.Target].Moves[a.Arg] != given) continue;
+                EncounterFlowTests.TipIs(stage, stage.Root.Q("board-shrine-opt-" + (i + 1)), flow.Ctx, given);
+                tips++;
+            }
+            Assert.That(tips, Is.EqualTo(1), "원래 기술이 든 칸 칩 하나");
+        }
+
+        /// <summary>결정 186: pokemon_breeder B 교배 기술 칸 — 기술이 든 칸 하나에 툴팁 하나(그 기술의 이름 + 효과 + 안내 한 줄), 진화형 기술 줄도 이름 + 효과.</summary>
+        [UnityTest]
+        public IEnumerator M10_교배기술칸에마우스를올리면지금기술의이름과효과와안내가뜬다_결정186()
+        {
+            int given = -1;
+            yield return Seats(1, st =>
+            {
+                var seat = st.Seats[0];
+                seat.TrainerCard = flow.Ctx.Cards.TrainerCardIds.IndexOf("pokemon_breeder");
+                seat.TrainerCardTier = TrainerRules.Gold;
+                seat.Jp = System.Math.Max(seat.Jp, 30);
+                given = flow.Ctx.Cards.Pokemon[flow.Ctx.Deck(DeckId.Legendary).Cards[0].Card].Signature;
+                st.Pokemon[seat.Party[0]].Moves[0] = given;
+            });
+            Assert.That(flow.OpenEvolve(), Is.True, "진화 창");
+            yield return null;
+            var evolve = stage.Current as EvolveScreen;
+            Assert.That(evolve, Is.Not.Null);
+            Assert.That(evolve.OpenEgg(evolve.Listed[0]), Is.True, "[교배 기술]");
+            yield return null;
+            var box = stage.Root.Q("board-evolve-egg-0-0");
+            Assert.That(box, Is.Not.Null, "칸 1");
+            EncounterFlowTests.TipIs(stage, box, flow.Ctx, given, stage.T("screen.evolve.egg.slot.tip"));
+            var inner = box.Q(className: "sn-enc-move");
+            Assert.That(inner, Is.Not.Null, "칸 1의 지금 기술 줄");
+            stage.Tips.Show(inner);
+            Assert.That(stage.Tips.Target, Is.Null, "칸 안의 기술 줄에는 따로 툴팁을 걸지 않는다(칸 하나에 하나)");
+            stage.Tips.Hide();
+            int to = evolve.EggsOf(evolve.EggFor)[0].Values[0];
+            EncounterFlowTests.TipIs(stage, stage.Root.Q("board-evolve-egg-move-0").Q(className: "sn-enc-move"), flow.Ctx, flow.Ctx.Cards.Pokemon[to].Signature);
+        }
+
         [UnityTest]
         public IEnumerator M5_4인판에서평온한순간의축복을고른좌석과나눈다()
         {

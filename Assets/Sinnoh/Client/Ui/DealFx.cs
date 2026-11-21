@@ -197,7 +197,7 @@ namespace Sinnoh.Client
             var inv = CultureInfo.InvariantCulture;
             var step = DealRows.Playing(seq, DealRows.Stamp, out int ms);
             var e = StampBeats.Event(step);
-            if (e != null && flow.Client != null && e.Seat != flow.Client.Seat && flow.OwnWindowUp) e = null;   // 남의 스탬프는 내 창을 덮지 않는다(결정 120)
+            if (e != null && flow.Client != null && e.Seat != flow.Client.Seat && (flow.OwnWindowUp || !flow.HostPaced)) e = null;   // 남의 스탬프는 내 창을 덮지 않는다(결정 120) · 방장 시각 판이 아니면 그 좌석 칩 꼬리표만(결정 178)
             StampShown = false;
             Stamped = 0;
             RewardsShown = 0;

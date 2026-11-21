@@ -250,6 +250,55 @@ namespace Sinnoh.Tests.EditMode
         }
 
         [Test]
+        public void M10_결정184_비스트부스트알갱이는쌓인동안오르고_쌓이는순간한번터진다()
+        {
+            var a = new List<Mote>();
+            BoostMotes.Stay(0, 100, 120, 30, 60, 0, a);
+            Assert.AreEqual(0, a.Count, "쌓인 것이 없으면 없다");
+            BoostMotes.Stay(4800, 100, 120, 30, 60, 1, a);
+            Assert.AreEqual(BoostMotes.StayBase, a.Count);
+            foreach (var m in a)
+            {
+                Assert.That(m.X, Is.InRange(100 - 30, 100 + 30), "발 둘레");
+                Assert.That(m.Y, Is.GreaterThan(120 - 60 - 14), "몸 높이만큼");
+                Assert.That(m.Size, Is.InRange(BoostMotes.SizeMin, BoostMotes.SizeMax));
+                Assert.That(m.Y, Is.LessThan(120), "발 줄 위");
+                Assert.That(m.Alpha, Is.InRange(0f, 1f));
+            }
+            var b = new List<Mote>();
+            BoostMotes.Stay(4800 + BoostMotes.StepMs, 100, 120, 30, 60, 1, b);
+            Assert.AreNotEqual(Ys(a), Ys(b), "박자마다 오른다");
+            var c = new List<Mote>();
+            BoostMotes.Stay(4800 + BoostMotes.StepMs / 2, 100, 120, 30, 60, 1, c);
+            Assert.AreEqual(Ys(a), Ys(c), "박자 사이에는 그대로(도트 — 매 프레임 흔들리지 않는다)");
+            var many = new List<Mote>();
+            BoostMotes.Stay(4800, 100, 120, 30, 60, 9, many);
+            Assert.AreEqual(BoostMotes.StayMax, many.Count, "많이 쌓여도 상한");
+
+            var burst = new List<Mote>();
+            BoostMotes.Burst(0, 100, 120, 60, burst);
+            Assert.AreEqual(BoostMotes.BurstCount, burst.Count);
+            var later = new List<Mote>();
+            BoostMotes.Burst(BoostMotes.BurstMs / 2, 100, 120, 60, later);
+            Assert.That(System.Math.Abs(later[0].X - 100) + System.Math.Abs(later[0].Y - (120 - 30)), Is.GreaterThan(System.Math.Abs(burst[0].X - 100) + System.Math.Abs(burst[0].Y - (120 - 30))), "둘레로 퍼진다");
+            var gone = new List<Mote>();
+            BoostMotes.Burst(BoostMotes.BurstMs, 100, 120, 60, gone);
+            Assert.AreEqual(0, gone.Count, "한 번 터지고 끝");
+            Assert.IsNull(BoostMotes.StepOf(null, 0));
+            Assert.IsFalse(BoostMotes.Ahead(null, null, 0, 0));
+            Assert.AreEqual(BoostMotes.StayBase + BoostMotes.StayPer, BoostMotes.StayCount(2), "하나 더 쌓이면 더 많이");
+            Assert.AreEqual(AuraKind.BeastBoost, AuraBeats.BoostStay().Kind, "쌓여 있는 동안 남는 오라");
+            Assert.AreEqual(AuraBeats.StayPx, AuraBeats.BoostStay().Px);
+        }
+
+        static string Ys(List<Mote> list)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var m in list) sb.Append(m.X).Append(',').Append(m.Y).Append(';');
+            return sb.ToString();
+        }
+
+        [Test]
         public void M9_다듬기6_피규어가솟고_빛으로흩어지고_신의첫폼은기절단계에서서있다()
         {
             // P25 전설 장소(23행): 땅울림 전에는 선 채, 솟았다가 조우 전환 앞 구간의 끝에 내려앉고 클립은 이어진다

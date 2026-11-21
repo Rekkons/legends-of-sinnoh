@@ -4,7 +4,7 @@
 
 > **Unofficial, non-profit Pokémon fan game** — a digital adaptation of Lev (Levatius)’s fan game “Pokémon: Legends of Sinnoh”. It is free and never sold. It is not affiliated with, endorsed by or sponsored by Nintendo, Creatures Inc., GAME FREAK inc. or The Pokémon Company.
 >
-> All rights to the original Pokémon game assets (graphics, sound, fonts and names) belong to Nintendo / Creatures Inc. / GAME FREAK inc. The rules and assets of the original fan game belong to Lev (Levatius), and the Korean translation to 3JA2 and 로씨온; they are used on the conditions the original author stated (non-profit, credit given, not for sale).
+> All rights to the original Pokémon game assets (graphics, sound, fonts and names) belong to Nintendo / Creatures Inc. / GAME FREAK inc. The rules and assets of the original fan game belong to Lev (Levatius); they are used on the conditions the original author stated (non-profit, credit given, not for sale).
 >
 > License: `LICENSE.md`. Notices and full license texts for the open-source software in the release build: `THIRD-PARTY-NOTICES.md`.
 
@@ -14,14 +14,6 @@
   - Sources: https://steamcommunity.com/sharedfiles/filedetails/?id=2652573878 · https://github.com/Levatius/pokemon-legends
   - Terms: Non-profit, credit given, not for sale (as the original author stated)
 - **A2.0 · Dongoboy · Just- · Lord O’Chocolates · TheOMega · Legends of Sinnoh Discord** — Original game beta testing and community
-
-## Translation
-
-- **3JA2** — Korean translation
-  - Source: https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224
-  - Terms: Non-profit, credit given (same as the original)
-- **로씨온** — Korean card translation for v1.4a
-  - Source: https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224
 
 ## Pokémon
 

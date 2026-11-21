@@ -63,7 +63,7 @@ namespace Sinnoh.Client
         readonly List<ChoiceAnswer> balls = new List<ChoiceAnswer>();
         readonly List<ChoiceAnswer> bench = new List<ChoiceAnswer>();
         readonly List<ChoiceAnswer> rewards = new List<ChoiceAnswer>();
-        bool bag;
+        bool bag, moveRows;
         UiStage stage;
         DsStage ds;
         VisualElement dsBox, info, logLines, dock, result, aiLine;
@@ -103,7 +103,7 @@ namespace Sinnoh.Client
         BattleLine messageLine;
         string messageText;
         bool actingNow;
-        int bobSide = -1, ambient = -1, ambientMs, paintedBob = -1, paintedGlow = -1;
+        int bobSide = -1, ambient = -1, ambientMs, paintedBob = -1, paintedGlow = -1, paintedMote = -1;
         (bool, bool, bool, int, int, int, int, long) painted;
 
         public BattleScreen(GameFlow flow)
@@ -272,6 +272,19 @@ namespace Sinnoh.Client
         /// </summary>
         public bool CalcHeld { get; private set; }
 
+        /// <summary>계산 줄의 피해가 내 쪽(아래쪽 — <c>BattleFeed.MySide</c>)이 받은 것인가(결정 171 ② — 이름표 · 오른쪽 정렬). 계산이 없으면 false.</summary>
+        public bool CalcTaken { get; private set; }
+
+        // 그 포켓몬이 아래쪽(내 쪽) 포켓몬인가: 나와 있는 쪽 → 아래쪽 좌석의 파티
+        bool OnMySide(BattleFeed feed, int id)
+        {
+            if (seen.Active[feed.MySide] == id) return true;
+            if (seen.Active[1 - feed.MySide] == id) return false;
+            int seat = SideSeat(feed);
+            var state = feed.Source;
+            return state != null && seat >= 0 && seat < state.Seats.Length && Array.IndexOf(state.Seats[seat].Party, id) >= 0;
+        }
+
         /// <summary>계산 줄의 포획 칸: 합 칸이 켜졌나(다 센 뒤) · 성공·실패 칸이 켜졌나(판정 뒤). 포획 칸이 없으면 둘 다 false.</summary>
         public bool CaptureSumLit { get; private set; }
         public bool CaptureVerdictLit { get; private set; }
@@ -347,7 +360,38 @@ namespace Sinnoh.Client
             was.Close();
         }
 
-        VisualElement page, overElement;
+        VisualElement page, overElement, logBox;
+        MonTip monTip;
+
+        /// <summary>포켓몬 고르기 줄의 마우스 오버 카드에 지금 뜬 포켓몬(종 색인 — 없으면 −1, 결정 169) · 그 카드 요소.</summary>
+        public int MonTipShown => monTip != null ? monTip.Shown : -1;
+        public VisualElement MonTipElement => monTip?.Element;
+
+        /// <summary>
+        /// 독의 포켓몬 칸(이름 = 출전 · 교체 · 다음 포켓몬 <c>battle-bench-n</c> · 회복할 포켓몬 <c>battle-ability-n</c> · 운명 창의 회복 단추 <c>battle-fate-potion-n</c> · 대기 포켓몬 기술 <c>battle-partymove-n</c>)에 마우스를 올린 것처럼 카드를 띄운다 — 캡처 · 시험.
+        /// 그 칸이 없으면 false.
+        /// </summary>
+        public bool HoverMon(string cell)
+        {
+            var el = (dock != null ? dock.Q(cell) : null) ?? (page != null ? page.Q(cell) : null);   // 독의 칸 · 상대 기둥의 포켓몬 그림(battle-foe-art — 결정 182)
+            if (el == null || monTip == null || !monCells.TryGetValue(el, out var show)) return false;
+            show();
+            return true;
+        }
+
+        readonly Dictionary<VisualElement, Action> monCells = new Dictionary<VisualElement, Action>();
+
+        // 포켓몬 칸에 마우스 오버 카드를 건다(결정 169 — 기록 기둥 위에: 독 · DS를 가리지 않는다)
+        void HookMon(VisualElement el, int id)
+        {
+            var view = flow.Client != null ? flow.Client.View : null;
+            if (monTip == null || el == null || view == null || id < 0 || id >= view.Pokemon.Count) return;
+            var mon = Shown(id);
+            if (!mon.Exists) return;
+            var pk = view.Pokemon[id];
+            monTip.HookMon(el, pk, mon.Hp, mon.Speed, logBox);
+            monCells[el] = () => monTip.ShowMon(el, pk, mon.Hp, mon.Speed, logBox);
+        }
 
         public VisualElement Build(UiStage stage)
         {
@@ -379,8 +423,10 @@ namespace Sinnoh.Client
 
             info = Add(field, Kit.Panel(stage.Skin), "battle-info", "sn-battle-col");
             info.AddToClassList("sn-battle-info");
-            var log = Add(field, Kit.Panel(stage.Skin), "battle-log", "sn-battle-col");
+            var log = logBox = Add(field, Kit.Panel(stage.Skin), "battle-log", "sn-battle-col");
             log.AddToClassList("sn-battle-log");
+            monTip?.Detach();
+            monTip = new MonTip(stage, flow.Ctx);   // 포켓몬 고르기 줄의 마우스 오버 카드(결정 169) — 기록 기둥 위에 얹는다
             var logHead = Add(log, new VisualElement(), null, "sn-battle-head");
             Add(logHead, Kit.Text(stage.T("screen.battle.title.log"), Kit.F2), null, "kit-title");
             logLines = Add(log, new VisualElement(), "battle-log-lines", "sn-battle-lines");
@@ -402,6 +448,9 @@ namespace Sinnoh.Client
             flow.Ticked -= PaintPeek;
             watchRows.Clear();
             ShutOver();
+            monTip?.Detach();
+            monTip = null;
+            logBox = null;
             page = null;
             if (stage != null && ambient >= 0) stage.Tweens.Stop(ambient);
             ambient = -1;
@@ -431,9 +480,13 @@ namespace Sinnoh.Client
         void Ambient(int ms)
         {
             ambientMs = ms;
-            if (stage == null || seen == null || flow.Battle == null || bobSide < 0) return;
+            if (stage == null || seen == null || flow.Battle == null) return;
+            if (staying && MotePhase != paintedMote) { PaintDs(); return; }   // 비스트 부스트의 오르는 알갱이(결정 184)
+            if (bobSide < 0) return;
             if (BobPhase != paintedBob || GlowPhase != paintedGlow) PaintDs();
         }
+
+        int MotePhase => ambientMs / BoostMotes.StepMs;
 
         int BobPhase => ambientMs / BattleBeats.TurnBobEveryMs % 2;
         // 우선권 토큰을 묻는 동안 빛남·반짝이가 바뀌는 박자(묻지 않으면 −1)
@@ -623,14 +676,38 @@ namespace Sinnoh.Client
             return flow.Fx != null ? flow.Fx.Sequencer.Shown.Get(ShownKey.Resource(flow.Client.Seat, ResKind.Ball, ball), have) : have;
         }
 
-        // 계산 줄의 박자(지금 항목의 61행 단계 안 시각, 없으면 −1)
+        // 지금 항목의 계산 단계(61행 — 피해 계산이 든 것, 없으면 null). 포획 굴림이 떠 있으면 계산 줄은 포획 칸이라 보지 않는다
+        FxStep CalcStep
+        {
+            get
+            {
+                if (rollEntry != null && rollIsCapture) return null;
+                var cur = flow.Fx != null ? flow.Fx.Sequencer.Current : null;
+                var step = cur != null ? cur.Step(611) : null;
+                return step != null && step.Events.Count > 0 ? step : null;
+            }
+        }
+
+        // 계산 줄의 박자(결정 171 ①): 그 공격이 맞는 순간(59행 단계 시작 — 결정 143 ⑦)부터 잰 시각, 아직이면 −1.
+        // 전에는 계산 단계(61행) 시작부터 쟀다 — 그 앞의 상성 단계(60행 900~1600)만큼 합계가 늦게 떴다. 59행이 없는 항목이면 61행 시작부터
         int CalcMs
         {
             get
             {
-                if (rollEntry == null) return -1;
-                var step = rollEntry.Step(611);
-                return step != null && step.Events.Count > 0 && local >= step.StartMs ? local - step.StartMs : -1;
+                int from = CalcFromMs;
+                return from >= 0 && local >= from ? local - from : -1;
+            }
+        }
+
+        /// <summary>계산 줄이 그 공격의 맞는 순간부터 재는 시각(지금 항목의 59행 단계 시작 — 없으면 61행 시작, 계산 단계가 없으면 −1) — 확인용(결정 171 ①).</summary>
+        public int CalcFromMs
+        {
+            get
+            {
+                var step = CalcStep;
+                if (step == null) return -1;
+                var hit = flow.Fx.Sequencer.Current.Step(590);
+                return hit != null && hit.StartMs <= step.StartMs ? hit.StartMs : step.StartMs;
             }
         }
 
@@ -695,6 +772,7 @@ namespace Sinnoh.Client
             // 차례인 쪽(55행): 입력이 열려 있고 내가 고를 것이 있으면 내 쪽, 상대(AI)의 답을 기다리는 중이면 상대 쪽 상자가 흔들린다
             bobSide = !Ready || seen.Ended || flow.BattleOver ? -1 : choice != null ? feed.MySide : 1 - feed.MySide;
 
+            monCells.Clear();   // 기둥(상대 그림 — 결정 182)과 독의 포켓몬 칸이 다시 건다
             FillInfo(feed, me, foe);
             FillExtras(feed, me, foe);   // 우두머리 · 응징 · 교체 불가 · 둘째 상태 이상 · 무리 진행(M5 「맵 결과·배틀 안 연출」)
             FillLog(feed);
@@ -853,6 +931,7 @@ namespace Sinnoh.Client
             dsBox.MarkDirtyRepaint();
             paintedBob = BobPhase;
             paintedGlow = GlowPhase;
+            paintedMote = MotePhase;
         }
 
         // 우선권 토큰(결정 73 ⑦ — 04 §4-2 「상자 옆」, 53·54행): 가진 쪽 체력 상자 옆에 놓이고(상자와 함께 움직이고 상자가 없으면 없다), 넘길 때는 두 자리 사이를 돌며 포물선으로 간다
@@ -1230,16 +1309,6 @@ namespace Sinnoh.Client
                     waiting++;
                 }
                 if (waiting == 0) benchTitle.text = stage.T("screen.battle.bench.none");
-                // 운명의 변화 손패 훑어보기(결정 80 N3 나): 보기만 하는 손패 창을 이 화면 위에 연다 — 낼 수 있는 때는 독이 따로 묻는다.
-                // 내 손패를 여는 내 단추라 내가 싸우는 쪽일 때만(남의 배틀을 볼 때 그 좌석 기둥에 내 장수가 섞이지 않게 — M7 마감 감사 1)
-                FateOn = false;
-                if (seat == flow.Client.Seat)
-                {
-                    var fate = Add(mine, Kit.Button(stage.T("screen.board.fate").Replace("{n}", state.Seats[seat].FateHand.Count.ToString(inv)).Replace("{max}", FateRules.HandLimit.ToString(inv)), KitButtonKind.Normal, () => flow.OpenFate()), FateButton, "sn-battle-fate");
-                    FateOn = flow.CanOpenFate;
-                    fate.SetEnabled(flow.CanPeek);   // 결정 125: 연출 중 · 결과 창에서도 열린다(그 위 정보 창 층에 — 보기만은 같다)
-                    if (flow.CanPeek) stage.Tips.Hook(fate, null, stage.T("screen.battle.fate.tip"), TipSide.Below, reading: true);
-                }
             }
 
             // 상대 쪽: 이름 · 우선권 토큰 · 나와 있는 포켓몬 · 기술 짧은 줄 · 남은 포켓몬
@@ -1264,18 +1333,23 @@ namespace Sinnoh.Client
                 var options = new List<int>();
                 PokemonRules.MoveOptions(flow.Ctx, state.Pokemon[foe.Id], options);
                 int signature = flow.Ctx.Cards.Pokemon[foe.Def].Signature;
+                int k = 0;
                 foreach (int move in options)
                 {
                     string name = (move == signature ? "★" : "") + stage.T(BattleFeed.MoveNameKey(flow.Ctx, move));
                     var chip = Kit.Badge(name + " " + CardStrength(flow.Ctx, move), move == signature ? KitBadgeKind.Gold : KitBadgeKind.Plain, Kit.F2);
-                    line.Add(chip);
+                    // 결정 187: [타입][이름 위력][상성]을 한 묶음으로 — 칩 줄이 꺾여도 떨어지지 않는다. 알파 스트라이크(타입 미정 — 옆에 배울 수 있는 타입) · 타입 없는 전술은 타입 그림 없음
+                    var cell = Add(line, new VisualElement(), "battle-foe-move-" + (k++).ToString(inv), FoeMoveClass);
                     var mt = BattleRules.MoveType(flow.Ctx, move);
+                    if (mt != PokemonType.Typeless && move != BattleRules.AlphaStrike) TypeIcon(cell, IconArt.Type(mt), stage.T("ui.types." + mt));
+                    cell.Add(chip);
                     if (me.Exists && mt != PokemonType.Typeless)
                     {
                         var meTypes = flow.Ctx.Cards.Pokemon[me.Def].Types;
                         int bonus = TypeChart.Bonus(mt, meTypes[0], meTypes.Count > 1 ? meTypes[1] : PokemonType.Typeless);
-                        if (bonus != 0) Add(line, Kit.Badge(Signed(bonus), bonus > 0 ? KitBadgeKind.Ok : KitBadgeKind.Red, Kit.F2), "battle-foe-move-bonus", null);
+                        if (bonus != 0) Add(cell, Kit.Badge(Signed(bonus), bonus > 0 ? KitBadgeKind.Ok : KitBadgeKind.Red, Kit.F2), "battle-foe-move-bonus", null);
                     }
+                    if (move == BattleRules.AlphaStrike) AlphaTypeIcons(line, state.Pokemon[foe.Id], "battle-foe-alpha-types");   // 결정 182: 어느 타입으로 올지 — 배울 수 있는 타입
                     stage.Tips.Hook(chip, stage.T(BattleFeed.MoveNameKey(flow.Ctx, move)), stage.TOrNull(BattleFeed.MoveNameKey(flow.Ctx, move) + ".text"), TipSide.Below, reading: true);
                 }
             }
@@ -1285,7 +1359,7 @@ namespace Sinnoh.Client
                 var wild = state.Pokemon[foe.Id];
                 var grade = MapActions.GradeOf(flow.Ctx, wild.Def);
                 var line = Add(other, new VisualElement(), "battle-foe-wild", "sn-battle-line");
-                line.Add(Kit.Badge(stage.T("screen.encounter.grade." + (wild.Alpha ? "alpha" : grade.ToString().ToLowerInvariant())), KitBadgeKind.Ok, Kit.F2));
+                line.Add(MonParts.GradeBadge(stage, wild.Alpha ? "alpha" : grade.ToString().ToLowerInvariant(), Kit.F2) ?? new Label());   // 등급 색(결정 192)
                 int rate = BattleRules.CatchRate(grade, wild.Alpha);
                 var rateChip = Add(line, Kit.Badge(stage.T("screen.encounter.rate").Replace("{n}", rate.ToString(inv)), KitBadgeKind.Silver, Kit.F2), "battle-foe-rate", null);
                 stage.Tips.Hook(rateChip, null, stage.T("screen.encounter.rate.tip").Replace("{n}", rate.ToString(inv)), TipSide.Below, reading: true);
@@ -1327,6 +1401,7 @@ namespace Sinnoh.Client
             // 울트라 비스트는 도트가 캔버스를 거의 채워 가운데 칸에서 잘렸다(결정 87 V22 ① — 페로코체 더듬이): UB 배틀의 상대 쪽은 캔버스를 통째로 보인다
             // (네크로즈마 · 호수 시련은 덧칩 줄이 길어 1080에서 기둥이 넘친다 — 그대로)
             if (name == "battle-foe" && flow.Battle != null && flow.Battle.Kind == BattleKind.UltraBeast) art.AddToClassList("sn-mon-full");
+            if (name == "battle-foe") HookMon(art, mon.Id);   // 상대 포켓몬 그림에 마우스 오버 = 그 카드(배울 수 있는 타입 · 기술 효과 — 결정 182)
             var col = Add(row, new VisualElement(), null, "sn-battle-mon-info");
             var title = Add(col, new VisualElement(), null, "sn-battle-line");
             var nameLabel = Add(title, Kit.Text(MonName(mon), Kit.F2), name + "-name", null);
@@ -1362,6 +1437,23 @@ namespace Sinnoh.Client
                 icon.style.backgroundImage = new StyleBackground(tex);
             }
             else if (fallback != null) parent.Add(Kit.Badge(fallback, KitBadgeKind.Plain, Kit.F2));
+        }
+
+        /// <summary>상대 기둥의 기술 칩 한 묶음([타입][이름 위력][상성] — 결정 187)의 클래스. 요소 이름은 <c>battle-foe-move-n</c>(0부터).</summary>
+        public const string FoeMoveClass = "sn-battle-foe-move";
+
+        /// <summary>알파 스트라이크 옆 배울 수 있는 타입 아이콘 묶음의 클래스(결정 182 — 상대 기술 칩 줄 · 내 기술 줄).</summary>
+        public const string AlphaTypesClass = "sn-battle-alpha-types";
+
+        // 알파 스트라이크가 쓰일 수 있는 타입(rulings A26 — 그 포켓몬의 배울 수 있는 타입, LegendRules.AlphaTypes): 작은 타입 그림 묶음 + 마우스 오버 「배우는 타입」(결정 182)
+        void AlphaTypeIcons(VisualElement parent, PokemonState pk, string name)
+        {
+            var types = new List<int>(4);
+            LegendRules.AlphaTypes(flow.Ctx, pk, types);
+            if (types.Count == 0) return;
+            var box = Add(parent, new VisualElement(), name, AlphaTypesClass);
+            foreach (int t in types) TypeIcon(box, IconArt.Type((PokemonType)t), stage.T("ui.types." + (PokemonType)t));
+            stage.Tips.Hook(box, stage.T("screen.party.learn"), stage.T("screen.battle.alpha.types.tip"), TipSide.Below, reading: true);
         }
 
         // 작은 아이템 그림(볼·규토리)
@@ -1411,6 +1503,7 @@ namespace Sinnoh.Client
             bool rewarding = choice != null && choice.Kind == ChoiceKind.Reward && RewardReady(choice.Sub);
             bool rolling = rollEntry != null;
             CanStay = benching && choice.Kind == ChoiceKind.SwitchWindow && legal.Exists(a => a.Kind == AnswerKind.Decline);
+            if (ForfeitArmed && (!acting || !open || rolling || choice.Id != armedChoice || !legal.Exists(a => a.Kind == AnswerKind.Forfeit))) ForfeitArmed = false;   // 다른 선택 · 연출 · [기권] 꺼짐 = 풀림
 
             // 차례 칸: 연출이 도는 동안에는 지금 재생 중인 행동의 쪽을 적는다(내 다음 선택이 이미 열려 있어도 상대의 공격이 보이는 동안은 「상대의 차례」)
             var turn = Add(dock, new VisualElement(), "battle-turn", "sn-battle-turn");
@@ -1441,7 +1534,7 @@ namespace Sinnoh.Client
             if (seen.Ended || feed.Ended) guide = null;
             else if (choice == null) guide = null;
             else if (!open) guide = "screen.board.guide.wait";
-            else if (acting) guide = bag ? "screen.battle.guide.ball" : alphaOpen ? "screen.battle.guide.alpha" : partyOpen ? "screen.battle.guide.partymoves" : abilityOpen ? "screen.card.guide.potion" : "screen.battle.guide.pick";
+            else if (acting) guide = ForfeitArmed ? "screen.battle.forfeit.again" : bag ? "screen.battle.guide.ball" : alphaOpen ? "screen.battle.guide.alpha" : partyOpen ? "screen.battle.guide.partymoves" : abilityOpen ? "screen.card.guide.potion" : "screen.battle.guide.pick";
             else if (AskingToken) guide = "screen.battle.guide.token";
             else if (AskingOrder) guide = "screen.battle.guide.order";
             else if (AskingFate) guide = PsychicOn(legal) ? "screen.battle.guide.psychic" : legal.Exists(IsAmp) ? "screen.battle.guide.amp" : "screen.battle.guide.fate";   // psychic R(결정 131) · 앰프(결정 134)가 같은 창에 있으면
@@ -1548,6 +1641,25 @@ namespace Sinnoh.Client
                 use.SetEnabled(open && legal.Exists(a => a.Kind == AnswerKind.Accept));
                 pass.SetEnabled(open && legal.Exists(a => a.Kind == AnswerKind.Decline));
             }
+            // 운명의 변화 손패 훑어보기(결정 80 N3 나 · 자리 결정 170 — 기둥에서 차례 칸 맨 아래로): 보기만 하는 손패 창을 이 화면 위에 연다 — 낼 수 있는 때는 이 칸이 따로 묻는다.
+            // 내 손패를 여는 내 단추라 내가 싸우는 쪽일 때만(남의 배틀을 볼 때 그 좌석 칸에 내 장수가 섞이지 않게 — M7 마감 감사 1)
+            FateOn = false;
+            var fateState = feed.Source;
+            // 차례 칸 맨 아래 단추 줄에 단추가 하나뿐이면([넘기기] · [뒤로] · [교체 안 함] …) 그 옆에 — 칸 높이가 모자라 위 줄이 눌리지 않게(1080 벌 · 두 줄 안내).
+            // 포켓몬 고르기(출전 · 교체 · 다음 포켓몬 — 독이 대기 포켓몬 칸으로 바뀐 때)와 맨 아래에 단추 둘 이상인 줄이 선 동안([사용]·[넘기기] · [수락]·[거절] · [뒤로]·[다음 n/m] …)은
+            // 두지 않는다(1080 벌에서 칸 높이가 모자라다 — 답하고 나면 · [뒤로] 뒤에 다시 선다) [가정]
+            var lastRow = turn.childCount > 0 ? turn[turn.childCount - 1] : null;
+            bool footRow = lastRow != null && lastRow.ClassListContains("sn-foot-row");
+            bool fateRoom = !benching && !(footRow && lastRow.childCount > 1);
+            if (fateState != null && fateState.Battle != null && SideSeat(feed) == flow.Client.Seat && fateRoom)
+            {
+                string single = footRow && lastRow.childCount == 1 ? lastRow[0].name : null;
+                var holder = single == "battle-fate-pass" || single == "battle-ask-no" || single == "battle-partymove-back" || single == AbilityBack ? lastRow : turn;   // 짧은 단추 옆에만(긴 단추 옆이면 칸 폭을 넘는다)
+                var fate = Add(holder, Kit.Button(stage.T("screen.board.fate").Replace("{n}", fateState.Seats[flow.Client.Seat].FateHand.Count.ToString(inv)).Replace("{max}", FateRules.HandLimit.ToString(inv)), KitButtonKind.Normal, () => flow.ToggleFate()), FateButton, "sn-battle-fate");   // 다시 누르면 닫힌다(결정 176)
+                FateOn = flow.CanOpenFate;
+                fate.SetEnabled(flow.CanPeek);   // 결정 125: 연출 중 · 결과 창에서도 열린다(그 위 정보 창 층에 — 보기만은 같다)
+                if (flow.CanPeek) stage.Tips.Hook(fate, null, stage.T("screen.battle.fate.tip"), TipSide.Above, reading: true, clear: dock);
+            }
 
             // 기술 세로 3줄: 합법 답의 기술만(시그니처 → 배운 기술 순서 = 엔진 순서). 남는 줄은 빈 칸
             var list = Add(dock, new VisualElement(), "battle-moves", "sn-battle-moves");
@@ -1589,6 +1701,7 @@ namespace Sinnoh.Client
                 var mine = me.Id >= 0 && me.Id < flow.Client.View.Pokemon.Count ? flow.Client.View.Pokemon[me.Id] : null;
                 if (mine != null && foeSig != ctx.Cards.Pokemon[me.Def].Signature && Array.IndexOf(mine.Moves, foeSig) < 0) disguise = foeSig;
             }
+            moveRows = !rolling && !benching && !bag && !custom && acting;   // 단축키 1~3이 누를 기술 줄이 떠 있다(KeyTarget)
             for (int i = 0; !rolling && !benching && !bag && !custom && i < Math.Max(MoveRows, moves.Count); i++)
             {
                 if (i >= moves.Count)
@@ -1615,7 +1728,11 @@ namespace Sinnoh.Client
                     int bonus = TypeChart.Bonus(type, types[0], types.Count > 1 ? types[1] : PokemonType.Typeless);
                     if (bonus != 0) row.Add(Kit.Badge(Signed(bonus), bonus > 0 ? KitBadgeKind.Ok : KitBadgeKind.Red, Kit.F2));
                 }
-                if (move == BattleRules.AlphaStrike) row.Add(Kit.Badge(stage.T("screen.battle.alpha.pick"), KitBadgeKind.Plain, Kit.F1));   // 누르면 타입을 고른다
+                if (move == BattleRules.AlphaStrike)
+                {
+                    row.Add(Kit.Badge(stage.T("screen.battle.alpha.pick"), KitBadgeKind.Plain, Kit.F1));   // 누르면 타입을 고른다
+                    if (state != null && me.Id >= 0 && me.Id < state.Pokemon.Count) AlphaTypeIcons(row, state.Pokemon[me.Id], "battle-move-alpha-types");   // 결정 182: 고를 수 있는 타입(배울 수 있는 타입)
+                }
                 if (move == disguise)
                 {
                     var tag = Add(row, Kit.Badge(stage.T("screen.card.disguise"), KitBadgeKind.Gold, Kit.F1), "battle-move-disguise", null);
@@ -1641,7 +1758,7 @@ namespace Sinnoh.Client
             // [정비](T): 배틀 중에도 엔진이 정비를 받는 때(MaintOn)에 정비 판을 이 화면 위에 연다 — 연출 중·내 공격 처리 중에는 흐린 단추
             if (MaintOn)
             {
-                var maint = Add(side, Kit.Button(stage.T("screen.battle.maint"), KitButtonKind.Normal, () => flow.OpenParty()), "battle-maint", null);
+                var maint = Add(side, Kit.Button(stage.T("screen.battle.maint"), KitButtonKind.Normal, () => flow.ToggleParty()), "battle-maint", null);   // 다시 누르면 닫힌다(결정 176 — T와 같은 함수)
                 Add(maint, Kit.Badge("T", KitBadgeKind.Plain, Kit.F1), null, "sn-battle-key");
                 stage.Tips.Hook(maint, null, stage.T("screen.battle.maint.tip"), TipSide.Above, reading: true, clear: dock);
             }
@@ -1656,7 +1773,7 @@ namespace Sinnoh.Client
             {
                 if (canThrow)
                 {
-                    var bagButton = Add(side, Kit.Button(stage.T("screen.battle.bag"), KitButtonKind.Normal, () => { if (bag) CloseBag(); else OpenBag(); }), "battle-bag", null);
+                    var bagButton = Add(side, Kit.Button(stage.T("screen.battle.bag"), KitButtonKind.Normal, () => ToggleBag()), "battle-bag", null);
                     Add(bagButton, Kit.Badge("Q", KitBadgeKind.Plain, Kit.F1), null, "sn-battle-key");
                     bagButton.SetEnabled(open);
                     if (open) stage.Tips.Hook(bagButton, null, stage.T("screen.battle.bag.tip"), TipSide.Above, reading: true, clear: dock);
@@ -1673,13 +1790,13 @@ namespace Sinnoh.Client
                 else Off(side, "battle-forfeit", "screen.battle.forfeit", "E", "screen.battle.forfeit.off", open);
             }
 
-            // 계산 줄: 피해 계산의 칸(주사위 + 효과 + 상성 = 데미지)과 그 피해로 바뀐 체력. 굴림판이 떠도 그 공격의 계산 단계(61행)가 시작할 때까지는
-            // 앞 공격의 계산을 남겨 둔다(CalcHeld — 결정 70 ⑧). 계산 단계가 시작하면 이 공격의 칸이 왼쪽부터 켜지고, 체력 줄은 체력이 착지한 뒤에 뜬다
+            // 계산 줄: 피해 계산의 칸(주사위 + 효과 + 상성 = 데미지)과 그 피해로 바뀐 체력. 굴림판이 떠도 그 공격이 맞는 순간(59행 — 결정 171 ①)까지는
+            // 앞 공격의 계산을 남겨 둔다(CalcHeld — 결정 70 ⑧). 맞는 순간부터 이 공격의 칸이 왼쪽부터 켜지고, 체력 줄은 체력이 착지한 뒤에 뜬다
             var calc = Add(dock, new VisualElement(), "battle-calc", "sn-battle-calc");
             CalcLit = 0;
             CalcHpShown = false;
             CaptureSumLit = CaptureVerdictLit = false;
-            CalcHeld = false;
+            CalcHeld = CalcTaken = false;
             if (benching && !rolling)
             {
                 // 대기 포켓몬 칸이 독 오른쪽 끝까지 쓴다
@@ -1691,10 +1808,10 @@ namespace Sinnoh.Client
             var caught = rolling ? (rollIsCapture ? cap : null) : seen.Capture;
             bool sumLit = !rollIsCapture || Counted >= rollFinal.Count, verdictLit = !rollIsCapture || ReferenceEquals(seen.Capture, cap);
             int calcMs = int.MaxValue;
-            if (rolling && !rollIsCapture)
+            var step = CalcStep;   // 지금 항목에 이 공격의 계산이 있다(굴림판이 떠 있거나 · 재굴림 창 뒤의 항목처럼 굴림 없이)
+            if (step != null && caught == null)
             {
                 int ms = CalcMs;
-                var step = rollEntry.Step(611);
                 if (ms >= 0)
                 {
                     last = (DamageBreakdown)step.Events[0];
@@ -1703,7 +1820,7 @@ namespace Sinnoh.Client
                 else
                 {
                     // 이 공격의 계산은 아직: 앞 공격의 것(드러난 마지막 피해 — 이 항목의 것은 아직 가려져 있다)을 다 켜진 모습으로 남겨 둔다
-                    if (step != null && step.Events.Count > 0 && ReferenceEquals(last, step.Events[0])) last = null;
+                    if (ReferenceEquals(last, step.Events[0])) last = null;
                     CalcHeld = last != null && last.Steps != null;
                 }
             }
@@ -1745,31 +1862,58 @@ namespace Sinnoh.Client
         void FillCalc(VisualElement calc, BattleFeed feed, DamageBreakdown last, int ms)
         {
             var inv = CultureInfo.InvariantCulture;
-            Add(calc, Kit.Text(stage.T("screen.battle.calc.target").Replace("{mon}", LineT(feed.MonKey(last.TargetId))), Kit.F2), "battle-calc-target", "kit-muted");
+            // 누가 맞았나(결정 171 ②): 맞은 포켓몬의 작은 도트 얼굴 + 이름표(상대 = 붉은 바탕 · 내 쪽 = 그 좌석 색) + 「준 피해」·「받은 피해」.
+            // 내가 준 피해는 왼쪽에서, 받은 피해는 오른쪽에서(얼굴이 바깥) — 색에만 기대지 않는다
+            bool taken = OnMySide(feed, last.TargetId);
+            CalcTaken = taken;
+            var body = Add(calc, new VisualElement(), "battle-calc-body", "sn-battle-calc-body");
+            if (taken) body.AddToClassList("sn-battle-calc-taken");
+            var target = feed.MonOf(last.TargetId);
+            var mons = MonArt.Load();
+            var face = Add(body, new VisualElement(), "battle-calc-face", "sn-battle-calc-face");
+            if (mons != null && target.Exists) face.Add(mons.Front(flow.Ctx.Cards.Pokemon[target.Def].Key));
+            var col = Add(body, new VisualElement(), null, "sn-battle-calc-col");
+            var who = Add(col, new VisualElement(), null, "sn-battle-calc-who");
+            var tag = Add(who, new VisualElement(), "battle-calc-target", "sn-battle-calc-tag");
+            if (taken) tag.style.backgroundColor = new StyleColor(flow.SeatColor(SideSeat(feed)));
+            else tag.AddToClassList("sn-battle-calc-tag-foe");
+            tag.Add(Kit.Text(LineT(feed.MonKey(last.TargetId)), Kit.F2));
+            Add(who, Kit.Text(stage.T(taken ? "screen.battle.calc.taken" : "screen.battle.calc.dealt"), Kit.F2), "battle-calc-dir", "kit-muted");
+            calc = col;
             var chips = Add(calc, new VisualElement(), "battle-calc-chips", "sn-battle-chips");
             int dice = 0, effect = 0, matchup = 0;
-            var cells = new List<KeyValuePair<string, string>>();
+            var cells = new List<KeyValuePair<string, string>>();   // (칩 이름 글, 값)
+            // 상성(③)의 출처별 몫(결정 194): 표 상성 = 「상성」, 균열 카드(무모한 돌격) · 트레이너 카드(약점 분석)는 그 이름으로 나눠 보인다 — 몫이 없으면 지금처럼 「상성」 하나
+            var extra = new List<KeyValuePair<string, string>>();
             foreach (var s in last.Steps)
                 switch (s.Kind)
                 {
                     case DamageStepKind.Dice: dice += s.Value; break;
                     case DamageStepKind.Effect: effect += s.Value; break;
-                    case DamageStepKind.Effectiveness: matchup += s.Value; break;
-                    case DamageStepKind.Double: cells.Add(new KeyValuePair<string, string>("screen.battle.calc.double", "×2")); break;
-                    case DamageStepKind.Reduction: cells.Add(new KeyValuePair<string, string>("screen.battle.calc.reduction", Signed(s.Value))); break;
-                    case DamageStepKind.Threshold: cells.Add(new KeyValuePair<string, string>("screen.battle.calc.threshold", s.Value.ToString(inv))); break;
-                    case DamageStepKind.Cap: cells.Add(new KeyValuePair<string, string>("screen.battle.calc.cap", s.Value.ToString(inv))); break;
-                    case DamageStepKind.Retribution: cells.Add(new KeyValuePair<string, string>("screen.battle.calc.retribution", Signed(s.Value))); break;
+                    case DamageStepKind.Effectiveness:
+                        string named = MatchupName(s.Source);
+                        if (named == null) matchup += s.Value;
+                        else extra.Add(new KeyValuePair<string, string>(named, Signed(s.Value)));
+                        break;
+                    case DamageStepKind.Double: cells.Add(new KeyValuePair<string, string>(stage.T("screen.battle.calc.double"), "×2")); break;
+                    case DamageStepKind.Reduction: cells.Add(new KeyValuePair<string, string>(stage.T("screen.battle.calc.reduction"), Signed(s.Value))); break;
+                    case DamageStepKind.Threshold: cells.Add(new KeyValuePair<string, string>(stage.T("screen.battle.calc.threshold"), s.Value.ToString(inv))); break;
+                    case DamageStepKind.Cap: cells.Add(new KeyValuePair<string, string>(stage.T("screen.battle.calc.cap"), s.Value.ToString(inv))); break;
+                    case DamageStepKind.Retribution: cells.Add(new KeyValuePair<string, string>(stage.T("screen.battle.calc.retribution"), Signed(s.Value))); break;
                 }
-            cells.Insert(0, new KeyValuePair<string, string>("screen.battle.calc.effectiveness", Signed(matchup)));
-            cells.Insert(0, new KeyValuePair<string, string>("screen.battle.calc.effect", Signed(effect)));
-            cells.Insert(0, new KeyValuePair<string, string>("screen.battle.calc.dice", dice.ToString(inv)));
+            cells.InsertRange(0, extra);
+            cells.Insert(0, new KeyValuePair<string, string>(stage.T("screen.battle.calc.effectiveness"), Signed(matchup)));
+            cells.Insert(0, new KeyValuePair<string, string>(stage.T("screen.battle.calc.effect"), Signed(effect)));
+            cells.Insert(0, new KeyValuePair<string, string>(stage.T("screen.battle.calc.dice"), dice.ToString(inv)));
+            int added = 3 + extra.Count;   // 「+」로 잇는 칸: 주사위 · 효과 · 상성(과 그 몫)
+            CalcMatchups = 1 + extra.Count;
             bool all = ms == int.MaxValue, total = all || BattleRoll.TotalLit(ms);
             int lit = all ? cells.Count : BattleRoll.CalcLit(cells.Count, ms);
             for (int i = 0; i < cells.Count; i++)
             {
-                VisualElement op = i > 0 && i < 3 ? Add(chips, Kit.Text("+", Kit.F2), null, null) : null;
-                var chip = Chip(chips, cells[i].Key, cells[i].Value, false);
+                VisualElement op = i > 0 && i < added ? Add(chips, Kit.Text("+", Kit.F2), null, null) : null;
+                var chip = ChipText(chips, cells[i].Key, cells[i].Value, false);
+                if (i >= 2 && i < added) chip.name = "battle-calc-matchup-" + (i - 2).ToString(inv);   // 0 = 표 상성 · 1~ = 출처가 있는 몫
                 if (i < lit) continue;
                 chip.style.visibility = Visibility.Hidden;
                 if (op != null) op.style.visibility = Visibility.Hidden;
@@ -1783,8 +1927,7 @@ namespace Sinnoh.Client
             // 그 피해로 바뀐 체력(착지한 뒤에)
             var hp = seen.DamageHp;
             CalcHpShown = total && ReferenceEquals(last, seen.Damage) && hp != null;
-            var line = Add(calc, new VisualElement(), "battle-calc-hp", "sn-battle-calc-hp");
-            line.Add(Kit.Text(LineT(feed.MonKey(last.TargetId)), Kit.F2));
+            var line = Add(calc, new VisualElement(), "battle-calc-hp", "sn-battle-calc-hp");   // 이름은 위 이름표가 말한다
             line.Add(Kit.Pill(heart, (CalcHpShown ? hp.Before : 0).ToString(inv)));
             line.Add(Kit.Text("→", Kit.F2));
             line.Add(Kit.Pill(heart, (CalcHpShown ? hp.After : 0).ToString(inv), CalcHpShown && hp.After * 2 <= hp.Max ? KitTone.Low : KitTone.Base));
@@ -1819,18 +1962,23 @@ namespace Sinnoh.Client
             list.AddToClassList("sn-battle-roll");
             rollPanel = Add(list, new VisualElement(), "battle-roll", "sn-battle-rollpanel");
             rollBoard = Add(rollPanel, new VisualElement(), "battle-roll-board", "sn-battle-rollboard");
-            if (!rollIsCapture) rollBody = DiceBoard.TypeBody(type);
-            var art = Board(rollIsCapture ? CaptureBody : DiceBoard.TypeBody(type));
+            // 결정 188: 굴린 뒤 창(디아루가)을 앞둔 포획 굴림은 판정 전에 DiceRolled(Kind = Capture)로 먼저 구른다 — 몸 색 · 머리는 포획 굴림과 같게
+            bool ballRoll = rolled != null && rolled.Kind == DiceKind.Capture;
+            var body = rollIsCapture || ballRoll ? CaptureBody : DiceBoard.TypeBody(type);
+            if (!rollIsCapture) rollBody = body;
+            var art = Board(body);
             if (art != null && rollScene != null) rollBoard.style.backgroundImage = Background.FromRenderTexture(art.Output);
 
             var head = Add(rollPanel, new VisualElement(), "battle-roll-head", "sn-battle-rollhead");
-            if (rollIsCapture)
+            if (rollIsCapture || ballRoll)
             {
-                // 포획 굴림의 머리: 던진 볼 · 「포획 주사위 n개」 · 남은 볼(던지는 순간 줄어든다 — 표시 값)
-                Icon(head, GenAssets.ItemIcons + BattleFeed.BallItem(cap.BallKey) + ".png");
-                head.Add(Kit.Text(stage.T(BattleFeed.BallKey(cap.BallKey)), Kit.F2));
-                Add(head, Kit.Text(stage.T("screen.battle.roll.capture").Replace("{n}", rollFinal.Count.ToString(inv)), Kit.F1), "battle-roll-count", "kit-muted");
-                Add(head, Kit.Text("×" + BallStock(cap.BallKey).ToString(inv), Kit.F1), "battle-roll-stock", null);
+                // 포획 굴림의 머리: 던진 볼 · 「포획 주사위 n개」 · 남은 볼(던지는 순간 줄어든다 — 표시 값, 판정 앞 굴림에는 없다)
+                int ballKey = rollIsCapture ? cap.BallKey : rolled.BallKey;
+                int dice = rollIsCapture ? rollFinal.Count : rolled.Faces != null ? rolled.Faces.Length : 0;
+                Icon(head, GenAssets.ItemIcons + BattleFeed.BallItem(ballKey) + ".png");
+                head.Add(Kit.Text(stage.T(BattleFeed.BallKey(ballKey)), Kit.F2));
+                Add(head, Kit.Text(stage.T("screen.battle.roll.capture").Replace("{n}", dice.ToString(inv)), Kit.F1), "battle-roll-count", "kit-muted");
+                if (rollIsCapture) Add(head, Kit.Text("×" + BallStock(ballKey).ToString(inv), Kit.F1), "battle-roll-stock", null);
             }
             else
             {
@@ -1928,13 +2076,27 @@ namespace Sinnoh.Client
 
         static string Signed(int n) => n > 0 ? "+" + n.ToString(CultureInfo.InvariantCulture) : n < 0 ? "−" + (-n).ToString(CultureInfo.InvariantCulture) : "0";
 
-        VisualElement Chip(VisualElement parent, string labelKey, string value, bool total)
+        VisualElement Chip(VisualElement parent, string labelKey, string value, bool total) => ChipText(parent, stage.T(labelKey), value, total);
+
+        VisualElement ChipText(VisualElement parent, string label, string value, bool total)
         {
             var chip = Add(parent, new VisualElement(), null, "sn-battle-chip");
             if (total) chip.AddToClassList("sn-battle-chip-total");
-            Add(chip, Kit.Text(stage.T(labelKey), Kit.F1), null, total ? null : "kit-muted");
+            Add(chip, Kit.Text(label, Kit.F1), null, total ? null : "kit-muted");
             chip.Add(Kit.Text(value, Kit.F2));
             return chip;
+        }
+
+        /// <summary>계산 줄의 상성 칸 수(표 상성 1 + 출처가 있는 몫 — 결정 194, 확인용).</summary>
+        public int CalcMatchups { get; private set; }
+
+        // 상성 몫의 출처 이름(결정 194): 균열 카드 = 카드 이름(무모한 돌격) · 트레이너 카드 = 그 카드의 빨강 능력 이름(scientist R 약점 분석). 표 상성(출처 없음)이면 null
+        string MatchupName(SourceRef src)
+        {
+            var ctx = flow.Ctx;
+            if (src.Kind == SourceKind.BreachCard && src.Id >= 0 && src.Id < ctx.Decks.CardIds.Count) return stage.T(ctx.Decks.CardIds[src.Id]);
+            if (src.Kind == SourceKind.TrainerCard && src.Id >= 0) return stage.T(CardAsk.AbilityKey(ctx, src.Id, 2));
+            return null;
         }
 
         // 지금은 누를 수 없는 단추: 흐린 모양 + 이유 툴팁(꺼진 요소는 마우스를 받지 못해 켜 둔 채 흐리게만 한다 — BoardHud와 같다)
@@ -1971,6 +2133,7 @@ namespace Sinnoh.Client
                 }
                 tile.SetEnabled(open);
                 stage.OnTap(tile, SoundKeys.Decide, e => PressBench(index));
+                HookMon(tile, a.Target);   // 마우스 오버 = 그 포켓몬 카드(결정 169)
             }
             list.EnableInClassList("sn-battle-bench-many", bench.Count >= 5);   // 다섯 이상: 도트 창을 줄인다(여섯 칸이 독 폭에 들어오게 — M5 마감 검토)
         }
@@ -2262,7 +2425,7 @@ namespace Sinnoh.Client
             // [확인]은 그 항목이 다 재생된 뒤에 보인다(자리는 처음부터 잡아 둔다 — 줄이 내려앉는 동안 창 크기가 바뀌지 않게)
             resultFoot = Add(panel, new VisualElement(), "battle-result-foot", "sn-battle-result-foot");
             if (feed.Mine) Add(resultFoot, Kit.Text(stage.T("screen.battle.result.turn"), Kit.F2), null, "kit-muted");   // 「배틀을 마치면 턴이 종료됩니다」는 당사자에게만
-            Add(resultFoot, Kit.Button(stage.T("screen.battle.result.ok"), KitButtonKind.Main, () => Confirm()), "battle-result-ok", null);
+            Add(resultFoot, Kit.Button(stage.T("screen.battle.result.ok"), KitButtonKind.Main, () => Confirm()), "battle-result-ok", null).SetEnabled(!flow.ReleasePending);   // 균열 카드 묶음이 끝나 가르치기가 올 때까지(결정 185)
         }
 
         // team_rocket R: 쓸 포켓몬이 바닥나 고향 마을이 아닌 고른 칸으로 날아갔다(다음 턴 시작에 모두 회복 — rulings A35)
@@ -2322,7 +2485,7 @@ namespace Sinnoh.Client
                 {
                     string moveKey = BattleFeed.MoveNameKey(ctx, choice.Subject);
                     Add(box, Kit.Wrapped(KoJosa.Fix(stage.T("screen.battle.reward.teach").Replace("{move}", stage.T(moveKey))), Kit.F2), "battle-reward-ask", null);
-                    Add(box, MonParts.MoveRow(stage, ctx, choice.Subject), "battle-reward-move", null);   // 정비 판(S28)의 기술 카드와 같은 줄
+                    Add(box, MonParts.MoveRow(stage, ctx, choice.Subject, false, TipSide.Below, panel), "battle-reward-move", null);   // 정비 판(S28)의 기술 카드와 같은 줄
                     Add(box, Kit.Wrapped(stage.T("screen.battle.reward.teach.slot"), Kit.F1), null, "kit-muted");
                     // 포켓몬마다 한 칸: 도트 · 이름 + 기술 칸 단추(합법 답의 (포켓몬, 칸)만 — 칸에 지금 있는 기술 이름, 비었으면 「빈 칸」)
                     var row = Add(box, new VisualElement(), null, "sn-battle-reward-row");
@@ -2339,9 +2502,16 @@ namespace Sinnoh.Client
                             slots = Add(tile.Q(className: "sn-battle-mon-info"), new VisualElement(), null, "sn-battle-slots");
                         }
                         int old = slot >= 0 && slot < view.Pokemon[id].Moves.Length ? view.Pokemon[id].Moves[slot] : -1;
-                        string label = old >= 0 ? stage.T(BattleFeed.MoveNameKey(ctx, old)) : stage.T("screen.battle.reward.teach.empty");
+                        var tactic = old < 0 ? LegendRules.TacticAt(view.Pokemon[id], slot) : LegendTactic.None;   // 결정 195: 전설 특수기술이 차지한 빈 칸 — 가르치면 덮인다
+                        string label = old >= 0 ? stage.T(BattleFeed.MoveNameKey(ctx, old)) : tactic != LegendTactic.None ? stage.T(MonParts.TacticKey(tactic)) : stage.T("screen.battle.reward.teach.empty");
                         var button = Add(slots, Kit.Button(label, KitButtonKind.Normal, () => PressReward(index)), "battle-reward-" + (i + 1).ToString(inv), null);
                         button.SetEnabled(ready);
+                        if (tactic != LegendTactic.None)
+                        {
+                            button.AddToClassList(MonParts.LegendSlotClass);
+                            stage.Tips.Hook(button, label, MonParts.TacticTip(stage, tactic), TipSide.Above, reading: true);
+                        }
+                        if (ready && old >= 0) MonParts.MoveTip(stage, ctx, button, old, TipSide.Below, panel);   // 바꿀 원래 기술의 이름 + 효과(결정 186)
                     }
                     for (int i = 0; i < legal.Count; i++)
                     {
@@ -2400,6 +2570,59 @@ namespace Sinnoh.Client
             bag = false;
             Refresh();
             return true;
+        }
+
+        /// <summary>[가방] 단추 · 단축키 Q(결정 164): 볼 줄이 떠 있으면 기술 줄로, 아니면 볼 줄로.</summary>
+        public bool ToggleBag() => bag ? CloseBag() : OpenBag();
+
+        /// <summary>
+        /// 단축키(결정 164 — 단추 오른쪽 위 글자 = <see cref="MoveKeys"/> · Q · E)가 지금 누를 독 요소: 1~3 = 기술 줄(효과 순서를 묻는 중이면 순서 줄) · Q = [가방] · E = [기권].
+        /// 그 단추가 켜져 있지 않으면(연출 중 · 관전 · 꺼진 단추 · 다른 줄이 떠 있음) null — 키는 마우스로 못 누르는 것을 누르지 않는다.
+        /// </summary>
+        public VisualElement KeyTarget(char key)
+        {
+            if (dock == null || !Open || ShowsResult) return null;
+            int slot = Array.IndexOf(MoveKeys, key.ToString());
+            if (slot >= 0)
+            {
+                if (AskingOrder) return slot < orders.Count ? dock.Q("battle-order-" + (slot + 1).ToString(CultureInfo.InvariantCulture)) : null;
+                return moveRows && slot < moves.Count ? dock.Q("battle-move-" + (slot + 1).ToString(CultureInfo.InvariantCulture)) : null;
+            }
+            if (key == 'Q') return BagOn ? dock.Q("battle-bag") : null;
+            if (key == 'E') return ForfeitOn ? dock.Q("battle-forfeit") : null;
+            return null;
+        }
+
+        /// <summary>
+        /// E로 기권을 한 번 눌러 둔 상태인가(메인 가정 2026-11-21 — 보드에서 E로 돌리던 손버릇에 기권되지 않게): 키로 기권할 때만 E를 한 번 더 눌러야 하고, 그 사이 차례 칸에 안내 한 줄.
+        /// 다른 키 · 다른 선택 · [기권]이 꺼지면 풀린다. 마우스 [기권]은 그대로 한 번에.
+        /// </summary>
+        public bool ForfeitArmed { get; private set; }
+        int armedChoice = -1;
+
+        /// <summary>단축키를 누른다 — 그 단추 · 줄과 같은 함수(<see cref="PressMove"/> · <see cref="PressOrder"/> · <see cref="ToggleBag"/> · <see cref="PressForfeit"/>). <see cref="KeyTarget"/>이 null이면 아무 일도 없다. E는 두 번째에 기권한다(<see cref="ForfeitArmed"/>).</summary>
+        public bool PressKey(char key)
+        {
+            if (KeyTarget(key) == null) return false;
+            if (key != 'E' && ForfeitArmed)
+            {
+                ForfeitArmed = false;
+                Refresh();
+            }
+            int slot = Array.IndexOf(MoveKeys, key.ToString());
+            if (slot >= 0) return AskingOrder ? PressOrder(slot) : PressMove(slot);
+            if (key == 'Q') return ToggleBag();
+            if (key != 'E') return false;
+            if (ForfeitArmed)
+            {
+                ForfeitArmed = false;
+                return PressForfeit();
+            }
+            var choice = flow.Client.Choice(ChoiceKind.BattleAction);
+            ForfeitArmed = choice != null;
+            armedChoice = choice != null ? choice.Id : -1;
+            Refresh();
+            return ForfeitArmed;
         }
 
         /// <summary>Esc(M9 다듬기 P23): 기술 줄 자리에 떠 있는 [뒤로] 있는 줄(가방 · 알파 스트라이크 타입 · 대기 포켓몬 기술 · 회복할 포켓몬)을 닫고 기술 줄로. 닫았으면 true.</summary>
@@ -2678,6 +2901,7 @@ namespace Sinnoh.Client
                     int target = potions[i].Target;
                     var b = Add(end, Kit.Button(CardAsk.PokemonName(stage, flow.Ctx, view, target), KitButtonKind.Main, () => PressFatePotion(target)), FatePotion + "-" + (i + 1).ToString(inv), null);
                     b.SetEnabled(open);
+                    HookMon(b, target);   // 결정 169
                 }
                 rows++;
             }
@@ -2914,7 +3138,7 @@ namespace Sinnoh.Client
         /// <summary>결과 창의 [확인]: 배틀 화면을 닫고 보드로 돌아간다(잡아 둔 턴 넘김 띠가 이어진다).</summary>
         public bool Confirm()
         {
-            if (!ShowsResult || AskingReward) return false;
+            if (!ShowsResult || AskingReward || flow.ReleasePending) return false;
             flow.CloseBattle();
             return true;
         }

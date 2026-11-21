@@ -160,6 +160,16 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual((256, 192), PngSize(file));
         }
 
+        [Test]
+        public void M10_결정167_공중날기컷인띠는원작자산화면의가운데80줄이다()
+        {
+            // 결정 167: 공중날기 앞 컷인의 띠 = Pt 비전기술 컷인 BG(field_cutin.narc — 화면의 96 ± 40줄, stage 묶음)
+            const string key = "Stage/Cutin/band.png";   // = Sinnoh.Client FlyCutin.BandKey(PlayerBuildTests가 번들에 있는지 본다)
+            string file = Path.Combine(Gen, key);
+            if (!File.Exists(file)) Assert.Ignore("Gen 없음: node Tools/assets/build.mjs --only stage 먼저 (" + key + ")");
+            Assert.AreEqual((256, Sinnoh.Fx.FlyCutinBeats.BandTexels), PngSize(file));
+        }
+
         // fonts.mjs DS_KEYS와 같은 규칙: DS 화면(256×192) 안에 나오는 글 — 포켓몬·기술 이름, 타입, 배틀 문장 키.
         // M9 언어 ①: DS 글상자(BattleScreen.DsMessage)가 그리는 배틀 기록 줄 screen.battle.log.* · 기술 고르기 안내 · 우선권 물음과 그 줄에 끼는 이름(볼 = item.* · 온슬롯 · 시련 · 플랜 B·알파 스트라이크)
         internal static bool DsKey(string k) =>
