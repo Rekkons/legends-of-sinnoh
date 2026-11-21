@@ -548,6 +548,7 @@ namespace Sinnoh.Client
                 if (lockText[0] != null) DsHit("battle-ds-me-lock", DsStage.LockRect(false), stage.T("screen.battle.lock.chip"), lockText[0]);
             }
             FillSwarm(feed, state);
+            FillRoster(feed, state);
         }
 
         readonly List<VisualElement> dsHits = new List<VisualElement>();
@@ -605,6 +606,68 @@ namespace Sinnoh.Client
                 else slot.Add(Kit.Text(stage.T(caught ? "screen.battle.swarm.caught" : "screen.battle.swarm.done"), Kit.F2));
                 swarmSlots.Add(slot);
             }
+        }
+
+        // 갤럭시단 명단(결정 201 ① — rulings A1 · A16 · F12): 앞면으로 공개된 명단(조무래기 둘 · 간부 조각 수 + 2 · 태홍 6)을 「남은 포켓몬 n」 줄 아래에 늘어놓는다.
+        // 칸 = 타입 그림 + 이름(지금 나와 있는 것 금색 · 쓰러진 것 흐림), 마우스 오버 = 그 포켓몬 카드. 보기 사본의 배틀 명단은 명단을 고른 뒤(ApplyLineup)에야 생기니 고르기 전에는 줄이 없다
+        void FillRoster(BattleFeed feed, GameState state)
+        {
+            RosterCount = RosterDone = 0;
+            RosterActive = -1;
+            if (feed.Kind != BattleKind.Galactic || state.Battle == null) return;
+            var side = state.Battle.Sides[1 - feed.MySide];
+            if (side.Owner != SeatId.Galactic || side.Roster.Count < 2) return;
+            var block = info.Q("battle-info-foe");
+            var left = block != null ? block.Q("battle-foe-left") : null;
+            if (left == null) return;
+            swarmCells.Clear();
+            var slots = new VisualElement { name = "battle-roster" };
+            slots.AddToClassList("sn-battle-swarm");
+            slots.AddToClassList("sn-battle-roster");   // 타입 그림은 1080에서도 1배(태홍 여섯이 기둥 안에 들게)
+            block.Insert(block.IndexOf(left) + 1, slots);
+            info.AddToClassList("sn-battle-swarm-info");   // 영어 1080 벌: 명단 칸이 여러 줄이라 기둥의 줄 사이를 좁힌다(무리 줄과 같은 클래스)
+            RosterCount = side.Roster.Count;
+            int active = seen.Active[1 - feed.MySide];
+            for (int i = 0; i < side.Roster.Count; i++)
+            {
+                int id = side.Roster[i];
+                var slot = Add(slots, new VisualElement(), "battle-roster-slot-" + (i + 1).ToString(CultureInfo.InvariantCulture), "sn-battle-swarm-slot");
+                int def = id >= 0 && id < state.Pokemon.Count ? state.Pokemon[id].Def : -1;
+                var mon = Shown(id);
+                bool done = !mon.Exists || mon.Fainted;
+                if (done)
+                {
+                    RosterDone++;
+                    slot.AddToClassList(RosterDoneClass);
+                }
+                else if (id == active) RosterActive = i;
+                if (def < 0)
+                {
+                    slot.Add(Kit.Text(stage.T("screen.battle.swarm.done"), Kit.F2));
+                    continue;
+                }
+                var card = flow.Ctx.Cards.Pokemon[def];
+                foreach (var t in card.Types) TypeIcon(slot, IconArt.Type(t), stage.T("ui.types." + t));
+                slot.Add(Kit.Badge(BoardHud.ShortName(stage.T("pokemon." + card.Key)), !done && id == active ? KitBadgeKind.Gold : KitBadgeKind.Plain, Kit.F2));
+                HookSwarm(slot, id, state);   // 마우스 오버 = 그 포켓몬 카드(무리 칸과 같은 MonTip — 아직 안 나온 · 쓰러진 칸도)
+            }
+        }
+
+        /// <summary>갤럭시단 명단 줄(결정 201 ①)의 쓰러진 칸 클래스(흐림).</summary>
+        public const string RosterDoneClass = "sn-battle-roster-done";
+
+        /// <summary>상대 기둥의 갤럭시단 명단 줄(결정 201 ①): 칸 수 · 쓰러진 칸 수 · 지금 나와 있는 칸(0부터, 없으면 −1) — 줄이 없으면 0 · 0 · −1(확인용).</summary>
+        public int RosterCount { get; private set; }
+        public int RosterDone { get; private set; }
+        public int RosterActive { get; private set; } = -1;
+
+        /// <summary>명단 줄의 n번째 칸(1부터 — <c>battle-roster-slot-n</c>)에 마우스를 올린 것처럼 카드를 띄운다(캡처 · 시험). 그 칸이 없으면 false.</summary>
+        public bool HoverRoster(int n)
+        {
+            var el = info != null ? info.Q("battle-roster-slot-" + n.ToString(CultureInfo.InvariantCulture)) : null;
+            if (el == null || !swarmCells.TryGetValue(el, out var show)) return false;
+            show();
+            return true;
         }
 
         readonly Dictionary<VisualElement, Action> swarmCells = new Dictionary<VisualElement, Action>();

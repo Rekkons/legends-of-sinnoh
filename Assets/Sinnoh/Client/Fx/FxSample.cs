@@ -19,12 +19,12 @@ namespace Sinnoh.Client
         public const int PokemonId = 1, MaxHp = 20;
         /// <summary>보기의 값: 대본이 다 적용된 뒤의 체력. 갱신을 받는 순간 보기는 이미 이 값이다.</summary>
         public const int ViewHp = 9;
-        /// <summary>계산 줄이 다 켜진 뒤 숫자가 날기 전에 쉬는 시간(화면 상수 — spikes/dice-roll §4 「+ 300 뒤 비행 400」).</summary>
-        public const int FlyGapMs = 300;
+        /// <summary>계산 줄이 다 켜진 뒤 숫자가 날기 전에 쉬는 시간(화면 상수 — spikes/dice-roll §4 「+ 300 뒤 비행 400」 → 결정 203).</summary>
+        public const int FlyGapMs = 100;
         const int BarWidth = 400, FlyX = -160, FlyY = -44;
 
         /// <summary>찍는 시각(대본 시작부터 ms): 굴리는 중 · 피해 숫자가 나는 중 · 체력 막대가 깎이는 중 · 첫 착지 뒤(둘째 항목 시작) · 다 끝나 대기열이 빈 뒤.</summary>
-        public static readonly int[] ShotsMs = { 1200, 3400, 3900, 4500, 9100 };
+        public static readonly int[] ShotsMs = { 1200, 2950, 3260, 4500, 9100 };
 
         public readonly TweenRunner Runner = new TweenRunner();
         public readonly FxSequencer Sequencer = new FxSequencer();

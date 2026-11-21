@@ -14,10 +14,10 @@ namespace Sinnoh.Client
     /// 겉모양은 신오 지방 세대(Pt) 포켓몬 도감의 짜임이다(사용자 2026-11-18): 화면을 덮는 초록 바탕 + 가운데 어두운 띠,
     /// <b>왼쪽에 고른 포켓몬의 큰 그림</b>(붉은 그림 칸 · 번호 · 이름), <b>오른쪽에 「No. · 이름」 판이 굴러가는 목록</b>(전국도감 번호 순 — 고른 판이 왼쪽으로 튀어나온다, 휠 · ▲▼),
     /// 고른 판을 다시 누르거나 [상세 보기]를 누르면 목록 자리에 <b>상세 쪽</b>(타입 · 체력 · 스피드 · 등급 · 포획률 · 서식지 · 배우는 타입 · 진화와 비용 · 든 덱과 장수 · 고유 기술과 효과 문구 · 다른 폼).
-    /// 위에 덱 거르기(전체 + <see cref="DexBook.Tabs"/>) · 이름 찾기 · 타입 거르기. 도감 틀 그림은 원작 자산에서 뽑지 못해 화면 USS로 흉내 낸 것이다(04 §3-14).
+    /// 위에 덱 거르기(전체 + <see cref="DexBook.Tabs"/>) · 이름 찾기 · 타입 거르기 · 갤럭시단 덱에서만 서는 주인 거르기(<see cref="DexBook.Owners"/> — 결정 201 ③, 덱 줄 아래 한 줄 — 갤럭시단 탭에서만 선다). 도감 틀 그림은 원작 자산에서 뽑지 못해 화면 USS로 흉내 낸 것이다(04 §3-14).
     /// <b>숨은 정보를 흘리지 않는다</b>: 이 화면은 정적 데이터(<see cref="Ctx"/>)와 닫는 함수만 받는다 — 판의 상태를 받지 않아 지금 덱에 남은 카드 · 순서 · 뽑은 사람을 보일 수 없다.
     /// 타이틀 「포켓몬 도감」 줄과 보드 HUD 위 띠의 [도감](<see cref="GameFlow.OpenDex"/>)이 연다. 게임 중에는 기록 창처럼 화면 대기열을 멈추지 않고, 열 때가 된 조우 창 · 배틀 화면은 이 화면을 닫고 열린다.
-    /// 요소 이름: <c>dex</c>·<c>dex-panel</c>·<c>dex-count</c>·<c>dex-deck-&lt;all|덱&gt;</c>·<c>dex-name</c>·<c>dex-type-all</c>·<c>dex-type-&lt;타입&gt;</c>·<c>dex-pic</c>·<c>dex-pic-no</c>·<c>dex-pic-name</c>·<c>dex-open</c>·
+    /// 요소 이름: <c>dex</c>·<c>dex-panel</c>·<c>dex-count</c>·<c>dex-deck-&lt;all|덱&gt;</c>·<c>dex-name</c>·<c>dex-type-all</c>·<c>dex-type-&lt;타입&gt;</c>·<c>dex-owners</c>·<c>dex-owner-&lt;all|주인&gt;</c>·<c>dex-pic</c>·<c>dex-pic-no</c>·<c>dex-pic-name</c>·<c>dex-open</c>·
     /// <c>dex-list</c>·<c>dex-plate-&lt;줄&gt;</c>·<c>dex-empty</c>·<c>dex-pos</c>·<c>dex-up</c>·<c>dex-down</c>·<c>dex-close</c>·
     /// <c>dex-detail</c>·<c>dex-detail-rate</c>·<c>dex-detail-decks</c>·<c>dex-detail-evolve</c>·<c>dex-detail-move</c>·<c>dex-face-&lt;상태&gt;</c>.
     /// </summary>
@@ -37,10 +37,11 @@ namespace Sinnoh.Client
         readonly List<DexEntry> shown = new List<DexEntry>();
         readonly Dictionary<string, VisualElement> decks = new Dictionary<string, VisualElement>();
         readonly Dictionary<int, VisualElement> typeOpts = new Dictionary<int, VisualElement>();
+        readonly Dictionary<string, VisualElement> ownerOpts = new Dictionary<string, VisualElement>();
         List<DexEntry> all = new List<DexEntry>();
         UiStage stage;
         MonArt mons;
-        VisualElement pic, picInfo, right, typeAll;
+        VisualElement pic, picInfo, right, typeAll, owners;
         Label count;
         Button open;
 
@@ -63,6 +64,9 @@ namespace Sinnoh.Client
         public PokemonType? Type { get; private set; }
         public string Search { get; private set; } = "";
 
+        /// <summary>갤럭시단 덱의 주인 거르기(null = 전체 — 다른 덱을 고르면 전체로).</summary>
+        public DexOwner? Owner { get; private set; }
+
         /// <summary>보는 덱의 카드 전체(타입 · 이름 거르기 앞) · 거른 뒤의 카드(전국도감 번호 순).</summary>
         public IReadOnlyList<DexEntry> All => all;
         public IReadOnlyList<DexEntry> Shown => shown;
@@ -83,6 +87,7 @@ namespace Sinnoh.Client
             mons = MonArt.Load();
             decks.Clear();
             typeOpts.Clear();
+            ownerOpts.Clear();
             var page = new VisualElement { name = "dex-back" };
             page.AddToClassList("sn-dex-back");
             var panel = Add(page, new VisualElement(), "dex-panel", "sn-dex-panel");
@@ -98,6 +103,11 @@ namespace Sinnoh.Client
             Add(bar, Kit.Text(stage.T("screen.dex.name"), Kit.F2), null, "sn-dex-name-label");
             var field = RoomUi.Field(bar, "dex-name", Search, NameMax);
             field.RegisterValueChangedCallback(e => Find(e.newValue));
+
+            owners = Add(panel, new VisualElement(), "dex-owners", "sn-dex-owners");
+            Add(owners, Kit.Text(stage.T("screen.dex.owner"), Kit.F2), null, "sn-dex-owner-label");
+            OwnerOpt(owners, null);
+            foreach (var o in DexBook.Owners) OwnerOpt(owners, o);
 
             var types = Add(panel, new VisualElement(), null, "sn-dex-types");
             typeAll = Add(types, new VisualElement(), "dex-type-all", "sn-opt");
@@ -142,6 +152,16 @@ namespace Sinnoh.Client
             decks[id] = opt;
         }
 
+        void OwnerOpt(VisualElement row, DexOwner? owner)
+        {
+            string id = DexBook.OwnerId(owner);
+            var opt = Add(row, new VisualElement(), "dex-owner-" + id, "sn-opt");
+            opt.Add(Kit.Text(stage.T("screen.dex.owner." + id), Kit.F2));
+            stage.OnTap(opt, SoundKeys.Select, e => PickOwner(owner));
+            stage.Tips.Hook(opt, null, stage.T("screen.dex.owner." + id + ".tip"), TipSide.Below, reading: true);
+            ownerOpts[id] = opt;
+        }
+
         public void Close()
         {
             stage = null;
@@ -151,6 +171,7 @@ namespace Sinnoh.Client
         public void PickDeck(DexDeck? deck)
         {
             Deck = deck;
+            if (deck != DexDeck.Galactic) Owner = null;
             Load();
         }
 
@@ -159,6 +180,15 @@ namespace Sinnoh.Client
         {
             Type = type.HasValue && Type == type ? null : type;
             Load();
+        }
+
+        /// <summary>갤럭시단 덱의 주인으로 거른다(null = 전체, 같은 주인을 다시 누르면 전체로). 갤럭시단 덱이 아니면 false.</summary>
+        public bool PickOwner(DexOwner? owner)
+        {
+            if (Deck != DexDeck.Galactic) return false;
+            Owner = owner.HasValue && Owner == owner ? null : owner;
+            Load();
+            return true;
         }
 
         /// <summary>이름으로 찾는다(빈 글 = 전체).</summary>
@@ -220,7 +250,7 @@ namespace Sinnoh.Client
             if (stage == null) return;
             all = DexBook.Cards(ctx, Deck);
             shown.Clear();
-            shown.AddRange(DexBook.Filter(ctx, all, Type, Search, stage.T));
+            shown.AddRange(DexBook.Filter(ctx, DexBook.ByOwner(ctx, all, Owner), Type, Search, stage.T));
             Top = 0;
             Picked = shown.Count > 0 ? 0 : -1;
             Viewed = Picked >= 0 ? shown[0].Def : -1;
@@ -234,8 +264,10 @@ namespace Sinnoh.Client
             foreach (var kv in decks) kv.Value.EnableInClassList("sn-opt-picked", kv.Key == DexBook.Id(Deck));
             typeAll.EnableInClassList("sn-opt-picked", !Type.HasValue);
             foreach (var kv in typeOpts) kv.Value.EnableInClassList("sn-dex-type-picked", Type.HasValue && (int)Type.Value == kv.Key);
+            owners.style.display = Deck == DexDeck.Galactic ? DisplayStyle.Flex : DisplayStyle.None;
+            foreach (var kv in ownerOpts) kv.Value.EnableInClassList("sn-opt-picked", kv.Key == DexBook.OwnerId(Owner));
             string total = stage.T("screen.dex.count").Replace("{kinds}", all.Count.ToString(inv)).Replace("{cards}", DexBook.Count(all).ToString(inv));
-            count.text = Type.HasValue || !string.IsNullOrWhiteSpace(Search) ? total + " · " + stage.T("screen.dex.found").Replace("{n}", shown.Count.ToString(inv)) : total;
+            count.text = Type.HasValue || Owner.HasValue || !string.IsNullOrWhiteSpace(Search) ? total + " · " + stage.T("screen.dex.found").Replace("{n}", shown.Count.ToString(inv)) : total;
             PaintPic();
             right.Clear();
             if (Detail) PaintDetail();

@@ -799,6 +799,8 @@ namespace Sinnoh.Editor
             Screen("row-47-slam", s => StampInto(s, 0, Sinnoh.Fx.StampBeats.SlamAt + 40)),   // 쾅: 잉크가 번지고 판이 한 프레임 흔들린다
             Screen("row-47-rewards", Clean(s => StampInto(s, 0, 1500), "deal-stamp")),              // 스탬프 수가 오르고 보상(규토리 세 색)이 차례로 내려앉았다
             Screen("row-47-cards", s => StampInto(s, 1, 1300)),                  // 둘째 스탬프: 기술 카드 +5
+            Screen("row-47-offturn", Clean(s => StampOffTurn(s, 0, false), "deal-stamp")),   // 결정 202: 좌석 2의 턴에 찍힌 내 스탬프 — 판 왼쪽 위 얼굴 = 내 주인공
+            Screen("row-47-other-host", Clean(s => StampOffTurn(s, 1, true), "deal-stamp")), // 결정 202: 방장 시각 판의 남(좌석 2) 스탬프 덮개 — 얼굴 = 좌석 2 주인공
             Screen("row-70-stamp", s =>                                          // 70행: 이긴 판의 결과 창에 스탬프 줄(혼자 하는 판 — 갤럭시단 승리 = 스탬프 2) + 그 위의 도장 덮개
             {
                 var flow = Win(s);
@@ -1682,7 +1684,60 @@ namespace Sinnoh.Editor
             if (step == null) throw new InvalidOperationException("스탬프 단계가 대기열에 없다");
             Into(s, flow, step, ms);
             if (flow.Deals == null || !flow.Deals.StampShown) throw new InvalidOperationException("스탬프 덮개가 보이지 않는다");
+            StampOwner(s, flow, 0);
             return flow;
+        }
+
+        // 결정 202: 좌석 둘 판 — 좌석 2의 턴에 그 좌석(stampSeat)이 규토리 일곱 색을 쥐고, 좌석 2가 걸은 명령 끝(좌석 2가 받으면 그 턴 종료 끝)에 받은 스탬프의 덮개 1500ms
+        static GameFlow StampOffTurn(UiShot s, int stampSeat, bool hostPaced)
+        {
+            var flow = Seats(s, 2);
+            for (int k = 0; k < 4 && flow.Client.View.ActiveSeat != 1; k++)
+            {
+                EndActive(flow);
+                Pass(flow, BoardReadyMs * 8);
+            }
+            DealSettle(s, flow, f => f.BoardOpen && f.Hud != null && f.Client.View.ActiveSeat == 1);
+            flow.Rebase(st =>
+            {
+                for (int c = 0; c < st.Seats[stampSeat].Apricorns.Length; c++) st.Seats[stampSeat].Apricorns[c] = Math.Max(1, st.Seats[stampSeat].Apricorns[c]);
+            });
+            flow.HostPaced = hostPaced;
+            flow.Stage.Tweens.Advance(BoardReadyMs);
+            flow.Layout(s.Width, s.Height);
+            bool ok = stampSeat == 1 ? flow.AnswerSeat(1, a => a.Kind == R.AnswerKind.EndTurn) : flow.AnswerSeat(1, a => a.Kind == R.AnswerKind.Move);
+            if (!ok) throw new InvalidOperationException("좌석 2의 명령이 거절됐다");
+            var step = Queued(flow, st => st.Row == Sinnoh.Fx.DealRows.Stamp);
+            if (step == null) throw new InvalidOperationException("스탬프 단계가 대기열에 없다");
+            Into(s, flow, step, 1500);
+            var e = Sinnoh.Fx.StampBeats.Event(Sinnoh.Fx.DealRows.Playing(flow.Fx.Sequencer, Sinnoh.Fx.DealRows.Stamp, out _));
+            if (e == null || e.Seat != stampSeat) throw new InvalidOperationException("좌석 " + (stampSeat + 1) + "의 스탬프 단계가 아니다");
+            if (stampSeat == 0 && flow.Client.View.ActiveSeat != 1) throw new InvalidOperationException("좌석 2의 턴이 아니다: " + flow.Client.View.ActiveSeat);
+            if (flow.Deals == null || !flow.Deals.StampShown) throw new InvalidOperationException("스탬프 덮개가 보이지 않는다");
+            StampOwner(s, flow, stampSeat);
+            return flow;
+        }
+
+        // 결정 202: 도장 덮개 왼쪽 위 = 받은 좌석의 얼굴 상자(그 좌석 주인공 · 좌석 색) + 「○○의 스탬프」, 판 안 · 제목 · 시트 · 수 · 조건 줄과 안 겹침
+        static void StampOwner(UiShot s, GameFlow flow, int seat)
+        {
+            s.Panel.Tick(3);
+            var root = flow.Stage.Root;
+            var face = root.Q("deal-stamp-face");
+            if (face == null) throw new InvalidOperationException("덮개에 얼굴 상자가 없다");
+            string who = flow.Protagonist(seat);
+            if (who == null || FaceBox.Shown(face) != who) throw new InvalidOperationException("덮개 얼굴이 받은 좌석의 주인공이 아니다: " + FaceBox.Shown(face) + " ≠ " + who);
+            if (!FaceBox.SeatColorOf(face).Equals(flow.SeatColor(seat))) throw new InvalidOperationException("덮개 얼굴 테두리가 그 좌석 색이 아니다");
+            var name = root.Q<Label>("deal-stamp-owner-name");
+            string want = flow.Stage.T("screen.stamp.fx.owner").Replace("{name}", flow.SeatName(seat));
+            if (name == null || name.text != want) throw new InvalidOperationException("덮개 이름 줄이 아니다: " + name?.text + " ≠ " + want);
+            var box = root.Q("deal-stamp").worldBound;
+            var owner = root.Q("deal-stamp-owner").worldBound;
+            if (owner.xMin < box.xMin || owner.yMin < box.yMin || owner.xMax > box.xMax || owner.yMax > box.yMax) throw new InvalidOperationException("얼굴 줄이 판 밖이다: " + owner + " · 판 " + box);
+            if (owner.center.x > box.center.x || owner.center.y > box.center.y) throw new InvalidOperationException("얼굴 줄이 판 왼쪽 위가 아니다: " + owner + " · 판 " + box);
+            foreach (var other in new[] { "deal-stamp-title", "deal-stamp-sheet", "deal-stamp-count", "deal-stamp-cond" })
+                Apart(root, "deal-stamp-owner", other);
+            UnityEngine.Debug.Log($"[UiShots] stamp-owner {s.Grade.Height}: 좌석 {seat + 1} 「{name.text}」 {who} · 줄 {owner}");
         }
 
         // 좌석 여럿 판을 내 턴(입력이 열린 때)까지 넘긴다
@@ -2990,7 +3045,7 @@ namespace Sinnoh.Editor
             "row-42-discard", "row-42-discard-pick", "row-42-tear", "board-fate-hand", "board-fate-hand-tip", "row-14-warp-pick", "row-45-pass", "row-14-warp", "row-14-land",
             "battle-fate-button", "battle-fate-view", "row-34-chips6", "row-43-ask", "row-45-pass3", "row-43-reroll", "row-43-locked", "row-43-end", "legend-slot-party", "legend-slot-teach", "legend-slot-mon", "row-44-ask", "row-44-shadow",
             "row-07-star", "row-07-star-flip", "row-08-fate", "row-98-challenge", "row-98-trade", "row-98-trade-many", "row-98-timeout",
-            "board-stamp", "board-stamp-none", "board-stamp-full", "board-stamp-tip", "row-47-drop", "row-47-slam", "row-47-rewards", "row-47-cards", "row-70-stamp", "board-challenge", "row-51-bang", "row-51-slide", "row-51-vs", "row-51-hold", "board-trade-button", "board-trade", "board-trade-picked", "board-trade-full", "board-trade-bad", "board-trade-wait", "row-52-gather", "row-52-cross", "row-52-glow", "board-trade-offturn", "board-trade-pick", "board-trade-pick-picked", "board-trainer-platinum", "board-trainer-undivided",
+            "board-stamp", "board-stamp-none", "board-stamp-full", "board-stamp-tip", "row-47-drop", "row-47-slam", "row-47-rewards", "row-47-cards", "row-47-offturn", "row-47-other-host", "row-70-stamp", "board-challenge", "row-51-bang", "row-51-slide", "row-51-vs", "row-51-hold", "board-trade-button", "board-trade", "board-trade-picked", "board-trade-full", "board-trade-bad", "board-trade-wait", "row-52-gather", "row-52-cross", "row-52-glow", "board-trade-offturn", "board-trade-pick", "board-trade-pick-picked", "board-trainer-platinum", "board-trainer-undivided",
             "board-shrine-button", "board-shrine-offer", "board-shrine-offer-named", "board-shrine-offer-picked", "row-31-fly", "row-31-pillar", "row-31-cards", "board-shrine-pick", "board-shrine-pick-tip", "row-32-bless",
             "board-shrine-apricorns", "board-shrine-follower", "row-34-flip", "row-34-tally", "row-34-bolt", "row-34-fall", "row-34-land", "row-34-spark", "row-34-chip",
             "row-32-share", "row-32-beam", "row-34-seats", "row-34-wait", "row-34-tie", "row-33-dark", "row-33-fall", "row-33-land", "row-33-rain",

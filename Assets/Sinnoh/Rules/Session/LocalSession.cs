@@ -75,6 +75,7 @@ namespace Sinnoh.Rules.Session
     /// ② AI 답(가상 응답자·AI 좌석)은 시계 시작 시각에 적용한다(생각 시간을 연출 뒤에 숨김). 사람 답은 받는 즉시 적용한다(막기는 화면 몫).
     /// ③ 숨은 손패 반응 창(HandGated)은 시계 시작 + HiddenReactionMinMs 전에는 어떤 답도 적용하지 않는다. 쓸 카드가 없는 사람 좌석은 그 시각에
     ///    세션이 그 좌석의 「안 씀」으로 답한다 — 사람이 안 쓴 것과 같은 명령이라 남에게 가는 이벤트가 손패와 무관하다(01 §3-3).
+    ///    울트라 버스트(협동)는 최소 시간이 없다 — 쓸 카드가 없는 좌석은 시계 시작에 바로 「안 씀」(결정 203, <see cref="HiddenMinFor"/>).
     /// ④ 시계(ClockMs)가 있으면 사람 좌석 선택은 시계 시작 + 길이에 Timeout. 솔로 기본은 없음.
     /// 정해진 일은 그 정해진 시각을 「지금」으로 적용한다 — Tick 간격과 무관하게 같은 명령 열·같은 멈춤이 나온다.
     /// 예외(02 §7, M3 검토): 엔진 예외나 로그 줄 쓰기 실패면 명령 전 상태로 되돌리고 던진다 — 로그에 없는 명령이 상태에 남지 않고, 정해진 일은 다음 Tick이 다시 한다.
@@ -717,8 +718,12 @@ namespace Sinnoh.Rules.Session
             return u.Line;
         }
 
-        /// <summary>숨은 손패 창의 최소 시간. 한 좌석 판은 손패를 숨길 상대가 없어 두지 않는다 [가정 — plan §5 #81 ⑦]: 그 창은 여느 선택처럼 그 좌석이 답한다(쓸 카드가 없으면 화면이 「안 씀」 — GameFlow.PassEmptyReaction).</summary>
-        int HiddenMinMs => state.SeatCount > 1 ? PlayTiming.HiddenReactionMinMs : 0;
+        /// <summary>숨은 손패 창의 최소 시간. 한 좌석 판은 손패를 숨길 상대가 없어 두지 않는다 [가정 — plan §5 #81 ⑦]: 그 창은 여느 선택처럼 그 좌석이 답한다(쓸 카드가 없으면 화면이 「안 씀」 — GameFlow.PassEmptyReaction).
+        /// 울트라 버스트(협동 — 모두가 한편)도 두지 않는다(결정 203): 쓸 카드가 없는 좌석의 「안 씀」은 시계 시작에 바로(<see cref="Schedule"/>) — 신오의 심장(경쟁)은 그대로 최소 시간 뒤.</summary>
+        int HiddenMinMs => HiddenMinFor(state);
+
+        /// <summary>그 판의 숨은 손패 창 최소 시간(방 시계의 NotBefore도 같은 값 — HostSession).</summary>
+        public static int HiddenMinFor(GameState s) => s.SeatCount > 1 && s.Campaign != Campaign.UltraBurst ? PlayTiming.HiddenReactionMinMs : 0;
 
         IAgent SeatAgent(int seat) => cfg.SeatAgents != null && seat >= 0 && seat < cfg.SeatAgents.Length ? cfg.SeatAgents[seat] : null;
 
@@ -1032,7 +1037,8 @@ namespace Sinnoh.Rules.Session
                     due.Add(new Due { ChoiceId = c.Id, Kind = DueKind.Agent, At = gate, Seat = c.Seat });
                     continue;
                 }
-                if (c.HandGated && HiddenMinMs > 0 && (OnlyDecline(c) || (cfg.AutoPass != null && cfg.AutoPass(c))))
+                // 여럿 판: 쓸 카드가 없는(또는 「이번 배틀 묻지 않기」) 사람 좌석은 묻지 않고 gate에 「안 씀」 — 심장 판 gate = 최소 시간 뒤, 울트라 버스트 판 gate = 바로(결정 203)
+                if (c.HandGated && state.SeatCount > 1 && (OnlyDecline(c) || (cfg.AutoPass != null && cfg.AutoPass(c))))
                 {
                     due.Add(new Due { ChoiceId = c.Id, Kind = DueKind.HiddenDecline, At = gate, Seat = c.Seat });
                     continue;

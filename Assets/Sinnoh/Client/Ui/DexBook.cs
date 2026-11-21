@@ -7,7 +7,10 @@ namespace Sinnoh.Client
     /// <summary>포켓몬 도감의 덱 거르기(04 §3-14, 결정 105 ③): 원작의 포켓몬 덱 — 갤럭시단 덱 셋(조무래기 · 간부 · 보스)은 하나로 묶는다 [가정].</summary>
     public enum DexDeck { Starter, Weak, Moderate, Strong, Legendary, Evolution, Galactic }
 
-    /// <summary>도감의 카드 한 줄: 포켓몬 표 색인 · 장수(덱 하나를 보면 그 덱의 장수, 전체를 보면 모든 덱의 합).</summary>
+    /// <summary>갤럭시단 덱의 주인 거르기(결정 201 ③): 조무래기(남 · 여 — 한 덱에서 무작위로 나오니 하나로) · 간부 셋 · 태홍.</summary>
+    public enum DexOwner { Grunt, Mars, Jupiter, Saturn, Cyrus }
+
+    /// <summary>도감의 카드 한 줄:포켓몬 표 색인 · 장수(덱 하나를 보면 그 덱의 장수, 전체를 보면 모든 덱의 합).</summary>
     public readonly struct DexEntry
     {
         public readonly int Def, Copies;
@@ -88,6 +91,35 @@ namespace Sinnoh.Client
                         if (e.Card == def) n += e.Copies;
                 if (n > 0) list.Add(new KeyValuePair<DexDeck, int>(d, n));
             }
+            return list;
+        }
+
+        /// <summary>주인 거르기 순서(갤럭시단 덱에서만 — 결정 201 ③).</summary>
+        public static readonly DexOwner[] Owners = { DexOwner.Grunt, DexOwner.Mars, DexOwner.Jupiter, DexOwner.Saturn, DexOwner.Cyrus };
+
+        /// <summary>주인의 이름 마디(요소 이름 · 문자열 키 <c>screen.dex.owner.&lt;마디&gt;</c>). 전체(null)는 <c>all</c>.</summary>
+        public static string OwnerId(DexOwner? owner) => owner.HasValue ? owner.Value.ToString().ToLowerInvariant() : "all";
+
+        /// <summary>그 카드의 주인이 그 거르기에 드나(카드의 갤럭시단 트레이너로 — 야생 카드는 어느 주인에도 들지 않는다).</summary>
+        public static bool Owned(PokemonDef def, DexOwner owner)
+        {
+            switch (owner)
+            {
+                case DexOwner.Grunt: return def.Trainer == GalacticTrainer.FemaleGrunt || def.Trainer == GalacticTrainer.MaleGrunt;
+                case DexOwner.Mars: return def.Trainer == GalacticTrainer.Mars;
+                case DexOwner.Jupiter: return def.Trainer == GalacticTrainer.Jupiter;
+                case DexOwner.Saturn: return def.Trainer == GalacticTrainer.Saturn;
+                default: return def.Trainer == GalacticTrainer.Cyrus;
+            }
+        }
+
+        /// <summary>주인으로 거른다(null = 전체 — 그대로).</summary>
+        public static List<DexEntry> ByOwner(Ctx ctx, List<DexEntry> cards, DexOwner? owner)
+        {
+            if (!owner.HasValue) return cards;
+            var list = new List<DexEntry>();
+            foreach (var e in cards)
+                if (Owned(ctx.Cards.Pokemon[e.Def], owner.Value)) list.Add(e);
             return list;
         }
 

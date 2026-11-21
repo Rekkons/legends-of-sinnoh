@@ -14,7 +14,7 @@ namespace Sinnoh.Client
     /// 여행 스탬프(가운데 작은 판 — 일곱 칸에 도장이 내려와 찍히고 수가 오르고 보상이 차례로 내려앉는다) · 도전 VS(가로 띠 — 양쪽 얼굴 상자가 미끄러져 들어와 부딪히고 VS가 박힌다) ·
     /// 거래(가로 띠 — 양쪽이 올린 것이 가운데로 모였다 엇갈려 건너가고 받는 쪽이 빛난다).
     /// 박자는 <c>Sinnoh.Fx</c> <see cref="StampBeats"/>·<see cref="VsBeats"/>·<see cref="TradeBeats"/>, 시간은 대기열 시각만(옮기기·늘이기·흐리기 — FxUi).
-    /// 요소 이름: <c>deal-fx</c>·<c>deal-stamp</c>·<c>deal-stamp-slot-&lt;n&gt;</c>·<c>deal-stamp-count</c>·<c>deal-stamp-reward-&lt;i&gt;</c>·<c>deal-vs</c>·<c>deal-vs-face-a</c>·<c>deal-vs-face-b</c>·<c>deal-vs-mark</c>·
+    /// 요소 이름: <c>deal-fx</c>·<c>deal-stamp</c>·<c>deal-stamp-face</c>·<c>deal-stamp-owner-name</c>·<c>deal-stamp-slot-&lt;n&gt;</c>·<c>deal-stamp-count</c>·<c>deal-stamp-reward-&lt;i&gt;</c>·<c>deal-vs</c>·<c>deal-vs-face-a</c>·<c>deal-vs-face-b</c>·<c>deal-vs-mark</c>·
     /// <c>deal-trade</c>·<c>deal-trade-face-a</c>·<c>deal-trade-face-b</c>·<c>deal-trade-chip-a-&lt;i&gt;</c>·<c>deal-trade-chip-b-&lt;i&gt;</c>.
     /// </summary>
     public sealed class DealFx
@@ -28,9 +28,9 @@ namespace Sinnoh.Client
 
         readonly UiStage stage;
         readonly GameFlow flow;
-        readonly VisualElement stampBox, vsBand, tradeBand, vsFlash;
+        readonly VisualElement stampBox, stampFace, vsBand, tradeBand, vsFlash;
         readonly VisualElement[] slots = new VisualElement[SeatState.StampCount], seals = new VisualElement[SeatState.StampCount], inks = new VisualElement[SeatState.StampCount];
-        readonly Label count, cond, vsMark, vsBang, tradeTitle;
+        readonly Label count, cond, stampOwner, vsMark, vsBang, tradeTitle;
         readonly List<Label> rewards = new List<Label>();
         readonly VisualElement[] vsSide = new VisualElement[2], vsFace = new VisualElement[2], tradeSide = new VisualElement[2], tradeFace = new VisualElement[2], tradeGlow = new VisualElement[2];
         readonly Label[] vsName = new Label[2], tradeName = new Label[2];
@@ -58,7 +58,14 @@ namespace Sinnoh.Client
 
             // 여행 스탬프(47행)
             stampBox = Box(Element, "deal-stamp", "sn-deal-stamp");
-            Text(stampBox, stage.T("screen.stamp.fx.title"), Kit.FTitle, null, "kit-title");
+            // 받은 좌석(결정 202): 판 왼쪽 위에 그 좌석의 작은 얼굴 상자 + 「○○의 스탬프」 — 남의 턴에 찍히는 내 스탬프 · 방장 시각 판의 남의 스탬프를 가른다
+            var owner = Box(stampBox, "deal-stamp-owner", "sn-owner");
+            owner.AddToClassList("sn-deal-owner");
+            stampFace = FaceBox.Tag();
+            stampFace.name = "deal-stamp-face";
+            owner.Add(stampFace);
+            stampOwner = Text(owner, "", Kit.F2, "deal-stamp-owner-name", null);
+            Text(stampBox, stage.T("screen.stamp.fx.title"), Kit.FTitle, "deal-stamp-title", "kit-title");
             // 원작 스탬프 시트 그림 위에 도장(M9 다듬기 P12 — 결정 80 L18 나): 칸 = 동그라미 자리(StampScreen.Spots), 받은 칸은 찍힌 도장 · 이번 칸은 도장이 내려와 찍힌다
             var row = Box(stampBox, "deal-stamp-sheet", "sn-deal-slots");
             StampScreen.Art(row, GenAssets.StampSheet);
@@ -211,6 +218,8 @@ namespace Sinnoh.Client
             StampShown = pose.Show > 0f;
             FxUi.Fade(stampBox, pose.Show);
             FxUi.Move(stampBox, pose.Shake * unit, 0f);
+            FaceBox.Paint(stampFace, e.Seat, flow.SeatColor(e.Seat), flow.Protagonist(e.Seat));
+            stampOwner.text = stage.T("screen.stamp.fx.owner").Replace("{name}", flow.SeatName(e.Seat));
             int slot = SlotOf(flow.Ctx, e.StampKey);
             var view = flow.Client != null ? flow.Client.View : null;
             var mine = view != null && e.Seat >= 0 && e.Seat < view.Seats.Length ? view.Seats[e.Seat].Stamps : null;

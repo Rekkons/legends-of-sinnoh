@@ -412,7 +412,7 @@ namespace Sinnoh.Rules.Session
             var s = core.Host;
             clockList.Clear();
             aiRequested.RemoveWhere(id => ChoiceRules.Find(s, id) == null);
-            int hiddenMin = s.SeatCount > 1 ? PlayTiming.HiddenReactionMinMs : 0;
+            int hiddenMin = LocalSession.HiddenMinFor(s);   // 울트라 버스트(협동)는 0(결정 203)
             foreach (var c in s.Pending)
             {
                 if (c.Answered || c.Clock == ClockKind.None) continue;

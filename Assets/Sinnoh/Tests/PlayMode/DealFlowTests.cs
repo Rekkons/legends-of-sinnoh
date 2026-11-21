@@ -127,7 +127,7 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(button.text, Is.EqualTo(stage.T("screen.board.stamp").Replace("{n}", "0")));
             Assert.That(flow.Hud.Press(BoardHud.EndTurn), Is.True, "[턴 종료]");
 
-            bool dropped = false, slammed = false, rewards = false, overAll = false;
+            bool dropped = false, slammed = false, rewards = false, overAll = false, faced = false;
             for (int guard = 0; guard < 600; guard++)
             {
                 flow.Skip(50);
@@ -138,6 +138,8 @@ namespace Sinnoh.Tests.PlayMode
                     if (deals.Stamped == 0) dropped = true;
                     if (deals.Stamped == StampRules.AllApricorns + 1) slammed = true;
                     if (deals.RewardsShown == 3) rewards = true;
+                    // 결정 202: 판 왼쪽 위에 받은 좌석(나)의 얼굴 상자 + 「○○의 스탬프」
+                    if (FaceBox.Shown(stage.Root.Q("deal-stamp-face")) == flow.Protagonist(flow.Client.Seat) && stage.Root.Q<Label>("deal-stamp-owner-name").text == stage.T("screen.stamp.fx.owner").Replace("{name}", flow.SeatName(flow.Client.Seat))) faced = true;
                     // 덮개는 판·창 위, 툴팁 아래
                     var root = stage.Root;
                     if (stage.Over == deals.Element && root.IndexOf(deals.Element) > root.IndexOf(root.Q(flow.Hud.Name)) && root.IndexOf(stage.Tips.Element) > root.IndexOf(deals.Element)) overAll = true;
@@ -152,6 +154,7 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(slammed, Is.True, "셋째 칸에 찍혔다");
             Assert.That(rewards, Is.True, "보상 세 줄이 내려앉았다");
             Assert.That(overAll, Is.True, "덮개는 무대의 맨 위 층(HUD 위 · 툴팁 아래)");
+            Assert.That(faced, Is.True, "덮개 왼쪽 위 얼굴 = 내 주인공 · 이름 줄(결정 202)");
             yield return Settle(() => flow.InputOpen);
             Assert.That(flow.Deals.StampShown, Is.False, "단계가 끝나면 덮개가 걷힌다");
             Assert.That(flow.Log.Lines, Has.Some.Matches<BoardLogLine>(l => l.Line.Key == BoardLog.K + "stamp"), "기록 줄");

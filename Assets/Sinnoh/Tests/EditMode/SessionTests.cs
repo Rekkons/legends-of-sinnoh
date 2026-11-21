@@ -664,6 +664,66 @@ namespace Sinnoh.Tests.EditMode
             Assert.IsFalse(ans.ByAi);
         }
 
+        [Test]
+        public void M10_결정203_낼카드없는숨은손패창_울트라버스트는바로넘기고심장판은최소시간뒤()
+        {
+            // 같은 장면(좌석 둘 · 좌석 0이 운명 1장을 쥔 야생 배틀)을 두 캠페인으로: 좌석 0의 운명 창에 낼 카드가 없으면 묻지 않고 세션이 「안 씀」
+            Assert.AreEqual(PlayTiming.HiddenReactionMinMs, HiddenDeclineAfter(Campaign.HeartOfSinnoh), "심장 판(경쟁): 손패 유무가 새지 않게 최소 시간 뒤");
+            Assert.AreEqual(0, HiddenDeclineAfter(Campaign.UltraBurst), "울트라 버스트(협동): 시계 시작에 바로");
+        }
+
+        // 좌석 0의 낼 카드 없는 운명 창(HandGated)이 열린 뒤 세션이 「안 씀」으로 답하기까지의 ms
+        long HiddenDeclineAfter(Campaign campaign)
+        {
+            var s = Engine.NewGame(ctx, new RuleOptions(), 2, 7, campaign);
+            s.Phase = Phase.Turn;
+            s.Round = 1;
+            s.TurnId = 1;
+            s.ActiveSeat = 0;
+            var fixtures = ctx.Fixtures.Fixtures;
+            for (int f = 0, v = 0; f < fixtures.Count && v < 2; f++)
+            {
+                if (fixtures[f].Kind != FixtureKind.Village || ctx.Board[fixtures[f].Cell].DistortionWorld) continue;
+                s.Seats[v].HomeVillage = f;
+                s.Seats[v].Cell = fixtures[f].Cell;
+                v++;
+            }
+            Scene.Give(s, ctx, 0, "418:0");
+            s.Seats[0].FateHand.Add(ctx.Deck(DeckId.ChangeOfFate).Cards[0].Card);
+            Battles.Wild(s, ctx, null, 0, Scene.Spawn(s, ctx, "399:0", SeatId.Wild));
+            var run = new Seat0(LocalSession.FromState(ctx, s, Cfg(), 0));
+            PendingChoice gate = null;
+            for (int i = 0; i < 20 && gate == null; i++)
+            {
+                gate = run.S.ViewFor(0).Pending.Find(x => x.HandGated && x.Seat == 0);
+                if (gate != null) break;
+                long next = run.S.NextDueMs;
+                if (next != long.MaxValue) run.S.Tick(next);
+                else
+                {
+                    var c = run.Mine();
+                    Assert.IsNotNull(c, "진행이 멈췄다");
+                    Assert.IsTrue(run.S.Link.ToHost(0, new ClientMsg { Command = Command.AnswerTo(c.Id, c.Default.Clone()) }, run.S.AnimEndMs).Accepted);
+                }
+            }
+            Assert.IsNotNull(gate, campaign + ": 운명 창이 열리지 않았다");
+            var legal = new List<ChoiceAnswer>();
+            Engine.Legal(run.S.HostCopy(), ctx, ChoiceRules.Find(run.S.HostCopy(), gate.Id), legal);
+            Assert.That(legal.Count == 1 && legal[0].Kind == AnswerKind.Decline, campaign + ": 낼 카드가 없는 창이어야 한다");
+            long start = run.S.AnimEndMs;
+            long due = run.S.NextDueMs;
+            Assert.GreaterOrEqual(due, start);
+            if (due > start) run.S.Tick(due - 1);
+            Assert.IsNotNull(run.S.ViewFor(0).Pending.Find(x => x.Id == gate.Id), campaign + ": 그 시각 전에는 열려 있다");
+            int at = run.Events.Count;
+            run.S.Tick(due);
+            var ans = run.Events.GetRange(at, run.Events.Count - at).Find(e => e is ChoiceAnswered x && x.Id == gate.Id) as ChoiceAnswered;
+            Assert.IsNotNull(ans, campaign + ": 그 시각에 답했다");
+            Assert.AreEqual(AnswerKind.Decline, ans.Answer.Kind);
+            Assert.IsFalse(ans.ByTimeout || ans.ByAi, "사람이 안 쓴 것과 같은 모양");
+            return due - start;
+        }
+
         // ── PlayTiming ──
 
         [Test]
@@ -740,7 +800,7 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual(3, mine.Count);
             Assert.AreEqual(2000, mine[0].BlockMs, "조우 전환은 당사자 차단 컷신(22행)");
             Assert.AreEqual(Math.Max(600 + 3500, PlainMs()), mine[0].QueueMs, "고른 뒤 600 + 인트로 3500(53행)");
-            Assert.AreEqual(2510 + 1050 + 800 + 1800 + 3000, mine[1].QueueMs, "주사위 400+1600+250+130×2 + 계산 줄·숫자 비행 1050 + HP 800 + 기절 1800 + 결과 3000(보기 시간 4000보다 길다) — spikes/dice-roll §4");
+            Assert.AreEqual(2510 + 500 + 500 + 1800 + 3000, mine[1].QueueMs, "주사위 400+1600+250+130×2 + 계산 줄·숫자 비행 500 + HP 500(결정 203) + 기절 1800 + 결과 3000(보기 시간 4000보다 길다) — spikes/dice-roll §4");
             Assert.AreEqual(2, other.Count, "좌석 1: 조우 고르기(보드 위 공개)와 턴 시작만");
             Assert.AreEqual(0, other[0].BlockMs);
             Assert.AreEqual(Math.Max(600, PlainMs()), other[0].QueueMs, "배틀 인트로는 세지 않는다");

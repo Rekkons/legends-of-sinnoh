@@ -32,7 +32,7 @@ namespace Sinnoh.Tests.EditorAssets
                 Assert.AreEqual(1f, sample.BarRatio);
                 Assert.AreEqual(1, sample.Runner.Busy);
 
-                sample.Seek(3900);   // 첫 공격의 체력 막대가 깎이는 중(3560~4360)
+                sample.Seek(3260);   // 첫 공격의 체력 막대가 깎이는 중(3010~3510)
                 Assert.AreEqual("체력 20 / 20", sample.HpText, "숫자는 착지 전");
                 Assert.Less(sample.BarRatio, 1f);
                 Assert.Greater(sample.BarRatio, 13f / 20f);
@@ -43,7 +43,7 @@ namespace Sinnoh.Tests.EditorAssets
                 Assert.AreEqual(2, sample.Sequencer.Current.Seq, "둘째 항목 재생 중");
                 Assert.AreEqual(0, sample.Sequencer.Pending);
 
-                sample.Seek(9100);   // 다 끝남(4360 × 2 + 클릭 막기 300)
+                sample.Seek(9100);   // 다 끝남(3510 × 2 + 클릭 막기 300 뒤)
                 Assert.AreEqual("체력 9 / 20", sample.HpText, "대기열이 비면 보기와 같다");
                 Assert.IsTrue(sample.Sequencer.IsEmpty);
                 Assert.IsTrue(sample.Sequencer.InputOpen);

@@ -2339,6 +2339,15 @@
     border-color: var(--sn-dex-band);
     background-color: var(--sn-dex-pick);
 }
+.sn-dex-owners {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.kit-root .sn-dex-owner-label {
+    margin-right: 6px;
+    color: var(--sn-dex-band);
+}
 .sn-dex-band {
     flex-direction: row;
     height: 470px;
@@ -2594,6 +2603,39 @@
 }
 .sn-info-slim {
     width: 300px;
+}
+.sn-info-slim.sn-info-wide {
+    width: 300px;
+}
+.sn-info-roster {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 3px;
+    border-top-width: 1px;
+    border-color: var(--sn-line);
+}
+.sn-info-roster-mon {
+    width: 50%;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2px;
+}
+.sn-info-roster-mon:hover {
+    background-color: var(--sn-pick);
+}
+.sn-info-roster-mon .sn-mon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+.sn-info-roster-mon .sn-mon-canvas {
+    left: -24px;
+    top: -22px;
+}
+.sn-info-roster-info {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: 3px;
 }
 .sn-party-scrim {
     position: absolute;
@@ -4836,6 +4878,10 @@
     background-color: var(--sn-fill);
     opacity: 0;
 }
+.sn-deal-owner {
+    align-self: flex-start;
+    margin-bottom: 2px;
+}
 .sn-deal-slots {
     width: 312px;
     height: 156px;
@@ -5103,6 +5149,14 @@
 }
 .sn-battle-swarm-dot-on {
     background-color: var(--sn-turn);
+}
+.sn-battle-roster-done {
+    opacity: 0.45;
+}
+.kit-root .sn-battle-roster .sn-type-icon {
+    width: 32px;
+    height: 16px;
+    margin-right: 2px;
 }
 .sn-battle-orb {
     position: absolute;

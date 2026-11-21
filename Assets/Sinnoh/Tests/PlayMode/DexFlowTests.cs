@@ -248,6 +248,97 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(errors, Is.Empty, string.Join("\n", errors));
         }
 
+        // 클릭 하나를 그 칸에 보낸다(창 없는 에디터의 패널에는 포인터를 넣지 못해 ClickEvent를 바로 보낸다)
+        static void Click(VisualElement element)
+        {
+            using (var e = ClickEvent.GetPooled())
+            {
+                e.target = element;
+                element.SendEvent(e);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator M10_갤럭시단탭에서만주인칩이서고주인별카드수가데이터와같으며타입거르기와함께걸린다()
+        {
+            yield return Boot();
+            var ctx = flow.Ctx;
+            flow.OpenTitleDex();
+            yield return null;
+            var dex = (DexScreen)stage.Current;
+            var row = stage.Root.Q("dex-owners");
+            Assert.That(row, Is.Not.Null, "주인 칩 줄");
+            Assert.That(row.style.display.value, Is.EqualTo(DisplayStyle.None), "전체 탭에는 주인 칩이 없다");
+            Assert.That(dex.PickOwner(DexOwner.Mars), Is.False, "갤럭시단 덱이 아니면 주인으로 거르지 않는다");
+            Assert.That(dex.Owner, Is.Null);
+
+            // 순수 쪽: 갤럭시단 덱의 주인별 종 수 = 덱 데이터(조무래기 남 · 여 8 · 간부 5씩 · 태홍 8), 합 = 갤럭시단 덱 전체
+            var galactic = DexBook.Cards(ctx, DexDeck.Galactic);
+            var want = new Dictionary<DexOwner, int> { { DexOwner.Grunt, 8 }, { DexOwner.Mars, 5 }, { DexOwner.Jupiter, 5 }, { DexOwner.Saturn, 5 }, { DexOwner.Cyrus, 8 } };
+            int sum = 0;
+            foreach (var o in DexBook.Owners)
+            {
+                var owned = DexBook.ByOwner(ctx, galactic, o);
+                Assert.That(owned.Count, Is.EqualTo(want[o]), o + " 종 수");
+                foreach (var e in owned) Assert.That(DexBook.Owned(ctx.Cards.Pokemon[e.Def], o), Is.True);
+                sum += owned.Count;
+            }
+            Assert.That(sum, Is.EqualTo(galactic.Count), "주인 다섯의 합 = 갤럭시단 덱");
+            Assert.That(DexBook.ByOwner(ctx, galactic, null).Count, Is.EqualTo(galactic.Count), "전체 = 그대로");
+            Assert.That(DexBook.ByOwner(ctx, DexBook.Cards(ctx, DexDeck.Weak), DexOwner.Grunt), Is.Empty, "야생 카드에는 주인이 없다");
+
+            // 갤럭시단 탭: 칩이 서고 처음은 전체
+            dex.PickDeck(DexDeck.Galactic);
+            yield return null;
+            Assert.That(row.style.display.value, Is.EqualTo(DisplayStyle.Flex), "갤럭시단 탭에는 주인 칩이 선다");
+            Assert.That(stage.Root.Q("dex-owner-all").ClassListContains("sn-opt-picked"), Is.True);
+
+            // 칩 누름: 주인마다 그 주인의 카드만, 「n종 찾음」
+            foreach (var o in DexBook.Owners)
+            {
+                var chip = stage.Root.Q("dex-owner-" + DexBook.OwnerId(o));
+                Assert.That(chip, Is.Not.Null, o + " 칩");
+                Click(chip);
+                yield return null;
+                Assert.That(dex.Owner, Is.EqualTo(o), o + " 칩을 눌렀다");
+                Assert.That(dex.Shown.Count, Is.EqualTo(want[o]), o + " 칩 종 수");
+                foreach (var e in dex.Shown) Assert.That(DexBook.Owned(ctx.Cards.Pokemon[e.Def], o), Is.True);
+                Assert.That(chip.ClassListContains("sn-opt-picked"), Is.True);
+                Assert.That(stage.Root.Q("dex-owner-all").ClassListContains("sn-opt-picked"), Is.False);
+                Assert.That(stage.Root.Q<Label>("dex-count").text, Does.EndWith(stage.T("screen.dex.found").Replace("{n}", want[o].ToString())));
+            }
+            Click(stage.Root.Q("dex-owner-cyrus"));   // 같은 칩을 다시 누르면 전체
+            yield return null;
+            Assert.That(dex.Owner, Is.Null);
+            Assert.That(dex.Shown.Count, Is.EqualTo(galactic.Count));
+
+            // 타입 거르기와 교집합: 태홍 + 그 첫 카드의 타입
+            Click(stage.Root.Q("dex-owner-cyrus"));
+            yield return null;
+            var type = ctx.Cards.Pokemon[dex.Shown[0].Def].Types[0];
+            dex.PickType(type);
+            yield return null;
+            int both = 0;
+            foreach (var e in galactic)
+            {
+                var def = ctx.Cards.Pokemon[e.Def];
+                if (DexBook.Owned(def, DexOwner.Cyrus) && (def.Types[0] == type || (def.Types.Count > 1 && def.Types[1] == type))) both++;
+            }
+            Assert.That(dex.Shown.Count, Is.EqualTo(both).And.GreaterThan(0), "주인 × 타입");
+            Assert.That(dex.Shown.Count, Is.LessThanOrEqualTo(8));
+            foreach (var e in dex.Shown) Assert.That(ctx.Cards.Pokemon[e.Def].Trainer, Is.EqualTo(GalacticTrainer.Cyrus));
+            dex.PickType(type);
+
+            // 다른 덱으로 가면 칩이 숨고 주인 거르기는 전체로 — 돌아와도 전체
+            dex.PickDeck(DexDeck.Strong);
+            yield return null;
+            Assert.That(dex.Owner, Is.Null);
+            Assert.That(row.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dex.PickDeck(DexDeck.Galactic);
+            Assert.That(dex.Shown.Count, Is.EqualTo(galactic.Count));
+            Assert.That(errors, Is.Empty, string.Join("\n", errors));
+        }
+
         [UnityTest]
         public IEnumerator M7_도감을게임중에열고닫으며판의덱상태를읽지않는다()
         {

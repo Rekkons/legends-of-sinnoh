@@ -72,6 +72,7 @@ namespace Sinnoh.Tests.PlayMode
         {
             Application.logMessageReceived -= Grab;
             var b = UnityEngine.Object.FindAnyObjectByType<ScreenBoot>();
+            if (b != null && b.Flow != null) b.Flow.HostPaced = false;
             if (b != null && b.Root != null) b.Root.SetTarget(null);
             if (rt != null)
             {
@@ -94,6 +95,59 @@ namespace Sinnoh.Tests.PlayMode
             }
             yield return Settle(() => flow.InputOpen && flow.Client.Choice(ChoiceKind.MapAction) != null);
             Assert.That(flow.Client.View.ActiveSeat, Is.EqualTo(flow.Client.Seat), "내 턴");
+        }
+
+        // 도장 덮개(47행)가 떠 있는 동안 왼쪽 위 얼굴 상자 · 이름 줄이 그 좌석이었나(결정 202)
+        IEnumerator StampFaceOf(int seat, Action<bool> seen)
+        {
+            bool shown = false, faced = true;
+            for (int guard = 0; guard < 400; guard++)
+            {
+                flow.Skip(50);
+                yield return null;
+                if (flow.Deals == null || !flow.Deals.StampShown) continue;
+                shown = true;
+                var face = stage.Root.Q("deal-stamp-face");
+                if (FaceBox.Shown(face) != flow.Protagonist(seat) || !FaceBox.SeatColorOf(face).Equals(flow.SeatColor(seat))
+                    || stage.Root.Q<Label>("deal-stamp-owner-name").text != stage.T("screen.stamp.fx.owner").Replace("{name}", flow.SeatName(seat))) faced = false;
+                if (flow.Deals.RewardsShown > 0) break;
+            }
+            seen(shown && faced);
+        }
+
+        [UnityTest]
+        public IEnumerator M10_도장덮개왼쪽위에스탬프를받은좌석의얼굴이선다_결정202()
+        {
+            yield return Seats(2, null);
+            int me = flow.Client.Seat, other = 1 - me;
+            Assert.That(flow.Protagonist(me), Is.Not.EqualTo(flow.Protagonist(other)), "좌석마다 다른 주인공");
+            // ① 남의 턴에 찍힌 내 스탬프: 좌석 2의 턴에 내가 규토리 일곱 색을 쥐고 → 좌석 2가 한 칸 걸은 명령 끝에 내 스탬프
+            Assert.That(flow.Hud.Press(BoardHud.EndTurn), Is.True, "[턴 종료]");
+            yield return Settle(() => flow.Client.View.ActiveSeat == other && flow.BoardOpen);
+            flow.Rebase(st =>
+            {
+                for (int c = 0; c < st.Seats[me].Apricorns.Length; c++) st.Seats[me].Apricorns[c] = Math.Max(1, st.Seats[me].Apricorns[c]);
+            });
+            for (int i = 0; i < 4; i++) yield return null;
+            Assert.That(flow.AnswerSeat(other, a => a.Kind == AnswerKind.Move), Is.True, "좌석 2가 걷는다");
+            bool mine = false;
+            yield return StampFaceOf(me, ok => mine = ok);
+            Assert.That(flow.Client.View.ActiveSeat, Is.EqualTo(other), "남의 턴");
+            Assert.That(mine, Is.True, "남의 턴에 찍힌 내 스탬프 덮개 — 얼굴 · 이름 = 나");
+            yield return Settle();
+            // ② 방장 시각 판의 남의 스탬프 덮개: 얼굴 · 이름 = 그 좌석
+            flow.Rebase(st =>
+            {
+                for (int c = 0; c < st.Seats[other].Apricorns.Length; c++) st.Seats[other].Apricorns[c] = Math.Max(1, st.Seats[other].Apricorns[c]);
+            });
+            flow.HostPaced = true;
+            for (int i = 0; i < 4; i++) yield return null;
+            Assert.That(flow.AnswerSeat(other, a => a.Kind == AnswerKind.EndTurn), Is.True, "좌석 2의 턴 종료");
+            bool theirs = false;
+            yield return StampFaceOf(other, ok => theirs = ok);
+            Assert.That(theirs, Is.True, "남의 스탬프 덮개 — 얼굴 · 이름 = 그 좌석");
+            flow.HostPaced = false;
+            Assert.That(errors, Is.Empty, string.Join("\n", errors));
         }
 
         [UnityTest]

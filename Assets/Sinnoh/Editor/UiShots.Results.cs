@@ -61,6 +61,9 @@ namespace Sinnoh.Editor
             foreach (var kv in RecipeGradeScreens) OverBoard.Add(kv.Key);   // 조합표 · 등급 색(UiShots.RecipeGrade.cs — 결정 191 · 192, 보드 · 배틀 화면 위)
             foreach (var kv in GodAgainScreens) OverBoard.Add(kv.Key);   // 신 격파 「한 번 더!」는 추가 턴이 올 때만(UiShots.GodAgain.cs — 결정 198, 보드 위)
             foreach (var kv in SwarmAlphaScreens) OverBoard.Add(kv.Key);   // 무리 줄 카드 · 알파 타입 ±0(UiShots.SwarmAlpha.cs — 결정 199, 배틀 화면)
+            foreach (var kv in RosterScreens) OverBoard.Add(kv.Key);   // 갤럭시단 명단 줄(UiShots.Roster201.cs — 결정 201, 배틀 화면)
+            foreach (var kv in GalacticHoverScreens) OverBoard.Add(kv.Key);   // 갤럭시단 상대 명단 마우스 오버(UiShots.GalacticHover.cs — 결정 201 ②, 보드 위)
+            foreach (var kv in TutorialExplainScreens) OverBoard.Add(kv.Key);   // 튜토리얼 설명 보강(UiShots.TutorialExplain.cs — 결정 204, 보드 위)
         }
 
         /// <summary><see cref="Screens"/> + 이 묶음의 장면(이름으로 찾는 곳은 이 목록을 쓴다).</summary>
@@ -113,6 +116,9 @@ namespace Sinnoh.Editor
                 foreach (var s in RecipeGradeScreens) yield return s;
                 foreach (var s in GodAgainScreens) yield return s;
                 foreach (var s in SwarmAlphaScreens) yield return s;
+                foreach (var s in RosterScreens) yield return s;
+                foreach (var s in GalacticHoverScreens) yield return s;
+                foreach (var s in TutorialExplainScreens) yield return s;
             }
         }
 
@@ -765,14 +771,14 @@ namespace Sinnoh.Editor
                 }
             }
             if (scaled.Count > 0) s.Panel.Tick(3);
-            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm", "battle-swarm-slots", "battle-reward", "battle-result-lines" })
+            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm", "battle-swarm-slots", "battle-roster", "battle-reward", "battle-result-lines" })
                 bad.AddRange(WorkUi.Overflows(root.Q(name)));
             foreach (var kv in scaled) kv.Key.style.scale = kv.Value;
             var screen = s.Made.Stage.Current as BattleScreen;
             if (screen != null && screen.AlphaOpen) bad.AddRange(WorkUi.Overflows(root.Q("battle-moves")));
             // 기둥의 덧줄이 기둥 판 아래로 밀려나지 않았나
             var info = root.Q("battle-info");
-            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm-slots" })
+            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm-slots", "battle-roster" })
             {
                 var e = root.Q(name);
                 if (e != null && info != null && e.worldBound.yMax > info.worldBound.yMax + 1f) bad.Add(name + ": 기둥 아래로 넘친다");

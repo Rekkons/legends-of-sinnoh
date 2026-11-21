@@ -61,16 +61,17 @@ namespace Sinnoh.Editor
         /// 배틀 연출 장면의 찍는 시각(기술을 누른 때부터 ms — 기본 조정 값).
         /// 공격(불꽃숭이의 불꽃세례 → 동미러 · 주사위 2개 · 효과가 굉장함 · 화상): 굴림 0~2510(굴림판이 들어옴 150~350 · 던짐 400 · 멈춤 위쪽 끝 2000 · 세기 2250·2380 —
         /// 결정 143 ⑦ 준비 동작: 0부터 공격한 도트가 당겨 떨고 DS에 「○○의 △△!」) → 맞는 순간 2510~2810(돌진 150 · 제자리) → 상성 2810~4410(깜빡임 600 · 흔들림 360 · 문장 3710) →
-        /// 계산 줄 4410~5460(칸 4410·4560·4660 · 총합 4760) → 상태 5460~6660 → 체력 6660~7460(착지 7460).
-        /// 면 바꾸기·기절(찾아 둔 판 Coral — 내 공격 6760 뒤 야생의 공격): 굴림 6760~ · 멈춤 8760 · 꼬리표 9060 · 넘김 9210~9490 · 세기 9740~ · … · 체력 12550~13350 · 기절 13350~(내려감 600 → 「쓰러졌다!」).
+        /// 계산 단계 4410~4910(계산 줄 칸은 맞는 순간 2510부터 — 결정 171, 피해 숫자 4660) → 상태 4910~6110 → 체력 6110~6610(착지 6610).
+        /// 면 바꾸기·기절(찾아 둔 판 Coral — 내 공격 5910 뒤 야생의 공격): 굴림 5910~ · 넘김 · 세기 · … · 체력 10850~11350 · 기절 11350~(내려감 600 → 「쓰러졌다!」).
+        /// 결정 203(계산 단계 1050 → 500 · 체력 800 → 500) 전 시각: 공격 { …, 3900, 4500, 4600, 4800, 5900, 7000, 7500 } · 깎이는 중/착지 7000/7500 · 넘김 { 8800, 9100, 9350, 9600, 9900 } · 기절 { 13300, 13600, 14050 }.
         /// 옛 시각(결정 143 전 — 기술 단계 1400: 당김 · 돌진 · 제자리 + 문장 읽기)은 기술 단계 뒤가 1100씩 늦었다: 공격 { 250, 700, 2100, 2330, 2500, 2700, 4000, 5000, 5600, 5700, 5900, 7000, 8100, 8600 } ·
         /// 깎이는 중/착지 8100/8600 · 넘김 { 9900, 10200, 10450, 10700, 11000 } · 기절 { 15500, 15800, 16250 }(야생의 기술 단계까지 둘 — 2200).
         /// </summary>
-        public static readonly int[] AttackShotsMs = { 250, 700, 2100, 2330, 2500, 2600, 2900, 3900, 4500, 4600, 4800, 5900, 7000, 7500 };
+        public static readonly int[] AttackShotsMs = { 250, 700, 2100, 2330, 2500, 2600, 2900, 3900, 4700, 5350, 6360, 6700 };
         /// <summary>그 가운데 체력이 깎이는 중(숫자는 아직 앞 값)과 착지한 뒤.</summary>
-        public const int AttackDrainMs = 7000, AttackLandedMs = 7500;
-        public static readonly int[] FlipShotsMs = { 8800, 9100, 9350, 9600, 9900 };
-        public static readonly int[] FaintShotsMs = { 13300, 13600, 14050 };
+        public const int AttackDrainMs = 6360, AttackLandedMs = 6700;
+        public static readonly int[] FlipShotsMs = { 7950, 8250, 8500, 8750, 9050 };
+        public static readonly int[] FaintShotsMs = { 11600, 11900, 12350 };
         /// <summary>도망(67행 — 받을 규토리 색을 고른 뒤가 0): 옆으로 빠지는 중 · 빠진 뒤 「도망쳤다!」. 교체(66행 — 교체 창에서 대기 포켓몬을 누른 뒤가 0): 불러들임 · 절반(1100) 뒤 나옴.</summary>
         public static readonly int[] FledShotsMs = { 150, 400, 700 }, SwitchShotsMs = { 300, 1500 };
         /// <summary>
@@ -177,14 +178,14 @@ namespace Sinnoh.Editor
 
         /// <summary>
         /// 도트 이펙트(결정 69, pixelfx — <c>SheetBeats</c>)의 찍는 시각: 이펙트가 시작한 바로 뒤의 프레임들.
-        /// 기술 맞음(battle-attack의 체력 6660~ — 프레임 60ms × 4) · 기절(내 포켓몬 = Coral 13350~ — 결정 143 ⑦ 전에는 7760~ · 15550~ — 도트가 내려가는 600의 끝 150 전부터 먼지 45ms × 6, 메시지 창 바로 위로 올려 찍는다 · 상대 = Defeat의 첫 기절 단계 시작이 0 — 450부터 발판 위) ·
+        /// 기술 맞음(battle-attack의 체력 6110~ — 프레임 60ms × 4) · 기절(내 포켓몬 = Coral 11350~ — 결정 203 전에는 6660~ · 13350~, 결정 143 ⑦ 전에는 7760~ · 15550~ — 도트가 내려가는 600의 끝 150 전부터 먼지 45ms × 6, 메시지 창 바로 위로 올려 찍는다 · 상대 = Defeat의 첫 기절 단계 시작이 0 — 450부터 발판 위) ·
         /// 출전(교체 창에서 누른 뒤 — 나오는 때부터) ·
         /// 포획(볼이 열리는 <see cref="EnterBeats.FlyEndMs"/>부터 빛 · 성공 판정 뒤에는 원래 별 셋만(결정 70 ⑬ ④) / 실패 1번 흔들림 판정부터 다시 빛 — 결정 126 ③ 전에는 600 · 3060 · 2350) ·
         /// 회복(마을 [전체 회복] 뒤 — 칸 반짝임과 함께 70ms × 7) · 스타팅(고르는 화면 [확정] 뒤 — 공개 2700 + 660에 볼이 열린다).
         /// </summary>
         // 결정 143 ⑦: 기술 단계가 1400 → 300이라 맞음 불꽃은 1100, 야생의 공격 뒤 기절 먼지는 2200 앞당겨졌다(옛 { 7780, 7850, 7910, 7960 } · { 15900, 16020, 16110, 16200 })
-        public static readonly int[] FxHitShotsMs = { 6680, 6750, 6810, 6860 };
-        public static readonly int[] FxFaintShotsMs = { 13700, 13820, 13910, 14000 };
+        public static readonly int[] FxHitShotsMs = { 6130, 6200, 6260, 6310 };
+        public static readonly int[] FxFaintShotsMs = { 12000, 12120, 12210, 12300 };
         public static readonly int[] FxFaintFoeShotsMs = { 300, 480, 560, 650 };
         public static readonly int[] FxCatchShotsMs = { EnterBeats.FlyEndMs + 10, EnterBeats.FlyEndMs + 70, EnterBeats.FlyEndMs + 180, EnterBeats.FlyEndMs + 300, CaptureVerdictMs(3) + 80 };
         public static readonly int[] FxMissShotsMs = { EnterBeats.FlyEndMs + 10, CaptureVerdictMs(1) + 10, CaptureVerdictMs(1) + 70, CaptureVerdictMs(1) + 170, CaptureVerdictMs(1) + 270 };
@@ -239,7 +240,7 @@ namespace Sinnoh.Editor
             scenes.Add(new Scene { Name = "setup-starter-720", TimesMs = new[] { 900, 2400, 3550, 4000, 5700, 7100 }, Build = (root, skin, grade) => SetupScene(root, skin, grade, 2) });
             // 배틀 연출(04 §8-8 56·57·59·60·61·62·65행): 실제 판에서 기술을 누른 뒤의 화면 대기열을 그 시각으로 보낸다
             scenes.Add(new Scene { Name = "battle-attack", TimesMs = AttackShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => BattleAttack(root, skin, grade) });
-            scenes.Add(new Scene { Name = "battle-attack-720", TimesMs = new[] { 1200, 4800, 7500 }, Build = (root, skin, grade) => BattleAttack(root, skin, grade) });
+            scenes.Add(new Scene { Name = "battle-attack-720", TimesMs = new[] { 1200, 4700, 6700 }, Build = (root, skin, grade) => BattleAttack(root, skin, grade) });
             scenes.Add(new Scene { Name = "battle-flip", TimesMs = FlipShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => BattleTrail(root, skin, grade, SoloTrail.Coral) });
             scenes.Add(new Scene { Name = "battle-faint", TimesMs = FaintShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => BattleTrail(root, skin, grade, SoloTrail.Coral) });
             // 도망(67행): 같은 판에서 내 포켓몬이 쓰러진 뒤 받을 규토리 색을 고르면 야생이 옆으로 빠진다. 교체(66행): 볼을 쥐여 준 판의 조무래기전 교체 창에서 대기 포켓몬을 누른다
@@ -342,9 +343,9 @@ namespace Sinnoh.Editor
             scenes.Add(new Scene { Name = "token-pass-720", TimesMs = new[] { 150, 650 }, Build = (root, skin, grade) => RowScene(root, skin, grade, SoloTrail.Defeat, TokenPassed) });
             // 도트 이펙트(결정 69, pixelfx): 자리마다 이펙트가 도는 순간 — 1080과 720
             scenes.Add(new Scene { Name = "pixelfx-hit", TimesMs = FxHitShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => BattleAttack(root, skin, grade) });
-            scenes.Add(new Scene { Name = "pixelfx-hit-720", TimesMs = new[] { 6680, 6750 }, Build = (root, skin, grade) => BattleAttack(root, skin, grade) });
+            scenes.Add(new Scene { Name = "pixelfx-hit-720", TimesMs = new[] { 6130, 6200 }, Build = (root, skin, grade) => BattleAttack(root, skin, grade) });
             scenes.Add(new Scene { Name = "pixelfx-faint", TimesMs = FxFaintShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => BattleTrail(root, skin, grade, SoloTrail.Coral) });
-            scenes.Add(new Scene { Name = "pixelfx-faint-720", TimesMs = new[] { 13820, 13910 }, Build = (root, skin, grade) => BattleTrail(root, skin, grade, SoloTrail.Coral) });
+            scenes.Add(new Scene { Name = "pixelfx-faint-720", TimesMs = new[] { 12120, 12210 }, Build = (root, skin, grade) => BattleTrail(root, skin, grade, SoloTrail.Coral) });
             scenes.Add(new Scene { Name = "pixelfx-faint-foe", TimesMs = FxFaintFoeShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => RowScene(root, skin, grade, SoloTrail.Defeat, st => st.Row == 650) });
             scenes.Add(new Scene { Name = "pixelfx-faint-foe-720", TimesMs = new[] { 480, 560 }, Build = (root, skin, grade) => RowScene(root, skin, grade, SoloTrail.Defeat, st => st.Row == 650) });
             scenes.Add(new Scene { Name = "pixelfx-catch", TimesMs = FxCatchShotsMs, Grade = DiceGrade, Build = (root, skin, grade) => FlowTrail(root, skin, grade, SoloTrail.Catch, CanThrow) });

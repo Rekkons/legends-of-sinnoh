@@ -424,13 +424,14 @@ namespace Sinnoh.Tests.EditMode
             seq.Advance(1);
             Assert.IsFalse(BattleRoll.Showing(seq), "공격 항목이 끝나면 기술 줄로 돌아온다");
 
-            // 계산 줄: 칸 0 · 150 · 250, 총합 350(칸이 더 있어도 총합의 때는 같다)
+            // 계산 줄: 칸 0 · 150 · 200(총합 앞 50까지), 총합 250(결정 203 — 칸이 더 있어도 총합의 때는 같다)
             Assert.AreEqual(0, BattleRoll.CalcLit(3, -1));
             Assert.AreEqual(1, BattleRoll.CalcLit(3, 0));
             Assert.AreEqual(1, BattleRoll.CalcLit(3, 149));
             Assert.AreEqual(2, BattleRoll.CalcLit(3, 150));
             Assert.AreEqual(3, BattleRoll.CalcLit(3, 250));
-            Assert.IsFalse(BattleRoll.TotalLit(349));
+            Assert.AreEqual(3, BattleRoll.CalcLit(3, 200));
+            Assert.IsFalse(BattleRoll.TotalLit(249));
             Assert.IsTrue(BattleRoll.TotalLit(PlayTiming.DamageCalcMs.Value));
             Assert.AreEqual(5, BattleRoll.CalcLit(5, PlayTiming.DamageCalcMs.Value), "드문 칸이 더 생겨도 총합 전에 다 켜진다");
         }
@@ -555,7 +556,8 @@ namespace Sinnoh.Tests.EditMode
             int damageAt = FxReveal.At(entry, entry.Events.Find(e => e is DamageBreakdown)), landed = entry.Step(612).EndMs;
             Assert.AreEqual(PlayTiming.MoveHitMs, move.Ms);
             Assert.AreEqual(BattleBeats.LungeHitMs + BattleBeats.LungeHomeMs, PlayTiming.MoveHitMs, "화면의 돌진 + 제자리 = 방장 길이");
-            Assert.AreEqual(landed, PlayTiming.SeatMs(Swing(false), new PlayTimingContext(0)), "방장 길이 = 화면 항목 길이");
+            Assert.AreEqual(entry.LengthMs, PlayTiming.SeatMs(Swing(false), new PlayTimingContext(0)), "방장 길이 = 화면 항목 길이");
+            Assert.LessOrEqual(landed, entry.LengthMs, "체력 착지는 항목 안(결정 203으로 단계 합이 보기 시간 바닥보다 짧아질 수 있다)");
             const int OldMoveMs = 1400;   // 결정 143 전의 기술 단계
             TestContext.WriteLine($"결정 143 ⑦ 박자(주사위 4개 · 상성 없음): 누름 → 피해 표시 {damageAt + OldMoveMs - PlayTiming.MoveHitMs} → {damageAt} ms · 누름 → 체력 착지 {landed + OldMoveMs - PlayTiming.MoveHitMs} → {landed} ms");
             Assert.AreEqual(roll.Ms + PlayTiming.MoveHitMs + match.Ms + PlayTiming.DamageCalcMs.Value, damageAt);

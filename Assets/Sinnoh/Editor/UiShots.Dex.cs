@@ -22,6 +22,8 @@ namespace Sinnoh.Editor
             Screen("dex-list-end", s => DexOpen(s, d => d.Pick(d.Shown.Count - 1))),        // 목록 끝
             Screen("dex-deck-evolution", s => DexOpen(s, d => { d.PickDeck(DexDeck.Evolution); DexPickCopies(s, d); })),   // 진화 덱(장수 배지 ×2)
             Screen("dex-deck-galactic", s => DexOpen(s, d => { d.PickDeck(DexDeck.Galactic); d.Pick(d.Shown.Count - 1); d.OpenDetail(); })),   // 갤럭시단 상세: 「포획 불가」 · 트레이너 줄
+            Screen("dex-galactic-owner", s => DexOpen(s, d => DexOwnerPick(s, d, DexOwner.Mars, false))),   // 갤럭시단 주인 칩(결정 201 ③): 마스로 거름 — 칩 줄이 덱 줄 아래 · 덱 줄 · 타입 줄과 안 겹치고 판 안
+            Screen("dex-galactic-owner-tip", s => DexOpen(s, d => DexOwnerPick(s, d, DexOwner.Cyrus, true))),   // 태홍 칩 + 마우스 오버(「8마리 중 6마리」)
             Screen("dex-detail", s => DexOpen(s, d => { d.PickDeck(DexDeck.Starter); d.Pick(1); d.OpenDetail(); })),   // 상세 쪽(스타팅 — 진화 줄 + 비용 · 든 덱)
             Screen("dex-detail-faces", s => DexOpen(s, d => { d.PickDeck(DexDeck.Legendary); DexPickFaces(s, d, 1); })),   // 전설 덱: 면이 여럿인 카드의 상세 + 다른 폼을 세움
             Screen("dex-filter", s => DexOpen(s, d => { d.PickDeck(DexDeck.Strong); d.PickType(PokemonType.Fire); })),   // 타입 거르기(불꽃) — 「n종 찾음」
@@ -63,6 +65,26 @@ namespace Sinnoh.Editor
             var dex = flow.Stage.Current as DexScreen ?? throw new InvalidOperationException("도감이 열리지 않았다");
             then?.Invoke(dex);
             DexCheck(s, flow);
+        }
+
+        // 갤럭시단 탭 → 주인 칩: 칩 줄이 서 있고 판 안 · 덱 줄(갤럭시단 탭 · 이름 칸) · 타입 줄과 안 겹침, 고른 주인의 카드만(tip이면 그 칩의 툴팁을 띄운다)
+        static void DexOwnerPick(UiShot s, DexScreen dex, DexOwner owner, bool tip)
+        {
+            dex.PickDeck(DexDeck.Galactic);
+            if (!dex.PickOwner(owner) || dex.Owner != owner) throw new InvalidOperationException("주인 칩으로 거르지 못했다");
+            var ctx = s.Board.Ctx;
+            foreach (var e in dex.Shown)
+                if (!DexBook.Owned(ctx.Cards.Pokemon[e.Def], owner)) throw new InvalidOperationException("다른 주인의 카드가 섞였다 " + ctx.Cards.Pokemon[e.Def].Key);
+            s.Panel.Tick(3);
+            var root = s.Made.Stage.Root;
+            var row = root.Q("dex-owners") ?? throw new InvalidOperationException("주인 칩 줄이 없다");
+            if (row.resolvedStyle.display == DisplayStyle.None) throw new InvalidOperationException("갤럭시단 탭인데 주인 칩 줄이 숨었다");
+            DexInside(root.Q("dex-panel").worldBound, row.worldBound, "주인 칩 줄", "-");
+            Apart(root, "dex-owners", "dex-name");
+            Apart(root, "dex-owners", "dex-deck-galactic");
+            Apart(root, "dex-owners", "dex-type-all");
+            if (!root.Q("dex-owner-" + DexBook.OwnerId(owner)).ClassListContains("sn-opt-picked")) throw new InvalidOperationException("고른 주인 칩이 켜지지 않았다");
+            if (tip) s.Made.Stage.Tips.Show(root.Q("dex-owner-" + DexBook.OwnerId(owner)));
         }
 
         // 장수가 둘 이상인 첫 카드를 고른다

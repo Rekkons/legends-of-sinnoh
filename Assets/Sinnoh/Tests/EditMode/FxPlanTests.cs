@@ -270,8 +270,8 @@ namespace Sinnoh.Tests.EditMode
             Assert.AreEqual(730, PlayTiming.RowMs(flipThree, 570), "여러 개가 바뀌어도 함께 넘어간다(옛 값 바뀐 수 × 350)");
             Assert.AreEqual(0, PlayTiming.RowMs(new DiceFacesChanged { Changes = new FaceChange[0] }, 570), "바꿀 면이 없으면 넘기지 않는다");
 
-            Assert.AreEqual(150 + 100 + 100 + 300 + 400, PlayTiming.RowMs(new DamageBreakdown { Steps = new DamageStep[7] }, 611), "61행: 계산 줄 350 + 300 뒤 숫자 비행 400(단계 수와 무관)");
-            Assert.AreEqual(800, PlayTiming.RowMs(new HpChanged(), 612), "61행: HP 감소 800");
+            Assert.AreEqual(250 + 100 + 150, PlayTiming.RowMs(new DamageBreakdown { Steps = new DamageStep[7] }, 611), "61행: 계산 줄 250 + 100 뒤 숫자 비행 150 = 500(결정 203, 단계 수와 무관)");
+            Assert.AreEqual(500, PlayTiming.RowMs(new HpChanged(), 612), "61행: HP 감소 500(결정 203)");
 
             Assert.AreEqual(1500 + 500 + 500, PlayTiming.RerollMs(1), "43행: 글리치 1500 + 다시 세기 500 + 데미지 갱신 500(결정 190)");
             Assert.AreEqual(1500 * 3 + 1000, PlayTiming.RerollMs(3), "여러 개면 주사위당 1500");
@@ -286,7 +286,7 @@ namespace Sinnoh.Tests.EditMode
             };
             foreach (var e in ev) e.Seat = 0;
             var item = PlayTiming.Items(ev, new PlayTimingContext(0))[0];
-            Assert.AreEqual(2510 + 730 * 2 + 1050 + 800, item.StepsMs);
+            Assert.AreEqual(2510 + 730 * 2 + 500 + 500, item.StepsMs);
             Assert.AreEqual(item.StepsMs, item.QueueMs, "보기 시간(3000 + 500 × 2)보다 길다");
 
             // Host 조정 값을 바꾸면 방장 길이가 따라 바뀐다
@@ -393,13 +393,13 @@ namespace Sinnoh.Tests.EditMode
 
             // 공격: 굴림 → 계산 줄·숫자 비행 → HP → 기절 → 배틀 끝. 표시 값은 그 단계가 끝나는 때 착지한다
             Assert.AreEqual(-1, mine[1].Continues, "이어짐 없음(미설정 표지도 −1)");
-            Assert.AreEqual("Item:560@0+2510 Item:611@2510+1050 Item:612@3560+800 Item:650@4360+1800 Item:700@6160+3500", Shape(mine[1]));
-            Assert.AreEqual(9660, mine[1].LengthMs);
+            Assert.AreEqual("Item:560@0+2510 Item:611@2510+500 Item:612@3010+500 Item:650@3510+1800 Item:700@5310+3500", Shape(mine[1]));
+            Assert.AreEqual(8810, mine[1].LengthMs);
             Assert.AreEqual(2, mine[1].Cues.Count);
             Assert.AreEqual(ShownKey.Hp(9), mine[1].Cues[0].Key);
-            Assert.AreEqual(4360, mine[1].Cues[0].AtMs, "HP 숫자는 막대가 다 깎인 때");
+            Assert.AreEqual(3510, mine[1].Cues[0].AtMs, "HP 숫자는 막대가 다 깎인 때");
             Assert.AreEqual(ShownKey.Resource(0, ResKind.Jp, 0), mine[1].Cues[1].Key);
-            Assert.AreEqual(9660, mine[1].Cues[1].AtMs);
+            Assert.AreEqual(8810, mine[1].Cues[1].AtMs);
 
             // 턴 넘김: ② 띠(요약 → 넘김) 뒤에 ③ 턴 시작 배너
             Assert.AreEqual("Band:1010@0+800 Band:1011@800+600 Item:60@1400+1400", Shape(mine[2]));

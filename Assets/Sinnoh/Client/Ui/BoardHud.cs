@@ -2095,10 +2095,13 @@ namespace Sinnoh.Client
             foreach (string key in beastKeys) parts.Add(stage.T("pokemon." + key));
             int guardian = flow.GuardianAt(cell);
             if (guardian >= 0) parts.Add(stage.T("pokemon." + ctx.Cards.Pokemon[guardian].Key));
+            // 결정 201 ②: 2막 호수의 간부 · 3막 신오신전의 태홍(조무래기는 위 토큰 줄이 적었다)
+            if (view != null && InfoCard.GalacticFoe(ctx, view, flow.Client.Seat, cell, false, foeCards, out var leader, out _)) parts.Add(InfoCard.FoeName(stage, ctx, leader, foeCards));
             return string.Join(" · ", parts);
         }
 
         readonly List<string> beastKeys = new List<string>();
+        readonly List<int> foeCards = new List<int>();
 
         string FixtureText(FixtureDef f)
         {
@@ -2155,8 +2158,30 @@ namespace Sinnoh.Client
         /// <summary>칸을 가리키는 사각형의 반 변(패널 px) — 카드가 그 칸의 토큰·말을 덮지 않게 이만큼 비켜 선다.</summary>
         public const float CellHalf = 28f;
 
+        /// <summary>지금 갤럭시단 명단이 실린 공개 정보 카드가 떠 있는 칸(결정 201 ②). 없으면 −1.</summary>
+        public int RosterCell => info != null && info.HasRoster && infoCell >= 0 ? infoCell : -1;
+
+        /// <summary>마우스가 명단 카드 위에 있어 카드를 그 칸 그대로 붙들고 있나(<see cref="HoldInfo"/>).</summary>
+        public bool InfoHeld => infoHeld;
+
+        bool infoHeld;
+
+        /// <summary>
+        /// 마우스가 공개 정보 카드 위인가를 받는다(프레임마다 <see cref="Hover"/> 앞 — 결정 201 ②): 명단이 실린 카드 위면 카드를 그 칸 그대로 붙든다(밑의 칸으로 바꾸지 않는다 — 줄마다 포켓몬 카드를 본다).
+        /// 칸 정보 줄 · 길 칠하기 · 누르기는 카드 밑의 칸 그대로다. 카드에서 벗어나면 다음 <see cref="Hover"/>가 마우스 아래 칸으로 다시 적는다. 붙들었으면 true.
+        /// </summary>
+        public bool HoldInfo(bool over)
+        {
+            bool held = over && RosterCell >= 0;
+            if (held == infoHeld) return held;
+            infoHeld = held;
+            if (!held) hoverInfo = int.MinValue;
+            return held;
+        }
+
         public void HideInfo()
         {
+            infoHeld = false;
             infoSeat = infoCell = -1;
             info?.Hide();
             if (logBox != null) logBox.style.visibility = Visibility.Visible;
@@ -2621,7 +2646,7 @@ namespace Sinnoh.Client
                 hoverLook = look;
                 var view = flow.Client != null ? flow.Client.View : null;
                 if (cellInfo != null && view != null) cellInfo.text = CellText(InfoCell(view.Seats[flow.Client.Seat].Cell));
-                if (infoSeat < 0)
+                if (infoSeat < 0 && !infoHeld)   // 명단 카드 위의 마우스(결정 201 ②)는 카드를 그대로 둔다
                 {
                     if (show >= 0) ShowCellInfo(show);
                     else HideInfo();

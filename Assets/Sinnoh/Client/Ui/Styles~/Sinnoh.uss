@@ -766,6 +766,8 @@
 .sn-dex-type { padding: 2px; margin-right: 2px; border-width: 1px; border-color: var(--sn-dex-field-lite); background-color: var(--sn-dex-plate); }
 .sn-dex-type:hover { background-color: var(--sn-pick); }
 .sn-dex-type-picked { border-color: var(--sn-dex-band); background-color: var(--sn-dex-pick); }
+.sn-dex-owners { flex-direction: row; align-items: center; margin-bottom: 4px; }
+.kit-root .sn-dex-owner-label { margin-right: 6px; color: var(--sn-dex-band); }
 /* 가운데 띠: 위아래에 밝은 줄 */
 .sn-dex-band { flex-direction: row; height: 470px; padding: 8px 16px; border-top-width: 4px; border-bottom-width: 4px; border-color: var(--sn-dex-field-lite); background-color: var(--sn-dex-band); }
 .sn-dex-tail { height: 8px; }
@@ -827,6 +829,14 @@
 .sn-info-move-empty { width: 48px; height: T(14px!, 26px!); flex-shrink: 0; border-width: 1px; border-color: var(--sn-line); }
 .sn-info-brief { margin-top: 3px; padding-top: 3px; border-top-width: 1px!; border-color: var(--sn-line); }
 .sn-info-slim { width: T(300px!, 520px!); }
+/* 갤럭시단 명단(결정 201 ②): 두 열 — 도트(파티 줄과 같은 배수 · 가운데 48만) · 이름 · 타입. 줄에 마우스를 올리면 포켓몬 카드 */
+.sn-info-slim.sn-info-wide { width: T(300px!, 600px!); }   /* 1080 벌: 도트 96 옆에 타입 둘이 한 줄로 */
+.sn-info-roster { flex-direction: row; flex-wrap: wrap; margin-top: 3px; border-top-width: 1px; border-color: var(--sn-line); }
+.sn-info-roster-mon { width: 50%; flex-direction: row; align-items: center; margin-top: 2px; }
+.sn-info-roster-mon:hover { background-color: var(--sn-pick); }
+.sn-info-roster-mon .sn-mon { width: T(48px!, 96px!); height: T(48px!, 96px!); flex-shrink: 0; }
+.sn-info-roster-mon .sn-mon-canvas { left: T(-24px!, -48px!); top: T(-22px!, -44px!); }
+.sn-info-roster-info { flex-grow: 1; flex-shrink: 1; margin-left: 3px; }
 
 /* ── 정비 판(04 §3-5·§10-3 — S18 「내 판」 · S28 기술 가르치기 · S29 지닌물건, 남 좌석이면 S39): 위 띠와 아래 판 사이를 덮는 창.
    파티 칸 여섯 열(카드 · ★ + 기술 칸 2 · 지닌물건 칸 · 순서·놓아주기) + 아래 기술 카드 풀 · 가방 + 물음 줄. 넣을 수 있는 칸은 주황 테두리로 빛난다 ── */
@@ -1312,6 +1322,7 @@
 /* 덮개(무대 맨 위 층 — 마우스를 받지 않는다) */
 .sn-deal-fx { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
 .sn-deal-stamp { position: absolute; left: 50%; top: 30%; width: 340px; margin-left: -170px; padding: 8px 10px 10px 10px; align-items: center; border-width: 2px; border-color: var(--sn-edge); background-color: var(--sn-fill); opacity: 0; }
+.sn-deal-owner { align-self: flex-start; margin-bottom: 2px; }
 .sn-deal-slots { width: 312px; height: 156px; flex-shrink: 0; margin-top: 6px; margin-bottom: 4px; }
 .sn-deal-slot { position: absolute; }
 .sn-deal-mark { position: absolute; left: 12%; top: 12%; right: 12%; bottom: 12%; rotate: -8deg; opacity: 0; }
@@ -1355,6 +1366,8 @@
 .kit-root .sn-battle-swarm-slot > * { margin-right: 3px; }
 .sn-battle-swarm-dot { width: T(8px!, 12px!); height: T(8px!, 12px!); border-width: 1px!; border-color: var(--sn-edge); border-radius: T(4px!, 6px!); background-color: var(--sn-clear); }
 .sn-battle-swarm-dot-on { background-color: var(--sn-turn); }
+.sn-battle-roster-done { opacity: 0.45; }
+.kit-root .sn-battle-roster .sn-type-icon { width: 32px!; height: 16px!; margin-right: 2px; }   /* 갤럭시단 명단 줄(결정 201): 1080에서도 1배 — 태홍 여섯이 기둥 안에 든다 */
 .sn-battle-orb { position: absolute; left: 0; top: 0; width: T(16px!, 24px!); height: T(16px!, 24px!); margin-left: T(-8px!, -12px!); margin-top: T(-8px!, -12px!); border-radius: T(8px!, 12px!); border-width: T(2px!, 3px!); border-color: var(--sn-orb-edge); background-color: var(--sn-orb); }
 /* 울트라 버스트 배틀(M6 「UB 배틀 화면 묶음」 — 88~92행): DS 위에 떠 있는 것(마우스 안 받음). 자리는 DS 화면의 비율(256×192) */
 .sn-battle-ub-block { position: absolute; left: 66%; top: 14%; }

@@ -86,12 +86,12 @@ namespace Sinnoh.Rules.Session
         public static readonly Tunable DiceCountPerMs = Host("dice.countPerMs", 130);
         /// <summary>57행 면 바꾸기 한 박자: 꼬리표·고리 300 + 150 뒤 넘김 280. 여러 개가 바뀌어도 함께 넘어간다.</summary>
         public static readonly Tunable FaceFlipMs = Host("dice.faceFlipMs", 730);
-        /// <summary>61행 계산 줄: 세기 끝 + 150 효과 · + 100 상성 · + 100 데미지.</summary>
-        public static readonly Tunable DamageCalcMs = Host("damage.calcMs", 350);
-        /// <summary>61행 숫자 비행: 300 뒤 400.</summary>
-        public static readonly Tunable DamageFlyMs = Host("damage.flyMs", 700);
-        /// <summary>61행 HP 감소.</summary>
-        public static readonly Tunable HpDrainMs = Host("damage.hpMs", 800);
+        /// <summary>61행 계산 줄: 세기 끝 + 150 효과 · + 50 상성 · 데미지(총합 앞 50까지), 총합 250. 결정 203 — 계산 줄 + 숫자 비행 = 500(옛 350 + 700).</summary>
+        public static readonly Tunable DamageCalcMs = Host("damage.calcMs", 250);
+        /// <summary>61행 숫자 비행: 100 뒤 150(결정 203 — 옛 300 뒤 400).</summary>
+        public static readonly Tunable DamageFlyMs = Host("damage.flyMs", 250);
+        /// <summary>61행 HP 감소(결정 203 — 옛 800).</summary>
+        public static readonly Tunable HpDrainMs = Host("damage.hpMs", 500);
         /// <summary>43행 글리치 재굴림: 주사위 하나마다(들어옴 200 · 지직 1000 · 고정 + 번쩍 · 1500까지 고리 — 결정 190으로 옛 600의 2.5배).</summary>
         public static readonly Tunable RerollPerMs = Host("reroll.perMs", 1500);
         /// <summary>43행 다시 세기 500 + 데미지 갱신 500(결정 190 — 옛 400의 2.5배).</summary>

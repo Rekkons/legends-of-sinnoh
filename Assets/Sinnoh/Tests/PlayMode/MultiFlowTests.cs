@@ -503,6 +503,7 @@ namespace Sinnoh.Tests.PlayMode
             yield return Until(() => flow.Client.View.ActiveSeat == other && flow.BoardOpen, "좌석 2의 턴");
             Assert.That(flow.AnswerSeat(other, a => a.Kind == AnswerKind.Challenge && a.Target != me), Is.True, "좌석 2가 조무래기에게 도전");
             bool column = false, bench = false;
+            int roster = 0;
             BattleScreen screen = null;
             for (int guard = 0; guard < 3000; guard++)
             {
@@ -522,6 +523,7 @@ namespace Sinnoh.Tests.PlayMode
                     Assert.That(stage.Root.Q(BattleScreen.FateButton), Is.Null, "남의 배틀에는 내 [운명의 변화]가 없다");
                     Assert.That(screen.FateOn, Is.False);
                     column = true;
+                    roster = System.Math.Max(roster, screen.RosterCount);   // 결정 201 ①: 남의 갤럭시단 배틀에도 상대 명단 줄
                     var active = screen.ShownMon(flow.Battle.MySide);
                     var box = stage.Root.Q("battle-bench");
                     if (active.Exists && box != null)
@@ -539,6 +541,7 @@ namespace Sinnoh.Tests.PlayMode
             }
             Assert.That(column, Is.True, "관전 배틀의 기둥을 봤다");
             Assert.That(bench, Is.True, "대기 줄을 봤다");
+            Assert.That(roster, Is.EqualTo(BattleFlow.GruntLineup), "관전 배틀에도 상대 명단 줄(조무래기 둘 — 결정 201 ①)");
             Assert.That(screen != null && screen.ShowsResult, Is.True, "결과 창");
             string title = stage.Root.Q<Label>("battle-result-title").text.Replace("⁠", "");   // Kit.Wrapped의 낱말 잇기 글자를 뺀다
             string want2 = stage.T(flow.Battle.Drawn ? "screen.battle.result.draw" : flow.Battle.Won ? "screen.battle.result.win.seat" : "screen.battle.result.lose.seat").Replace("{name}", flow.SeatName(other));

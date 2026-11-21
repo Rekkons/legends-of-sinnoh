@@ -4878,8 +4878,13 @@ namespace Sinnoh.Client
                 return -1;
             }
             // 좌석 칩 위면 공개 정보 카드(배틀 화면이 떠 있어도 위 띠의 칩은 그대로다 — 04 §4-6)
-            var picked = OnBoard && hud != null ? Picked(x, y) : null;
-            if (OnBoard && hud != null) hud.HoverUi(picked);
+            bool overInfo = false;
+            var picked = OnBoard && hud != null ? Picked(x, y, out overInfo) : null;
+            if (OnBoard && hud != null)
+            {
+                hud.HoverUi(picked);
+                hud.HoldInfo(overInfo);   // 명단 카드 위면 카드를 그 칸 그대로(결정 201 ②)
+            }
             bool ready = OnBoard && hud != null && board != null && rig != null && laidFor.x > 0;
             var flyPick = FlyPick;   // T18 ①: 공중날기 목적지를 보드에서 고르는 마을 창도 보드를 덮지 않는다(칸 누르기는 그 창으로)
             bool overUi = (Stage.Current != null && !Folded && flyPick == null) || Stage.Info != null || picked != null;   // 접힌 창(T21)은 보드를 덮지 않는다
@@ -4909,7 +4914,21 @@ namespace Sinnoh.Client
             hud.ShowStacks();
             float panelScale = Stage.Grade.PanelScale;
             int stack = overUi || drag.Panning || hud.Stacks == null ? -1 : hud.Stacks.CellAt(new Vector2(x / panelScale, (laidFor.y - y) / panelScale));
-            hud.Hover(cell, stack, overUi || drag.Panning ? -1 : FigureCell(x, y));   // UB · 수호신 피규어 위면 그 피규어의 칸을 적는다(결정 179)
+            int figure = overUi || drag.Panning ? -1 : FigureCell(x, y);
+            // 결정 201 ②: 명단 카드에서 띄울 것이 없는 칸으로 나가도 RosterGrace 동안은 카드를 남긴다(카드로 옮겨 가는 길 — 칸 정보 줄 · 길은 마우스 아래 칸 그대로)
+            int keep = overUi || drag.Panning || overInfo ? -1 : hud.RosterCell;
+            int aim = stack >= 0 ? stack : figure >= 0 ? figure : cell;
+            if (keep >= 0 && aim != keep && !hud.Info.Has(aim))
+            {
+                if (rosterLeft != keep)
+                {
+                    rosterLeft = keep;
+                    rosterLeftAt = Time.unscaledTime;
+                }
+                if (Time.unscaledTime - rosterLeftAt < RosterGrace) stack = keep;
+            }
+            else rosterLeft = -1;
+            hud.Hover(cell, stack, figure);   // UB · 수호신 피규어 위면 그 피규어의 칸을 적는다(결정 179)
             // 걷기 전 확인(결정 70 ⑱): 갈 수 있는 칸을 누르면 고르고(고르기 소리), 고른 칸을 다시 누르면 걷는다(확정 소리). 고른 뒤 다른 갈 수 있는 칸을 누르면 그 칸을 거쳐 가는 길(경유 칸 — 결정 71 ②, 고르기 소리).
             // 갈 수 없는 칸·보드 밖을 누르면 고른 칸이 풀리고, 가운데·오른쪽 단추를 끌지 않고 떼면 한 단계 물린다(마지막 경유 칸 → 고른 칸, 소리 없음). HUD·창 위의 누름은 보드로 새지 않는다
             if (flyPick != null)
@@ -4956,17 +4975,33 @@ namespace Sinnoh.Client
         public Vector2Int LaidFor => laidFor;
 
         /// <summary>그 점(물리 px, 왼쪽 아래가 (0, 0))이 PC 층의 요소(HUD 판·단추·창) 위인가. 마우스를 받지 않는 요소(HUD 바탕·띠)는 치지 않는다.</summary>
-        public bool OverUi(float x, float y) => Picked(x, y) != null;
+        public bool OverUi(float x, float y) => Picked(x, y, out _) != null;
 
-        // 그 점 아래의 PC 층 요소(뿌리·패널 바탕은 치지 않는다). 없으면 null
-        VisualElement Picked(float x, float y)
+        // 그 점 아래의 PC 층 요소(뿌리·패널 바탕은 치지 않는다). 없으면 null.
+        // 명단이 실린 공개 정보 카드(결정 201 ② — 줄마다 포켓몬 카드를 띄우려고 마우스를 받는다)는 보드 쪽으로는 없는 것처럼 뺀다(칸 고르기 · 누르기 · 휠은 밑의 칸 그대로 — 카드 전과 같다). info = 그 카드 위
+        VisualElement Picked(float x, float y, out bool info)
         {
+            info = false;
             var root = Stage.Root;
             if (root == null || root.panel == null || laidFor.y <= 0) return null;
             float scale = Stage.Grade.PanelScale;
             var picked = root.panel.Pick(new Vector2(x / scale, (laidFor.y - y) / scale));
-            return picked != null && picked != root && picked != root.parent ? picked : null;
+            if (picked == null || picked == root || picked == root.parent) return null;
+            var card = Hud != null && Hud.Info != null ? Hud.Info.Element : null;
+            for (var e = picked; card != null && e != null; e = e.parent)
+                if (e == card)
+                {
+                    info = true;
+                    return null;
+                }
+            return picked;
         }
+
+        /// <summary>명단 카드로 옮겨 가는 동안 카드를 남기는 시간(초 — 결정 201 ②: 전체 줌에서는 칸과 카드 사이에 빈 칸이 있다).</summary>
+        public const float RosterGrace = 0.35f;
+
+        int rosterLeft = -1;
+        float rosterLeftAt;
 
         // ── 보드 ──
 
