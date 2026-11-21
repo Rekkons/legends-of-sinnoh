@@ -1,0 +1,33 @@
+{"schema":1,
+"what":"보이는 크레딧(화면 S03 · CREDITS.md)의 글 — 읽을 사람(플레이어 · 저장소 방문자)에게 쓴다. 한 사람(곳) = 항목 하나. from = 그 항목이 덮는 손 표 항목 id(original · korean · rom · public · tools), names = 작가 이름 목록을 smogon-authors · showdown-trainers에서 만든다. 손 표 항목은 모두 from 하나나 hidden에 있어야 한다(lib/credits.mjs가 본다)",
+"hidden":["hex-tile","ball-model","pret-firered","bulbagarden-ranger","pret-tools","poppler","imagemagick","vgmtrans"],
+"hiddenWhy":"안 쓰는 것(hex-tile · ball-model — 원작 TTS 모델) · 배포본에 안 들어가는 임시 그림(pret-firered · bulbagarden-ranger) · 만들 때만 쓰는 도구(pret-tools · poppler · imagemagick · vgmtrans)",
+"tabs":[
+{"tab":"original","title":{"ko":"원작","en":"Original game"},"entries":[
+{"who":"Lev (Levatius)","role":{"ko":"원작 「Pokémon: Legends of Sinnoh」 기획 · 규칙 · 그림","en":"Original game “Pokémon: Legends of Sinnoh” — design, rules and art"},"from":["game","cards","board","rulebook"],"links":["https://steamcommunity.com/sharedfiles/filedetails/?id=2652573878","https://github.com/Levatius/pokemon-legends"],"terms":{"ko":"비영리 · 출처 표기 · 판매 금지(원작자가 밝힌 조건)","en":"Non-profit, credit given, not for sale (as the original author stated)"}},
+{"who":"A2.0 · Dongoboy · Just- · Lord O’Chocolates · TheOMega · Legends of Sinnoh Discord","role":{"ko":"원작 베타 테스트 · 커뮤니티","en":"Original game beta testing and community"},"from":["testers"]}
+]},
+{"tab":"korean","title":{"ko":"번역","en":"Translation"},"entries":[
+{"who":"3JA2","role":{"ko":"한국어 번역","en":"Korean translation"},"from":["translation"],"links":["https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224"],"terms":{"ko":"비영리 · 출처 표기(원작 조건)","en":"Non-profit, credit given (same as the original)"}},
+{"who":"로씨온","role":{"ko":"1.4a 카드 번역","en":"Korean card translation for v1.4a"},"from":["cards-1.4a"],"links":["https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224"]}
+]},
+{"tab":"pokemon","title":{"ko":"포켓몬","en":"Pokémon"},"entries":[
+{"who":"Nintendo · Creatures Inc. · GAME FREAK inc. · The Pokémon Company","role":{"ko":"포켓몬스터 시리즈의 포켓몬 · 그림 · 소리 · 글꼴","en":"Pokémon, art, sound and fonts from the Pokémon series"},"from":["pt","pt_en","hgss","bw","b2w2","pokemon"],"links":["https://www.pokemon.com/"],"terms":"© Pokémon · © Nintendo / Creatures Inc. / GAME FREAK inc."},
+{"who":"PokeAPI","role":{"ko":"포켓몬 도트 · 울음소리 · 기술 이름 자료","en":"Pokémon sprites, cries and move name data"},"from":["pokeapi-sprites","pokeapi-moves","pokeapi-cries"],"links":["https://github.com/PokeAPI/sprites","https://github.com/PokeAPI/cries","https://github.com/PokeAPI/pokeapi"],"terms":{"ko":"기술 이름 자료는 BSD-3-Clause — 전문은 THIRD-PARTY-NOTICES.ko.md","en":"Move name data under BSD-3-Clause — full text in THIRD-PARTY-NOTICES.md"}}
+]},
+{"tab":"art","title":{"ko":"그림","en":"Art"},"entries":[
+{"who":"Smogon Sprite Project","role":{"ko":"#650 이후 포켓몬과 일부 폼의 도트","en":"Sprites for Pokémon #650 and later and some forms"},"names":"smogon","from":[],"terms":"These sprites are also free for use as long as the spriter or the project itself is credited."},
+{"who":"Pokémon Showdown","role":{"ko":"트레이너 그림","en":"Trainer sprites"},"names":"showdown","from":["showdown"],"links":["https://play.pokemonshowdown.com/sprites/trainers/"],"terms":"Credit must be given to the appropriate artist if used elsewhere."},
+{"who":"DjangoBot","role":{"ko":"3D 포켓몬 모델","en":"3D Pokémon models"},"from":["figures"],"links":["https://steamcommunity.com/sharedfiles/filedetails/?id=947696302"],"terms":{"ko":"출처 표기(원작자 요청)","en":"Credit given (at the author’s request)"}},
+{"who":"Patch · Hugo Duprez · rehan-remade","role":{"ko":"도트 이펙트 (pixelfx)","en":"Pixel effects (pixelfx)"},"from":["pixelfx"],"links":["https://github.com/patch-gg/pixelfx"],"terms":"MIT License"}
+]},
+{"tab":"sound","title":{"ko":"소리 · 글꼴","en":"Sound & fonts"},"entries":[
+{"who":"Braxton Burks · The Pokémon Company","role":{"ko":"BGM 「Ultra Beast」 · 「Ultra Burst」","en":"Music “Ultra Beast” and “Ultra Burst”"},"from":["music"],"links":["https://steamcommunity.com/sharedfiles/filedetails/?id=2652573878"]},
+{"who":"Lee Minseo (quiple)","role":{"ko":"Galmuri 글꼴","en":"Galmuri font"},"from":["galmuri"],"links":["https://github.com/quiple/galmuri"],"terms":"SIL Open Font License 1.1","license":"Tools/assets/credits/Galmuri-OFL.txt"}
+]},
+{"tab":"program","title":{"ko":"프로그램","en":"Software"},"entries":[
+{"who":"Unity Technologies","role":{"ko":"Unity 엔진 · 네트워크 · 온라인 방","en":"Unity engine, networking and online rooms"},"from":["unity","ngo","ugs"],"links":["https://unity.com/"],"terms":{"ko":"Unity 이용 약관 · Unity Companion License","en":"Unity Terms of Service · Unity Companion License"}},
+{"who":"James Newton-King","role":{"ko":"Json.NET","en":"Json.NET"},"from":["newtonsoft"],"links":["https://github.com/JamesNK/Newtonsoft.Json"],"terms":"MIT License"},
+{"who":"Cloudflare, Inc.","role":{"ko":"cloudflared (웹 손님 연결)","en":"cloudflared (web guest links)"},"from":["cloudflared"],"links":["https://github.com/cloudflare/cloudflared"],"terms":"Apache License 2.0"}
+]}
+]}

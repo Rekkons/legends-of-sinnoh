@@ -1,0 +1,32 @@
+{
+    "name": "Sinnoh.Tests.PlayMode",
+    "rootNamespace": "Sinnoh.Tests.PlayMode",
+    "references": [
+        "Sinnoh.Rules",
+        "Sinnoh.Ai",
+        "Sinnoh.Fx",
+        "Sinnoh.Data",
+        "Sinnoh.Client",
+        "Sinnoh.Net",
+        "Unity.Netcode.Runtime",
+        "Unity.Services.CloudSave",
+        "Rekkon.UiKit.Core",
+        "Rekkon.UiKit",
+        "Unity.InputSystem",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

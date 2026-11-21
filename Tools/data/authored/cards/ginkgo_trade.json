@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "note": "은행상회 거래 9면(9장). 앞면에 이름·문구가 없고(글은 BUYING·SELLING 표지뿐) 거래 두 줄이 그림이다 → en·ko 없이 trades = [윗줄, 아랫줄], 줄마다 give(왼쪽 BUYING = 트레이너가 내는 규토리)·get(오른쪽 SELLING = 받는 규토리)을 그림 왼쪽부터 적는다. 키는 시트 칸 번호. 영문 출처: 원작 GitHub master(pl-small.git@c0b717c, v1.4a) assets/cards/ginkgo_trade/card_fronts.png(blob 1e9064c, #n = 시트 칸, 2열 × 5행) = Research/raw/trainer-gh/en/m-ginkgo_fronts.png. 한국어판 시트(CS-ginkgo, rules-summary §11 표)와 아홉 장 모두 같다.",
+  "deck": "ginkgo_trade",
+  "cards": {
+    "ginkgo_trade.1": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Yellow", "Red"], "get": ["Pink"] }, { "give": ["Green", "White"], "get": ["Black"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#1", "ko": "rules-summary §11 #1" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.2": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Blue", "Yellow"], "get": ["Green"] }, { "give": ["White", "Pink"], "get": ["Black"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#2", "ko": "rules-summary §11 #2" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.3": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Red", "Blue"], "get": ["White"] }, { "give": ["Pink", "Green"], "get": ["Black"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#3", "ko": "rules-summary §11 #3" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.4": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Pink"], "get": ["Red", "Blue", "Yellow"] }, { "give": ["Black"], "get": ["Pink", "Green", "White"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#4", "ko": "rules-summary §11 #4" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.5": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Green"], "get": ["Red", "Blue", "Yellow"] }, { "give": ["Black"], "get": ["Pink", "Green", "White"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#5", "ko": "rules-summary §11 #5" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.6": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["White"], "get": ["Red", "Blue", "Yellow"] }, { "give": ["Black"], "get": ["Pink", "Green", "White"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#6", "ko": "rules-summary §11 #6" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.7": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Red", "Red"], "get": ["Blue", "Yellow"] }, { "give": ["Pink", "Pink"], "get": ["Green", "White"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#7", "ko": "rules-summary §11 #7" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.8": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Blue", "Blue"], "get": ["Yellow", "Red"] }, { "give": ["Green", "Green"], "get": ["White", "Pink"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#8", "ko": "rules-summary §11 #8" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ginkgo_trade.9": {
+      "name": { "en": "Ginkgo Trade", "ko": "은행상회 거래" },
+      "trades": [{ "give": ["Yellow", "Yellow"], "get": ["Red", "Blue"] }, { "give": ["White", "White"], "get": ["Pink", "Green"] }],
+      "src": { "en": "assets/cards/ginkgo_trade/card_fronts.png#9", "ko": "rules-summary §11 #9" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    }
+  }
+}

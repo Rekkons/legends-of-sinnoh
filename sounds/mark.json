@@ -1,0 +1,1 @@
+{"note":"기록 줄 도장(M9 소리 ③ — plinkfx drop을 낮고 짧게: 작은 도장이 톡 찍힘)","layers":[{"wave":"sine","freq":560,"to":300,"a":0.002,"d":0.08,"shape":-4},{"wave":"noise","bp":2400,"q":3,"a":0.001,"d":0.006,"shape":-6,"gain":0.55},{"wave":"pink","lp":700,"a":0.001,"d":0.035,"shape":-5,"gain":0.35}],"gain":0.74}

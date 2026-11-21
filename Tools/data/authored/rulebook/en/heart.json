@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 20~22쪽 「Heart of Sinnoh Campaign」 — 원문 그대로, TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 절 제목은 원본 머리 「PROLOGUE - THE INCURSION」 꼴을 「Prologue · The Incursion」으로.",
+  "chapter": "heart",
+  "title": "Heart of Sinnoh Campaign",
+  "sections": [
+    {
+      "key": "heart.incursion",
+      "title": "Prologue · The Incursion",
+      "pages": [20],
+      "blocks": [
+        { "p": "In the future, a pivotal battle for the fate of the world has been lost." },
+        { "p": "By harnessing the powers of the legendary Pokémon Dialga and Palkia, Team Galactic have travelled to our own time to shatter the Heart of Sinnoh, a primordial jewel that embodies the spirit of the world." },
+        { "p": "To prevent retribution whilst their plans are finalised, grunts have been dispatched to subdue the villages of the region." },
+        { "p": "Place one “Team Galactic Grunts” token on the home villages of each trainer face-up." },
+        { "p": "To progress with your journey and ultimately win the game, you will need to defeat Team Galactic in a series of battles determined by the act cards (found on the Heart of Sinnoh campaign base)." },
+        { "digital": "In this game, the game places the Grunts tokens and act cards for you." }
+      ]
+    },
+    {
+      "key": "heart.tactics",
+      "title": "Team Galactic Tactics",
+      "pages": [20],
+      "blocks": [
+        { "p": "Team Galactic get access to special tactics in battle by placing their Pokémon in the arena:" },
+        { "list": [
+          "Plan B (Attack): A Typeless attack that allows the Team Galactic trainer to strike at more opportune time by adding 1 damage to their Galactic Retribution ability.",
+          "Galactic Retribution (Ability): During a battle, allows Team Galactic to strike back by storing damage dice on this ability whenever their Pokémon faint. When one of their Pokémon is attacked, you may move all the stored damage dice to the target."
+        ] },
+        { "figure": "heart.tactics/tactics", "caption": "Special tactics that Team Galactic can use in battle." },
+        { "p": "In battles with Team Galactic:" },
+        { "list": [
+          "Have another trainer control the Pokémon of Team Galactic (if playing solo, this is left up to you to decide).",
+          "As the initiator, you start with Initiative Advantage.",
+          "Each time a Team Galactic Pokémon faints, the trainer controlling them may then choose which Pokémon to send in next from the remaining non-fainted Pokémon they have available.",
+          "Team Galactic Pokémon are unable to switch out after defeating one of your Pokémon (this can be overruled if you want more challenging battles)."
+        ] }
+      ]
+    },
+    {
+      "key": "heart.journey",
+      "title": "Act I · The Journey",
+      "pages": [21],
+      "blocks": [
+        { "p": "At the start of Act I, you gain 3 Red Apricorns." },
+        { "p": "Your first objective is to defeat the Team Galactic Grunts at your home village. Other trainers cannot liberate your village for you." },
+        { "p": "You cannot fly to or from your home village whilst the Grunts occupy it, but you can still heal your Pokémon and exchange Apricorns there." },
+        { "h": "Grunt Battle" },
+        { "p": "When ready, return to your home village to start the battle:" },
+        { "list": [
+          "Shuffle the Team Galactic Grunts deck and randomly draw 2 of them face-up.",
+          { "text": "If you defeat both Pokémon (whilst still being able to battle), you are victorious:", "items": [
+            "Gain +2 movement per turn for the rest of the game.",
+            "Remove the Team Galactic Grunts token from your village."
+          ] }
+        ] },
+        { "p": "If you are the first trainer to have liberated their home village, draw the Act II card. Other trainers still must finish Act I." }
+      ]
+    },
+    {
+      "key": "heart.shards",
+      "title": "Act II · The Shards",
+      "pages": [21],
+      "blocks": [
+        { "p": "During Act II, you will need to collect the three Shards. To achieve this, battle the Team Galactic Commander stationed at each lake around the Sinnoh region. You can collect the Shards in any order:" },
+        { "table": { "head": ["Shard", "Commander"], "rows": [
+          ["Shard of Emotion", "Battle Commander Mars at Lake Verity."],
+          ["Shard of Knowledge", "Battle Commander Jupiter at Lake Acuity."],
+          ["Shard of Willpower", "Battle Commander Saturn at Lake Valor."]
+        ] } },
+        { "figure": "heart.shards/shards", "caption": "Shard of Emotion · Shard of Knowledge · Shard of Willpower" },
+        { "h": "Lake Commander Battles" },
+        { "p": "When ready, travel to one of the lakes to start the battle:" },
+        { "list": [
+          "The trainer controlling the Commander chooses 2/3/4 (increases for each Shard you already have) of the 5 Pokémon for that Commander (from the Team Galactic Commanders deck) and displays them face-up.",
+          { "text": "If you defeat all their Pokémon (whilst still being able to battle), you are victorious:", "items": [
+            "Gain the corresponding Shard.",
+            "Each Shard increases your maximum party size by 1."
+          ] }
+        ] },
+        { "p": "If you are the first trainer to have collected all three Shards, draw the Act III card. Other trainers still must finish Act II." }
+      ]
+    },
+    {
+      "key": "heart.heart",
+      "title": "Act III · The Heart",
+      "pages": [22],
+      "blocks": [
+        { "p": "The final test for you and your team. Head to the Origin Shrine (at the top of the central mountain) and make a Shrine Offering there to restore the Heart of Sinnoh from your three Shards (the Shards are not discarded)." },
+        { "p": "If there is a God of Sinnoh token on the Origin Shrine, you cannot make your Shrine Offering until they are defeated or captured." },
+        { "p": "To prevent any stalemates with other trainers, if you are victorious against a God of Sinnoh in this campaign, you may immediately take another turn." },
+        { "h": "The Heart of Sinnoh" },
+        { "p": "When the Heart is restored, you gain the Heart of Sinnoh held item which is required to battle Cyrus." },
+        { "p": "Whilst held, it increases the attack strength of moves that are the same type as the user by 1." },
+        { "figure": "heart.heart/heart", "caption": "The Heart of Sinnoh [1 per trainer]" },
+        { "h": "Cyrus Battle" },
+        { "p": "Proceed to the Temple of Sinnoh to start the battle with Cyrus:" },
+        { "list": [
+          "The trainer controlling Cyrus chooses 6 of his 8 Pokémon (from the Team Galactic Boss deck) and displays them face-up.",
+          { "text": "If you defeat all 6 Pokémon (whilst still being able to battle), you are victorious:", "items": ["Draw the Ending card."] }
+        ] }
+      ]
+    },
+    {
+      "key": "heart.choice",
+      "title": "Ending · The Choice",
+      "pages": [22],
+      "blocks": [
+        { "p": "The trainer that defeats Cyrus gets to choose whether to be the Hero of Sinnoh or the Traitor of Sinnoh." },
+        { "p": "If you choose the Hero of Sinnoh option, you are immediately crowned as the winner of the game." },
+        { "p": "If you choose the Traitor of Sinnoh option:" },
+        { "list": [
+          "Turns stop and all trainers have their parties fully restored.",
+          "You must now challenge each of your fellow trainers to battle in any order you choose (as the initiator, you start with Initiative Advantage).",
+          "Each time you defeat a trainer, fully restore your party and return any Change of Fate cards used to your hand.",
+          "If any of the trainers defeat you, the game ends with them as the winner of the game instead.",
+          "If you defeat all the other trainers, you win the game and are crowned as the undisputed strongest trainer!"
+        ] },
+        { "h": "Note from the Game Designer" },
+        { "p": "If time allows, it is recommended that trainers always choose the Traitor of Sinnoh option after their first playthrough of the game." },
+        { "p": "Once you know what Pokémon Cyrus has, it becomes easier to counter him from the start. However, your fellow trainers are not so predictable. This leads to a more rewarding team building and endgame experience, whilst giving everyone a chance at victory!" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 3쪽 「Overview」 — 원문 그대로, TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판).",
+  "chapter": "overview",
+  "title": "Overview",
+  "sections": [
+    {
+      "key": "overview.goal",
+      "title": "Objectives",
+      "pages": [3],
+      "blocks": [
+        { "p": "The base game plays through the “Heart of Sinnoh Campaign” with the following objectives split over three acts:" },
+        { "ol": ["Liberate your home village.", "Obtain the three Shards.", "Restore the Heart of Sinnoh and reach the Temple of Sinnoh for the final confrontation."] },
+        { "p": "The first trainer to conquer all the objectives may claim victory." }
+      ]
+    },
+    {
+      "key": "overview.setup",
+      "title": "Setup",
+      "pages": [3],
+      "blocks": [
+        { "ol": [
+          "Ensure all trainers have selected a seat.",
+          { "text": "The first trainer to choose a home village card is the last person to have seen a friend or relative from where they call home. This continues anti-clockwise until all trainers have selected a card:", "items": [
+            "Choose one of the two starter Pokémon and add it to your party.",
+            "Find the corresponding trainer token and place it on your village.",
+            "Place your home village card in your hand and it will automatically change your hand colour to the correct one.",
+            "Important: Now change your player colour to the new colour of the seat where your home village card is."
+          ] },
+          "Select the “Heart of Sinnoh Campaign” and click “Start Game”.",
+          "Draw the “Prologue” card from the acts deck and follow its instructions.",
+          "The trainer who was last to choose their home village card takes the first turn of the game. Turns then continue clockwise."
+        ] },
+        { "digital": "In this game, you choose the campaign, home village and starter Pokémon when setting up the game, and the game places the tokens, colours and cards for you." }
+      ]
+    },
+    {
+      "key": "overview.turn",
+      "title": "On Your Turn",
+      "pages": [3],
+      "blocks": [
+        { "p": "You may move up to 3 tiles per turn at the start of the game. The only restriction to movement is that you cannot move onto tiles that are 2 or more full elevations higher or lower than your current tile." },
+        { "p": "You may interact with things on the map whilst standing on their tile:" },
+        { "list": [
+          "When you are on the same tile as another trainer, you can freely trade with them or challenge them to a battle (if they are outside of a village, the challenge cannot be denied).",
+          "You may continue to interact with things on the map until all of your movement for the turn runs out, but your turn immediately ends after any battle."
+        ] }
+      ]
+    },
+    {
+      "key": "overview.village",
+      "title": "Villages",
+      "pages": [3],
+      "blocks": [
+        { "p": "You may take each of these actions once per turn whilst at any village:" },
+        { "list": [
+          "Fully restore your entire party: Remove all damage and status effects from your Pokémon.",
+          "Exchange your Apricorns with the Ginkgo Merchants according to one or both of the current Ginkgo Trades being offered (top-right of the map). Shuffle the Ginkgo Trade deck afterwards.",
+          "Fly to another village by discarding 1 Apricorn (there must be no Team Galactic Grunts on either village)."
+        ] },
+        { "digital": "In this game, you see and choose the current Ginkgo Trades on screen, and the game shuffles the deck for you." }
+      ]
+    }
+  ]
+}

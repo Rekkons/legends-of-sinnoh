@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "note": "세이브에 없는 고정물 정보(03 §1-1 고정물 보정). legendaryShrines: 전설 사당 → 그곳에 놓이는 전설(xlsx internal_name). 근거 = 사당 이벤트 전설 카드 문구(gh-clone assets/cards/shrine/card_fronts_0.png, rules-summary §12.3). 시작의 사당은 천상의 균열(Celestial Fracture)로 신오의 신 셋 중 하나가 놓인다. villageStarters: 마을 → 고향 마을 카드 그림의 스타터 두 마리(xlsx internal_name, p.3 셋업 2-a). 근거 = gh-clone tc-assets/village_card_fronts.png. 울트라메가로폴리스 카드는 울트라 버스트 전용이다.",
+  "legendaryShrines": {
+    "legendary_shrine.colossus_shrine": {"legendary": ["Regigigas"], "src": "A Giant Awakens"},
+    "legendary_shrine.moonglade_shrine": {"legendary": ["Darkrai", "Cresselia"], "src": "A Shadow Emerges / A Beacon of Light(서로 바꿔 놓는다)"},
+    "legendary_shrine.timeless_shrine": {"legendary": ["Celebi"], "src": "A Visitor from Afar"},
+    "legendary_shrine.frostsong_shrine": {"legendary": ["Articuno"], "src": "A Song of Frost"},
+    "legendary_shrine.firesong_shrine": {"legendary": ["Moltres"], "src": "A Song of Fire"},
+    "legendary_shrine.thundersong_shrine": {"legendary": ["Zapdos"], "src": "A Song of Thunder"},
+    "legendary_shrine.origin_shrine": {"legendary": ["Dialga", "Palkia", "Giratina"], "src": "Celestial Fracture"}
+  },
+  "villageStarters": {
+    "village.stark": ["Chimchar", "Cyndaquil"],
+    "village.snowpoint": ["Swinub", "Spheal"],
+    "village.sunyshore": ["Shinx", "Pichu"],
+    "village.nesburgh": ["Starly", "Machop"],
+    "village.celestic": ["Turtwig", "Rowlet"],
+    "village.canalave": ["Piplup", "Oshawott"],
+    "village.eterna": ["Duskull", "Litwick"],
+    "village.sinnome": ["Togepi", "Budew"],
+    "village.ultra_megalopolis": ["Porygon", "Poipole"]
+  }
+}

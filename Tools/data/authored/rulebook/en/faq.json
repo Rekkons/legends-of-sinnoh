@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 27쪽 「General FAQ」 — 원문 그대로(물음 순서 = 왼쪽 단 → 오른쪽 단), TTS 조작 물음(플레이어 색 · 드는 높이)은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판).",
+  "chapter": "faq",
+  "title": "General FAQ",
+  "sections": [
+    {
+      "key": "faq.questions",
+      "title": "General FAQ",
+      "pages": [27],
+      "blocks": [
+        { "q": "Do I get all 3 Apricorns from an Apricorn Tree/Reef if no wild Pokémon appear during the Pokédex search?", "a": "You may, however your turn ends after doing so." },
+        { "q": "What happens when I teach a Pokémon a compatible move before it evolves, but after it evolves the move is no longer compatible?", "a": "Keep the move but you cannot learn any more moves of the incompatible type." },
+        { "q": "How many Poké Balls can I carry?", "a": "As many as you like (you can use the Poké Ball slot on your bag to store them), although you cannot convert them back into Apricorns." },
+        { "q": "How many Held Items can I carry?", "a": "As many as you like (you can use the Held Item slot on your bag to store them), although you cannot use the effect of any Held Items that are not attached to a Pokémon." },
+        { "q": "What happens if it is not feasible for either Pokémon to do damage to the other?", "a": "After 5 rolls in a row, battle fatigue starts taking effect dealing 3 damage each time the dice are rolled. This should end the battle. In case it does not, you may invoke a final clause that causes both Pokémon in the battle to faint from exhaustion." },
+        { "q": "Can continue interacting with Hidden Spots on my turn?", "a": "Yes, battling is the only thing that ends your turn early." },
+        { "q": "Can I release my Pokémon?", "a": "Yes, if it is not your last Pokémon, any Pokémon can be released." },
+        { "q": "Can I transfer my moves around my team?", "a": "No, however you can replace or discard already learnt moves." },
+        { "q": "Can I send out another Pokémon if a wild Pokémon defeats one of mine?", "a": "Not unless the wild Pokémon is a Legendary Pokémon or you have used an effect that prevents the wild Pokémon from fleeing." },
+        { "q": "How do I change my player colour ?", "a": "Once you have selected a home village card, put this card in your hand area and it will automatically change your hand colour to match the card. You will need to reselect your seat after doing so (make sure that another player has not already selected your colour as well)." },
+        { "q": "Why does my Poké Ball keep changing its occupant when I hover over other Pokémon?", "a": "You likely need to increase your lift height in TTS, otherwise the Poké Ball will clip the other Pokémon zones when being moved around." },
+        { "digital": "In this game, the game handles player colours and moving Poké Balls for you." },
+        { "p": "If you were unable to find the answer to your question here, I encourage you to use your best judgement before asking in the #help channel of the Discord server. The channel is not a replacement for reading the rules." }
+      ]
+    }
+  ]
+}

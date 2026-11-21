@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "note": "확장 장 E1 운명의 변화(07 §5-2): 막 길 fate(SoloTrail.Fate — 운명 6장 · 떨어진 별 4개, 셋업 뒤 손본 판). 6장째 버리기(A12) → 스탬프 7(A30) → 펄기아 1장 순간이동(칸 49 약한 나무) → 흔들풍손 배틀: 상대 굴림 뒤 창 · 디아루가 3장(아르세우스 와일드카드) · 기라티나 1장 → 떨어진 별 4개라 다음 턴 시작에 1장(A25). 주사위는 모두 대본.",
+  "id": "e01",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"after":"fate"},
+  "steps": [
+    {"id":"P01","ch":0,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"P02","ch":0,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §5-1","A25"]},
+    {"id":"S001","ch":0,"anchor":"board-fate-cards","advance":"next","ref":["07 §5-1"]},
+    {"id":"S002","ch":0,"anchor":"board-fate-cards","advance":"next","expect":{"fateHand":6},"ref":["07 §5-1","A25"]},
+    {"id":"S003","ch":0,"anchor":"board-fate-cards","advance":"next","ref":["A12"]},
+    {"id":"S004","ch":0,"anchor":"board-fate-cards+board-fate-discard","advance":"command","allow":[{"choice":"Discard","kind":"Pick","target":"change_of_fate.arceus"}],"auto":[{"choice":"Discard","kind":"Pick","target":"change_of_fate.arceus"}],"expect":{"fateHand":5},"ref":["A12"]},
+    {"id":"S005","ch":0,"anchor":"board-hud-stamp","advance":"next","expect":{"stamps":1},"ref":["A30"]},
+    {"id":"S006","ch":0,"anchor":"board-hud-fate","advance":"screen:board-fate","ref":["A11"]},
+    {"id":"S007","ch":0,"anchor":"board-fate-cards+board-fate-use-1+cell:49","advance":"command","allow":[{"kind":"PlayFate","target":1,"arg":1,"values":[49]}],"auto":[{"kind":"PlayFate","target":1,"arg":1,"values":[49]}],"ref":["A24"]},
+    {"id":"S008","ch":0,"anchor":"board-fate-close+board-hud-act-search","advance":"command","allow":[{"kind":"Search"}],"auto":[{"kind":"Search"}],"expect":{"movesLeft":3},"ref":["A24","01 §3-2"]},
+    {"id":"S009","ch":0,"anchor":"encounter-cards","advance":"command","allow":[{"choice":"EncounterPick","kind":"Pick","target":"pokemon.425:0"}],"auto":[{"choice":"EncounterPick","kind":"Pick","target":"pokemon.425:0"}],"ref":["S5_1"]},
+    {"id":"S010","ch":0,"anchor":"battle-fate-pass","advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"dice":["StatusSymbol","StatusSymbol"],"ref":["A11","01 §6"]},
+    {"id":"S011","ch":0,"anchor":"battle-fate-pass","advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"ref":["A24"]},
+    {"id":"S012","ch":0,"anchor":"battle-moves","advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"ref":["01 §6"]},
+    {"id":"S013","ch":0,"anchor":"battle-fate-pass","advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"dice":["StatusSymbol","StatusSymbol","RegularHit"],"expect":{"power":3},"ref":["A24"]},
+    {"id":"S014","ch":0,"anchor":"battle-fate-die-1+battle-fate-die-2+battle-fate-dialga-3","advance":"command","allow":[{"choice":"Reaction","kind":"PlayFate","target":0,"arg":3,"values":[0,1]}],"auto":[{"choice":"Reaction","kind":"PlayFate","target":0,"arg":3,"values":[0,1]}],"dice":["CriticalHit","RegularHit"],"expect":{"fateHand":1},"ref":["A24","A11"]},
+    {"id":"S015","ch":0,"anchor":"battle-fate-pass","advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"dice":["StatusSymbol","StatusSymbol"],"ref":["A24","01 §6"]},
+    {"id":"S016","ch":0,"anchor":"battle-fate-pass","advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"expect":{"hp.0":3},"ref":["01 §6"]},
+    {"id":"S017","ch":0,"anchor":"battle-moves","advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"ref":["01 §6"]},
+    {"id":"S018","ch":0,"anchor":"battle-fate-giratina-1","advance":"command","allow":[{"choice":"Reaction","kind":"PlayFate","target":2,"arg":1}],"auto":[{"choice":"Reaction","kind":"PlayFate","target":2,"arg":1}],"dice":["StatusSymbol","RegularHit","StatusSymbol","RegularHit"],"expect":{"power":4,"hp.0":1},"ref":["A24"]},
+    {"id":"S019","ch":0,"anchor":"board-hud-fate","advance":"next","expect":{"round":2,"fateHand":1},"ref":["A25","A11"]},
+    {"id":"S020","ch":0,"advance":"next","ref":["A24"]}
+  ]
+}

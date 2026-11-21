@@ -1,0 +1,2 @@
+# Unity가 LF로 쓰는 파일(.meta): core.autocrlf=true에서도 내용 변경 없이 M으로 남지 않게(sinnoh .gitattributes와 같은 이유)
+*.meta text eol=lf

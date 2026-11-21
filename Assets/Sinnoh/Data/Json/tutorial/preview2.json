@@ -1,0 +1,9 @@
+{"schema":1,"id":"preview2","start":{"campaign":"HeartOfSinnoh","seats":1,"seed":3,"trainerCards":null,"tops":[],"spots":[],"after":"heart"},"bots":null,"steps":[
+{"id":"P01","ch":7,"text":null,"hint":null,"anchor":null,"advance":"demo","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[{"choice":"VillagePick","kind":"Pick"}],"dice":[],"expect":{},"ref":["07 §4-3"]},
+{"id":"P02","ch":7,"text":null,"hint":null,"anchor":null,"advance":"demo","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"dice":[],"expect":{},"ref":["07 §4-3","A2"]},
+{"id":"S711","ch":7,"text":"tutorial.preview2.S711","hint":null,"anchor":null,"advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["07 §4-3"]},
+{"id":"S712","ch":7,"text":"tutorial.preview2.S712","hint":null,"anchor":"board-hud-act","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{"act":3,"shards":3},"ref":["07 §4-3","A2","01 §8-1"]},
+{"id":"S713","ch":7,"text":"tutorial.preview2.S713","hint":null,"anchor":null,"advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["A2","01 §8-1"]},
+{"id":"S716","ch":7,"text":"tutorial.preview2.S716","hint":null,"anchor":"cell:146","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["01 §8-1","S16_2"]},
+{"id":"S717","ch":7,"text":"tutorial.preview2.S717","hint":null,"anchor":"cell:145","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["01 §8-1","S16_2"]}
+]}

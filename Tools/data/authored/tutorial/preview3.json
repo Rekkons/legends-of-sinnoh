@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "note": "막 맛보기 7-3(07 §4-3): 종막 앞 판 — Ai 막 길 ending(SoloTrail.PrepareEnding — 태홍을 이긴 뒤 종막 선택이 열린 판). 태홍 배틀은 대사로만(07 T55). 종막 선택은 고르지 않고 설명만.",
+  "id": "preview3",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"after":"ending"},
+  "steps": [
+    {"id":"P01","ch":7,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §4-3"]},
+    {"id":"P02","ch":7,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §4-3","01 §8-1"]},
+    {"id":"S731","ch":7,"anchor":"ending-cards","advance":"next","ref":["07 §4-3"]},
+    {"id":"S732","ch":7,"anchor":"ending-cards","advance":"next","ref":["07 §4-3","01 §8-1"]},
+    {"id":"S733","ch":7,"anchor":"ending-cards","advance":"next","ref":["S16_3"]},
+    {"id":"S734","ch":7,"anchor":"ending-cards","advance":"next","ref":["S16_3"]},
+    {"id":"S735","ch":7,"advance":"next","ref":["S16_3"]},
+    {"id":"S736","ch":7,"advance":"next","ref":["07 §2-2"]}
+  ]
+}

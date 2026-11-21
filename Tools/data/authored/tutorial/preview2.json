@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "note": "막 맛보기 7-2(07 §4-3): 3막 앞 판 — Ai 막 길 heart(조각 셋 · 3막 · 시작의 사당 칸 146 · 전설 다섯 + 팽도리 — 입지호수 칸은 이 자리의 화면 밖이라 새턴 단계는 앵커 없이 가운데). 2막 → 3막은 대사로만 보인다(결정 96 Q9 나 — 새턴 배틀을 마박사가 대신 두던 demo를 없앴다, 07 T55·T170). 판 차리기만 demo(말없는 단계, T160).",
+  "id": "preview2",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"after":"heart"},
+  "steps": [
+    {"id":"P01","ch":7,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §4-3"]},
+    {"id":"P02","ch":7,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §4-3","A2"]},
+    {"id":"S711","ch":7,"advance":"next","ref":["07 §4-3"]},
+    {"id":"S712","ch":7,"anchor":"board-hud-act","advance":"next","expect":{"act":3,"shards":3},"ref":["07 §4-3","A2","01 §8-1"]},
+    {"id":"S713","ch":7,"advance":"next","ref":["A2","01 §8-1"]},
+    {"id":"S716","ch":7,"anchor":"cell:146","advance":"next","ref":["01 §8-1","S16_2"]},
+    {"id":"S717","ch":7,"anchor":"cell:145","advance":"next","ref":["01 §8-1","S16_2"]}
+  ]
+}

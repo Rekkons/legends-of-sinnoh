@@ -1,0 +1,58 @@
+key	en	ko	card	rom	rule
+trainer_card.ace_trainer	Ace Trainer	엘리트 트레이너	엘리트 트레이너	엘리트 트레이너	같음
+trainer_card.aroma_lady	Aroma Lady	아로마 아가씨	아로마 아가씨	아로마 아가씨	같음
+trainer_card.artist	Artist	예술가	예술가	예술가	같음
+trainer_card.backpacker	Backpacker	백팩커	백팩커	백팩커	같음
+trainer_card.beauty	Beauty	아가씨	아가씨	아가씨	같음
+trainer_card.bird_keeper	Bird Keeper	새 조련사	새 조련사	새 조련사	같음
+trainer_card.black_belt	Black Belt	태권왕	태권왕	태권왕	같음
+trainer_card.bug_catcher	Bug Catcher	곤충채집소년	곤충채집 소년	곤충채집소년	띄어쓰기만 다름 → 원작 자산
+trainer_card.chef	Chef	요리사	요리사	—	원작 자산에 없음 → 카드 번역
+trainer_card.collector	Collector	포켓몬 컬렉터	포켓몬 컬렉터	포켓몬 컬렉터	같음
+trainer_card.delinquent	Delinquent	무서운 아가씨	무서운 아가씨	—	원작 자산에 없음 → 카드 번역
+trainer_card.diamond_acolyte	Diamond Acolyte	다이아 무녀	다이아 무녀	—	원작 자산에 없음 → 카드 번역
+trainer_card.dragon_tamer	Dragon Tamer	드래곤 조련사	드래곤 조련사	드래곤 조련사	같음
+trainer_card.essentia	Essentia	에스프리	에스프리	—	원작 자산에 없음 → 카드 번역
+trainer_card.expert	Expert	달인	달인	—	원작 자산에 없음 → 카드 번역
+trainer_card.fairy_tale_girl	Fairy Tale Girl	메르헨소녀	메르헨소녀	—	원작 자산에 없음 → 카드 번역
+trainer_card.fisherman	Fisherman	낚시꾼	낚시꾼	낚시꾼	같음
+trainer_card.gardener	Gardener	정원사	정원사	—	원작 자산에 없음 → 카드 번역
+trainer_card.gentleman	Gentleman	신사	신사	신사	같음
+trainer_card.ginkgo_merchant	Ginkgo Merchant	백은 은행상회	백은 은행상회	—	원작 자산에 없음 → 카드 번역
+trainer_card.guitarist	Guitarist	기타리스트	기타리스트	기타리스트	같음
+trainer_card.hex_maniac	Hex Maniac	오컬트마니아	오컬트마니아	—	원작 자산에 없음 → 카드 번역
+trainer_card.hiker	Hiker	등산가	등산가	등산가	같음
+trainer_card.interviewers	Interviewers	인터뷰어	인터뷰어	인터뷰어 / 리포터 / 카메라맨	같음
+trainer_card.kindler	Kindler	캠프파이어	캠프파이어	—	원작 자산에 없음 → 카드 번역
+trainer_card.lady	Lady	아기씨	아기씨	아기씨	같음
+trainer_card.ninja_boy	Ninja Boy	닌자놀이	닌자놀이	닌자놀이	같음
+trainer_card.parasol_lady	Parasol Lady	파라솔 아가씨	파라솔 아가씨	파라솔 아가씨	같음
+trainer_card.pearl_acolyte	Pearl Acolyte	진주 무녀	진주 무녀	—	원작 자산에 없음 → 카드 번역
+trainer_card.picnicker	Picnicker	피크닉걸	피크닉걸	피크닉걸	같음
+trainer_card.platinum_acolyte	Platinum Acolyte	백금 무녀	백금 무녀	—	원작 자산에 없음 → 카드 번역
+trainer_card.poke_fan	Poké Fan	애호가클럽	애호가클럽	애호가클럽	같음
+trainer_card.poke_maniac	Poké Maniac	포켓몬 매니아	포켓몬 매니아	포켓몬 매니아	같음
+trainer_card.pokemon_breeder	Pokémon Breeder	포켓몬 브리더	포켓몬 브리더	포켓몬 브리더	같음
+trainer_card.pokemon_ranger	Pokémon Ranger	포켓몬 레인저	포켓몬 레인저	포켓몬 레인저	같음
+trainer_card.psychic	Psychic	초능력자	초능력자	초능력자	같음
+trainer_card.roller_skater	Roller Skater	롤러스케이트	롤러스케이트	—	원작 자산에 없음 → 카드 번역
+trainer_card.ruin_maniac	Ruin Maniac	유적마니아	유적마니아	유적마니아	같음
+trainer_card.scientist	Scientist	연구원	연구원	연구원 / 괴짜 연구원	같음
+trainer_card.scuba_diver	Scuba Diver	다이버	다이버	—	원작 자산에 없음 → 카드 번역
+trainer_card.sky_trainer	Sky Trainer	스카이 트레이너	스카이 트레이너	—	원작 자산에 없음 → 카드 번역
+trainer_card.swimmer	Swimmer	수영팬티소년	수영팬티 소년	수영팬티소년 / 비키니 아가씨	띄어쓰기만 다름 → 원작 자산
+trainer_card.team_aqua	Team Aqua	아쿠아단 조무래기	아쿠아단 조무래기	—	원작 자산에 없음 → 카드 번역
+trainer_card.team_magma	Team Magma	마그마단 조무래기	마그마단 조무래기	—	원작 자산에 없음 → 카드 번역
+trainer_card.team_rocket	Team Rocket	로켓단 조무래기	로켓단 조무래기	로켓단	원작 자산 직업 + 조무래기(배틀 표시와 같음) → 카드
+trainer_card.tourist	Tourist	투어객	투어객	—	원작 자산에 없음 → 카드 번역
+trainer_card.triathlete	Triathlete	트라이애슬리트	트라이애슬리트	—	원작 자산에 없음 → 카드 번역
+trainer_card.undivided_acolyte	Undivided Acolyte	비취 무녀	비취 무녀	—	원작 자산에 없음 → 카드 번역
+trainer_card.veteran	Veteran	베테랑 트레이너	베테랑 트레이너	베테랑 트레이너	같음
+trainer_card.worker	Worker	작업원	작업원	작업원	같음
+trainer_card.youngster	Youngster	반바지 꼬마	반바지 꼬마	반바지 꼬마	같음
+galactic.cyrus	Cyrus	태홍	태홍	태홍	원작 자산(카드 꼬리와 같음)
+galactic.mars	Mars	마스	간부 마스	마스	원작 자산(카드 꼬리와 같음)
+galactic.jupiter	Jupiter	주피터	간부 주피터	주피터	원작 자산(카드 꼬리와 같음)
+galactic.saturn	Saturn	새턴	간부 새턴	새턴	원작 자산(카드 꼬리와 같음)
+galactic.female_grunt	Team Galactic Grunt	갤럭시단 조무래기	갤럭시단 조무래기	갤럭시단 + 조무래기	카드 = 원작 자산 배틀 표시
+galactic.male_grunt	Team Galactic Grunt	갤럭시단 조무래기	갤럭시단 조무래기	갤럭시단 + 조무래기	카드 = 원작 자산 배틀 표시

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 13쪽 「Battling FAQ」 — 원문 그대로(오역 고침 · 용어 바꿈 없음).",
+  "chapter": "battle_faq",
+  "title": "Battling FAQ",
+  "sections": [
+    {
+      "key": "battle_faq.questions",
+      "title": "Battling FAQ",
+      "pages": [13],
+      "blocks": [
+        { "q": "What is considered as the damage from an attack?", "a": "Attacks deal their damage to the opposing Pokémon by adding together:" },
+        { "list": [
+          "The result of the dice roll after all dice modifications are resolved.",
+          "The type effectiveness bonus/penalty damage.",
+          "Any extra damage from the effect of the move itself."
+        ] },
+        { "q": "How do attacks that deal double damage work?", "a": "Take the damage from the attack (see above) and multiply it by 2. Status effects like being Burned or the armour effect from Prism Armour only affect the total damage being dealt, so are applied after the attack damage is first doubled." },
+        { "q": "In what order is damage/healing applied?", "a": "During a turn, all damage and healing effects are applied simultaneously. Any effects that state they occur at the end of a turn are considered separately to those during the turn and are also applied simultaneously." },
+        { "q": "Does the damage bonus from type effectiveness still apply even if my dice result deals no damage?", "a": "Yes, the type effectiveness bonus is always applied with the attack even if you would otherwise deal no damage. The same applies to any extra damage from the effect of the move." },
+        { "q": "In a battle between two trainers, who sends out their next Pokémon first if both Pokémon faint simultaneously?", "a": "The trainer who currently has Initiative Advantage does so." },
+        { "q": "Is initiative just speed from the console games?", "a": "Not quite, Pokémon in this game take it in turns to use attacks rather than doing so simultaneously. Initiative determines which of the two Pokémon gets to have their turn first. When initiative is rechecked, the turn order is completely reset." },
+        { "q": "Do effects that add dice to another attack count for the effect of that attack?", "a": "Yes, for example, I can use Bubble Beam which adds 2 status symbols to the next attack against the target and then use a move like Blizzard which inflicts the Frozen status on the target if 2 status symbols are rolled to guarantee the effect triggers." },
+        { "q": "Can a move be reduced to 0 attack strength?", "a": "No, all moves have a minimum of 1 attack strength." },
+        { "q": "If a move has a maximum attack strength in its effect, can its attack strength be increased by other effects?", "a": "Yes, the maximum attack strength only applies to the effect of the move itself. However, all moves have a maximum of 9 total attack strength." },
+        { "q": "Can the effect of a move stack with itself?", "a": "No, this is most notable for effects that apply until the user switches out." },
+        { "p": "If you were unable to find the answer to your question here, I encourage you to use your best judgement before asking in the #help channel of the Discord server. The channel is not a replacement for reading the rules." }
+      ]
+    }
+  ]
+}

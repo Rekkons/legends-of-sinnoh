@@ -1,0 +1,24 @@
+{
+    "name": "Sinnoh.Net",
+    "rootNamespace": "Sinnoh.Net",
+    "references": [
+        "Sinnoh.Rules",
+        "Sinnoh.Data",
+        "Unity.Netcode.Runtime",
+        "Unity.Networking.Transport",
+        "Unity.Collections",
+        "Unity.Services.Core",
+        "Unity.Services.Authentication",
+        "Unity.Services.CloudSave",
+        "Unity.Services.Multiplayer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

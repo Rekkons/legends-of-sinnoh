@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "note": "확장 장 E2 제작 — 스튜·지닌물건(07 §5-2): 막 길 workshop(SoloTrail.Workshop = GiveWork — 규토리 일곱 색 셋씩 · 여행 점수 20 · 이브이, 셋업 뒤 손본 판). 고향 마을 첫 턴: [제작] → 자극적인 스튜(이동력 +3, 첫 명령 끝에 스탬프 3 「규토리 일곱 색」) → 별 방패 → [정비]에서 팽도리에게 지니게 하기.",
+  "id": "e02",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"after":"workshop"},
+  "steps": [
+    {"id":"P01","ch":0,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"P02","ch":0,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"S001","ch":0,"advance":"next","ref":["07 §5-1"]},
+    {"id":"S002","ch":0,"anchor":"board-hud-res","advance":"next","expect":{"apricorn.white":3,"jp":20},"ref":["07 §5-1"]},
+    {"id":"S003","ch":0,"anchor":"board-hud-act-craft","advance":"screen:board-craft","ref":["01 §3-2 Craft"]},
+    {"id":"S004","ch":0,"anchor":"board-craft-panel","advance":"next","ref":["A7","01 §3-2 Craft"]},
+    {"id":"S005","ch":0,"anchor":"board-craft-panel","advance":"next","ref":["01 §3-2 Craft","CraftRules"]},
+    {"id":"S006","ch":0,"anchor":"board-craft-make-zesty_stew","advance":"command","allow":[{"kind":"Craft","target":"item.zesty_stew"}],"auto":[{"kind":"Craft","target":"item.zesty_stew"}],"expect":{"movesLeft":6},"ref":["CraftRules","01 §3-2 Craft"]},
+    {"id":"S007","ch":0,"advance":"next","expect":{"stamps":1},"ref":["A30"]},
+    {"id":"S008","ch":0,"anchor":"board-craft-panel","advance":"next","ref":["01 §3-4","HeldItems"]},
+    {"id":"S009","ch":0,"anchor":"board-craft-make-star_shield","advance":"command","allow":[{"kind":"Craft","target":"item.star_shield"}],"auto":[{"kind":"Craft","target":"item.star_shield"}],"expect":{"apricorn.blue":1},"ref":["01 §3-2 Craft","CraftRules"]},
+    {"id":"S010","ch":0,"anchor":"board-craft-close+board-hud-maint","advance":"screen:board-party","ref":["01 §3-4"]},
+    {"id":"S011","ch":0,"anchor":"board-party-bag-1+board-party-item-0","advance":"command","allow":[{"maint":"HoldItem","party":0,"value":"item.star_shield"}],"auto":[{"maint":"HoldItem","party":0,"value":"item.star_shield"}],"ref":["01 §3-4"]},
+    {"id":"S012","ch":0,"anchor":"board-party-panel","advance":"next","ref":["01 §3-4"]}
+  ]
+}

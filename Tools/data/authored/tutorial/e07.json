@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "note": "확장 장 E7 사당(07 §5-2 — 1인). 판: 시드 3 · 셋업은 마박사가 대신(demo) → 막 길 shrine-legend(SoloTrail.ShrineLegend — 풀밭 사당 칸 50, 규토리 빨강 2·분홍 1·검정 1, 여행 점수 9, 사당 덱 맨 위 불꽃의 노래 → 평온한 순간 → 숨겨진 보물). 분홍 + 여행 점수 7 공물 → 3장 중 불꽃의 노래(파이어 토큰 → 불꽃노래 사당 칸 245) · 평온한 순간. 4인 축복 나눔은 설명 한 단계(07 T90).",
+  "id": "e07",
+  "start": {"seed":3,"after":"shrine-legend"},
+  "steps": [
+    {"id":"P01","ch":7,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"P02","ch":7,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"S001","ch":7,"advance":"next","ref":["A27 ①","01 §3-2"]},
+    {"id":"S003","ch":7,"advance":"next","expect":{"jp":9},"ref":["01 §3-5","07 §5-1"]},
+    {"id":"S004","ch":7,"anchor":"cell:50","advance":"next","ref":["A27 ①"]},
+    {"id":"S005","ch":7,"anchor":"board-hud-act-offer","advance":"screen:board-shrine","ref":["A27 ①","04 S32"]},
+    {"id":"S006","ch":7,"anchor":"board-shrine-color-pink+board-shrine-extra+board-shrine-go","advance":"command","allow":[{"kind":"Offer","arg":3,"values":[7]}],"auto":[{"kind":"Offer","arg":3,"values":[7]}],"expect":{"jp":2},"ref":["A27 ①"]},
+    {"id":"S007","ch":7,"anchor":"board-shrine-panel","advance":"command","allow":[{"choice":"Reward","kind":"Pick","target":"shrine_event.song_of_fire"}],"auto":[{"choice":"Reward","kind":"Pick","target":"shrine_event.song_of_fire"}],"expect":{"apricorn.red":5},"ref":["A27 ①","A27 ③"]},
+    {"id":"S008","ch":7,"anchor":"cell:245","advance":"next","ref":["A27 ③","A28 ③"]},
+    {"id":"S009","ch":7,"anchor":"cell:245","advance":"next","ref":["A27 ①","A28 ③"]},
+    {"id":"S010","ch":7,"anchor":"board-shrine-panel","advance":"command","allow":[{"choice":"Reward","kind":"Pick","target":"shrine_event.tranquil_moment"}],"auto":[{"choice":"Reward","kind":"Pick","target":"shrine_event.tranquil_moment"}],"expect":{"jp":6},"ref":["A27 ②"]},
+    {"id":"S011","ch":7,"advance":"next","ref":["A19","A27 ②"]},
+    {"id":"S012","ch":7,"advance":"next","ref":["A19","A27 ①"]}
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 15쪽 「Journey Stamps」 — 원문 그대로(오역 고침 · 용어 바꿈 없음), TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 등급 아이콘은 글(Weak · Moderate · Strong)로.",
+  "chapter": "stamps",
+  "title": "Journey Stamps",
+  "sections": [
+    {
+      "key": "stamps.intro",
+      "title": "Journey Stamps",
+      "pages": [15],
+      "blocks": [
+        { "p": "Journey Stamps are collected as you experience certain aspects of the game and grant you rewards for doing so. Once a stamp is received, it is kept for the remainder of the game." }
+      ]
+    },
+    {
+      "key": "stamps.sheet",
+      "title": "Stamp Sheet",
+      "pages": [15],
+      "blocks": [
+        { "p": "Found at the bottom-right of your trainer area, the stamp sheet can be filled using the Decal tool in Tabletop Simulator." },
+        { "figure": "stamps.sheet/sheet", "caption": "Stamp sheet" },
+        { "digital": "In this game, the game stamps the sheet for you when a condition is met." }
+      ]
+    },
+    {
+      "key": "stamps.conditions",
+      "title": "Requirements",
+      "pages": [15],
+      "blocks": [
+        { "p": "Stamps can be claimed in any order and are immediately awarded upon their condition being met. The conditions for each stamp are as follows:" },
+        { "p": "Top row, left to right:" },
+        { "list": [
+          "You fail to capture a wild Pokémon 2 turns in a row during a battle.",
+          "You win a battle against another trainer or an Ultra Beast.",
+          "You have at least 1 of every Apricorn type in your bag.",
+          "You have captured a Legendary Pokémon."
+        ] },
+        { "p": "Bottom row, left to right:" },
+        { "list": [
+          "You have 3 or more held items equipped in your party.",
+          "You have been victorious at a Swarm Battle.",
+          "You have 3 different Change of Fate cards in your hand."
+        ] }
+      ]
+    },
+    {
+      "key": "stamps.rewards",
+      "title": "Rewards",
+      "pages": [15],
+      "blocks": [
+        { "p": "Use the button at the bottom-right of the stamp sheet to flip over to the rewards side to see what you get when you reach each milestone." },
+        { "p": "Stamp rewards may be claimed immediately after reaching each milestone:" },
+        { "ol": [
+          "Gain 1 Red, 1 Blue and 1 Yellow Apricorn.",
+          "Randomly draw 5 Weak Pokémon cards, store them next to your trainer area. You may teach these cards as moves to your Pokémon.",
+          "Gain 1 Pink, 1 Green and 1 White Apricorn.",
+          "Randomly draw 5 Moderate Pokémon cards, store them next to your trainer area. You may teach these cards as moves to your Pokémon.",
+          "Gain 3 Black Apricorns.",
+          "Randomly draw 5 Strong Pokémon cards, store them next to your trainer area. You may teach these cards as moves to your Pokémon.",
+          "Gain a Scroll of Nobility that allows you to use the Noble Form (State 2) of any fully evolved Starter Pokémon when held."
+        ] },
+        { "digital": "In this game, the game flips the sheet and gives you the rewards." }
+      ]
+    }
+  ]
+}

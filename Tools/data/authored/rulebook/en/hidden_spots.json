@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 16·17쪽 「Hidden Spots」 — 원문 그대로(오역 고침 · 용어 바꿈 없음), TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 유물 카드는 표로(이름 · 효과 · 전설 포켓몬), 등급 · 타입 아이콘은 글로.",
+  "chapter": "hidden_spots",
+  "title": "Hidden Spots",
+  "sections": [
+    {
+      "key": "hidden_spots.intro",
+      "title": "Hidden Spots",
+      "pages": [16],
+      "blocks": [
+        { "p": "Scattered across the Sinnoh region you will find both Regular Hidden Spots and Special Hidden Spots that you may interact with when you pass over them. Flip the Hidden Spot token over to reveal what it is and resolve its effect." },
+        { "figure": "hidden_spots.intro/tokens", "caption": "Regular Hidden Spot · Special Hidden Spot" }
+      ]
+    },
+    {
+      "key": "hidden_spots.stashes",
+      "title": "Apricorn Stashes",
+      "pages": [16],
+      "blocks": [
+        { "p": "Gain 1, 2 or 3 Apricorns of the type and quantity shown on the token. These stashes are a great way to progress quickly, especially if you find the elusive Black Apricorns. Discard Apricorn Stash token afterwards." },
+        { "figure": "hidden_spots.stashes/red_stash", "caption": "Red Apricorn Stash [3 of each type]" }
+      ]
+    },
+    {
+      "key": "hidden_spots.campsites",
+      "title": "Campsites",
+      "pages": [16],
+      "blocks": [
+        { "p": "Campsites allow you to fully restore your party and trade with the Ginkgo Merchants once per turn like villages do [[overview.village|see Villages]], however you cannot fly to or from them. Campsite tokens remain on the map after being found." },
+        { "figure": "hidden_spots.campsites/campsite", "caption": "Campsite [6 in total]" }
+      ]
+    },
+    {
+      "key": "hidden_spots.stars",
+      "title": "Fallen Stars",
+      "pages": [16],
+      "blocks": [
+        { "p": "Draw 2 Change of Fate cards when revealed. Place the token on an empty Fallen Star spot afterwards (where the Change of Fate cards are)." },
+        { "p": "For every 4 Fallen Stars collected: All trainers draw 1 Change of Fate card at the start of their turns for the rest of the game." },
+        { "figure": "hidden_spots.stars/fallen_star", "caption": "Fallen Star [8 in total]" }
+      ]
+    },
+    {
+      "key": "hidden_spots.alpha",
+      "title": "Alpha Pokémon",
+      "pages": [16],
+      "blocks": [
+        { "p": "When revealed, you are forced to battle an Alpha Pokémon. Since the Alpha Pokémon is the initiator, they start with Initiative Advantage." },
+        { "p": "Stand on the token and use the Pokédex to “Search” for the Pokémon to attach this token to as a held item." },
+        { "figure": "hidden_spots.alpha/token", "caption": "Alpha Pokémon [6 in total]" },
+        { "p": "The token increases the health of the user by 4 and reclassifies the user as a Legendary Pokémon. This means it gains access to the move Alpha Strike and the ability Beast Boost as well as requiring a 6+ roll to capture and rewarding 4 Journey Points by default." },
+        { "p": "You keep the token if you capture the Alpha Pokémon, but the token cannot be unequipped. The token is discarded when the Pokémon holding it is discarded or returned to the deck. This means it does not remain on the map if you lose the battle." },
+        { "figure": "hidden_spots.alpha/floatzel", "caption": "The health of Floatzel is increased to 11 when equipped with the Alpha Pokémon token." },
+        { "digital": "In this game, when the token is revealed the game finds the Pokémon and attaches the token to it." }
+      ]
+    },
+    {
+      "key": "hidden_spots.artifacts",
+      "title": "Artifacts",
+      "pages": [17],
+      "blocks": [
+        { "p": "Artifacts boost the attack strength of certain move types and allow you to battle their corresponding Legendary Pokémon (click “Search” whilst at the correct location, you do not lose the Artifact when doing this)." },
+        { "figure": "hidden_spots.artifacts/artifacts", "caption": "Artifacts and their Legendary Pokémon" },
+        { "table": { "head": ["Artifact", "Effect", "Legendary Pokémon"], "rows": [
+          ["Seafarer Egg", "Increase the attack strength of Psychic and Water type moves by 1.", "Manaphy at the Temple of the Sea"],
+          ["Odd Keystone", "Increase the attack strength of Dark and Ghost type moves by 1.", "Spiritomb at the Hallowed Tower"],
+          ["Magma Stone", "Increase the attack strength of Fire and Ground type moves by 1.", "Heatran at the Magma Chamber"],
+          ["Secret Key", "Increase the attack strength of Ghost and Electric type moves by 1.", "Rotom at the Grand Chateau"],
+          ["Gracidea Flower", "Increase the attack strength of Grass and Flying type moves by 1.", "Shaymin at the Garden of Gratitude"],
+          ["Rockice Core", "Increases the attack strength of Rock and Ice type moves by 1.", "Regirock at Valley Ruins and Regice at Westbreeze Ruins"],
+          ["Icesteel Core", "Increases the attack strength of Ice and Steel type moves by 1.", "Regice at Westbreeze Ruins and Registeel at Firelilly Ruins"],
+          ["Steelrock Core", "Increases the attack strength of Steel and Rock type moves by 1.", "Registeel at Firelilly Ruins and Regirock at Valley Ruins"]
+        ] } },
+        { "h": "Legendary Forms" },
+        { "p": "Certain Artifacts allow their corresponding Legendary Pokémon to access their alternate forms when held." },
+        { "figure": "hidden_spots.artifacts/forms", "caption": "Legendary Forms — Rotom · Shaymin" }
+      ]
+    },
+    {
+      "key": "hidden_spots.celestial",
+      "title": "Celestial Artifacts",
+      "pages": [17],
+      "blocks": [
+        { "p": "These Artifacts provide a fragment of control over each God of Sinnoh improving your chances of survival against them [[shrines.aura|see Celestial Aura]]." },
+        { "table": { "head": ["Artifact", "Effect"], "rows": [
+          ["Adamant Artifact", "Prevents the effects of Celestial Aura when Dialga is encountered."],
+          ["Lustrous Artifact", "Prevents the effects of Celestial Aura when Palkia is encountered."],
+          ["Griseous Artifact", "Prevents the effects of Celestial Aura when Giratina is encountered."]
+        ] } },
+        { "figure": "hidden_spots.celestial/forms", "caption": "Alternate forms of Dialga · Palkia · Giratina — Alternate form 3D model is not available (Dialga · Palkia)." },
+        { "digital": "In this game, the game also shows forms that have no 3D model." }
+      ]
+    }
+  ]
+}

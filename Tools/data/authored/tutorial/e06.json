@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "note": "확장 장 E6 배틀 더 알기(07 §5-2): 막 길 duo(SoloTrail.Duo — 파티 둘째 칸 이브이, 셋업 뒤 손본 판). 고향 운하시티의 조무래기(나옹마 · 주뱃)에게 [도전] — 팽도리가 나옹마를 쓰러뜨림(은하의 응징 2, A13) → 교체 창에서 이브이(피로 0, A10) → 주뱃과 스피드 같음: 우선권 토큰 사용(S7_1) → 전광석화의 둘째 공격은 넘김 → 응징이 옮겨 오고 맹독엄니에 독(S7_6) → 이브이가 마무리(1막 목표 · 스탬프 2). 주사위는 모두 대본.",
+  "id": "e06",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"after":"duo"},
+  "steps": [
+    {"id":"P01","ch":0,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"P02","ch":0,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"S001","ch":0,"advance":"next","ref":["07 §5-1"]},
+    {"id":"S002","ch":0,"anchor":"board-hud-party","advance":"next","expect":{"party":2},"ref":["07 §5-1"]},
+    {"id":"S003","ch":0,"anchor":"board-hud-act-challenge","advance":"command","allow":[{"kind":"Challenge"}],"auto":[{"kind":"Challenge"}],"ref":["S7_1","S7_10"]},
+    {"id":"S004","ch":0,"advance":"command","allow":[{"choice":"SendIn","kind":"Pick","target":0}],"auto":[{"choice":"SendIn","kind":"Pick","target":0}],"dice":["StatusSymbol","StatusSymbol","StatusSymbol"],"ref":["S7_1","01 §6"]},
+    {"id":"S017","ch":0,"anchor":"battle-me-token","advance":"next","ref":["S7_1","S7_10"]},
+    {"id":"S005","ch":0,"anchor":"battle-moves","advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["CriticalHit","CriticalHit","CriticalHit"],"expect":{"power":3},"ref":["01 §6"]},
+    {"id":"S006","ch":0,"anchor":"battle-foe-retribution","advance":"next","ref":["A13","S7_10"]},
+    {"id":"S007","ch":0,"anchor":"battle-bench-1","advance":"command","allow":[{"choice":"SwitchWindow","kind":"Pick","target":1}],"auto":[{"choice":"SwitchWindow","kind":"Pick","target":1}],"ref":["S7_5","A10"]},
+    {"id":"S008","ch":0,"advance":"next","ref":["A10"]},
+    {"id":"S018","ch":0,"anchor":"battle-turn-speed","advance":"next","ref":["S7_1","01 §6-2"]},
+    {"id":"S009","ch":0,"anchor":"battle-token-use","advance":"command","allow":[{"choice":"Reaction","kind":"Accept"}],"auto":[{"choice":"Reaction","kind":"Accept"}],"ref":["S7_1"]},
+    {"id":"S019","ch":0,"anchor":"battle-foe-token","advance":"next","ref":["S7_1"]},
+    {"id":"S010","ch":0,"anchor":"battle-moves","advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["CriticalHit","CriticalHit"],"expect":{"power":2},"ref":["01 §6"]},
+    {"id":"S011","ch":0,"anchor":"battle-ask-no","advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"dice":["RegularHit","StatusSymbol"],"ref":["G20","01 §6"]},
+    {"id":"S012","ch":0,"anchor":"battle-me","advance":"next","expect":{"hp.1":3},"ref":["A13","S7_6"]},
+    {"id":"S013","ch":0,"advance":"next","ref":["S7_6"]},
+    {"id":"S020","ch":0,"anchor":"battle-moves","advance":"next","ref":["01 §6-4"]},
+    {"id":"S014","ch":0,"anchor":"battle-moves","advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["RegularHit","RegularHit"],"ref":["A1","01 §6"]},
+    {"id":"S015","ch":0,"anchor":"board-hud-act","advance":"next","expect":{"act":2,"stamps":1},"ref":["A1","A30"]},
+    {"id":"S016","ch":0,"advance":"next","ref":["A26"]}
+  ]
+}

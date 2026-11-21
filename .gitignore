@@ -1,0 +1,39 @@
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+# IDE / generated
+.vscode/
+.idea/
+*.csproj
+*.slnx
+*.sln
+*.suo
+*.user
+*.pdb
+*.mdb
+# OS
+.DS_Store
+Thumbs.db
+# dotnet test project (tracked) and its outputs
+!/Tools/dotnet-test/*.csproj
+/Tools/dotnet-test/bin/
+/Tools/dotnet-test/obj/
+/test-results*.xml
+# Local source files and generated game assets are not part of this repository (only folders and .meta files are tracked)
+/AssetSources/
+/Assets/Sinnoh/Gen/**
+!/Assets/Sinnoh/Gen/**/
+!/Assets/Sinnoh/Gen/**/*.meta
+/Assets/Sinnoh/Gen/Figures/
+/Assets/Sinnoh/Gen/Figures.meta
+/Data/
+/Tools/bin/
+# export marker
+/.sinnoh-public-export

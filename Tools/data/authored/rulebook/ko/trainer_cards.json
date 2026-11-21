@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "note": "트레이너 카드 확장(설명서 글 ②, plan §5 #315) — 원작은 룰북이 아니라 보드에만 규칙이 있다(한국어 세이브 save e4227c 보드 글, Research/rulings.md A20). 보드 문장 그대로 + rulings 근거 오역 고침(A20-1 「앞면」 · A20-2 골드 「또는 얻은」) · 용어 통일 · 맞춤법(결정 111 ③ — 잠금해제 → 해금(화면 말), 잠겨있는 → 잠겨 있는, 업그레이드 해서 → 업그레이드해서). 카드 51장의 이름 · 능력은 다시 쓰지 않고 게임 표(strings.ko trainer_card.* · trainer_ability.*)를 가리킨다(cards 블록).",
+  "chapter": "trainer_cards",
+  "title": "트레이너 카드 확장",
+  "sections": [
+    {
+      "key": "trainer_cards.rules",
+      "title": "트레이너 카드 확장",
+      "pages": [1],
+      "blocks": [
+        { "p": "각 트레이너는 게임을 진행하면서 해금할 수 있는 2개의 특수능력을 가지고 있습니다." },
+        { "p": "게임 시작 전에, 각 트레이너들에게 트레이너 카드를 3장씩 나눠줍니다. 스타팅 포켓몬을 고를 때, 각 트레이너들은 받은 트레이너 카드 중에서 1장을 골라 자신의 트레이너 구역에 앞면으로 둡니다. 사용하지 않는 카드들은 다시 덱으로 돌아갑니다." },
+        { "p": "트레이너 카드들은 모든 능력이 잠겨 있는 브론즈(1단계)에서부터 시작합니다. 적당한 등급의 포켓몬 1마리를 쓰러뜨리거나 얻은 다음에, 실버(2단계) 카드로 업그레이드해서 \"파란색\" 능력을 얻습니다. 마찬가지로, 강한 포켓몬을 1마리 쓰러뜨리거나 얻은 다음에, 골드(3단계) 카드로 업그레이드해서 \"빨간색\" 능력도 얻습니다." },
+        { "digital": "이 게임에서는 트레이너 카드를 나눠 주고 등급을 올리는 것을 게임이 대신합니다." }
+      ],
+      "fixes": [
+        { "ruling": "A20-1", "now": "자신의 트레이너 구역에 앞면으로 둡니다", "ko": "자신의 트레이너 구역에 둡니다", "en": "each trainer also chooses one of the trainer cards to place face up in their trainer area" },
+        { "ruling": "A20-2", "now": "강한 포켓몬을 1마리 쓰러뜨리거나 얻은 다음에", "ko": "강한 포켓몬을 1마리 쓰러뜨린 다음에", "en": "Similarly, once you defeat or obtain 1 Strong Pokémon, upgrade to the Gold card (State 3)" }
+      ]
+    },
+    {
+      "key": "trainer_cards.cards",
+      "title": "트레이너 카드 51장",
+      "pages": [1],
+      "blocks": [
+        { "cards": ["trainer_card.ace_trainer", "trainer_card.aroma_lady", "trainer_card.artist", "trainer_card.backpacker", "trainer_card.beauty", "trainer_card.bird_keeper", "trainer_card.black_belt", "trainer_card.bug_catcher", "trainer_card.chef", "trainer_card.collector", "trainer_card.delinquent", "trainer_card.diamond_acolyte", "trainer_card.dragon_tamer", "trainer_card.essentia", "trainer_card.expert", "trainer_card.fairy_tale_girl", "trainer_card.fisherman", "trainer_card.gardener", "trainer_card.gentleman", "trainer_card.ginkgo_merchant", "trainer_card.guitarist", "trainer_card.hex_maniac", "trainer_card.hiker", "trainer_card.interviewers", "trainer_card.kindler", "trainer_card.lady", "trainer_card.ninja_boy", "trainer_card.parasol_lady", "trainer_card.pearl_acolyte", "trainer_card.picnicker", "trainer_card.platinum_acolyte", "trainer_card.poke_fan", "trainer_card.poke_maniac", "trainer_card.pokemon_breeder", "trainer_card.pokemon_ranger", "trainer_card.psychic", "trainer_card.roller_skater", "trainer_card.ruin_maniac", "trainer_card.scientist", "trainer_card.scuba_diver", "trainer_card.sky_trainer", "trainer_card.swimmer", "trainer_card.team_aqua", "trainer_card.team_magma", "trainer_card.team_rocket", "trainer_card.tourist", "trainer_card.triathlete", "trainer_card.undivided_acolyte", "trainer_card.veteran", "trainer_card.worker", "trainer_card.youngster"] }
+      ]
+    }
+  ]
+}

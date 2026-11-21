@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "note": "확장 장 E4 진화(07 §5-2): 막 길 workshop(SoloTrail.Workshop = GiveWork — 파티 둘째 칸 이브이 · 여행 점수 20). 우러난 스튜 제작 → [진화]에서 반값으로 이브이 진화(A9 — 비용 8의 절반 4) → 분기 고르기 리피아(R14) → 옛 시그니처 전광석화 가르치기 → 완전 회복(체력 8).",
+  "id": "e04",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"after":"workshop"},
+  "steps": [
+    {"id":"P01","ch":0,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"P02","ch":0,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"S001","ch":0,"advance":"next","ref":["07 §5-1"]},
+    {"id":"S002","ch":0,"anchor":"board-hud-party","advance":"next","expect":{"jp":20},"ref":["07 §5-1"]},
+    {"id":"S003","ch":0,"anchor":"board-hud-act-evolve","advance":"next","ref":["A9"]},
+    {"id":"S004","ch":0,"anchor":"board-hud-act-craft","advance":"screen:board-craft","ref":["A9","01 §3-2 Craft"]},
+    {"id":"S005","ch":0,"anchor":"board-craft-make-infused_stew","advance":"command","allow":[{"kind":"Craft","target":"item.infused_stew"}],"auto":[{"kind":"Craft","target":"item.infused_stew"}],"ref":["A9","CraftRules"]},
+    {"id":"S006","ch":0,"anchor":"board-craft-close+board-hud-act-evolve","advance":"screen:board-evolve","ref":["A9"]},
+    {"id":"S007","ch":0,"anchor":"board-evolve-half+board-evolve-go-1","advance":"command","allow":[{"kind":"Evolve","target":1,"arg":1}],"auto":[{"kind":"Evolve","target":1,"arg":1}],"ref":["A9"]},
+    {"id":"S008","ch":0,"anchor":"board-evolve-branch-6","advance":"command","allow":[{"choice":"Reward","kind":"Pick","target":"pokemon.470:0"}],"auto":[{"choice":"Reward","kind":"Pick","target":"pokemon.470:0"}],"expect":{"jp":16},"ref":["A9","R14"]},
+    {"id":"S009","ch":0,"anchor":"board-evolve-teach-0","advance":"command","allow":[{"choice":"Reward","kind":"Pick","arg":0}],"auto":[{"choice":"Reward","kind":"Pick","arg":0}],"ref":["A9"]},
+    {"id":"S010","ch":0,"anchor":"board-evolve-close+board-hud-party","advance":"next","expect":{"hp.1":8},"ref":["A9"]}
+  ]
+}

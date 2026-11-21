@@ -1,0 +1,32 @@
+{"schema":2,"note":"상황 곡 표(03 §3-1, 결정 66 ④ · M9 소리 ② — Pt 원곡). build.mjs bgm 묶음이 seq(Pt pl_sound_data.sdat의 시퀀스 이름 — VGMTrans가 내보낸 AssetSources/vgmtrans/pt/<seq>.mid · .sf2)를 FluidSynth로 렌더해 Gen/Audio/Bgm/pt/에 앞부분 · 반복 클립으로 싣고, Gen/Audio/Bgm/bgm.json에 반복 자리(표본)를 적는다. seq 대신 tts(원작 TTS판 음악의 제목 — AssetSources/tts-audio의 mp3)를 적은 줄은 그 녹음을 Gen/Audio/Bgm/tts/에 통짜 반복 클립으로 싣는다(Pt에 맞는 곡이 없는 UB · 네크로즈마 배틀 둘 — plan §5 #525). situation = Sinnoh.Fx MusicScene 이름(모든 이름이 한 줄씩 — 시험이 본다), 곡이 없는 상황은 silent:true. candidates = 사용자가 들어 보고 바꿀 후보(node Tools/assets/bgm-candidates.mjs → Logs/Review/m9/sound2/). 고른 곡은 모두 [가정](plan §5 #520) — 곡 이름의 뜻은 pret pokeplatinum의 맵 머리 · 소스에서 본 것(why 칸), 그 밖은 이름으로 추정","rows":[
+{"situation":"Title","seq":"SEQ_TITLE00","whole":true,"candidates":["SEQ_TITLE01","SEQ_OPENING"],"why":"타이틀·설정·혼자 하기·저장 목록(설정 · 혼자 하기 · 저장 목록은 [가정] plan §5 #666) — 사용자 결정 130: Pt 오프닝 영상 곡(원작 자산 시퀀스에 반복 자리가 없다 → whole: 곡 끝에서 처음으로 통째 되풀이). 후보 TITLE01 = 원작 타이틀 화면 곡(pret: SOUND_SCENE_TITLE_SCREEN — 결정 130 전의 곡)"},
+{"situation":"Lobby","seq":"SEQ_OPENING","candidates":["SEQ_TITLE01"],"why":"방 로비(방 만들기 · 참가 · 로비 · 이어하기 대기실) — 사용자 결정 130: 마박사 소개 곡(Pt 처음 시작의 마박사 이야기). 후보 TITLE01 = 원작 타이틀 화면 곡"},
+{"situation":"Setup","seq":"SEQ_TOWN01_D","candidates":["SEQ_OPENING","SEQ_TOWN02_D"],"why":"게임 준비(고향 마을·스타팅 포켓몬·트레이너 카드) — 떡잎마을(pret: twinleaf_town). 서막과 같은 곡이라 셋업 뒤 보드로 넘어갈 때 끊기지 않는다. 후보 TOWN02 = 잔모래마을"},
+{"situation":"Prologue","seq":"SEQ_TOWN01_D","candidates":["SEQ_ROAD_A_D","SEQ_TOWN02_D"],"why":"서막 보드 — 셋업과 같은 곡. 후보 ROAD_A = 201번도로"},
+{"situation":"FieldTemperate","seq":"SEQ_ROAD_B_D","candidates":["SEQ_ROAD_A_D","SEQ_ROAD_C_D"],"why":"1~3막 보드, 내 말이 선 칸의 기후 Temperate(기후 없음도) — 203·204·218번도로(반복 77초 — 201번도로 ROAD_A는 28초라 오래 들으면 짧다). 후보 ROAD_C = 205·211번도로"},
+{"situation":"FieldCold","seq":"SEQ_ROAD_SNOW_D","candidates":["SEQ_CITY09_D","SEQ_D_LAKE"],"why":"1~3막 보드, 기후 Cold — 216·217번도로(눈길). 후보 CITY09 = 선단시티 [추정] · D_LAKE = 호수"},
+{"situation":"FieldWarm","seq":"SEQ_ROAD_BZA_D","candidates":["SEQ_D_SAFARI","SEQ_TOWN06_D"],"why":"1~3막 보드, 기후 Warm — 228~230번도로(배틀존의 더운 길). 후보 D_SAFARI = 대습초원 · TOWN06 = 225~227번도로 · 서바이벌에리어"},
+{"situation":"FieldNoble","seq":"SEQ_CITY04_D","candidates":["SEQ_TOWN03_D","SEQ_CITY06_D"],"why":"1~3막 보드, 기후 Noble(귀인 마을 쪽) — 봉신마을(pret: celestic_town — 영원시티와 같은 곡). 후보 TOWN03 = 꽃향기마을 · CITY06 = 들판시티 · 신수마을"},
+{"situation":"FieldSpace","seq":"SEQ_PL_D_GIRATINA","candidates":["SEQ_D_MOUNT2","SEQ_D_RYAYHY"],"why":"1~3막 보드, 기후 Space(울트라 버스트 쪽) — 깨어진 세계(pret: distortion_world). 후보 D_MOUNT2 = 창기둥 · D_RYAYHY = 호수 동굴"},
+{"situation":"FinalAct","seq":"SEQ_D_MOUNT1","candidates":["SEQ_D_MOUNT2","SEQ_D_LEAGUE"],"why":"종막 보드(4막) — 천관산 위쪽(pret: mt_coronet_outside · 4f~6f). 후보 D_MOUNT2 = 창기둥 · D_LEAGUE = 포켓몬리그 방"},
+{"situation":"Encounter","seq":"SEQ_KUSAGASA","candidates":["SEQ_D_02","SEQ_D_SAFARI"],"why":"조우 창(S45 — 나무·산호를 찾아본 뒤) — 포켓트레 풀 흔들림 곡(pret: Sound_PlayBGM(SEQ_KUSAGASA), 반복 18초). 후보 D_02 = 영원의숲(임시 곡 「Eterna Forest」 자리) · D_SAFARI = 대습초원"},
+{"situation":"BattleWild","seq":"SEQ_BA_POKE","candidates":["SEQ_BA_DPOKE1"],"why":"야생 배틀(TTS 뮤직 박스 자동 전환 Wild, automation §3.9 · 03 §3-1 BATTLE_WILD_POKEMON)"},
+{"situation":"BattleTrainer","seq":"SEQ_BA_TRAIN","candidates":["SEQ_BA_RIVAL","SEQ_BA_GYM"],"why":"트레이너끼리·배신자(03 §3-1 BATTLE_TRAINER). 후보 BA_RIVAL = 라이벌 · BA_GYM = 체육관 관장"},
+{"situation":"BattleGalacticGrunt","seq":"SEQ_BA_GINGA","candidates":["SEQ_BA_GINGA3"],"why":"갤럭시단 조무래기(03 §3-1 BATTLE_GALACTIC_GRUNT)"},
+{"situation":"BattleGalacticCommander","seq":"SEQ_BA_GINGA3","candidates":["SEQ_BA_GINGA"],"why":"갤럭시단 간부(03 §3-1 BATTLE_GALACTIC_CMDR — GINGA3은 GINGA와 반복 틱이 같고 빠르기가 다른 판 [추정])"},
+{"situation":"BattleGalacticBoss","seq":"SEQ_BA_AKAGI","candidates":["SEQ_BA_CHANP"],"why":"태홍(03 §3-1 BATTLE_CYRUS). 후보 BA_CHANP = 챔피언"},
+{"situation":"BattleLegendary","seq":"SEQ_BA_DPOKE1","candidates":["SEQ_PL_BA_REGI","SEQ_BA_SECRET1"],"why":"전설·알파·우두머리(03 §3-1 BATTLE_LEGENDARY — DPOKE1 = 전설 포켓몬 [추정]). 후보 PL_BA_REGI = 레지 3종 · BA_SECRET1 [이름만]"},
+{"situation":"BattleGod","seq":"SEQ_PL_BA_GIRA","candidates":["SEQ_BA_DPOKE2","SEQ_BA_SECRET2"],"why":"신오의 신 — 기라티나 배틀(Pt 간판 곡). 후보 BA_DPOKE2 = 디아루가·펄기아 [추정] · BA_SECRET2 = 아르세우스 [추정]"},
+{"situation":"BattleUltraBeast","tts":"Ultra Beast","candidates":["SEQ_PL_BA_REGI","SEQ_BA_SECRET1","SEQ_PL_BA_BRAIN"],"why":"울트라비스트·시련 — Pt에 맞는 곡이 없다(03 §3-1 · §8 #10): 원작 TTS판 음악의 「Ultra Beast」(mp3 녹음 — 통짜 반복, plan §5 #525). 후보(Pt 곡) PL_BA_REGI = 레지 3종(소리 ②의 대역) · BA_SECRET1 · PL_BA_BRAIN = 프런티어 브레인"},
+{"situation":"BattleNecrozma","tts":"Ultra Burst","candidates":["SEQ_BA_DPOKE2","SEQ_BA_SECRET2","SEQ_BA_CHANP"],"why":"네크로즈마 — Pt에 맞는 곡이 없다: 원작 TTS판 음악의 「Ultra Burst」(mp3 녹음 — 통짜 반복, plan §5 #525). 후보(Pt 곡) BA_DPOKE2 = 디아루가·펄기아 배틀(소리 ②의 대역) · BA_SECRET2 · BA_CHANP = 챔피언"},
+{"situation":"Result","seq":"SEQ_WINPOKE","candidates":["SEQ_WINTRAIN"],"why":"배틀 결과 창 — 야생·전설·신·UB 배틀을 이긴 곡(승리 곡은 팡파르로 시작해 반복한다)"},
+{"situation":"ResultTrainer","seq":"SEQ_WINTRAIN","candidates":["SEQ_WINTGYM","SEQ_WINCHAMP"],"why":"배틀 결과 창 — 트레이너끼리·배신자 배틀 뒤. 후보 WINTGYM = 체육관 관장 · WINCHAMP = 챔피언"},
+{"situation":"ResultGalactic","seq":"SEQ_WINGINGA","candidates":["SEQ_WINTRAIN","SEQ_WINCHAMP"],"why":"배틀 결과 창 — 갤럭시단 조무래기·간부·태홍 배틀 뒤(SEQ_WINAKAGI는 렌더가 WINGINGA와 표본까지 같아 따로 두지 않는다). 후보 WINCHAMP = 챔피언"},
+{"situation":"GameOver","seq":"SEQ_BLD_ENDING","candidates":["SEQ_BLD_EV_DENDO2","SEQ_TV_END"],"why":"게임 끝(균열 패배 86행의 「The End」 = 곡, 결정 87 V17 나 — 이긴 판의 끝 화면도 같은 상황) — 엔딩 곡(pret: SOUND_SCENE_14, 반복 없음 4분 35초 — 한 번 틀고 끝). SEQ_PV_END는 음이 없는 빈 시퀀스라 못 쓴다. 후보 BLD_EV_DENDO2 = 전당 등록 [추정] · TV_END = 짧은 맺음 3.8초"}
+],"jingles":[
+{"key":"meet","candidates":["SEQ_EYE_GIRL","SEQ_EYE_KID","SEQ_EYE_FIGHT","SEQ_EYE_GINGA"],"use":"같은 칸 만남 「!」(13행) — 시선 곡의 도입부(반복 시작까지). 고른 것 = 소년 · 벌레잡이(EYE_BOY). 후보: 소녀 · 꼬마 · 격투 · 갤럭시단"},
+{"key":"center","candidates":[],"use":"포켓몬센터 회복 징글(8 · 17행) — SEQ_ASA 하나(원작이 쓰는 곡)"},
+{"key":"evolve","candidates":[],"use":"진화 곡(39행 본인 화면) — SEQ_SHINKA의 앞 3.4초(빛이 터질 때까지)"},
+{"key":"fanfare","candidates":["SEQ_FANFA1","SEQ_FANFA2","SEQ_FANFA3","SEQ_FANFA4","SEQ_FANFA6","SEQ_BADGE"],"use":"팡파르(포획 68행 · 진화 끝 39행) — 고른 것 FANFA5(원작의 포획 · 진화 끝 · 교환 받음). 후보: FANFA1(레벨 업 계열) · FANFA4(도구 얻음 계열) · 나머지는 이름만 [추정]"},
+{"key":"trade","candidates":[],"use":"교환 곡(52행 거래) — SEQ_KOUKAN의 앞 2.2초"}
+]}

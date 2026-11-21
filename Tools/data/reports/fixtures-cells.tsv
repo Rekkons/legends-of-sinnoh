@@ -1,0 +1,175 @@
+key	kind	cell	distance	x	z	cellX	cellZ	region	saveObject
+village.canalave	Village	-8,-2	0.010	-13.20	-1.90	-13.2	-1.91	The Great Plains	T1076 466df6
+village.nesburgh	Village	-2,-6	0.004	-3.30	-5.72	-3.3	-5.72	Coronet Valley South	T1080 83102a
+village.eterna	Village	-2,4	0.001	-3.30	3.81	-3.3	3.81	Mount Coronet North	T1078 0b919f
+village.sinnome	Village	0,-18	0.003	0.00	-17.15	0	-17.15	Southhaven Prairie	T1075 32efc8
+village.snowpoint	Village	1,13	0.000	1.65	12.38	1.65	12.38	Snowdrift Plains	T1079 5c00a6
+village.celestic	Village	2,2	0.005	3.30	1.91	3.3	1.91	Celestic Grove	T1077 2b0645
+village.stark	Village	7,11	0.001	11.55	10.48	11.55	10.48	Stark Savanna	T1073 01dd0f
+village.sunyshore	Village	11,-5	0.000	18.15	-4.76	18.15	-4.76	The Sunblessed Coastlands	T1074 2fa6e5
+village.ultra_megalopolis	Village	-10,16	0.002	-16.50	15.24	-16.5	15.24		T1081 02d117
+apricorn_tree.pink_1	ApricornTree	-11,-7	0.002	-18.15	-6.67	-18.15	-6.67	Westbreeze Forest	T683 c38c35
+apricorn_tree.pink_2	ApricornTree	-11,-1	0.003	-18.15	-0.95	-18.15	-0.95	Westbreeze Tundra	T441 8b1a32
+apricorn_tree.black_1	ApricornTree	-10,-8	0.001	-16.50	-7.62	-16.5	-7.62	Westbreeze Forest	T1029 116920
+apricorn_tree.pink_3	ApricornTree	-10,-4	0.001	-16.50	-3.81	-16.5	-3.81	Icebreak Mountain	T684 622d40
+apricorn_tree.blue_1	ApricornTree	-9,-7	0.002	-14.85	-6.67	-14.85	-6.67	Westbreeze Forest	T1008 b8200d
+apricorn_tree.red_1	ApricornTree	-9,-1	0.003	-14.85	-0.95	-14.85	-0.95	Westbreeze Tundra	T1011 0ac5bf
+apricorn_tree.yellow_1	ApricornTree	-8,-6	0.004	-13.20	-5.72	-13.2	-5.72	Icebreak Mountain	T1013 05c764
+apricorn_tree.red_2	ApricornTree	-8,-4	0.001	-13.20	-3.81	-13.2	-3.81	The Great Plains	T440 78b148
+apricorn_tree.green_1	ApricornTree	-7,-9	0.004	-11.55	-8.57	-11.55	-8.57	The Windswept Grasslands	T610 d3f931
+apricorn_tree.red_3	ApricornTree	-6,-4	0.001	-9.90	-3.81	-9.9	-3.81	The Great Plains	T687 36825a
+apricorn_tree.pink_4	ApricornTree	-6,6	0.004	-9.90	5.72	-9.9	5.72	Iron Island	T601 06a856
+apricorn_tree.red_4	ApricornTree	-5,-9	0.004	-8.25	-8.57	-8.25	-8.57	The Windswept Grasslands	T622 744c2a
+apricorn_tree.blue_2	ApricornTree	-5,-7	0.002	-8.25	-6.67	-8.25	-6.67	Jubilee Forest North	T688 5b2511
+apricorn_tree.green_2	ApricornTree	-5,-5	0.003	-8.25	-4.76	-8.25	-4.76	The Great Plains	T685 00bb51
+apricorn_tree.green_3	ApricornTree	-4,-10	0.004	-6.60	-9.53	-6.6	-9.53	Jubilee Forest South	T626 328628
+apricorn_tree.green_4	ApricornTree	-4,-2	0.005	-6.60	-1.91	-6.6	-1.91	The Great Plains	T692 e07023
+apricorn_tree.red_5	ApricornTree	-4,2	0.005	-6.60	1.91	-6.6	1.91	The Western Plains	T436 b820d1
+apricorn_tree.blue_3	ApricornTree	-3,-7	0.002	-4.95	-6.67	-4.95	-6.67	Jubilee Forest North	T439 741d6e
+apricorn_tree.red_6	ApricornTree	-3,-5	0.003	-4.95	-4.76	-4.95	-4.76	The Great Plains	T603 739c22
+apricorn_tree.blue_4	ApricornTree	-3,3	0.002	-4.95	2.86	-4.95	2.86	Eterna Forest Southern Outskirts	T1007 613966
+apricorn_tree.pink_5	ApricornTree	-3,5	0.003	-4.95	4.76	-4.95	4.76	Eterna Forest	T837 100781
+apricorn_tree.blue_5	ApricornTree	-2,-12	0.002	-3.30	-11.43	-3.3	-11.43	Jubilee Forest South	T596 776e3e
+apricorn_tree.yellow_2	ApricornTree	-2,-4	0.001	-3.30	-3.81	-3.3	-3.81	Coronet Valley North	T670 9b8e76
+apricorn_tree.yellow_3	ApricornTree	-2,2	0.005	-3.30	1.91	-3.3	1.91	The Western Plains	T686 9f6ac3
+apricorn_tree.pink_6	ApricornTree	-2,8	0.001	-3.30	7.62	-3.3	7.62	Eterna Forest	T598 fff1cf
+apricorn_tree.pink_7	ApricornTree	-2,16	0.002	-3.30	15.24	-3.3	15.24	The Frigid Desert	T1005 0ffaaa
+apricorn_tree.white_1	ApricornTree	-1,-15	0.001	-1.65	-14.29	-1.65	-14.29	Southhaven Prairie	T1068 35c148
+apricorn_tree.black_2	ApricornTree	-1,-13	0.004	-1.65	-12.38	-1.65	-12.38	Southhaven Prairie	T1026 aa5295
+apricorn_tree.yellow_4	ApricornTree	-1,-11	0.001	-1.65	-10.48	-1.65	-10.48	Mount Coronet South	T679 764c44
+apricorn_tree.yellow_5	ApricornTree	-1,-7	0.002	-1.65	-6.67	-1.65	-6.67	Coronet Valley South	T600 3fe950
+apricorn_tree.black_3	ApricornTree	-1,-3	0.002	-1.65	-2.86	-1.65	-2.86	Mount Coronet Peaks	T438 b97af3
+apricorn_tree.blue_6	ApricornTree	-1,9	0.004	-1.65	8.57	-1.65	8.57	Eterna Forest Northern Outskirts	T1006 849654
+apricorn_tree.pink_8	ApricornTree	-1,13	0.004	-1.65	12.38	-1.65	12.38	The Frigid Desert	T597 15e16e
+apricorn_tree.red_7	ApricornTree	0,-16	0.002	-0.00	-15.24	0	-15.24	Southhaven Prairie	T1017 8d98b2
+apricorn_tree.green_5	ApricornTree	0,-10	0.004	0.00	-9.53	0	-9.53	Mount Coronet South	T613 4366ee
+apricorn_tree.green_6	ApricornTree	0,-4	0.001	-0.00	-3.81	0	-3.81	Mount Coronet Pass	T608 29dcac
+apricorn_tree.black_4	ApricornTree	0,6	0.004	-0.00	5.72	0	5.72	Mount Coronet North	T1031 4549aa
+apricorn_tree.yellow_6	ApricornTree	0,8	0.001	-0.00	7.62	0	7.62	Mount Coronet North	T1012 956d3d
+apricorn_tree.pink_9	ApricornTree	0,10	0.004	0.00	9.53	0	9.53	Snowdrift Plains	T703 c1373e
+apricorn_tree.red_8	ApricornTree	0,16	0.002	-0.00	15.24	0	15.24	The Frigid Desert	T1009 102996
+apricorn_tree.black_5	ApricornTree	0,18	0.003	0.00	17.15	0	17.15	The Frigid Desert	T1030 ed5e16
+apricorn_tree.yellow_7	ApricornTree	1,-13	0.004	1.65	-12.38	1.65	-12.38	Mount Coronet South	T433 02dcaf
+apricorn_tree.yellow_8	ApricornTree	1,-1	0.003	1.65	-0.95	1.65	-0.95	Mount Coronet Pass	T690 eab8f4
+apricorn_tree.green_7	ApricornTree	1,3	0.002	1.65	2.86	1.65	2.86	Mount Coronet	T609 0fee83
+apricorn_tree.pink_10	ApricornTree	1,5	0.003	1.65	4.76	1.65	4.76	Mount Coronet North	T435 62940f
+apricorn_tree.red_9	ApricornTree	1,11	0.001	1.65	10.48	1.65	10.48	Snowdrift Plains	T1010 c0e818
+apricorn_tree.white_2	ApricornTree	2,-14	0.003	3.30	-13.34	3.3	-13.34	Southhaven Prairie	T605 4bb950
+apricorn_tree.blue_7	ApricornTree	2,-10	0.004	3.30	-9.53	3.3	-9.53	Outer Marshes West	T1022 30770d
+apricorn_tree.yellow_9	ApricornTree	2,-6	0.004	3.30	-5.72	3.3	-5.72	Coronet Plateau	T465 86c5c0
+apricorn_tree.black_6	ApricornTree	2,-2	0.005	3.30	-1.91	3.3	-1.91	The Heartlands	T682 73e2b7
+apricorn_tree.red_10	ApricornTree	2,8	0.001	3.30	7.62	3.3	7.62	The Narrowlands	T442 d92d19
+apricorn_tree.blue_8	ApricornTree	3,-13	0.004	4.95	-12.38	4.95	-12.38	Outer Marshes West	T1023 b0a700
+apricorn_tree.white_3	ApricornTree	3,-9	0.004	4.95	-8.57	4.95	-8.57	The Deepmarsh	T611 53b647
+apricorn_tree.red_11	ApricornTree	3,-5	0.003	4.95	-4.76	4.95	-4.76	The Heartlands	T695 3f066c
+apricorn_tree.green_8	ApricornTree	3,-3	0.002	4.95	-2.86	4.95	-2.86	The Heartlands	T607 f3ab76
+apricorn_tree.yellow_10	ApricornTree	3,1	0.003	4.95	0.95	4.95	0.95	Mount Coronet	T619 ad2e66
+apricorn_tree.blue_9	ApricornTree	3,3	0.002	4.95	2.86	4.95	2.86	Celestic Grove	T618 bc3ede
+apricorn_tree.green_9	ApricornTree	3,5	0.003	4.95	4.76	4.95	4.76	The Narrowlands	T697 2fed5a
+apricorn_tree.black_7	ApricornTree	4,-10	0.004	6.60	-9.53	6.6	-9.53	The Deepmarsh	T1027 9d7a48
+apricorn_tree.blue_10	ApricornTree	4,-6	0.004	6.60	-5.72	6.6	-5.72	Outer Marshes East	T1024 3e20ef
+apricorn_tree.red_12	ApricornTree	4,0	0.000	6.60	0.00	6.6	0	The Stormstricken Wetlands	T499 f90c3a
+apricorn_tree.blue_11	ApricornTree	4,10	0.004	6.60	9.53	6.6	9.53	Ashfall Forest	T1021 fa3e2d
+apricorn_tree.white_4	ApricornTree	4,14	0.003	6.60	13.34	6.6	13.34	Ashfall Forest	T606 f3e2d7
+apricorn_tree.white_5	ApricornTree	5,-9	0.004	8.25	-8.57	8.25	-8.57	The Deepmarsh	T612 ab98da
+apricorn_tree.yellow_11	ApricornTree	5,-3	0.002	8.25	-2.86	8.25	-2.86	Solastone Mountain	T1020 a9402d
+apricorn_tree.white_6	ApricornTree	5,7	0.002	8.25	6.67	8.25	6.67	Stark Savanna	T602 5dcbc8
+apricorn_tree.yellow_12	ApricornTree	5,15	0.001	8.25	14.29	8.25	14.29	Stark Mountain	T1066 c906a7
+apricorn_tree.blue_12	ApricornTree	6,-8	0.001	9.90	-7.62	9.9	-7.62	Outer Marshes East	T1025 9475ba
+apricorn_tree.white_7	ApricornTree	6,-2	0.005	9.90	-1.91	9.9	-1.91	Solastone Mountain	T691 c7ec63
+apricorn_tree.green_10	ApricornTree	6,2	0.005	9.90	1.91	9.9	1.91	The Stormstricken Wetlands	T1072 376a57
+apricorn_tree.red_13	ApricornTree	6,10	0.004	9.90	9.53	9.9	9.53	Stark Savanna	T1014 5c2ffb
+apricorn_tree.yellow_13	ApricornTree	6,12	0.002	9.90	11.43	9.9	11.43	Stark Mountain	T1067 f8c143
+apricorn_tree.black_8	ApricornTree	6,16	0.002	9.90	15.24	9.9	15.24	Stark Mountain	T1028 9b07c2
+apricorn_tree.red_14	ApricornTree	7,-9	0.004	11.55	-8.57	11.55	-8.57	The Sunblessed Coastlands	T1018 0be733
+apricorn_tree.yellow_14	ApricornTree	7,-5	0.003	11.55	-4.76	11.55	-4.76	Solastone Mountain	T1019 1292c4
+apricorn_tree.blue_13	ApricornTree	7,1	0.003	11.55	0.95	11.55	0.95	Veiled Forest North	T689 9bd814
+apricorn_tree.white_8	ApricornTree	7,13	0.004	11.55	12.38	11.55	12.38	Stark Mountain	T437 bbf67f
+apricorn_tree.white_9	ApricornTree	8,-8	0.001	13.20	-7.62	13.2	-7.62	The Sunblessed Coastlands	T604 9fb8c0
+apricorn_tree.blue_14	ApricornTree	8,-4	0.001	13.20	-3.81	13.2	-3.81	Veiled Forest South	T615 33a277
+apricorn_tree.green_11	ApricornTree	8,-2	0.005	13.20	-1.91	13.2	-1.91	Veiled Forest North	T595 ba72aa
+apricorn_tree.black_9	ApricornTree	8,2	0.005	13.20	1.91	13.2	1.91	Veiled Forest North	T599 291d01
+apricorn_tree.red_15	ApricornTree	8,6	0.004	13.20	5.72	13.2	5.72	Firelilly Plains	T1015 19a2e7
+apricorn_tree.white_10	ApricornTree	8,10	0.004	13.20	9.53	13.2	9.53	Firelilly Plains	T698 867644
+apricorn_tree.red_16	ApricornTree	10,-6	0.004	16.50	-5.72	16.5	-5.72	The Sunblessed Coastlands	T1016 fda8b9
+apricorn_tree.blue_15	ApricornTree	10,-4	0.001	16.50	-3.81	16.5	-3.81	Veiled Forest South	T434 4f9b7d
+apricorn_tree.white_11	ApricornTree	11,3	0.002	18.15	2.86	18.15	2.86	Lilac Plateau	T651 1006e5
+apricorn_reef.weak_1	ApricornReef	-12,-4	0.001	-19.80	-3.81	-19.8	-3.81	The Western Coast	T955 f9a8f0
+apricorn_reef.moderate_1	ApricornReef	-12,0	0.000	-19.80	-0.00	-19.8	0	The Western Coast	T632 4f60bb
+apricorn_reef.strong_1	ApricornReef	-9,-9	0.004	-14.85	-8.57	-14.85	-8.57	The Western Coast	T645 e73b71
+apricorn_reef.moderate_2	ApricornReef	-8,-12	0.002	-13.20	-11.43	-13.2	-11.43	The Sandstrewn Coast	T631 e8baec
+apricorn_reef.weak_2	ApricornReef	-7,-3	0.002	-11.55	-2.86	-11.55	-2.86	Canalave Bay	T641 563d44
+apricorn_reef.weak_3	ApricornReef	-7,5	0.003	-11.55	4.76	-11.55	4.76	The Iron Coast	T647 5cba07
+apricorn_reef.moderate_3	ApricornReef	-6,0	0.000	-9.90	-0.00	-9.9	0	The Western Coast	T963 9d2a0e
+apricorn_reef.weak_4	ApricornReef	-5,-11	0.001	-8.25	-10.48	-8.25	-10.48	The Sandstrewn Coast	T629 3d928e
+apricorn_reef.moderate_4	ApricornReef	-4,6	0.004	-6.60	5.72	-6.6	5.72	The Iron Coast	T635 05382b
+apricorn_reef.moderate_5	ApricornReef	-3,-15	0.001	-4.95	-14.29	-4.95	-14.29	The Southern Coast	T1069 625669
+apricorn_reef.weak_5	ApricornReef	-3,11	0.001	-4.95	10.48	-4.95	10.48	The Northern Coast	T954 a8bc75
+apricorn_reef.weak_6	ApricornReef	-2,18	0.003	-3.30	17.15	-3.3	17.15	The Northern Coast	T642 8da9ba
+apricorn_reef.weak_7	ApricornReef	-1,-19	0.000	-1.65	-18.10	-1.65	-18.1	The Southern Coast	T630 69e67d
+apricorn_reef.moderate_6	ApricornReef	1,17	0.005	1.65	16.19	1.65	16.19	The Northern Coast	T1070 289589
+apricorn_reef.weak_8	ApricornReef	2,-16	0.002	3.30	-15.24	3.3	-15.24	The Southern Coast	T648 6937d9
+apricorn_reef.weak_9	ApricornReef	2,12	0.002	3.30	11.43	3.3	11.43	The Northern Coast	T640 895891
+apricorn_reef.moderate_7	ApricornReef	3,9	0.004	4.95	8.57	4.95	8.57	Stark Coast	T634 658a40
+apricorn_reef.weak_10	ApricornReef	3,15	0.001	4.95	14.29	4.95	14.29	Stark Coast	T835 7cf1c0
+apricorn_reef.moderate_8	ApricornReef	4,-12	0.002	6.60	-11.43	6.6	-11.43	The Grand Delta	T633 ed5e01
+apricorn_reef.weak_11	ApricornReef	4,6	0.004	6.60	5.72	6.6	5.72	The Sinnoh-Stark Channel	T639 3bd131
+apricorn_reef.strong_2	ApricornReef	5,3	0.002	8.25	2.86	8.25	2.86	Secluded Cove	T646 cc5abd
+apricorn_reef.weak_12	ApricornReef	7,-11	0.001	11.55	-10.48	11.55	-10.48	The Eastern Coast	T649 e11c20
+apricorn_reef.weak_13	ApricornReef	7,3	0.002	11.55	2.86	11.55	2.86	The Sinnoh-Stark Channel	T636 25849c
+apricorn_reef.weak_14	ApricornReef	7,9	0.004	11.55	8.57	11.55	8.57	Stark Bay	T638 411c2d
+apricorn_reef.weak_15	ApricornReef	8,16	0.002	13.20	15.24	13.2	15.24	Stark Coast	T643 82826f
+apricorn_reef.moderate_9	ApricornReef	9,1	0.003	14.85	0.95	14.85	0.95	The Sinnoh-Stark Channel	T943 41c674
+apricorn_reef.moderate_10	ApricornReef	9,11	0.001	14.85	10.48	14.85	10.48	Stark Coast	T1071 dc1808
+apricorn_reef.moderate_11	ApricornReef	10,-8	0.001	16.50	-7.62	16.5	-7.62	The Eastern Coast	T790 59c3f9
+apricorn_reef.strong_3	ApricornReef	10,6	0.004	16.50	5.72	16.5	5.72	Firelilly Channel	T644 61028b
+apricorn_reef.weak_16	ApricornReef	11,-3	0.002	18.15	-2.86	18.15	-2.86	The Eastern Coast	T637 6feb19
+apricorn_reef.weak_17	ApricornReef	12,-8	0.001	19.80	-7.62	19.8	-7.62	The Eastern Coast	T696 7ac83b
+apricorn_reef.moderate_12	ApricornReef	12,2	0.005	19.80	1.91	19.8	1.91	Lilly Coast	T650 1cf1ae
+distorted_tree.1	DistortedTree	-12,16	0.002	-19.80	15.24	-19.8	15.24		T829 b20c9e
+distorted_tree.2	DistortedTree	-12,20	0.003	-19.80	19.05	-19.8	19.05		T940 769292
+distorted_tree.3	DistortedTree	-10,14	0.003	-16.50	13.34	-16.5	13.34		T941 7a8dfe
+distorted_tree.4	DistortedTree	-10,22	0.002	-16.50	20.96	-16.5	20.96		T831 b724c8
+distorted_tree.5	DistortedTree	-8,16	0.002	-13.20	15.24	-13.2	15.24		T830 2b0073
+distorted_tree.6	DistortedTree	-8,20	0.003	-13.20	19.05	-13.2	19.05		T942 9362a6
+legendary_site.westbreeze_ruins	LegendarySite	-11,-3	0.002	-18.15	-2.86	-18.15	-2.86	Westbreeze Tundra	T818 9ede31
+legendary_site.lake_verity_cavern	LegendarySite	-7,-7	0.002	-11.55	-6.67	-11.55	-6.67	Lake Verity	T874 0f089e
+legendary_site.temple_of_the_sea	LegendarySite	-7,1	0.003	-11.55	0.95	-11.55	0.95	Deep Ocean	T702 f76d88
+legendary_site.grand_chateau	LegendarySite	-3,9	0.004	-4.95	8.57	-4.95	8.57	Eterna Forest	T1085 c5294d
+legendary_site.valley_ruins	LegendarySite	-2,0	0.000	-3.30	0.00	-3.3	0	The Western Plains	T817 144ab7
+legendary_site.temple_of_sinnoh	LegendarySite	0,0	0.000	-0.00	-0.00	0	0	Mount Coronet Summit	T961 d37961
+legendary_site.lake_acuity_cavern	LegendarySite	0,14	0.003	-0.00	13.34	0	13.34	Lake Acuity	T875 7aa30c
+legendary_site.hallowed_tower	LegendarySite	4,-4	0.001	6.60	-3.81	6.6	-3.81	The Heartlands	T701 dd4acf
+legendary_site.magma_chamber	LegendarySite	6,14	0.003	9.90	13.34	9.9	13.34	Stark Mountain	T700 c7860d
+legendary_site.lake_valor_cavern	LegendarySite	7,-7	0.002	11.55	-6.67	11.55	-6.67	Lake Valor	T876 d90a52
+legendary_site.firelilly_ruins	LegendarySite	9,7	0.002	14.85	6.67	14.85	6.67	Firelilly Plains	T819 cbad5e
+legendary_site.garden_of_gratitude	LegendarySite	12,6	0.004	19.80	5.72	19.8	5.72	The Path of Gratitude	T694 ab7a26
+legendary_shrine.frostsong_shrine	LegendaryShrine	-9,-5	0.003	-14.85	-4.76	-14.85	-4.76	Icebreak Mountain	T763 c0bb83
+legendary_shrine.moonglade_shrine	LegendaryShrine	-5,3	0.002	-8.25	2.86	-8.25	2.86	Eterna Forest Southern Outskirts	T761 39a0e0
+legendary_shrine.thundersong_shrine	LegendaryShrine	0,-12	0.002	-0.00	-11.43	0	-11.43	Mount Coronet South	T765 317410
+legendary_shrine.origin_shrine	LegendaryShrine	0,2	0.005	0.00	1.91	0	1.91	Mount Coronet Summit	T766 d91159
+legendary_shrine.colossus_shrine	LegendaryShrine	1,15	0.001	1.65	14.29	1.65	14.29	The Frigid Desert	T760 a1836f
+legendary_shrine.timeless_shrine	LegendaryShrine	2,4	0.001	3.30	3.81	3.3	3.81	Celestic Grove	T762 8289c3
+legendary_shrine.firesong_shrine	LegendaryShrine	6,-4	0.001	9.90	-3.81	9.9	-3.81	Solastone Mountain	T764 eca7b2
+shrine.twinleaf_shrine	Shrine	-7,-11	0.001	-11.55	-10.48	-11.55	-10.48	The Windswept Grasslands	T556 415a34
+shrine.meadow_shrine	Shrine	-6,-2	0.011	-9.90	-1.91	-9.89	-1.9	The Slumbering Meadow	T627 688f84
+shrine.jubilee_shrine	Shrine	-3,-9	0.004	-4.95	-8.57	-4.95	-8.57	Jubilee Forest South	T977 67181d
+shrine.overlook_shrine	Shrine	-3,1	0.003	-4.95	0.95	-4.95	0.95	The Western Plains	T669 d31f12
+shrine.eterna_shrine	Shrine	-1,7	0.002	-1.65	6.67	-1.65	6.67	Eterna Forest Northern Outskirts	T981 01ed1b
+shrine.prairie_shrine	Shrine	1,-17	0.005	1.65	-16.19	1.65	-16.19	Southhaven Prairie	T983 055299
+shrine.coronet_shrine	Shrine	1,-3	0.002	1.65	-2.86	1.65	-2.86	Mount Coronet Peaks	T621 312b52
+shrine.marsh_shrine	Shrine	2,-8	0.001	3.30	-7.62	3.3	-7.62	Outer Marshes West	T975 0e4575
+shrine.wetlands_shrine	Shrine	5,1	0.003	8.25	0.95	8.25	0.95	The Stormstricken Wetlands	T976 1f96ee
+shrine.savanna_shrine	Shrine	6,6	0.004	9.90	5.72	9.9	5.72	Stark Savanna	T980 77c776
+shrine.magma_shrine	Shrine	7,15	0.001	11.55	14.29	11.55	14.29	Stark Mountain	T572 589e16
+shrine.sendoff_shrine	Shrine	9,-3	0.002	14.85	-2.86	14.85	-2.86	Veiled Forest South	T628 c67374
+shrine.gratitude_shrine	Shrine	11,5	0.003	18.15	4.76	18.15	4.76	The Path of Gratitude	T982 a7a04c
+gate.westbreeze_main	Gate	-11,-5	0.003	-18.15	-4.76	-18.15	-4.76	Westbreeze Bay	T945 53c314
+gate.snowdrift_main	Gate	-2,12	0.002	-3.30	11.43	-3.3	11.43	Snowdrift Plains	T949 59ee82
+gate.deepmarsh_main	Gate	4,-8	0.001	6.60	-7.62	6.6	-7.62	The Deepmarsh	T947 e27ff4
+gate.lilly_main	Gate	10,4	0.001	16.50	3.81	16.5	3.81	Lilac Plateau	T951 99c4be
+gate.westbreeze_distortion	Gate	-13,17	0.005	-21.45	16.19	-21.45	16.19		T944 2a872c
+gate.snowdrift_distortion	Gate	-11,21	0.005	-18.15	20.01	-18.15	20.01		T948 760596
+gate.deepmarsh_distortion	Gate	-9,15	0.001	-14.85	14.29	-14.85	14.29		T946 359411
+gate.lilly_distortion	Gate	-7,19	0.000	-11.55	18.10	-11.55	18.1		T950 55ca5e
+taxi.bird	Taxi	-2,-6	0.004	-3.30	-5.72	-3.3	-5.72	Coronet Valley South	T430 527326

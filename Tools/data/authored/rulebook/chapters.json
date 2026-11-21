@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "note": "룰 설명서 장 순서(M9 「설명서 글 ①②」, plan §5 #306·#315). 두 언어가 같은 장 키·절 키를 쓴다 — 장마다 <lang>/<장 키>.json. chapters = 기본 룰북 장(원천 rulebook, pages = 원본 룰북 쪽 수 — v1.4a 28쪽, 한국어판·영문 원본 쪽이 1:1로 같다). expansions = 확장 장(설명서 글 ②, 기본 룰북 뒤): 원천 id와 그 원천의 쪽 수 — trainer_card_board = 트레이너 카드 확장 보드(save e4227c, 한·영 한 장), ultra_onslaught_deck = 울트라 온슬롯 덱 설명(save e666f4, 한·영) + 카드 6장, crafting_recipes = 제작 레시피(영문 CraftingRecipes 5쪽 · 한국어판 rules-b.pdf 5쪽, 1:1). 빌드 lib/rulebook.mjs.",
+  "pages": 28,
+  "chapters": ["intro", "overview", "pokemon", "automation", "battle", "battle_faq", "crafting", "stamps", "hidden_spots", "shrines", "heart", "ultra_burst", "faq", "credits"],
+  "expansions": [
+    { "chapter": "trainer_cards", "source": "trainer_card_board", "pages": 1 },
+    { "chapter": "ultra_onslaught", "source": "ultra_onslaught_deck", "pages": 1 },
+    { "chapter": "recipes", "source": "crafting_recipes", "pages": 5 }
+  ]
+}

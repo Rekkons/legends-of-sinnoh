@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "note": "고향 마을 9면(9장). en = 영문 카드 그림의 본문(마을 이름 아래 글 — 울트라메가로폴리스만 첫 줄에 「Ultra Burst Campaign Only」), starters = 그림의 스타터 두 마리(왼쪽부터, xlsx internal_name) — 빌드가 authored/fixtures.json villageStarters와 맞춰 본다. 영문 출처: 원작 GitHub master(pl-small.git@c0b717c, v1.4a) assets/cards/village/card_fronts.png(blob d05756f, #n = 시트 칸) = AssetSources/download/levatius/assets/cards/village/card_fronts.png. 한국어판 시트는 받아 둔 것이 없어 ko는 영문을 새로 옮겼다(review). 본문은 TTS 자리 색 안내라 디지털판 화면에는 쓰지 않는다 [가정].",
+  "deck": "home_village",
+  "cards": {
+    "home_village.stark": {
+      "name": { "en": "Stark Village", "ko": "무쇠시티" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Chimchar", "Cyndaquil"],
+      "src": { "en": "assets/cards/village/card_fronts.png#1", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.snowpoint": {
+      "name": { "en": "Snowpoint Village", "ko": "선단시티" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Swinub", "Spheal"],
+      "src": { "en": "assets/cards/village/card_fronts.png#2", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.sunyshore": {
+      "name": { "en": "Sunyshore Village", "ko": "물가시티" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Shinx", "Pichu"],
+      "src": { "en": "assets/cards/village/card_fronts.png#3", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.nesburgh": {
+      "name": { "en": "Nesburgh Village", "ko": "장막시티" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Starly", "Machop"],
+      "src": { "en": "assets/cards/village/card_fronts.png#4", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.celestic": {
+      "name": { "en": "Celestic Village", "ko": "봉신마을" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Turtwig", "Rowlet"],
+      "src": { "en": "assets/cards/village/card_fronts.png#5", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.canalave": {
+      "name": { "en": "Canalave Village", "ko": "운하시티" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Piplup", "Oshawott"],
+      "src": { "en": "assets/cards/village/card_fronts.png#6", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.eterna": {
+      "name": { "en": "Eterna Village", "ko": "영원시티" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Duskull", "Litwick"],
+      "src": { "en": "assets/cards/village/card_fronts.png#7", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.sinnome": {
+      "name": { "en": "Sinnome Village", "ko": "꽃향기마을" },
+      "en": "Choose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Togepi", "Budew"],
+      "src": { "en": "assets/cards/village/card_fronts.png#8", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    },
+    "home_village.ultra_megalopolis": {
+      "name": { "en": "Ultra Megalopolis", "ko": "울트라메가로폴리스" },
+      "en": "Ultra Burst Campaign Only\nChoose your starter\nPlace this card in your hand to change your seat colour. Then reselect your seat as your player colour must match the colour of your trainer token.",
+      "ko": "울트라 버스트 캠페인 전용\n스타팅 포켓몬을 고르세요\n이 카드를 손에 넣어 자리 색을 바꾸세요. 플레이어 색이 트레이너 토큰 색과 같아야 하므로, 그다음 자리를 다시 고르세요.",
+      "starters": ["Porygon", "Poipole"],
+      "src": { "en": "assets/cards/village/card_fronts.png#9", "ko": "translated(한국어판 시트 없음) · authored/fixtures.json villageStarters" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 고향 마을 카드 시트가 없어 영문을 새로 옮김"
+    }
+  }
+}

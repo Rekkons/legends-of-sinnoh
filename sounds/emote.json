@@ -1,0 +1,1 @@
+{"note":"감정 표현이 뜸(M9 소리 ③ — plinkfx pop에 작은 방울 하나: 말풍선이 톡 솟음)","layers":[{"wave":"sine","freq":480,"to":1500,"curve":3,"a":0.002,"d":0.07,"shape":3},{"wave":"sine","freq":1900,"to":2300,"at":0.05,"a":0.001,"d":0.06,"shape":4,"gain":0.35}],"gain":0.8}

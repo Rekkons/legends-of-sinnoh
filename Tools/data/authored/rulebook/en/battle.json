@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 8~12쪽 「Battling」 — 원문 그대로(오역 고침 · 용어 바꿈 없음), TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 등급 · 여행 점수 아이콘은 글(Weak · Moderate · Strong · Legendary)로.",
+  "chapter": "battle",
+  "title": "Battling",
+  "sections": [
+    {
+      "key": "battle.start",
+      "title": "Start of Battle",
+      "pages": [8],
+      "blocks": [
+        { "p": "The trainer who initiated the battle sends out their first Pokémon before the other trainer but gets to claim the Initiative Advantage token in exchange." },
+        { "figure": "battle.start/token", "caption": "The Initiative Advantage token" }
+      ]
+    },
+    {
+      "key": "battle.order",
+      "title": "Turn Order",
+      "pages": [8],
+      "blocks": [
+        { "p": "Both Pokémon compare their initiative values. The Pokémon with the higher initiative takes the first turn. Turns then continue back and forth between the two until a Pokémon faints." },
+        { "p": "If there is a tie for initiative, the trainer with the Initiative Advantage token may use it to win the tie but the token is then passed to the other trainer. If the token is not used, the other trainer automatically wins the tie." }
+      ]
+    },
+    {
+      "key": "battle.action",
+      "title": "On Your Turn",
+      "pages": [8],
+      "blocks": [
+        { "p": "Choose one of your moves. Roll attack dice equal to the attack strength of the move and then resolve any effects of the move. Deal damage equal to the dice result plus any effects/bonuses." }
+      ]
+    },
+    {
+      "key": "battle.types",
+      "title": "Type Effectiveness",
+      "pages": [8],
+      "blocks": [
+        { "p": "Type effectiveness is considered as positive/negative bonus damage and fully stacks when attacking a Pokémon with two types:" },
+        { "list": ["Super Effective: +2 damage", "Not Very Effective: -2 damage", "Not Effective: -4 damage"] },
+        { "p": "The “Typeless” type, ignores type effectiveness" }
+      ]
+    },
+    {
+      "key": "battle.switch",
+      "title": "Switching",
+      "pages": [8],
+      "blocks": [
+        { "list": [
+          "When the opposing Pokémon faints: You may switch out before your opponent sends in their next Pokémon. Turn order is reset, initiative values are then compared to see which Pokémon goes first.",
+          "When you use a move effect that allows you to switch out: Turn order is maintained, your opponent always takes their turn next."
+        ] }
+      ]
+    },
+    {
+      "key": "battle.end",
+      "title": "End of Battle",
+      "pages": [8],
+      "blocks": [
+        { "p": "Any battle can be ended early by conceding after one of your Pokémon faints. All damage and status effects remain after battle." },
+        { "list": [
+          "A trainer is out of usable Pokémon or concedes: Their opponent is declared as the winner of the battle if they still have usable Pokémon, otherwise it is considered a draw.",
+          "The wild Pokémon has been captured or faints: Captured Pokémon are added to your party, fainted Pokémon are discarded. You still get the full rewards even if your Pokémon faints at the same time.",
+          { "text": "The wild Pokémon flees the battle: Wild Pokémon that have not fainted during battle are returned to their deck.", "items": [
+            "Weak, Moderate and Strong wild Pokémon flee the battle after defeating one of your Pokémon.",
+            "Legendary wild Pokémon flee the battle after defeating all your Pokémon."
+          ] }
+        ] }
+      ]
+    },
+    {
+      "key": "battle.rewards",
+      "title": "Rewards and Recovery",
+      "pages": [9],
+      "blocks": [
+        { "p": "After winning a battle against another trainer:" },
+        { "list": [
+          "You may take 1 Artifact of your choice from them or take up to 2 of their Change of Fate cards from them at random.",
+          "You and the other trainer may not be challenged again until the start of your next turns."
+        ] },
+        { "p": "After a wild Pokémon flees:" },
+        { "list": ["You gain Weak 2 / Moderate 1 / Strong 0 of the 3 Apricorns it was guarding."] },
+        { "p": "After a wild Pokémon is captured or faints:" },
+        { "list": [
+          "You gain Weak 1 / Moderate 2 / Strong 3 / Legendary 4 Journey Points.",
+          "You gain all 3 Apricorns it was guarding."
+        ] },
+        { "p": "Additionally, only after a wild Pokémon faints:" },
+        { "list": [
+          "You gain an extra 2 Journey Points.",
+          { "text": "You may teach its move to a Pokémon in your party where the Move Type matches one of the Learnable Move Types:", "items": [
+            "Moves that are Typeless can be taught to any Pokémon.",
+            "Pokémon can only have 3 moves in total, but the signature move cannot be changed. Existing moves can be replaced by discarding them."
+          ] }
+        ] },
+        { "p": "If you are out of usable Pokémon:" },
+        { "list": [
+          "You are immediately returned to your home village and your party is automatically fully restored at the start of your next turn.",
+          "Draw 1 Change of Fate card when you start your next turn."
+        ] }
+      ]
+    },
+    {
+      "key": "battle.status",
+      "title": "Status Effects",
+      "pages": [9],
+      "blocks": [
+        { "list": [
+          "All status effects are persistent until a Pokémon can heal them (through fully restoring, fainting or effects that heal statuses).",
+          "A Pokémon that already has a status effect cannot be afflicted with any further status effects (however two status effects can be inflicted through special moves that inflict them simultaneously)."
+        ] },
+        { "table": { "head": ["Status", "Effect", "Immunity"], "icons": ["battle.status/confused", "battle.status/burned", "battle.status/paralysed", "battle.status/poisoned", "battle.status/frozen", "battle.status/drowsy"], "rows": [
+          ["Confused", "When attacking, take 3 damage if you use the same move as you used last turn.", "Psychic-types are immune"],
+          ["Burned", "When attacking, reduce the total damage you deal by 2.", "Fire-types are immune"],
+          ["Paralysed", "Reduce your initiative by 3. Only on your immediate next attack, remove all regular hits from the roll.", "Electric-types are immune"],
+          ["Poisoned", "At the end of your turns during battle, take 2 damage. Ignore when the battle ends. You may no longer heal damage.", "Poison-types are immune"],
+          ["Frozen", "When attacked, increase the attack strength of moves against you by 2. You may no longer switch out or flee the battle.", "Ice-types are immune"],
+          ["Drowsy", "When attacking, replace 1 regular hit with 1 status symbol. When attacked, replace 1 regular hit with 1 critical hit.", "Dark-types are immune"]
+        ] } }
+      ]
+    },
+    {
+      "key": "battle.fatigue",
+      "title": "Battle Fatigue",
+      "pages": [9],
+      "blocks": [
+        { "list": [
+          "During battle, a Pokémon becomes fatigued after 5 dice rolls in a row.",
+          "Whilst fatigued, deal 3 damage to it every time its dice roller is used.",
+          "When a Pokémon switches out, it resets its battle fatigue back to 0."
+        ] },
+        { "digital": "In this game, the game counts the rolls instead of the dice roller." }
+      ]
+    },
+    {
+      "key": "battle.example",
+      "title": "Example Battle",
+      "pages": [10, 11],
+      "blocks": [
+        { "p": "In this example, we will be battling the wild Pokémon Leafeon with our Flareon. First, we compare initiative and see that both Flareon and Leafeon have 10 initiative each. Since we initiated the battle, we start with the Initiative Advantage token and use it to go first." },
+        { "figure": "battle.example/arena", "caption": "Their Dice Roller · Damage Dice · Wild Leafeon · Attack Dice · Your Flareon · Status Dice · Your Dice Roller" },
+        { "h": "Turn 1" },
+        { "p": "We choose to use Fire Blast against Leafeon:" },
+        { "list": [
+          "On the dice roller, we set the number of dice to roll to 5 as this is the attack strength of this move.",
+          "Also, on the dice roller, we set the type of the move to Fire as this is the type of this move. We get a +2 damage bonus from being super effective against the Grass-type of Leafeon."
+        ] },
+        { "figure": "battle.example/roller_fire", "caption": "Dice Roller set to 5 Dice and the Fire type." },
+        { "p": "After clicking Roll, we get a below average result:" },
+        { "list": ["2 status symbols (0 damage each)", "2 regular hits (1 damage each)", "1 critical hit (2 damage each)"] },
+        { "p": "The dice result adds up to 4 damage. By including our super effective bonus (+2), we will do a total of 6 damage to Leafeon (place a Damage Dice with value set to 6 on Leafeon)." },
+        { "figure": "battle.example/roll_fire", "caption": "Dice roll result adds up to 4 damage." },
+        { "p": "However, lets also read the effect of Fire Blast: “If 2 or more status symbols are rolled: Inflict the Burned status on the target.” Since we rolled 2 status symbols, Leafeon is now Burned as a result (place a Status Dice with value set to Burned on Leafeon also)." },
+        { "figure": "battle.example/dice_fire", "caption": "Damage Dice set to 6 and Status Dice set to Burned." },
+        { "h": "Turn 2" },
+        { "p": "Now Leafeon gets to attack and can only use Leaf Blade:" },
+        { "list": ["Because Grass is not very effective against the Fire-type of Flareon, total damage will be reduced by 2."] },
+        { "p": "After hitting roll, they get an above average result:" },
+        { "list": ["3 regular hits (1 damage each)", "1 critical hit (2 damage each)"] },
+        { "figure": "battle.example/roller_grass", "caption": "Dice Roller set to 4 Dice and the Grass type." },
+        { "p": "The dice result adds up to 5 damage. But by including type effectiveness (-2), the reduced damage from Leafeon being Burned (-2) and the effect of Leaf Blade on critical hits (+1) this means Flareon only takes 2 damage (place a Damage Dice with value set to 2 on Flareon)." },
+        { "figure": "battle.example/roll_grass", "caption": "Dice roll result adds up to 5 damage." },
+        { "figure": "battle.example/dice_grass", "caption": "Damage Dice set to 2." },
+        { "h": "Finishing the Battle" },
+        { "p": "Flareon finishes the battle with another Fire Blast (no matter the dice result, the super effective damage is enough to remove the remaining 2 health of Leafeon)." },
+        { "p": "The trainer may now claim the rewards for defeating Leafeon as well as teach Leaf Blade to a Pokémon in their party if they wish to." },
+        { "figure": "battle.example/card_flareon", "caption": "Flareon card for reference." },
+        { "figure": "battle.example/card_leafeon", "caption": "Leafeon card for reference." },
+        { "digital": "In this game, the game sets the dice roller and places the dice for you." }
+      ]
+    },
+    {
+      "key": "battle.swarm",
+      "title": "Swarm Battles",
+      "pages": [12],
+      "blocks": [
+        { "p": "You may trigger a Swarm Battle by clicking “Search” on the Pokédex whilst you are at a Distortion Gate." },
+        { "p": "There are 4 Distortion Gates found across the region:" },
+        { "list": ["Snowdrift Gate (Plains Biome Pokémon)", "Lilly Gate (Mountain Biome Pokémon)", "Westbreeze Gate (Ocean Biome Pokémon)", "Deepmarsh Gate (Forest Biome Pokémon)"] },
+        { "figure": "battle.swarm/gates", "caption": "The Distortion Gates" },
+        { "p": "Swarm Battles follow these rules:" },
+        { "list": [
+          "They may be triggered in both campaigns at active and inactive Distortion Gates. Swarm Battles count as wild encounters.",
+          "The battle consists of a Weak Pokémon, a Moderate Pokémon and a Strong Pokémon. The Pokémon enter the battle in this same order (manually move their cards instead of using the “Battle!” buttons).",
+          "The wild Pokémon form their own party and only flee after defeating all your Pokémon.",
+          "If every Pokémon in the wild Pokémon party has been defeated or captured, you gain 7 Journey Points as the total reward for this battle. You do not gain any Journey Points if you lose."
+        ] },
+        { "figure": "battle.swarm/example", "caption": "Example of a Swarm Battle at the Deepmarsh Gate." },
+        { "digital": "In this game, the game brings the three Pokémon into the battle for you." }
+      ]
+    }
+  ]
+}

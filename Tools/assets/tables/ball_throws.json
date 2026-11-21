@@ -1,0 +1,12 @@
+{"schema":1,"note":"이 게임의 볼 넷(items.json 키) ↔ Pt 원작 자산 볼 던지기 그림(AssetSources/rom/pt/png/ball_throw/<source>.png), 상대 트레이너 앞모습(trainer_front/<source>.png) — build.mjs ball 묶음이 Gen/Stage/{Ball,Foe}로 만든다. 볼 대응은 [가정](plan §5 #35): 몬스터볼 = poke, 그레이터볼 = great, 얼티밋볼 = ultra, 키스톤볼 = cherish(원작 자산에 맞는 볼이 없어 임시 — 04 §8-8 68행 「키스톤볼 [새로]」)","rows":[
+{"kind":"ball","key":"poke_ball","source":"poke_ball","why":"몬스터볼"},
+{"kind":"ball","key":"greater_ball","source":"great_ball","why":"수퍼볼 자리(파랑)"},
+{"kind":"ball","key":"ultimate_ball","source":"ultra_ball","why":"하이퍼볼 자리(검정·노랑)"},
+{"kind":"ball","key":"keystone_ball","source":"cherish_ball","why":"원작 자산에 맞는 볼이 없다 — 임시(붉은 볼). 새로 그릴 때까지"},
+{"kind":"foe","key":"galactic_grunt","source":"galactic_grunt_male","why":"갤럭시단 조무래기(남) — 1막 조무래기 배틀 들어가기(72행)"},
+{"kind":"foe","key":"galactic_grunt_f","source":"galactic_grunt_female","why":"갤럭시단 조무래기(여) — 조무래기마다 남·여를 섞는다(결정 70 ⑩, 고르기는 Sinnoh.Fx FoeArt)"},
+{"kind":"foe","key":"commander_mars","source":"commander_mars","why":"간부 마스 — 2막 호수의 간부 배틀 들어가기(72행, 결정 80 L4 나 — M6 그림 에셋)"},
+{"kind":"foe","key":"commander_jupiter","source":"commander_jupiter","why":"간부 주피터 — 같은 꼴"},
+{"kind":"foe","key":"commander_saturn","source":"commander_saturn","why":"간부 새턴 — 같은 꼴"},
+{"kind":"foe","key":"cyrus","source":"galactic_boss","why":"보스 태홍 — 3막 시작의 사당 배틀 들어가기(72행). 원작 자산 시트는 80×80 여섯 칸(81줄 간격) — 첫 칸만"}
+]}

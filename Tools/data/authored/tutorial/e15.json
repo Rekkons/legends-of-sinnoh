@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "note": "확장 장 E15 울트라 버스트 ③ 시련(07 §5-2 — 1인). 판: 캠페인 UltraBurst · 시드 3 · 셋업은 마박사가 대신(demo) → 막 길 ub-trial(SoloTrail.UbTrial — 입지호수 동굴(칸 259)에, 파티 앞에 펄기아). [찾아보기] → 아그놈(의지의 시련) → 첫 공격 주사위 대본 급소 2 · 일반 4(시련을 넘김 — 그 차례는 면역) → 급소 2 · 급소 2로 쓰러뜨림(여행 점수 6 · 수호신 이동력 +2) → 혼자 하는 판의 라운드 끝 물음 [건너뛰지 않음] → 다음 턴 이동력 5. 엠라이트·유크시 시련과 실버디는 대사로만.",
+  "id": "e15",
+  "start": {"campaign":"UltraBurst","seed":3,"after":"ub-trial"},
+  "steps": [
+    {"id":"P01","ch":15,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["01 §3-5","A50"]},
+    {"id":"P02","ch":15,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"S001","ch":15,"advance":"next","ref":["A55 ①","A55 ②"]},
+    {"id":"S003","ch":15,"advance":"next","ref":["01 §3-5","07 §5-1"]},
+    {"id":"S004","ch":15,"anchor":"cell:259","advance":"next","ref":["A55 ①","A55 ④"]},
+    {"id":"S005","ch":15,"anchor":"board-hud-act-search","advance":"command","allow":[{"kind":"Search","arg":142}],"auto":[{"kind":"Search","arg":142}],"ref":["A55 ①"]},
+    {"id":"S006","ch":15,"advance":"command","allow":[{"choice":"SendIn","kind":"Pick","target":1}],"auto":[{"choice":"SendIn","kind":"Pick","target":1}],"ref":["01 §6"]},
+    {"id":"S007","ch":15,"advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"ref":["01 §6"]},
+    {"id":"S008","ch":15,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["CriticalHit","CriticalHit","RegularHit","RegularHit","RegularHit","RegularHit"],"ref":["A55 ④"]},
+    {"id":"S009","ch":15,"advance":"next","ref":["A55 ②"]},
+    {"id":"S010","ch":15,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["CriticalHit","CriticalHit"],"ref":["A55 ②","01 §6"]},
+    {"id":"S011","ch":15,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["CriticalHit","CriticalHit"],"expect":{"jp":6},"ref":["A55 ①","01 §6"]},
+    {"id":"S012","ch":15,"advance":"next","ref":["A55 ⑤"]},
+    {"id":"S013","ch":15,"anchor":"board-bless-no","advance":"command","allow":[{"choice":"Respond","kind":"Decline"}],"auto":[{"choice":"Respond","kind":"Decline"}],"ref":["A44 ②","A54 ⑤"]},
+    {"id":"S014","ch":15,"anchor":"board-hud-moves","advance":"next","expect":{"movesLeft":5},"ref":["A55 ⑤","A50 ⑥"]},
+    {"id":"S015","ch":15,"advance":"next","ref":["A55 ③","A55 ④"]},
+    {"id":"S016","ch":15,"advance":"next","ref":["A55 ⑥","01 §8-2"]}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Sinnoh.Ai",
+    "rootNamespace": "Sinnoh.Ai",
+    "references": [
+        "Sinnoh.Rules"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

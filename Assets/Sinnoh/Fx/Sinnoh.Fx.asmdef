@@ -1,0 +1,17 @@
+{
+    "name": "Sinnoh.Fx",
+    "rootNamespace": "Sinnoh.Fx",
+    "references": [
+        "Sinnoh.Rules",
+        "Rekkon.UiKit.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

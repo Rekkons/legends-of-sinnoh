@@ -1,0 +1,17 @@
+{"schema":1,"note":"효과음 후보(M9 소리 ③ — 사용자가 소리 ④에서 듣고 고른다, plan §5 #10). 키마다 원작 자산 SE(Pt SDAT 시퀀스 심볼 — 첫 음 하나, lib/se.mjs) 먼저, 원작 자산에 맞는 것이 없거나 비교용이면 plinkfx(카탈로그 이름 또는 레시피 sounds/<이름>.json). 지금 쓰는 것(se.json의 seq·plinkfx)은 README에 ✔. se-candidates.mjs가 Logs/Review/m9/sound3/에 렌더한다","rows":[
+{"key":"land","use":"말·토큰 착지(2·5·11·16·14·15·27·33·34·82·90행) — 결정 70 ⑮ 「land 너무 둔탁해」","rom":["SEQ_SE_DP_SUTYA","SEQ_SE_DP_SUTYA2","SEQ_SE_PL_SUTYA","SEQ_SE_PL_SUTYA2","SEQ_SE_DP_DANSA"],"plinkfx":["land","sounds/land.json"]},
+{"key":"my_turn","use":"내 차례 컷신(101행) — 결정 70 ⑮ 「my_turn 너무 커」(키 dB도 낮춤)","rom":["SEQ_SE_DP_PINPON","SEQ_SE_PL_PINPON","SEQ_SE_PL_PINPON2","SEQ_SE_DP_PIRORIRO"],"plinkfx":["notify"]},
+{"key":"ping","use":"방 판 핑 「!」(02 M7-86 — 지금 meet 대역, #273)","rom":["SEQ_SE_PL_CALL","SEQ_SE_DP_PIKO2","SEQ_SE_PL_POINT1"],"plinkfx":["sounds/ping.json","notify"]},
+{"key":"emote","use":"감정 표현이 뜸(02 M7-87 — 지금 select 대역, #273)","rom":["SEQ_SE_PL_BALLOON01","SEQ_SE_DP_BUTTON9"],"plinkfx":["sounds/emote.json","pop"]},
+{"key":"mark","use":"기록 줄 도장(02 M7-87 — 지금 token 대역, #273)","rom":["SEQ_SE_DP_BUTTON3","SEQ_SE_DP_BADGE_C"],"plinkfx":["sounds/mark.json","drop"]},
+{"key":"timer","use":"응답 시계 남은 10초(02 M7-54 — 내 시계 · 선택마다 한 번, 지금 token 대역, #221)","rom":["SEQ_SE_PL_TIMER01","SEQ_SE_PL_TIMER02","SEQ_SE_PL_TOKEI3","SEQ_SE_PL_FTIMER03"],"plinkfx":["tick"]},
+{"key":"warp","use":"순간이동 · 게이트 · 토큰 날기(14·15·83행 — 지금 wipe 대역)","rom":["SEQ_SE_PL_WARP","SEQ_SE_DP_TELE","SEQ_SE_DP_TELE2"],"plinkfx":[]},
+{"key":"shine","use":"반짝(7·28·32·48·93행 — 떨어진 별 · 축복 · 해금 금 테두리 · 실버디, 지금 token·heal·ball_open 대역)","rom":["SEQ_SE_DP_KIRAKIRA","SEQ_SE_DP_KIRAKIRA2","SEQ_SE_PL_KIRAKIRA4"],"plinkfx":[]},
+{"key":"stamp","use":"여행 스탬프 도장(47행 — 지금 hit 대역)","rom":["SEQ_SE_PL_STAMP","SEQ_SE_DP_BADGE_C"],"plinkfx":[]},
+{"key":"coin","use":"썬/문 동전(90행 — 지금 land 대역)","rom":["SEQ_SE_PL_COIN","SEQ_SE_PL_KIN"],"plinkfx":[]},
+{"key":"exp","use":"피로 칸이 오름(64행 — 지금 무음, 04 「EXP 소리」)","rom":["SEQ_SE_DP_EXP","SEQ_SE_DP_EXPMAX"],"plinkfx":[]},
+{"key":"flee","use":"도망(67행 — 지금 무음)","rom":["SEQ_SE_DP_NIGERU","SEQ_SE_DP_NIGERU2"],"plinkfx":[]},
+{"key":"fall","use":"귀환 암전 · 탈락 하강음(71·91행 — 지금 무음 · cancel 대역)","rom":["SEQ_SE_DP_PYUU","SEQ_SE_DP_PYUU2"],"plinkfx":["power-down"]},
+{"key":"search","use":"찾아보기 「!」 — 나무(20행, 결정 143 ⑥ 「나무를 흔들거나 수풀을 지나가는 소리」 — 옛 DP_FW230)","rom":["SEQ_SE_DP_KUSA","SEQ_SE_DP_HURU","SEQ_SE_DP_HURU2","SEQ_SE_DP_GASA01","SEQ_SE_DP_FW015","SEQ_SE_DP_FW230"],"plinkfx":[]},
+{"key":"search_reef","use":"찾아보기 「!」 — 바다 칸의 산호(20행, 결정 143 ⑥)","rom":["SEQ_SE_DP_FOOT3_1","SEQ_SE_DP_FOOT3_0","SEQ_SE_PL_WATER","SEQ_SE_DP_NAMI","SEQ_SE_DP_AWA"],"plinkfx":[]}
+]}

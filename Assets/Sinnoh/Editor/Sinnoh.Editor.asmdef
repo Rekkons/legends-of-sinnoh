@@ -1,0 +1,30 @@
+{
+    "name": "Sinnoh.Editor",
+    "rootNamespace": "Sinnoh.Editor",
+    "references": [
+        "Sinnoh.Rules",
+        "Sinnoh.Ai",
+        "Sinnoh.Data",
+        "Sinnoh.Fx",
+        "Sinnoh.Client",
+        "Rekkon.UiKit.Core",
+        "Rekkon.UiKit",
+        "UnityEditor.TestRunner",
+        "UnityEngine.TestRunner",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Core.Editor",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Universal.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

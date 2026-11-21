@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 14쪽 「Crafting」 — 원문 그대로(오역 고침 · 용어 바꿈 없음). 재료(Apricorn 그림 ×2 · ×3)는 그림이라 글로 옮기지 않았다(제작 레시피는 「설명서 글 ②」의 확장 장).",
+  "chapter": "crafting",
+  "title": "Crafting",
+  "sections": [
+    {
+      "key": "crafting.intro",
+      "title": "Crafting",
+      "pages": [14],
+      "blocks": [
+        { "p": "During your turn and whilst outside of battle, you may craft items from the Apricorns you have collected on your journey so far." }
+      ]
+    },
+    {
+      "key": "crafting.balls",
+      "title": "Poké Balls",
+      "pages": [14],
+      "blocks": [
+        { "p": "Required for catching Pokémon [[pokemon.capture|see Capturing Pokémon]]." },
+        { "figure": "crafting.balls/balls", "caption": "Poké Ball · Greater Ball · Ultimate Ball · Keystone Ball" },
+        { "table": { "head": ["Ball", "Effect"], "rows": [
+          ["Poké Ball", "Roll 3 dice when rolling to capture."],
+          ["Greater Ball", "Roll 4 dice when rolling to capture."],
+          ["Ultimate Ball", "Roll 5 dice when rolling to capture."],
+          ["Keystone Ball", "Roll 6 dice when rolling to capture."]
+        ] } }
+      ]
+    },
+    {
+      "key": "crafting.stews",
+      "title": "Apricorn Stews",
+      "pages": [14],
+      "blocks": [
+        { "p": "Instant effect. Each type of stew can only be crafted once per turn." },
+        { "figure": "crafting.stews/stews", "caption": "Restoring Stew · Alluring Stew · Zesty Stew · Infused Stew" },
+        { "table": { "head": ["Stew", "Effect"], "rows": [
+          ["Restoring Stew", "Fully restore your entire party."],
+          ["Alluring Stew", "Replace any 1 status symbol with 1 regular hit once during your next wild encounter."],
+          ["Zesty Stew", "Move 3 additional tiles this turn whilst preventing Alpha Pokémon from battling you."],
+          ["Infused Stew", "Discard only half of the Journey Points needed to evolve 1 Pokémon this turn, rounded down."]
+        ] } }
+      ]
+    },
+    {
+      "key": "crafting.items",
+      "title": "Battle Items",
+      "pages": [14],
+      "blocks": [
+        { "p": "Attach to a Pokémon in your party. All held items other than Alpha Pokémon tokens can be moved around your team whilst outside of battle." },
+        { "figure": "crafting.items/items", "caption": "Blast Crystal · Star Shield · Lucky Egg · Eviolite · Swiftness Sash · Choice Band" },
+        { "table": { "head": ["Item", "Effect"], "rows": [
+          ["Blast Crystal", "Only on the first attack against the user, deal 1 damage to the attacker and prevent them from switching out this turn."],
+          ["Star Shield", "Only on the first attack against the user, the user takes 2 less damage and is immune to any status effects inflicted this turn."],
+          ["Lucky Egg", "When the user attacks, replace 2 status symbols with 1 critical hit if possible."],
+          ["Eviolite", "When the user is attacked, remove 2 regular hits. Only works on Weak/Moderate Pokémon or Pokémon that are not fully evolved."],
+          ["Swiftness Sash", "Increase the initiative of the user by 2 but decrease the attack strength of your moves by 1. Minimum 1 attack strength."],
+          ["Choice Band", "Increase the attack strength of a move by 1, but the user may only use this move until switched out."]
+        ] } }
+      ]
+    }
+  ]
+}

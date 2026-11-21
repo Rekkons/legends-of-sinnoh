@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "tables": {
+    "board": {
+      "file": "board.json",
+      "rows": 351,
+      "sha256": "5e7c44a2451bca4ab224bed441265fbe80d4ebb71813a5f12afcd3380194a6d4"
+    },
+    "cards": {
+      "file": "cards.json",
+      "rows": 54,
+      "sha256": "b5de054687e2186ff23f71d8c86fdbef7437ca5c8da8b5b04f3cf6347d73a4d6"
+    },
+    "decks": {
+      "file": "decks.json",
+      "rows": 17,
+      "sha256": "199c1cafd477753e228b572e0215393eb4f5e5042bc8f088c825dfc64e621929"
+    },
+    "effects": {
+      "file": "effects.json",
+      "rows": 294,
+      "sha256": "beb333b28c3d630139e0f9256ffde38f5aae456416f33853ab798a4311a49cc5"
+    },
+    "fixtures": {
+      "file": "fixtures.json",
+      "rows": 174,
+      "sha256": "a969643741fb39859d6599df81d1a198a82bc695ad72cba1b99f70f99c5a52f6"
+    },
+    "items": {
+      "file": "items.json",
+      "rows": 55,
+      "sha256": "3713a30d5e4062e3b075ed8fc6a5d4302a57d0bdfd5c05b21f11bba6c3778ef5"
+    },
+    "moves": {
+      "file": "moves.json",
+      "rows": 236,
+      "sha256": "925312278bc566876bb8969e56701456fb69159ad80d3da8b1269dd22dc12f5d"
+    },
+    "pokemon": {
+      "file": "pokemon.json",
+      "rows": 390,
+      "sha256": "ffbdb6e94888c231ce78a3c3a58e0859334765c4b739f5ebbddf5239b6d69d71"
+    },
+    "trainer_cards": {
+      "file": "trainer_cards.json",
+      "rows": 51,
+      "sha256": "d06cdbd13e43ceee95dd471322fac26fbe906d8cc73fdfdd7f8949db894d4800"
+    },
+    "strings.en": {
+      "file": "strings.en.json",
+      "rows": 4254,
+      "sha256": "9a257d85af0a0cfe80aee8aedd2ad6311e02d65ec506b12f2d6132addba4a9f1"
+    },
+    "strings.ko": {
+      "file": "strings.ko.json",
+      "rows": 4254,
+      "sha256": "fd74e7ca038638b873f9fd3dd033396b23352bbb17f7abf4fdc339c0fc8e8d6c"
+    },
+    "tutorial.e01": {
+      "file": "tutorial/e01.json",
+      "rows": 22,
+      "sha256": "68814bc94cdd1e92c34ab0e6d3ee25c1669221c7587f55fb8b3bedd942a2fac9"
+    },
+    "tutorial.e02": {
+      "file": "tutorial/e02.json",
+      "rows": 14,
+      "sha256": "0321ac99f35b5591b3a7ddd94c664804a23558902689cc3f1671428420a81dde"
+    },
+    "tutorial.e03": {
+      "file": "tutorial/e03.json",
+      "rows": 12,
+      "sha256": "dc46ec91652f090bfe9dc3df178c27d22bb9d5366ecf4541cdd0332de19f7c94"
+    },
+    "tutorial.e04": {
+      "file": "tutorial/e04.json",
+      "rows": 12,
+      "sha256": "c61b8d71c88ce679c0c7a65dae772fdb9ac16f5ad6d40edac08d7846c4d32def"
+    },
+    "tutorial.e05": {
+      "file": "tutorial/e05.json",
+      "rows": 18,
+      "sha256": "81c4a04460ea1cdc62bfdd0dc73be280cc6bf91b3914b82a659b54514f45ee74"
+    },
+    "tutorial.e06": {
+      "file": "tutorial/e06.json",
+      "rows": 22,
+      "sha256": "8c2422ba1ecbb45d9e8dfe95ad823c2a147fb61d1610e3836683a678aae330ba"
+    },
+    "tutorial.e07": {
+      "file": "tutorial/e07.json",
+      "rows": 13,
+      "sha256": "b7962085b7d3f4fb55aff9333328312ce0c269493d94fc5bf64887b784d994dc"
+    },
+    "tutorial.e08": {
+      "file": "tutorial/e08.json",
+      "rows": 26,
+      "sha256": "36eda528562cec3c96bd824dfe19f2e6da154af5d6a313b6405b7b0031598b0e"
+    },
+    "tutorial.e09": {
+      "file": "tutorial/e09.json",
+      "rows": 11,
+      "sha256": "df9232c429e5dd6db98856415a0f89a565ea59933bb85178b14e5d11d9ba05b6"
+    },
+    "tutorial.e10": {
+      "file": "tutorial/e10.json",
+      "rows": 18,
+      "sha256": "897fc7a391fa6cbc866629b0712444da81d640ee8ac9d39dce67d6c0da7cf29f"
+    },
+    "tutorial.e11": {
+      "file": "tutorial/e11.json",
+      "rows": 14,
+      "sha256": "4c9ef74a085bb28b001cfb2bb7550e367623b5fd35822c85b679b463baf75ccc"
+    },
+    "tutorial.e12": {
+      "file": "tutorial/e12.json",
+      "rows": 23,
+      "sha256": "2e6966a1043ce833b35c95517be1a3718b6bbe73fe7cb230338a6d1c8236c98a"
+    },
+    "tutorial.e13": {
+      "file": "tutorial/e13.json",
+      "rows": 18,
+      "sha256": "de877beb8427ededdb67743db9b17a9faf1435763449ddc7eeccdbe93c4aa086"
+    },
+    "tutorial.e14": {
+      "file": "tutorial/e14.json",
+      "rows": 26,
+      "sha256": "ec0acb560acd5b66940e94e2ea2dbb00554103d26eadc0da9a3b0193f604dd42"
+    },
+    "tutorial.e15": {
+      "file": "tutorial/e15.json",
+      "rows": 17,
+      "sha256": "99c537ba8780444878601dd6909cbf35347c1d434c2167e5813fd3b956da38e9"
+    },
+    "tutorial.main": {
+      "file": "tutorial/main.json",
+      "rows": 67,
+      "sha256": "8db76d8bb9f0035ae9a443c3874c750df272c9c1e4df102c76819833321225f2"
+    },
+    "tutorial.preview2": {
+      "file": "tutorial/preview2.json",
+      "rows": 7,
+      "sha256": "e3404998aee27579f8ee86a546e84f57a870ff8736946c4cbb43e501886c599b"
+    },
+    "tutorial.preview3": {
+      "file": "tutorial/preview3.json",
+      "rows": 8,
+      "sha256": "41f8720a444dc645dbc9d0f75cf064d5738c0d5242658ab3e02299c62b6a309f"
+    },
+    "tutorial_chapters": {
+      "file": "tutorial_chapters.json",
+      "rows": 23,
+      "sha256": "56664b6381939e44d4745a58c8b960d8026c2d171b97c6b5066949ea9192bbae"
+    },
+    "rulebook.ko": {
+      "file": "rulebook.ko.json",
+      "rows": 81,
+      "sha256": "4c27de34e3ecde849cd453c0fa58d477f0c50eafcb322275a238bcfc5b843210"
+    },
+    "rulebook.en": {
+      "file": "rulebook.en.json",
+      "rows": 81,
+      "sha256": "57dbe4d332d71073d8dade236d3a9da6bf6f2948c1e9516fbeba18b9f3d486fe"
+    },
+    "credits": {
+      "file": "credits.json",
+      "rows": 6,
+      "sha256": "59e6b1cf4f8f19a5661b6d54519738a34234980a20a9b1340fb4b2b5a912d26f"
+    }
+  },
+  "contentTables": [
+    "board",
+    "cards",
+    "decks",
+    "effects",
+    "fixtures",
+    "items",
+    "moves",
+    "pokemon",
+    "trainer_cards"
+  ],
+  "contentHash": "bd7e60479baef8a40c5af09fc657f534e53b139dcafbc55a7c515cf7a20b1348",
+  "inputs": {
+    "Research/map_cells.csv": "dd534e0b931f8b2a5a64df10aa66df689278a18c",
+    "Research/raw/original-gh/sinnoh_cube-master.xlsx": "c1764da462db5a81ac3a24153f6ebade3e5af32f",
+    "Research/raw/_tools/cards.json": "74304326de104faa9076481f0b91e65c2bad7a10",
+    "Research/roster.csv": "b82b140884d405eb0ca1ad9bd9ee4aae9899066f",
+    "Research/raw/_scripts/lang-ff1ce0.lua": "2425eeb373102b683e65b9fbb5099af5d214e3f1",
+    "Research/raw/gh-clone/pl-small.git@c0b717c515751d3237ac0d68ed24e5ccbad991c8:tabletop_src/module_language_english.ttslua": "e9b52dfd1d90179a6d6c0e143e129e16a8818852",
+    "Research/raw/sinnoh-ko-1.4a.json": "03894c99f989ddb567d2d6cf351b37caf5d2ff86",
+    "Research/raw/orig-save/orig-2652573878.decoded.json": "5cf0753117d0c170f4ca53298354171dd1cd28df",
+    "Research/raw/game-text/text/names-ko.json": "41a38506c02777da1359a5f40651f2c80aee1d4d",
+    "Research/raw/game-text/text/card-classes-ko-crosscheck.json": "303bf8675343f6dfb7de9907d0af0b888011ecd6",
+    "Research/trainer-cards.md": "32e9b5aef0e5b3c0ecf2684eed6c8088786aaf14",
+    "AssetSources/rom/pt/text/pl_msg/0637.json": "d8d0186461ac74b14923d69a75ef687e46514da8",
+    "AssetSources/rom/b2w2/text/a002/0403.json": "e0eea41e0afa61020523930a73d59630056a83e0",
+    "AssetSources/download/pokeapi-data/move_names.csv": "3a7722fa6ddc56e8f9832dc334e394e1a91c5625"
+  }
+}

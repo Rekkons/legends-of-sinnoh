@@ -1,0 +1,24 @@
+# Unity가 LF로 다시 쓰는 YAML 에셋: core.autocrlf=true(CRLF 체크아웃)이면 Play·빌드·배치 실행 뒤 내용 변경 없이 M으로 남는다(isekai 2026-11-01 교훈)
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.mat text eol=lf
+*.meta text eol=lf
+*.inputactions text eol=lf
+ProjectSettings/*.txt text eol=lf
+# 생성 데이터 JSON과 입력 CSV: build.mjs --check가 바이트로 비교하고 manifest가 입력 sha1을 적는다(core.autocrlf=true인 새 작업 트리에서도 LF로)
+Assets/Sinnoh/Data/Json/*.json text eol=lf
+Assets/Sinnoh/Data/Json/tutorial/*.json text eol=lf
+Research/*.csv text eol=lf
+# 빌드가 쓰는 보고서(추적): --check가 바이트로 비교한다
+Tools/data/reports/* text eol=lf
+# 에셋 파이프라인 표·lock·크레딧(추적): 스크립트가 LF로 쓰고 바이트로 비교한다(figures --check, 받기 lock, M4_ 시험)
+Tools/assets/*.json text eol=lf
+Tools/assets/tables/*.json text eol=lf
+Tools/assets/credits/*.json text eol=lf
+Tools/assets/credits/*.txt text eol=lf
+# 크레딧 문서(lib/credits.mjs가 credits/*.json에서 만든다 — build.mjs --check가 바이트로 비교)
+CREDITS.md text eol=lf
+CREDITS.ko.md text eol=lf
+# 빌드 입력 문서(manifest inputs가 sha1을 적는다 — check:data): CRLF로 풀리면 해시가 어긋난다(2026-11-16 작업 트리 wt-s1)
+Research/trainer-cards.md text eol=lf

@@ -1,0 +1,239 @@
+/* 생성됨 — 손으로 고치지 않는다. 원본 Kit.uss, 만드는 법 node Tools~/build-uss.mjs (키트 저장소). 1080 토큰 벌 */
+.kit-root {
+    --kit-text: #383838;
+    --kit-text-muted: #707880;
+    --kit-text-title: #3868a8;
+    --kit-text-on-dark: #f8f8f8;
+    --kit-surface: #f8f8f8;
+    --kit-surface-dim: #e8ecf0;
+    --kit-line: #c0c8d0;
+    --kit-edge: #283038;
+    --kit-bar: #2c3848;
+    --kit-bar-edge: #141c24;
+    --kit-scrim: rgba(16, 24, 32, 0.827);
+    --kit-btn: #5890d8;
+    --kit-btn-edge: #203048;
+    --kit-btn-main: #48b060;
+    --kit-btn-main-edge: #183820;
+    --kit-btn-end: #e05040;
+    --kit-btn-end-edge: #401810;
+    --kit-btn-text: #ffffff;
+    --kit-slider-track: #d8e0e8;
+    --kit-slider-fill: #5890d8;
+    --kit-pill: #2c3848;
+    --kit-pill-edge: #141c24;
+    --kit-pill-text: #ffffff;
+    --kit-pill-text-low: #ff5050;
+    --kit-pill-text-high: #70ff70;
+    --kit-pill-text-max: #a8b0c0;
+    --kit-badge: #d8e0e8;
+    --kit-badge-text: #383838;
+    --kit-badge-gold: #f8d040;
+    --kit-badge-gold-text: #503800;
+    --kit-badge-silver: #c0c8d0;
+    --kit-badge-silver-text: #283038;
+    --kit-badge-warn: #f0a050;
+    --kit-badge-warn-text: #402000;
+    --kit-badge-ok: #78d088;
+    --kit-badge-ok-text: #103818;
+    --kit-badge-red: #e05040;
+    --kit-badge-red-text: #ffffff;
+}
+.kit-root {
+    color: var(--kit-text);
+    font-size: 24px;
+}
+.kit-root Label {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    -unity-text-align: middle-left;
+}
+.kit-f1 {
+    font-size: 12px;
+    height: 14px;
+}
+.kit-f2 {
+    font-size: 24px;
+    height: 26px;
+}
+.kit-f3 {
+    font-size: 24px;
+    height: 26px;
+}
+.kit-ftitle {
+    font-size: 36px;
+    height: 38px;
+}
+.kit-root .kit-wrap {
+    white-space: normal;
+    height: auto;
+}
+.kit-title {
+    color: var(--kit-text-title);
+}
+.kit-muted {
+    color: var(--kit-text-muted);
+}
+.kit-panel {
+    -unity-slice-scale: 2px;
+    padding: 16px;
+}
+.kit-tip {
+    position: absolute;
+    max-width: 540px;
+    -unity-slice-scale: 2px;
+    padding: 16px 20px;
+    --kit-tip-gap: 6;
+}
+.kit-scrim {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--kit-scrim);
+}
+.kit-btn {
+    height: 33px;
+    margin: 0;
+    padding: 1px 12px 0 12px;
+    flex-shrink: 0;
+    background-color: var(--kit-btn);
+    border-width: 1px;
+    border-bottom-width: 5px;
+    border-color: var(--kit-btn-edge);
+    border-radius: 0;
+    color: var(--kit-btn-text);
+    font-size: 24px;
+    white-space: nowrap;
+    -unity-text-align: middle-center;
+}
+.kit-btn-main {
+    background-color: var(--kit-btn-main);
+    border-color: var(--kit-btn-main-edge);
+}
+.kit-btn-end {
+    background-color: var(--kit-btn-end);
+    border-color: var(--kit-btn-end-edge);
+}
+.kit-btn:disabled {
+    opacity: 0.45;
+}
+.kit-slider {
+    width: 180px;
+    height: 21px;
+    flex-shrink: 0;
+}
+.kit-slider-track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 6px;
+    height: 9px;
+    background-color: var(--kit-slider-track);
+    border-width: 1px;
+    border-color: var(--kit-edge);
+}
+.kit-slider-fill {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    height: 9px;
+    background-color: var(--kit-slider-fill);
+    border-width: 1px;
+    border-color: var(--kit-edge);
+}
+.kit-slider-knob {
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 21px;
+    background-color: var(--kit-btn);
+    border-width: 1px;
+    border-bottom-width: 5px;
+    border-color: var(--kit-btn-edge);
+}
+.kit-slider:disabled {
+    opacity: 0.45;
+}
+.kit-pill {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 66px;
+    padding: 1px 6px 1px 5px;
+    background-color: var(--kit-pill);
+    border-width: 1px;
+    border-color: var(--kit-pill-edge);
+    color: var(--kit-pill-text);
+}
+.kit-pill Label {
+    height: 22px;
+}
+.kit-pill-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 3px;
+    flex-shrink: 0;
+}
+.kit-pill-low {
+    color: var(--kit-pill-text-low);
+}
+.kit-pill-high {
+    color: var(--kit-pill-text-high);
+}
+.kit-pill-max {
+    color: var(--kit-pill-text-max);
+}
+.kit-badge {
+    flex-shrink: 0;
+    background-color: var(--kit-badge);
+    color: var(--kit-badge-text);
+}
+.kit-root .kit-badge {
+    padding: 0 8px;
+    -unity-text-align: middle-center;
+}
+.kit-badge-gold {
+    background-color: var(--kit-badge-gold);
+    color: var(--kit-badge-gold-text);
+}
+.kit-badge-silver {
+    background-color: var(--kit-badge-silver);
+    color: var(--kit-badge-silver-text);
+}
+.kit-badge-warn {
+    background-color: var(--kit-badge-warn);
+    color: var(--kit-badge-warn-text);
+}
+.kit-badge-ok {
+    background-color: var(--kit-badge-ok);
+    color: var(--kit-badge-ok-text);
+}
+.kit-badge-red {
+    background-color: var(--kit-badge-red);
+    color: var(--kit-badge-red-text);
+}
+.kit-row {
+    flex-direction: row;
+    align-items: center;
+}
+.kit-root .kit-gap2 > * {
+    margin-right: 3px;
+}
+.kit-root .kit-gap4 > * {
+    margin-right: 6px;
+}
+.kit-root .kit-gap6 > * {
+    margin-right: 9px;
+}
+.kit-root .kit-mt2 {
+    margin-top: 3px;
+}
+.kit-root .kit-mt4 {
+    margin-top: 6px;
+}
+.kit-root .kit-mt6 {
+    margin-top: 9px;
+}

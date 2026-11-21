@@ -1,0 +1,16 @@
+{"schema":1,"note":"지형 → 무대 짝(03 §2-2 표, 04 §4-2, [가정] 목업 r4 8짝에서 출발, 화면은 M4-3 plan §5 #3). 칸(board.json)의 (biome, climate, distortion) → Pt 배경(Gen/Stage/Bg/<bg>.png — 낮 그림. 저녁·밤은 화면이 라운드로 골라 이름 끝에 _evening·_night를 붙인다, 결정 70 ⑥) + 발판(Gen/Stage/Platform/<platform>_{enemy,player}.png). board.json에 나오는 조합마다 한 줄(build.mjs stage가 본다). biome·climate null + distortion false = 테마 없는 7칸(호수 동굴 3·테마가 없는 코로니산 4)","rows":[
+{"biome":"Plains","climate":"Cold","distortion":false,"bg":"05_snow","platform":"snow"},
+{"biome":"Plains","climate":"Temperate","distortion":false,"bg":"00_plain","platform":"grass"},
+{"biome":"Plains","climate":"Warm","distortion":false,"bg":"00_plain","platform":"sand"},
+{"biome":"Forest","climate":"Cold","distortion":false,"bg":"05_snow","platform":"snow"},
+{"biome":"Forest","climate":"Temperate","distortion":false,"bg":"03_forest","platform":"grass"},
+{"biome":"Forest","climate":"Warm","distortion":false,"bg":"03_forest","platform":"grass"},
+{"biome":"Mountain","climate":"Cold","distortion":false,"bg":"05_snow","platform":"snow"},
+{"biome":"Mountain","climate":"Temperate","distortion":false,"bg":"04_mountain","platform":"rocky"},
+{"biome":"Mountain","climate":"Warm","distortion":false,"bg":"04_mountain","platform":"rocky"},
+{"biome":"Ocean","climate":"Cold","distortion":false,"bg":"01_water","platform":"water"},
+{"biome":"Ocean","climate":"Temperate","distortion":false,"bg":"01_water","platform":"water"},
+{"biome":"Ocean","climate":"Warm","distortion":false,"bg":"01_water","platform":"water"},
+{"biome":null,"climate":null,"distortion":false,"bg":"09_cave_1","platform":"cave"},
+{"biome":null,"climate":null,"distortion":true,"bg":"17_distortion_world","platform":"distortion_world"}
+]}

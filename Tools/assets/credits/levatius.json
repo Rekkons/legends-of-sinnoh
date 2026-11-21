@@ -1,0 +1,17 @@
+{"schema":1,
+"usedFor":"카드 그림·아이콘(Gen/Cards): 트레이너 카드 부품, 고향 마을 카드, 운명 카드, 카드 생성기 부품(체력·스피드·타입·기술 상자·조우 등급·지형 문장), 토큰(아이템·정렬·우선권·상징), 주사위 면(03 §2-4, 결정 43 ⑪)",
+"source":"https://github.com/Levatius/pokemon-legends/tree/c0b717c515751d3237ac0d68ed24e5ccbad991c8",
+"credit":"Lev (Levatius) — Pokémon: Legends of Sinnoh (Steam Workshop 2652573878)",
+"terms":"비영리 + 출처 표기면 파생 허용, 판매 금지(03 §6). GitHub 저장소에 LICENSE 없음. 이 게임은 비영리 팬 게임으로 배포한다(결정 93 · 118 ⑤ — LICENSE.md 2절)",
+"rows":[
+{"dir":"assets/2_expansion_trainer_cards","usedFor":"트레이너 카드 부품(Cards/Trainer)"},
+{"dir":"assets/cards/village","usedFor":"고향 마을 카드 그림(Cards/Village)"},
+{"dir":"assets/cards/change_of_fate","usedFor":"운명 카드 앞면 4·뒷면(Cards/Fate)"},
+{"dir":"assets/cards/shrine","usedFor":"사당 카드 그림 부분(Cards/Shrine)"},
+{"dir":"assets/cards/act","usedFor":"종막 카드 뒷면 문양(Cards/Act)"},
+{"dir":"assets/1_expansion_distortion_world","usedFor":"왜곡 균열 카드 그림 부분(Cards/Breach) · 울트라 온슬롯 카드 그림 부분(Cards/Onslaught)"},
+{"dir":"assets/card_generator","usedFor":"카드 생성기 부품(Cards/Generator)"},
+{"dir":"assets/tokens","usedFor":"아이템 아이콘·토큰·상징 아이콘(Cards/Tokens) · 여행 스탬프 도장(Cards/Stamp)"},
+{"dir":"assets/bases/trainer_area","usedFor":"여행 스탬프 시트 앞면(Cards/Stamp)"},
+{"dir":"assets/dice","usedFor":"공격·상태 주사위 면(Cards/Dice)"}
+]}

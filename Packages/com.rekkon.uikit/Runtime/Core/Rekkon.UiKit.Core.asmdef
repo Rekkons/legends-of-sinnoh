@@ -1,0 +1,14 @@
+{
+    "name": "Rekkon.UiKit.Core",
+    "rootNamespace": "Rekkon.UiKit",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "note": "The Trainer Card Expansion(설명서 글 ②, plan §5 #315) — 원작 보드 글(save e4227c, GitHub master assets/bases/campaigns/base_2.png) 원문 그대로. 카드 51장은 게임 표(strings.en trainer_card.* · trainer_ability.*)를 가리킨다(cards 블록).",
+  "chapter": "trainer_cards",
+  "title": "The Trainer Card Expansion",
+  "sections": [
+    {
+      "key": "trainer_cards.rules",
+      "title": "The Trainer Card Expansion",
+      "pages": [1],
+      "blocks": [
+        { "p": "Each trainer is granted two special abilities that are unlocked over the course of the game" },
+        { "p": "Before the game begins, deal 3 trainer cards to each trainer. When choosing a starter Pokémon, each trainer also chooses one of the trainer cards to place face up in their trainer area. Unused cards are returned to the deck." },
+        { "p": "Trainer cards start out as Bronze (State 1) with both abilities locked. Once you defeat or obtain 1 Moderate Pokémon, upgrade to the Silver card (State 2) unlocking the \"Blue\" ability. Similarly, once you defeat or obtain 1 Strong Pokémon, upgrade to the Gold card (State 3) unlocking the \"Red\" ability also." },
+        { "digital": "In this game, the game deals the trainer cards and upgrades them for you." }
+      ]
+    },
+    {
+      "key": "trainer_cards.cards",
+      "title": "The 51 Trainer Cards",
+      "pages": [1],
+      "blocks": [
+        { "cards": ["trainer_card.ace_trainer", "trainer_card.aroma_lady", "trainer_card.artist", "trainer_card.backpacker", "trainer_card.beauty", "trainer_card.bird_keeper", "trainer_card.black_belt", "trainer_card.bug_catcher", "trainer_card.chef", "trainer_card.collector", "trainer_card.delinquent", "trainer_card.diamond_acolyte", "trainer_card.dragon_tamer", "trainer_card.essentia", "trainer_card.expert", "trainer_card.fairy_tale_girl", "trainer_card.fisherman", "trainer_card.gardener", "trainer_card.gentleman", "trainer_card.ginkgo_merchant", "trainer_card.guitarist", "trainer_card.hex_maniac", "trainer_card.hiker", "trainer_card.interviewers", "trainer_card.kindler", "trainer_card.lady", "trainer_card.ninja_boy", "trainer_card.parasol_lady", "trainer_card.pearl_acolyte", "trainer_card.picnicker", "trainer_card.platinum_acolyte", "trainer_card.poke_fan", "trainer_card.poke_maniac", "trainer_card.pokemon_breeder", "trainer_card.pokemon_ranger", "trainer_card.psychic", "trainer_card.roller_skater", "trainer_card.ruin_maniac", "trainer_card.scientist", "trainer_card.scuba_diver", "trainer_card.sky_trainer", "trainer_card.swimmer", "trainer_card.team_aqua", "trainer_card.team_magma", "trainer_card.team_rocket", "trainer_card.tourist", "trainer_card.triathlete", "trainer_card.undivided_acolyte", "trainer_card.veteran", "trainer_card.worker", "trainer_card.youngster"] }
+      ]
+    }
+  ]
+}

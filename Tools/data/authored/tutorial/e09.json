@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "note": "확장 장 E9 여행 스탬프(07 §5-2 — 1인). 판: 시드 3 · 셋업은 마박사가 대신(demo) → 막 길 stamp(SoloTrail.Stamp — 파티 셋: 스타팅 + 비버니(결단의 머리띠) + 브이젤(민첩의 띠), 가방에 행운의 알). 스탬프 판 보기 → 정비에서 셋째에게 행운의 알 → 스탬프 「지닌물건 셋」 → 보상 1단계(빨강·파랑·노랑 1개씩).",
+  "id": "e09",
+  "start": {"seed":3,"after":"stamp"},
+  "steps": [
+    {"id":"P01","ch":9,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"P02","ch":9,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"S001","ch":9,"advance":"next","ref":["A30"]},
+    {"id":"S003","ch":9,"anchor":"board-hud-party","advance":"next","expect":{"party":3},"ref":["01 §3-5","07 §5-1"]},
+    {"id":"S004","ch":9,"anchor":"board-hud-stamp","advance":"screen:board-stamp","ref":["A30","04 S16"]},
+    {"id":"S005","ch":9,"anchor":"board-stamp-sheet","advance":"next","ref":["A30"]},
+    {"id":"S006","ch":9,"anchor":"board-stamp-rewards","advance":"next","ref":["A30"]},
+    {"id":"S007","ch":9,"anchor":"board-stamp-close+board-hud-maint","advance":"screen:board-party","ref":["01 §3-4"]},
+    {"id":"S008","ch":9,"anchor":"board-party-bag-1+board-party-item-0","advance":"command","allow":[{"maint":"HoldItem","party":0,"value":"item.lucky_egg"}],"auto":[{"maint":"HoldItem","party":0,"value":"item.lucky_egg"}],"ref":["01 §3-4","A30"]},
+    {"id":"S009","ch":9,"anchor":"board-party-close+board-hud-stamp","advance":"next","expect":{"stamps":1,"apricorn.red":4},"ref":["A30"]},
+    {"id":"S010","ch":9,"advance":"next","ref":["A30"]}
+  ]
+}

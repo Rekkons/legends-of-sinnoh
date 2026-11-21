@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 1·2쪽 표지 · 환영 글 · 목차 — 원문 그대로, TTS 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 목차는 2쪽 단추 글자(쪽 번호 뺌).",
+  "chapter": "intro",
+  "title": "Pokémon: Legends of Sinnoh",
+  "sections": [
+    {
+      "key": "intro.welcome",
+      "title": "Welcome",
+      "pages": [1, 2],
+      "blocks": [
+        { "figure": "intro.welcome/cover", "caption": "[v1.4a] Pokémon Legends of Sinnoh Rulebook — Anniversary Edition" },
+        { "p": "Created by Levatius" },
+        { "p": "Players: 2 - 6 · Playtime: 1.5 - 2 Hours per Player" },
+        { "p": "Join us on Discord! discord.com/invite/J9CUvSD93T" },
+        { "p": "Welcome to Pokémon Legends of Sinnoh, an open world Pokémon Master Trainer game made exclusively for Tabletop Simulator." },
+        { "p": "Good luck and have fun!" },
+        { "h": "Contents" },
+        { "list": ["Overview", "Pokémon", "Automation", "Battling", "Battling FAQ", "Crafting", "Journey Stamps", "Hidden Spots", "Shrine Events", "The Heart of Sinnoh Campaign (Base Game)", "The Ultra Burst Campaign (Co-op Expansion)", "General FAQ", "Credits"] },
+        { "digital": "In this game, you play by the same rules without Tabletop Simulator." }
+      ]
+    }
+  ]
+}

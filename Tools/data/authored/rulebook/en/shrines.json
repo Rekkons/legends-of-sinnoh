@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 18·19쪽 「Shrine Events」 — 원문 그대로, TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판).",
+  "chapter": "shrines",
+  "title": "Shrine Events",
+  "sections": [
+    {
+      "key": "shrines.events",
+      "title": "Shrine Offering",
+      "pages": [18],
+      "blocks": [
+        { "p": "Once per turn, you may discard an Apricorn whilst at any Shrine to draw 1 Shrine Event card. Resolve the effect of the card once drawn." },
+        { "p": "Offering an Apricorn from a higher tier will usually increase the strength of the event (look for text separated by “/” on the card). If the deck is out of cards, shuffle the discard pile back into the deck." },
+        { "p": "By additionally discarding 7 Journey Points, you may draw 3 cards in total and choose 2 of them (immediately discard the card not chosen)." },
+        { "p": "When there are 4 or more trainers, Shrine Blessing effects are also given to another trainer. You always get to apply the effect of the event first." }
+      ]
+    },
+    {
+      "key": "shrines.legendary",
+      "title": "Legendary Events",
+      "pages": [18],
+      "blocks": [
+        { "p": "All trainers gain the Apricorns specified on the card." },
+        { "p": "Find the corresponding Legendary Pokémon token and place it on the Shrine specified on the card." },
+        { "p": "The token is removed from the game once the Legendary Pokémon is defeated or captured. You cannot make a Shrine Offering at their Shrine whilst the token is there." },
+        { "figure": "shrines.legendary/song_of_frost", "caption": "A Song of Frost heralds the arrival of Articuno." },
+        { "digital": "In this game, the game places the Legendary Pokémon token for you." }
+      ]
+    },
+    {
+      "key": "shrines.fracture",
+      "title": "Celestial Fracture",
+      "pages": [18],
+      "blocks": [
+        { "p": "A special type of Legendary Event where all trainers gain 1 Change of Fate card instead of any Apricorns." },
+        { "p": "Each trainer may change their Follower token in secret (flip your token face-down and then change the state)." },
+        { "p": "After revealing all Follower changes, place the God of Sinnoh token (Dialga, Palkia or Giratina) with the most Followers on the Origin Shrine (you choose if tied, replaces any God of Sinnoh token already there)." },
+        { "figure": "shrines.fracture/card", "caption": "Celestial Fractures upset the balance of power across Sinnoh." },
+        { "digital": "In this game, the game handles choosing Followers and placing the God of Sinnoh token for you." }
+      ]
+    },
+    {
+      "key": "shrines.aura",
+      "title": "Celestial Aura",
+      "pages": [18],
+      "blocks": [
+        { "p": "The Gods of Sinnoh radiate with powers far greater than those of the lesser Legendary Pokémon:" },
+        { "list": [
+          "When encountered at the Origin Shrine, if you do not posses their matching Celestial Artifact: They require a roll of 7 to capture and after their first form is defeated, they proceed to their second form (State 2) fully restored.",
+          "Whilst a God of Sinnoh token is at the Origin Shrine: All of their Followers gain 1 extra movement per turn."
+        ] },
+        { "p": "A God of Sinnoh token is removed from the game once it is defeated or captured. You cannot make a Shrine Offering at the Origin Shrine whilst it is there (this is relevant for Act III of the Heart of Sinnoh campaign)." }
+      ]
+    },
+    {
+      "key": "shrines.followers",
+      "title": "Follower Tokens",
+      "pages": [19],
+      "blocks": [
+        { "p": "Each trainer starts with a face down Follower token (on their bag). Once face up, the token has 3 states indicating which God of Sinnoh you are a Follower of." },
+        { "p": "Flip your Follower token face up as soon as you become a Follower of any God of Sinnoh (this will be when the first Celestial Fracture event is drawn)." },
+        { "figure": "shrines.followers/tokens", "caption": "Giratina · Dialga · Palkia" },
+        { "p": "When any two trainers are Followers of the same God of Sinnoh:" },
+        { "list": ["They may trade remotely."] },
+        { "p": "When any two trainers are Followers of different Gods of Sinnoh:" },
+        { "list": ["They may battle remotely (these remote battle requests can be denied)."] },
+        { "digital": "In this game, the game flips the Follower token for you." }
+      ]
+    },
+    {
+      "key": "shrines.fate",
+      "title": "Change of Fate Cards",
+      "pages": [19],
+      "blocks": [
+        { "p": "You may keep up to 5 Change of Fate cards in your hand. During your battles and during your turn outside of battle, you may play 1 effect per turn." },
+        { "p": "Each card has a Play 3 effect which can be used if 3 of the same card are played together. Your Follower token is always counted as 1 of the cards needed for the Play 3 effect matching your God of Sinnoh." },
+        { "p": "Discard all played cards. If the Change of Fate deck is out of cards, shuffle the discard pile back into the deck." },
+        { "figure": "shrines.fate/dialga_follower", "caption": "A Follower of Dialga only needs to play 2 Dialga cards to use the “Reroll Any” effect" }
+      ]
+    },
+    {
+      "key": "shrines.fate_effects",
+      "title": "Change of Fate Effects",
+      "pages": [19],
+      "blocks": [
+        { "list": [
+          "Dialga: Individually reroll 1 dice. The Play 3 effect allows you to individually reroll any of the dice rolled, once each.",
+          "Palkia: Instantly move to any tile up to 3 tiles away, regardless of elevation. The Play 3 effect allows you to instantly move to any tile on the map.",
+          { "text": "Giratina:", "items": [
+            "Before attacking, deal 2 damage to your active Pokémon to increase the attack strength of their next move by 1.",
+            "The Play 3 effect deals damage equal to your active Pokémon’s current health to increase the attack strength of their next move by half the damage taken, rounded down.",
+            "Your active Pokémon gets to use their next move even if they faint to either Sacrifice effect. Maximum attack strength of all moves is 9."
+          ] },
+          "Arceus: Counts as any 1 card towards all other Play 3 effects. This Play 3 effect grants you 1 Blessing of Arceus during the Ultra Burst campaign."
+        ] }
+      ]
+    },
+    {
+      "key": "shrines.blessings",
+      "title": "Shrine Blessing Clarifications",
+      "pages": [19],
+      "blocks": [
+        { "list": [
+          "Equivalent Exchange: You may search the deck or discard pile. All moves are kept even if the new Pokémon cannot normally learn these moves. Notably, any Alpha Pokémon tokens are kept.",
+          "Splendid Banquet: When giving this effect to another trainer, they can choose the Apricorn Stews they want when it is their turn (place the event card in front of them so they remember)."
+        ] },
+        { "digital": "In this game, instead of placing the card in front of them, the game remembers and lets that trainer choose on their turn." }
+      ]
+    }
+  ]
+}

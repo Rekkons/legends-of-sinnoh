@@ -1,0 +1,237 @@
+key	en	id	ko_3ja2	ko	diff	src	note
+move.struggle_bug	Struggle Bug	522	벌레의저항	벌레의저항	same	pokeapi:522	
+move.bug_bite	Bug Bite	450	벌레먹음	벌레먹기	changed	pokeapi:450	원작 자산(Pt) 「벌레먹음」
+move.infatuate	Infatuate		얼빼기	얼빼기	same	3ja2	이 게임만의 기술
+move.u_turn	U-Turn	369	유턴	유턴	same	pokeapi:369	
+move.lunge	Lunge	679	덤벼들기	덤벼들기	same	pokeapi:679	
+move.x_scissor	X-Scissor	404	시저크로스	시저크로스	same	pokeapi:404	
+move.bug_buzz	Bug Buzz	405	벌레의야단법석	벌레의야단법석	same	pokeapi:405	
+move.attack_order	Attack Order	454	공격지령	공격지령	same	pokeapi:454	
+move.megahorn	Megahorn	224	메가폰	메가혼	changed	pokeapi:224	원작 자산(Pt) 「메가폰」
+move.topsy_turvy	Topsy-Turvy	576	뒤집어엎기	뒤집어엎기	same	pokeapi:576	
+move.memento	Memento	262	추억의선물	추억의선물	same	pokeapi:262	
+move.dark_void	Dark Void	464	다크홀	다크홀	same	pokeapi:464	
+move.bite	Bite	44	물기	물기	same	pokeapi:44	
+move.night_slash	Night Slash	400	깜짝베기	깜짝베기	same	pokeapi:400	
+move.crunch	Crunch	242	깨물어부수기	깨물어부수기	same	pokeapi:242	
+move.hangry_wheel	Hangry Wheel		배고픔휠	배고픔휠	same	3ja2	이 게임만의 기술
+move.night_daze	Night Daze	539	나이트버스트	나이트버스트	same	pokeapi:539	
+move.chomp	Chomp		우걱우걱	우걱우걱	same	3ja2	이 게임만의 기술
+move.foul_play	Foul Play	492	속임수	속임수	same	pokeapi:492	
+move.twister	Twister	239	회오리	회오리	same	pokeapi:239	
+move.dual_chop	Dual Chop	530	더블촙	더블촙	same	pokeapi:530	
+move.dragon_breath	Dragon Breath	225	용의숨결	용의숨결	same	pokeapi:225	
+move.spacial_rend	Spacial Rend	460	공간절단	공간절단	same	pokeapi:460	
+move.dragon_pulse	Dragon Pulse	406	용의파동	용의파동	same	pokeapi:406	
+move.draco_meteor	Draco Meteor	434	용성군	용성군	same	pokeapi:434	
+move.dragon_rush	Dragon Rush	407	드래곤다이브	드래곤다이브	same	pokeapi:407	
+move.renegade_fury	Renegade Fury		반골의분노	반골의 분노	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.outrage	Outrage	200	역린	역린	same	pokeapi:200	
+move.roar_of_time	Roar of Time	459	시간의포효	시간의포효	same	pokeapi:459	
+move.nuzzle	Nuzzle	609	볼부비부비	볼부비부비	same	pokeapi:609	
+move.ion_deluge	Ion Deluge	569	플라스마샤워	플라스마샤워	same	pokeapi:569	
+move.thunder_shock	Thunder Shock	84	전기쇼크	전기쇼크	same	pokeapi:84	
+move.charge_beam	Charge Beam	451	차지빔	차지빔	same	pokeapi:451	
+move.electro_wheel	Electro Wheel		전기휠	전기휠	same	3ja2	이 게임만의 기술
+move.volt_switch	Volt Switch	521	볼트체인지	볼트체인지	same	pokeapi:521	
+move.power_plant	Power Plant		파워플랜트	파워플랜트	same	3ja2	이 게임만의 기술
+move.shocking_verity	Shocking Verity		충격적인진실	충격적인 진실	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.thunderbolt	Thunderbolt	85	10만볼트	10만볼트	same	pokeapi:85	
+move.wild_charge	Wild Charge	528	와일드볼트	와일드볼트	same	pokeapi:528	
+move.thunder_song	Thunder Song		천둥의노래	천둥의 노래	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.thunder	Thunder	87	번개	번개	same	pokeapi:87	
+move.zap_cannon	Zap Cannon	192	전자포	전자포	same	pokeapi:192	
+move.electro_ball	Electro Ball	486	일렉트릭볼	일렉트릭볼	same	pokeapi:486	
+move.sweet_kiss	Sweet Kiss	186	천사의키스	천사의키스	same	pokeapi:186	
+move.draining_kiss	Draining Kiss	577	드레인키스	드레인키스	same	pokeapi:577	
+move.moonlight	Moonlight	236	달의불빛	달빛	changed	pokeapi:236	원작 자산(Pt) 「달의불빛」
+move.flower_shield	Flower Shield	579	플라워가드	플라워가드	same	pokeapi:579	
+move.fairy_lock	Fairy Lock	587	페어리록	페어리록	same	pokeapi:587	
+move.play_rough	Play Rough	583	치근거리기	치근거리기	same	pokeapi:583	
+move.dazzling_gleam	Dazzling Gleam	605	매지컬샤인	매지컬샤인	same	pokeapi:605	
+move.moonblast	Moonblast	585	문포스	문포스	same	pokeapi:585	
+move.mach_punch	Mach Punch	183	마하펀치	마하펀치	same	pokeapi:183	
+move.revenge	Revenge	279	리벤지	리벤지	same	pokeapi:279	
+move.bulk_up	Bulk Up	339	벌크업	벌크업	same	pokeapi:339	
+move.force_palm	Force Palm	395	발경	발경	same	pokeapi:395	
+move.triple_kick	Triple Kick	167	트리플킥	트리플킥	same	pokeapi:167	
+move.stinging_punch	Stinging Punch		따끔따끔펀치	따끔따끔펀치	same	3ja2	이 게임만의 기술
+move.aura_sphere	Aura Sphere	396	파동탄	파동탄	same	pokeapi:396	
+move.sacred_sword	Sacred Sword	533	성스러운칼	성스러운칼	same	pokeapi:533	
+move.high_jump_kick	High Jump Kick	136	무릎차기	무릎차기	same	pokeapi:136	
+move.close_combat	Close Combat	370	인파이트	인파이트	same	pokeapi:370	
+move.seismic_toss	Seismic Toss	69	지구던지기	지구던지기	same	pokeapi:69	
+move.will_o_wisp	Will-O-Wisp	261	도깨비불	도깨비불	same	pokeapi:261	
+move.fire_lash	Fire Lash	680	불꽃채찍	불꽃채찍	same	pokeapi:680	
+move.ember	Ember	52	불꽃세례	불꽃세례	same	pokeapi:52	
+move.shell_trap	Shell Trap	704	트랩셸	트랩셸	same	pokeapi:704	
+move.fire_fang	Fire Fang	424	불꽃엄니	불꽃엄니	same	pokeapi:424	
+move.flame_wheel	Flame Wheel	172	화염자동차	화염바퀴	changed	pokeapi:172	원작 자산(Pt) 「화염자동차」
+move.mystical_fire	Mystical Fire	595	매지컬플레임	매지컬플레임	same	pokeapi:595	
+move.blazing_valor	Blazing Valor		타오르는용맹	타오르는 용맹	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.flamethrower	Flamethrower	53	화염방사	화염방사	same	pokeapi:53	
+move.lava_plume	Lava Plume	436	분연	분연	same	pokeapi:436	
+move.magma_storm	Magma Storm	463	마그마스톰	마그마스톰	same	pokeapi:463	
+move.fiery_dance	Fiery Dance	552	불꽃춤	불꽃춤	same	pokeapi:552	
+move.flare_blitz	Flare Blitz	394	플레어드라이브	플레어드라이브	same	pokeapi:394	
+move.overheat	Overheat	315	오버히트	오버히트	same	pokeapi:315	
+move.fire_song	Fire Song		불꽃의노래	불꽃의 노래	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.fire_blast	Fire Blast	126	불대문자	불대문자	same	pokeapi:126	
+move.inferno	Inferno	517	연옥	연옥	same	pokeapi:517	
+move.raging_fury	Raging Fury	833	맹렬한분노	대격분	changed	pokeapi:833	
+move.mind_blown	Mind Blown	720	마인드폭탄	깜짝헤드	changed	pokeapi:720	
+move.chest_thump	Chest Thump		가슴치기	가슴치기	same	3ja2	이 게임만의 기술
+move.eruption	Eruption	284	분화	분화	same	pokeapi:284	
+move.peck	Peck	64	쪼기	쪼기	same	pokeapi:64	
+move.chatter	Chatter	448	수다	수다	same	pokeapi:448	
+move.acrobatics	Acrobatics	512	애크러뱃	애크러뱃	same	pokeapi:512	
+move.air_cutter	Air Cutter	314	에어컷터	에어커터	changed	pokeapi:314	원작 자산(Pt) 「에어컷터」
+move.wing_attack	Wing Attack	17	날개치기	날개치기	same	pokeapi:17	
+move.air_slash	Air Slash	403	에어슬래시	에어슬래시	same	pokeapi:403	
+move.brave_bird	Brave Bird	413	브레이브버드	브레이브버드	same	pokeapi:413	
+move.sky_attack	Sky Attack	143	불새	불새	same	pokeapi:143	
+move.destiny_bond	Destiny Bond	194	길동무	길동무	same	pokeapi:194	
+move.confuse_ray	Confuse Ray	109	이상한빛	이상한빛	same	pokeapi:109	
+move.shadow_sneak	Shadow Sneak	425	야습	야습	same	pokeapi:425	
+move.lick	Lick	122	핥기	핥기	same	pokeapi:122	
+move.ominous_wind	Ominous Wind	466	괴상한바람	괴상한바람	same	pokeapi:466	
+move.hex	Hex	506	병상첨병	병상첨병	same	pokeapi:506	
+move.disguise	Disguise		위장	위장	same	3ja2	이 게임만의 기술
+move.poltergeist	Poltergeist	809	폴터가이스트	폴터가이스트	same	pokeapi:809	
+move.spirit_shackle	Spirit Shackle	662	그림자꿰메기	그림자꿰매기	changed	pokeapi:662	
+move.shadow_force	Shadow Force	467	섀도다이브	섀도다이브	same	pokeapi:467	
+move.menacing_moonraze	Menacing Moonraze		위협적인문레이즈	위협적인 문레이즈	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.grass_whistle	Grass Whistle	320	풀피리	풀피리	same	pokeapi:320	
+move.stun_spore	Stun Spore	78	저리가루	저리가루	same	pokeapi:78	
+move.gather_sunlight	Gather Sunlight		햇빛모으기	햇빛모으기	same	3ja2	이 게임만의 기술
+move.spore	Spore	147	버섯포자	버섯포자	same	pokeapi:147	
+move.razor_leaf	Razor Leaf	75	잎날가르기	잎날가르기	same	pokeapi:75	
+move.leaf_blade	Leaf Blade	348	리프블레이드	리프블레이드	same	pokeapi:348	
+move.bug_trap	Bug Trap		벌레덫	벌레덫	same	3ja2	이 게임만의 기술
+move.giga_drain	Giga Drain	202	기가드레인	기가드레인	same	pokeapi:202	
+move.eternal_glade	Eternal Glade		영원한숲	영원한 숲	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.wood_hammer	Wood Hammer	452	우드해머	우드해머	same	pokeapi:452	
+move.leaf_storm	Leaf Storm	437	리프스톰	리프스톰	same	pokeapi:437	
+move.seed_flare	Seed Flare	465	시드플레어	시드플레어	same	pokeapi:465	
+move.overcut	Overcut		오버컷	오버컷	same	3ja2	이 게임만의 기술
+move.power_whip	Power Whip	438	파워휩	파워휩	same	pokeapi:438	
+move.petal_dance	Petal Dance	80	꽃잎댄스	꽃잎댄스	same	pokeapi:80	
+move.solar_beam	Solar Beam	76	솔라빔	솔라빔	same	pokeapi:76	
+move.sand_tomb	Sand Tomb	328	모래지옥	모래지옥	same	pokeapi:328	
+move.bonemerang	Bonemerang	155	뼈다귀부메랑	뼈다귀부메랑	same	pokeapi:155	
+move.bulldoze	Bulldoze	523	땅고르기	땅고르기	same	pokeapi:523	
+move.mud_bomb	Mud Bomb	426	진흙폭탄	진흙폭탄	same	pokeapi:426	
+move.headlong_rush	Headlong Rush	838	헤드롱러쉬	들이받기	changed	pokeapi:838	
+move.earthquake	Earthquake	89	지진	지진	same	pokeapi:89	
+move.bone_rush	Bone Rush	198	본러쉬	본러시	changed	pokeapi:198	원작 자산(Pt) 「본러쉬」
+move.fissure	Fissure	90	땅가르기	땅가르기	same	pokeapi:90	
+move.avalanche	Avalanche	419	눈사태	눈사태	same	pokeapi:419	
+move.powder_snow	Powder Snow	181	눈싸라기	눈싸라기	same	pokeapi:181	
+move.ice_fang	Ice Fang	423	얼음엄니	얼음엄니	same	pokeapi:423	
+move.frigid_ice	Frigid Ice		서늘한얼음	서늘한 얼음	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.aurora_beam	Aurora Beam	62	오로라빔	오로라빔	same	pokeapi:62	
+move.chilling_acuity	Chilling Acuity		날카로운예지	날카로운 예지	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.ice_beam	Ice Beam	58	냉동빔	냉동빔	same	pokeapi:58	
+move.ice_punch	Ice Punch	8	냉동펀치	냉동펀치	same	pokeapi:8	
+move.mountain_gale	Mountain Gale	836	산의강풍	빙산바람	changed	pokeapi:836	
+move.frost_song	Frost Song		얼음의노래	얼음의 노래	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.blizzard	Blizzard	59	눈보라	눈보라	same	pokeapi:59	
+move.sheer_cold	Sheer Cold	329	절대영도	절대영도	same	pokeapi:329	
+move.flail	Flail	175	바둥바둥	바둥바둥	same	pokeapi:175	
+move.soft_boiled	Soft-Boiled	135	알낳기	알낳기	same	pokeapi:135	
+move.perish_song	Perish Song	195	멸망의노래	멸망의노래	same	pokeapi:195	
+move.splash	Splash	150	튀어오르기	튀어오르기	same	pokeapi:150	
+move.quick_attack	Quick Attack	98	전광석화	전광석화	same	pokeapi:98	
+move.encore	Encore	227	앵콜	앙코르	changed	pokeapi:227	원작 자산(Pt) 「앵콜」
+move.sweet_scent	Sweet Scent	230	달콤한향기	달콤한향기	same	pokeapi:230	
+move.double_hit	Double Hit	458	더블어택	더블어택	same	pokeapi:458	
+move.conversion	Conversion	160	텍스처	텍스처	same	pokeapi:160	
+move.tackle	Tackle	33	몸통박치기	몸통박치기	same	pokeapi:33	
+move.extreme_speed	Extreme Speed	245	신속	신속	same	pokeapi:245	
+move.heal_bell	Heal Bell	215	치료방울	치료방울	same	pokeapi:215	
+move.headbutt	Headbutt	29	박치기	박치기	same	pokeapi:29	
+move.swift	Swift	129	스피드스타	스피드스타	same	pokeapi:129	
+move.uproar	Uproar	253	소란피기	소란피기	same	pokeapi:253	
+move.conversion_2	Conversion 2	176	텍스처2	텍스처2	same	pokeapi:176	
+move.slash	Slash	163	베어가르기	베어가르기	same	pokeapi:163	
+move.take_down	Take Down	36	돌진	돌진	same	pokeapi:36	
+move.spit_up	Spit Up	255	토해내기	토해내기	same	pokeapi:255	
+move.body_slam	Body Slam	34	누르기	누르기	same	pokeapi:34	
+move.tri_attack	Tri Attack	161	트라이어택	트라이어택	same	pokeapi:161	
+move.crush_grip	Crush Grip	462	묵사발	묵사발	same	pokeapi:462	
+move.double_edge	Double-Edge	38	이판사판태클	이판사판태클	same	pokeapi:38	
+move.thrash	Thrash	37	난동부리기	난동부리기	same	pokeapi:37	
+move.explosion	Explosion	153	대폭발	대폭발	same	pokeapi:153	
+move.hyper_beam	Hyper Beam	63	파괴광선	파괴광선	same	pokeapi:63	
+move.toxic	Toxic	92	맹독	맹독	same	pokeapi:92	
+move.poison_sting	Poison Sting	40	독침	독침	same	pokeapi:40	
+move.coil	Coil	489	똬리틀기	똬리틀기	same	pokeapi:489	
+move.poison_fang	Poison Fang	305	독엄니	맹독엄니	changed	pokeapi:305	원작 자산(Pt) 「독엄니」
+move.poison_tail	Poison Tail	342	포이즌테일	포이즌테일	same	pokeapi:342	
+move.venoshock	Venoshock	474	베놈쇼크	베놈쇼크	same	pokeapi:474	
+move.neurotoxin	Neurotoxin		신경독	신경독	same	3ja2	이 게임만의 기술
+move.barb_barrage	Barb Barrage	839	바늘 공격	독침천발	changed	pokeapi:839	
+move.cross_poison	Cross Poison	440	크로스포이즌	크로스포이즌	same	pokeapi:440	
+move.poison_jab	Poison Jab	398	독찌르기	독찌르기	same	pokeapi:398	
+move.belch	Belch	562	트림	트림	same	pokeapi:562	
+move.sludge_wave	Sludge Wave	482	오물웨이브	오물웨이브	same	pokeapi:482	
+move.zen_restoration	Zen Restoration		좌선회복	좌선회복	same	3ja2	이 게임만의 기술
+move.teleport	Teleport	100	순간이동	순간이동	same	pokeapi:100	
+move.calm_mind	Calm Mind	347	명상	명상	same	pokeapi:347	
+move.confusion	Confusion	93	염동력	염동력	same	pokeapi:93	
+move.imprison	Imprison	286	봉인	봉인	same	pokeapi:286	
+move.kinesis	Kinesis	134	숟가락휘기	숟가락휘기	same	pokeapi:134	
+move.lunar_blessing	Lunar Blessing	849	달의축복	초승달의기도	changed	pokeapi:849	
+move.barrier	Barrier	112	배리어	배리어	same	pokeapi:112	
+move.psycho_cut	Psycho Cut	427	사이코커터	사이코커터	same	pokeapi:427	
+move.psyshield_bash	Psyshield Bash	828	염동장벽강타	배리어러시	changed	pokeapi:828	
+move.take_heart	Take Heart	850	브레이브차지	브레이브차지	same	pokeapi:850	
+move.psychic	Psychic	94	사이코키네시스	사이코키네시스	same	pokeapi:94	
+move.prismatic_laser	Prismatic Laser	711	프리즘레이저	프리즘레이저	same	pokeapi:711	
+move.future_sight	Future Sight	248	미래예지	미래예지	same	pokeapi:248	
+move.rampart_riposte	Rampart Riposte		성벽의반격	성벽의 반격	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.smack_down	Smack Down	479	떨어뜨리기	떨어뜨리기	same	pokeapi:479	
+move.ancient_power	Ancient Power	246	원시의힘	원시의힘	same	pokeapi:246	
+move.rollout	Rollout	205	구르기	구르기	same	pokeapi:205	
+move.repairing_rock	Repairing Rock		바위고치기	바위고치기	same	3ja2	이 게임만의 기술
+move.power_gem	Power Gem	408	파워젬	파워젬	same	pokeapi:408	
+move.stone_edge	Stone Edge	444	스톤에지	스톤에지	same	pokeapi:444	
+move.rock_blast	Rock Blast	350	락블레스트	록블라스트	changed	pokeapi:350	원작 자산(Pt) 「락블레스트」
+move.head_smash	Head Smash	457	양날박치기	양날박치기	same	pokeapi:457	
+move.rock_wrecker	Rock Wrecker	439	암석포	암석포	same	pokeapi:439	
+move.shelter	Shelter	842	껍질	농성	changed	pokeapi:842	
+move.kings_shield	King's Shield	588	킹실드	킹실드	same	pokeapi:588	
+move.bullet_punch	Bullet Punch	418	불릿펀치	불릿펀치	same	pokeapi:418	
+move.lift_off	Lift Off		리프트 오프	리프트 오프	same	3ja2	이 게임만의 기술
+move.metal_claw	Metal Claw	232	메탈크로우	메탈클로	changed	pokeapi:232	원작 자산(Pt) 「메탈크로우」
+move.tempered_steel	Tempered Steel		강철담금질	강철담금질	same	3ja2	이 게임만의 기술
+move.steel_wing	Steel Wing	211	강철날개	강철날개	same	pokeapi:211	
+move.anchor_shot	Anchor Shot	677	앵커숏	앵커샷	changed	pokeapi:677	
+move.iron_tail	Iron Tail	231	아이언테일	아이언테일	same	pokeapi:231	
+move.flash_cannon	Flash Cannon	430	러스터캐논	러스터캐논	same	pokeapi:430	
+move.temporal_guard	Temporal Guard		시간의수호	시간의 수호	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.kings_blade	King's Blade		킹블레이드	킹블레이드	same	3ja2	이 게임만의 기술
+move.searing_sunraze	Searing Sunraze		이글거리는선레이즈	이글거리는 선레이즈	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)
+move.heavy_slam	Heavy Slam	484	헤비봄버	헤비봄버	same	pokeapi:484	
+move.hidden_power	Hidden Power	237	잠재파워	잠재파워	same	pokeapi:237	
+move.hidden_punch	Hidden Punch		히든 펀치	히든 펀치	same	3ja2	이 게임만의 기술
+move.multi_attack	Multi-Attack	718	멀티어택	멀티어택	same	pokeapi:718	
+move.adaptive_cloak	Adaptive Cloak		적응망토	적응망토	same	3ja2	이 게임만의 기술
+move.judgement	Judgement	449	심판	심판의뭉치	changed	pokeapi:449	원작 철자 Judgement = Judgment
+move.photon_geyser	Photon Geyser	722	포톤가이저	포톤가이저	same	pokeapi:722	
+move.mimic	Mimic	102	흉내내기	흉내내기	same	pokeapi:102	
+move.metronome	Metronome	118	손가락흔들기	손가락흔들기	same	pokeapi:118	
+move.aqua_jet	Aqua Jet	453	아쿠아제트	아쿠아제트	same	pokeapi:453	
+move.water_gun	Water Gun	55	물대포	물대포	same	pokeapi:55	
+move.razor_shell	Razor Shell	534	셸블레이드	셸블레이드	same	pokeapi:534	
+move.water_pulse	Water Pulse	352	물의파동	물의파동	same	pokeapi:352	
+move.flip_turn	Flip Turn	812	플립턴	퀵턴	changed	pokeapi:812	
+move.bubble_beam	Bubble Beam	61	거품광선	거품광선	same	pokeapi:61	
+move.octazooka	Octazooka	190	대포무노포	대포무노포	same	pokeapi:190	
+move.surf	Surf	57	파도타기	파도타기	same	pokeapi:57	
+move.scald	Scald	503	열탕	열탕	same	pokeapi:503	
+move.whirlpool	Whirlpool	250	바다회오리	바다회오리	same	pokeapi:250	
+move.muddy_water	Muddy Water	330	탁류	탁류	same	pokeapi:330	
+move.wave_crash	Wave Crash	834	웨이브 크러쉬	웨이브태클	changed	pokeapi:834	
+move.hydro_pump	Hydro Pump	56	하이드로펌프	하이드로펌프	same	pokeapi:56	
+move.ripple_in_space	Ripple in Space		공간의물결	공간의 물결	changed	3ja2	이 게임만의 기술 · 띄어 씀(결정 87 W10 ①)

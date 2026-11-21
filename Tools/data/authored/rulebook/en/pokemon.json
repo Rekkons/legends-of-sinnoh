@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 4~6쪽 「Pokémon」 — 원문 그대로, TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 4쪽 카드 설명 이름표 · 조우 등급 표 · 규토리 단계 표는 그림 속 글자를 ko와 같은 꼴로 옮김(단계별 규토리 색은 그림에서 읽음).",
+  "chapter": "pokemon",
+  "title": "Pokémon",
+  "sections": [
+    {
+      "key": "pokemon.card",
+      "title": "Pokémon Card",
+      "pages": [4],
+      "blocks": [
+        { "figure": "pokemon.card/roselia", "caption": "Pokémon card (Roselia)" },
+        { "list": [
+          "Pokémon Type(s)",
+          "Health",
+          "Initiative",
+          "Held Item Slot",
+          "Biome | Climate",
+          "Learnable Move Types",
+          "Evolve Cost",
+          "Move Type",
+          "Move Attack Strength (the number of attack dice to roll)",
+          "Move Effect"
+        ] },
+        { "p": "Each Pokémon has a signature move. After rolling the attack dice for a move, check to see if the Move Effect applies to the result of the roll." }
+      ]
+    },
+    {
+      "key": "pokemon.tiers",
+      "title": "Encounter Tier",
+      "pages": [4],
+      "blocks": [
+        { "p": "Higher encounter tiers are tougher to defeat and capture but grant more Journey Points." },
+        { "table": { "head": ["Encounter Tier", "Journey Point Rewards", "Capture Rate"], "rows": [
+          ["Weak", "1", "3+"],
+          ["Moderate", "2", "4+"],
+          ["Strong", "3", "5+"],
+          ["Legendary", "4", "6+"]
+        ] } },
+        { "figure": "pokemon.tiers/icons", "caption": "Encounter tier icons (Weak · Moderate · Strong · Legendary)" }
+      ]
+    },
+    {
+      "key": "pokemon.encounter",
+      "title": "Encountering Pokémon",
+      "pages": [4],
+      "blocks": [
+        { "p": "To search for a Pokémon, have your trainer token stand on an Apricorn Tree or Apricorn Reef and press the “Search” button on the Pokédex." },
+        { "p": "The Pokédex will return Weak 3 / Moderate 2 / Strong 1 Pokémon. Once you decide to search, you must choose one of the Pokémon to battle but you may still craft items like Poké Balls before the battle begins." },
+        { "p": "Legendary Pokémon can be encountered in two ways:" },
+        { "list": [
+          "Artifact Legendary Pokémon: Can only be encountered at their home location if you are holding the matching Artifact [[hidden_spots.artifacts|see Artifacts]].",
+          "Shrine Legendary Pokémon: Can only be encountered at their home shrine after their event card is drawn from the Shrine Events deck [[shrines.legendary|see Legendary Events]]."
+        ] },
+        { "digital": "In this game, the game draws the cards from the encounter deck for you when you search." }
+      ]
+    },
+    {
+      "key": "pokemon.apricorns",
+      "title": "Apricorns",
+      "pages": [4],
+      "blocks": [
+        { "p": "Apricorns are your primary crafting resource [[crafting.intro|see Crafting]] and are obtained by defeating or capturing the wild Pokémon that guards them." },
+        { "p": "Apricorns Trees provide up to 3 Apricorns of one type whereas Apricorn Reefs provide up to 3 Apricorns of usually a variety of types [[battle.rewards|see Rewards]]." },
+        { "table": { "head": ["Tier", "Apricorns"], "rows": [
+          ["Tier 1", "Red · Yellow · Blue"],
+          ["Tier 2", "Pink · Green · White"],
+          ["Tier 3", "Black"]
+        ] } },
+        { "figure": "pokemon.apricorns/tree", "caption": "Apricorn Tree" },
+        { "figure": "pokemon.apricorns/reef", "caption": "Apricorn Reef" },
+        { "figure": "pokemon.apricorns/tiers", "caption": "Tier 1 · Tier 2 · Tier 3" }
+      ]
+    },
+    {
+      "key": "pokemon.capture",
+      "title": "Capturing Pokémon",
+      "pages": [5],
+      "blocks": [
+        { "p": "During a battle with a wild Pokémon, you may use one of your Poké Balls instead of attacking on your turn." },
+        { "p": "The quality of the Poké Ball determines how many dice to roll. For example, the standard Poké Ball lets you roll 3 Typeless attack dice during a capture roll." },
+        { "figure": "pokemon.capture/ball", "caption": "Poké Ball [[crafting.balls|see Crafting]]" },
+        { "p": "To successfully capture the Pokémon, the result of your roll needs to be equal to or greater than the Capture Rate of the wild Pokémon." },
+        { "p": "Capture Accuracy: If the Pokémon you are trying to capture has been inflicted with any status effects, replace 1 status symbol with 1 regular hit." },
+        { "p": "If successful, place the Pokémon along with any damage, status effects and items on it into an empty Pokémon slot in your trainer area. If you do not have an empty slot, you may release an existing Pokémon in your party to make room (discard the released Pokémon along with any moves it knows)." },
+        { "p": "Additionally, place the Poké Ball used to capture it in the Poké Ball slot beneath the Pokémon (cannot be used again to capture more Pokémon):" },
+        { "list": [
+          "This can be used to transport your Pokémon (and anything on it) to the top or bottom side of the arena [[automation.moving|see Automation]].",
+          "Also can be flipped over to indicate your Pokémon has fainted."
+        ] },
+        { "p": "If unsuccessful, discard the Poké Ball and the battle continues (you may get a chance to throw another Poké Ball on your next turn)." },
+        { "digital": "In this game, the game handles the Poké Ball slot, moving to the arena and marking fainted Pokémon for you." }
+      ]
+    },
+    {
+      "key": "pokemon.evolution",
+      "title": "Evolving Pokémon",
+      "pages": [5],
+      "blocks": [
+        { "p": "During your turn and whilst outside of battle, you may evolve your Pokémon by discarding Journey Points equal to the Evolve Cost of the Pokémon." },
+        { "p": "Fully restore the Pokémon, place it in the slot above the “Evolve” button on the Pokédex and then press the button. Take the evolution card from the Pokédex and place it in your trainer area (if there is a choice, like with Eevee, choose one and return the rest to the deck). Items and taught moves are carried over to the evolved Pokémon." },
+        { "p": "You may teach the move of the old Pokémon to the newly evolved Pokémon (regardless of the types it can learn) by flipping the old card over and placing it under the new card. Otherwise discard the old card." },
+        { "figure": "pokemon.evolution/budew", "caption": "Budew with just the move Grass Whistle." },
+        { "figure": "pokemon.evolution/roselia", "caption": "Secondary evolution has its own move plus the move from Budew." },
+        { "digital": "In this game, the game takes out the evolution card and moves the old card for you." }
+      ]
+    },
+    {
+      "key": "pokemon.legendary",
+      "title": "Legendary Pokémon",
+      "pages": [6],
+      "blocks": [
+        { "p": "Legendary Pokémon act differently to regular Pokémon in two ways:" },
+        { "ol": [
+          "Legendary Pokémon flee the battle after defeating all your Pokémon instead of defeating just one.",
+          "Legendary Pokémon get access to their own special tactics by default."
+        ] },
+        { "p": "To access the special tactics, place the Legendary Pokémon in the arena. When captured, you can add/remove moves to overwrite/reveal these tactics (Alpha Strike is always overwritten before Beast Boost)." },
+        { "list": [
+          "Alpha Strike (Attack): Provides an attack that can be any learnable type of the Legendary Pokémon. However, its attack strength is decreased to 2 if this move was used last turn.",
+          "Beast Boost (Ability): Triggers whenever the Pokémon battling the Legendary Pokémon faints. Its battle fatigue is decreased by 3 whilst increasing the attack strength of the next attack it uses by 1."
+        ] },
+        { "figure": "pokemon.legendary/tactics", "caption": "Special tactics that Legendary Pokémon can use in battle." },
+        { "p": "Alpha Pokémon, Ultra Beasts and the Ultra Burst are special types of Legendary Pokémon (the last two are exclusive to the Ultra Burst campaign)." },
+        { "figure": "pokemon.legendary/alpha", "caption": "Alpha Pokémon" },
+        { "figure": "pokemon.legendary/ultra_beasts", "caption": "Ultra Beasts" },
+        { "figure": "pokemon.legendary/ultra_burst", "caption": "The Ultra Burst" }
+      ]
+    },
+    {
+      "key": "pokemon.forms",
+      "title": "Pokémon Forms",
+      "pages": [6],
+      "blocks": [
+        { "p": "Certain Pokémon have multiple forms that are accessible by changing the state of their cards." },
+        { "figure": "pokemon.forms/cherrim", "caption": "Cherrim — Cherrim after using the move Gather Sunlight: Sunshine Form" },
+        { "figure": "pokemon.forms/shaymin", "caption": "Shaymin — Shaymin whilst holding the Gracidea Flower: Sky Form" },
+        { "h": "Form changes during battle by using a move" },
+        { "list": [
+          "Neither battle fatigue or the current turn order is affected when changing form.",
+          "When the battle ends, the Pokémon returns to its default form (State 1).",
+          "If a form changing move has been taught to a Pokémon without the form it specifies, ignore the form change."
+        ] },
+        { "h": "Form changes outside of battle by holding an item" },
+        { "list": [
+          "You may change to the form specified by the item whilst outside of battle.",
+          "If the Pokémon is no longer holding the item, it returns to its default form (State 1)."
+        ] },
+        { "p": "If you defeat a wild Pokémon with different signature moves on its forms, you can teach any of the signature moves to your Pokémon." },
+        { "digital": "In this game, the game changes the form for you instead of changing card states." }
+      ]
+    }
+  ]
+}

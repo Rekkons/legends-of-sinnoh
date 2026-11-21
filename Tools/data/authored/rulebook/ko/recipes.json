@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "note": "제작 레시피(설명서 글 ②, plan §5 #315) — 한국어판 rules-b.pdf 5쪽(1쪽 표지 · 2쪽 몬스터볼 · 3쪽 스튜 · 4·5쪽 배틀 아이템). 쪽 제목만 글이고 재료는 그림이라, 아이템은 게임 표(strings.ko item.* 이름 · 효과, items.json recipe 재료)를 가리킨다(cards 블록). 한국어판 3쪽 스튜 밑의 짧은 효과 글(번역자가 더한 것 — 영문 원본에 없다)은 item.*.text와 겹쳐 옮기지 않았다.",
+  "chapter": "recipes",
+  "title": "제작 레시피",
+  "sections": [
+    {
+      "key": "recipes.balls",
+      "title": "몬스터볼",
+      "pages": [1, 2],
+      "blocks": [
+        { "cards": ["item.poke_ball", "item.greater_ball", "item.ultimate_ball", "item.keystone_ball"] }
+      ]
+    },
+    {
+      "key": "recipes.stews",
+      "title": "스튜",
+      "pages": [3],
+      "blocks": [
+        { "cards": ["item.restoring_stew", "item.alluring_stew", "item.zesty_stew", "item.infused_stew"] }
+      ]
+    },
+    {
+      "key": "recipes.items",
+      "title": "배틀 아이템",
+      "pages": [4, 5],
+      "blocks": [
+        { "cards": ["item.blast_crystal", "item.star_shield", "item.lucky_egg", "item.eviolite", "item.swiftness_sash", "item.choice_band"] }
+      ]
+    }
+  ]
+}

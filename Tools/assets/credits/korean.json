@@ -1,0 +1,8 @@
+{"schema":1,
+"section":"korean",
+"title":"한국어판",
+"intro":"한국어 게임 글과 설명서는 한국어판(3JA2, Steam 창작마당 2679162224)의 번역을 바탕으로 한다(결정 94 ② [가정] — 원작과 함께 출처 표기). 오역을 고친 곳은 영문 원본 기준(규칙 판정 A20-9).",
+"entries":[
+{"id":"translation","what":"한국어 번역(게임 글 · 카드 · 룰북) · 한국어판 룰북 · 제작 레시피 PDF","who":"3JA2","work":"포켓몬 : 신오의 전설들 (Tabletop Simulator 한국어판, Steam 창작마당 2679162224)","url":"https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224","usedFor":"strings.ko.json의 게임 글 · 설명서 rulebook.ko(오역 · 용어만 고침) · Gen/Rulebook 그림 중 한국어 글이 든 것","evidence":["Tools/sources.json","Tools/data/authored/rulebook/ko/credits.json","Tools/assets/tables/rulebook_figures.json"],"terms":"한국어판 창작마당 페이지에 사용 조건 · 라이선스 표시는 없다 — 원작 조건(비영리 · 출처 표기)에 맞춰 출처를 밝혀 쓰며 번역자의 요청이 있으면 따른다(LICENSE.md 2절)"},
+{"id":"cards-1.4a","what":"1.4a 트레이너 카드 · 포켓몬 카드 번역","who":"로씨온","work":"포켓몬 : 신오의 전설들 1.4a 업데이트(2023-03-06)","url":"https://steamcommunity.com/sharedfiles/filedetails/?id=2679162224","usedFor":"strings.ko.json의 트레이너 카드 · 포켓몬 카드 글","evidence":["Tools/sources.json","Tools/data/authored/rulebook/ko/credits.json"]}
+]}

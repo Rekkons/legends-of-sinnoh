@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "note": "확장 장 E5 숨겨진 장소·우두머리·유물(07 §5-2): 막 길 없이 시드 3 판(운하시티 칸 33) — 숨겨진 장소 정체를 손본다(칸 25 = 유물 마나피의 알 · 칸 19 = 우두머리, TutorialDeal spots). 몬스터볼 제작 → 칸 25 공개(유물 → 가방, A25) → 팽도리에게 지니게 하기(물 +1) → 칸 19 공개(우두머리 포푸니라 강제 배틀, A17) → 위력 4 공격 → 몬스터볼 급소 3개로 포획(포획률 6) → 여행 점수 4 · 스탬프 4 「전설 포획」.",
+  "id": "e05",
+  "start": {"seed":3,"trainerCards":null,"tops":[],"spots":[{"cell":25,"item":"item.seafarer_egg"},{"cell":19,"item":"item.alpha_pokemon"}],"after":null},
+  "steps": [
+    {"id":"S001","ch":0,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"S002","ch":0,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §5-1","A23"]},
+    {"id":"S003","ch":0,"anchor":"cell:25,19","advance":"next","ref":["A25"]},
+    {"id":"S004","ch":0,"anchor":"board-hud-act-craft","advance":"screen:board-craft","ref":["01 §3-2 Craft"]},
+    {"id":"S005","ch":0,"anchor":"board-craft-make-poke_ball","advance":"command","allow":[{"kind":"Craft","target":"item.poke_ball"}],"auto":[{"kind":"Craft","target":"item.poke_ball"}],"expect":{"balls.regular":1},"ref":["01 §3-2 Craft"]},
+    {"id":"S006","ch":0,"anchor":"board-craft-close+cell:25","advance":"command","allow":[{"kind":"Move","target":25}],"auto":[{"kind":"Move","target":25}],"expect":{"movesLeft":2},"ref":["A23","G12"]},
+    {"id":"S007","ch":0,"anchor":"board-hud-act-reveal","advance":"command","allow":[{"choice":"HiddenSpot","kind":"Accept"}],"auto":[{"choice":"HiddenSpot","kind":"Accept"}],"ref":["A23"]},
+    {"id":"S008","ch":0,"anchor":"board-hud-maint","advance":"next","ref":["A25"]},
+    {"id":"S009","ch":0,"anchor":"board-hud-maint","advance":"screen:board-party","ref":["A25"]},
+    {"id":"S010","ch":0,"anchor":"board-party-bag-1+board-party-item-0","advance":"command","allow":[{"maint":"HoldItem","party":0,"value":"item.seafarer_egg"}],"auto":[{"maint":"HoldItem","party":0,"value":"item.seafarer_egg"}],"ref":["A25"]},
+    {"id":"S011","ch":0,"anchor":"board-party-close+cell:19","advance":"command","allow":[{"kind":"Move","target":19}],"auto":[{"kind":"Move","target":19}],"expect":{"movesLeft":1},"ref":["A23"]},
+    {"id":"S012","ch":0,"anchor":"board-hud-act-reveal","advance":"command","allow":[{"choice":"HiddenSpot","kind":"Accept"}],"auto":[{"choice":"HiddenSpot","kind":"Accept"}],"dice":["StatusSymbol","StatusSymbol","StatusSymbol","StatusSymbol"],"ref":["A23","A17"]},
+    {"id":"S013","ch":0,"anchor":"battle-foe-alpha","advance":"next","ref":["A17","A25"]},
+    {"id":"S014","ch":0,"anchor":"battle-moves","advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"dice":["CriticalHit","RegularHit","StatusSymbol","StatusSymbol","StatusSymbol","StatusSymbol","StatusSymbol","StatusSymbol","StatusSymbol","StatusSymbol"],"expect":{"power":4},"ref":["A25","01 §6"]},
+    {"id":"S015","ch":0,"anchor":"battle-bag+battle-ball-1","advance":"command","allow":[{"kind":"ThrowBall"}],"auto":[{"kind":"ThrowBall"}],"dice":["CriticalHit","CriticalHit","CriticalHit"],"expect":{"captureRate":6},"ref":["A17","A7"]},
+    {"id":"S016","ch":0,"anchor":"board-hud-party","advance":"next","expect":{"jp":4},"ref":["A17"]},
+    {"id":"S017","ch":0,"anchor":"board-hud-stamp","advance":"next","expect":{"stamps":1},"ref":["A30","A17"]},
+    {"id":"S018","ch":0,"advance":"next","ref":["A17","A25"]}
+  ]
+}

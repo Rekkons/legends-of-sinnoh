@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "note": "확장 장 E11 무리 배틀·왜곡 게이트(07 §5-2 — 1인). 판: 시드 3 · 셋업은 마박사가 대신(demo) → 막 길 swarm(SoloTrail.Swarm — 깊은 늪 게이트 칸 213(숲), 파티 앞에 디아루가). [찾아보기] → 약한 · 적당한 · 강한(숲) 차례로 → 모두 쓰러뜨려 여행 점수 7 · 스탬프 「무리 배틀 승리」(보상 1단계). 주사위는 시드 그대로.",
+  "id": "e11",
+  "start": {"seed":3,"after":"swarm"},
+  "steps": [
+    {"id":"P01","ch":11,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"P02","ch":11,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"S001","ch":11,"advance":"next","ref":["A18","A28 ②"]},
+    {"id":"S003","ch":11,"advance":"next","ref":["01 §3-5","07 §5-1"]},
+    {"id":"S004","ch":11,"anchor":"cell:213","advance":"next","ref":["A28 ②"]},
+    {"id":"S005","ch":11,"anchor":"board-hud-act-search","advance":"command","allow":[{"kind":"Search"}],"auto":[{"kind":"Search"}],"ref":["A28 ②","A18"]},
+    {"id":"S006","ch":11,"advance":"command","allow":[{"choice":"SendIn","kind":"Pick"}],"auto":[{"choice":"SendIn","kind":"Pick"}],"ref":["A28 ②","01 §6"]},
+    {"id":"S007","ch":11,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"ref":["A28 ②","01 §6"]},
+    {"id":"S008","ch":11,"advance":"command","allow":[{"choice":"SwitchWindow","kind":"Decline"}],"auto":[{"choice":"SwitchWindow","kind":"Decline"}],"ref":["A28 ②"]},
+    {"id":"S009","ch":11,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"},{"kind":"UseMove"}],"ref":["A28 ②","01 §6"]},
+    {"id":"S010","ch":11,"advance":"command","allow":[{"choice":"SwitchWindow","kind":"Decline"},{"kind":"UseMove"}],"auto":[{"choice":"SwitchWindow","kind":"Decline"},{"kind":"UseMove"},{"kind":"UseMove"}],"ref":["A28 ②","01 §6"]},
+    {"id":"S011","ch":11,"advance":"next","expect":{"jp":7,"stamps":1},"ref":["A18","A30"]},
+    {"id":"S012","ch":11,"advance":"next","ref":["A28 ②"]},
+    {"id":"S013","ch":11,"advance":"next","ref":["A18"]}
+  ]
+}

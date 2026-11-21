@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 7쪽 「Automation」 — 장 전체가 Tabletop Simulator 조작이라 원문 + 절마다 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판).",
+  "chapter": "automation",
+  "title": "Automation",
+  "sections": [
+    {
+      "key": "automation.intro",
+      "title": "Automation",
+      "pages": [7],
+      "blocks": [
+        { "p": "Before continuing with the rules, this section will hopefully inform you of all the automation features available in Legends of Sinnoh." },
+        { "digital": "In this game, the game handles all of the Tabletop Simulator automation features below for you." }
+      ]
+    },
+    {
+      "key": "automation.bag",
+      "title": "Bag Management",
+      "pages": [7],
+      "blocks": [
+        { "p": "Apricorns and Journey Points can be moved to and from your bag using the buttons provided in your trainer area. Left click will put the item into your bag, right click will discard the item." },
+        { "figure": "automation.bag/buttons", "caption": "Bag buttons" },
+        { "digital": "In this game, the game keeps count of your Apricorns and Journey Points." }
+      ]
+    },
+    {
+      "key": "automation.fly",
+      "title": "Flying",
+      "pages": [7],
+      "blocks": [
+        { "p": "The thematic way to get around, you can click the centre of a village to have a Staraptor transport your trainer token to that village [[overview.village|see Villages for rules]]." },
+        { "figure": "automation.fly/staraptor", "caption": "Fly to Sunyshore Village" },
+        { "digital": "In this game, the game moves your trainer token when you choose to fly." }
+      ]
+    },
+    {
+      "key": "automation.types",
+      "title": "Type Effectiveness",
+      "pages": [7],
+      "blocks": [
+        { "p": "Each of the Dice Roller panels in the arena calculate the bonus/penalty damage from type effectiveness automatically when selecting a move type." },
+        { "p": "By having the small green button toggled on, you can search through all move types instead of just the ones your currently active Pokémon can learn." },
+        { "figure": "automation.types/dice_roller", "caption": "Dice Roller" },
+        { "digital": "In this game, the game calculates type effectiveness damage." }
+      ]
+    },
+    {
+      "key": "automation.moving",
+      "title": "Moving Pokémon",
+      "pages": [7],
+      "blocks": [
+        { "p": "Pokémon in this game can end up with many objects on them as they learn new moves, hold items and take damage/status effects. To move all of these objects together easily, you can instead use the Poké Ball token of the Pokémon to move them about." },
+        { "figure": "automation.moving/ball_token", "caption": "Poké Ball token in your trainer area linked to Infernape." },
+        { "figure": "automation.moving/arena", "caption": "Poké Ball token moved to the arena, Infernape along with any moves, items and dice are moved to the arena also." },
+        { "p": "Important: Make sure to increase your lift height in Tabletop Simulator if you are having trouble with the Poké Balls linking to other Pokémon in your party accidently when moving them around." },
+        { "digital": "In this game, the game moves the Pokémon together with its moves, held items and dice." }
+      ]
+    }
+  ]
+}

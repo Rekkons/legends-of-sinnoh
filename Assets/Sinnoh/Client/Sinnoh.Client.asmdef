@@ -1,0 +1,25 @@
+{
+    "name": "Sinnoh.Client",
+    "rootNamespace": "Sinnoh.Client",
+    "references": [
+        "Sinnoh.Rules",
+        "Sinnoh.Ai",
+        "Sinnoh.Data",
+        "Sinnoh.Fx",
+        "Sinnoh.Net",
+        "Rekkon.UiKit.Core",
+        "Rekkon.UiKit",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

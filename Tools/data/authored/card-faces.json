@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "note": "이미지 전용 카드 덱의 앞면 영문 이름(카드 키 = <덱>.<이름 snake, 앞 A·The 뺌>, 이름이 없는 앞면은 null = 앞면 번호 1부터). sheets[n] = CustomDeck 번호 순 n번째 시트, 그 안은 시트 칸 순서(CardID % 100). 한국어판·원작 세이브의 CardID 칸이 같다. 이름은 원작 GitHub 영문 카드 그림을 보고 옮겼다(2026-11-06). 문구·효과는 M5(authored/cards/)에서 영문과 대조한다.",
+  "decks": {
+    "act": {
+      "src": "gh-clone assets/cards/act/card_fronts.png",
+      "sheets": [["The Incursion", "The Journey", "The Shards", "The Heart", "The Choice"]]
+    },
+    "home_village": {
+      "src": "카드 GMNotes 색 = 그 마을 트레이너 토큰 색(빌드가 마을 키를 붙인다)",
+      "sheets": [[null, null, null, null, null, null, null, null, null]]
+    },
+    "shrine_event": {
+      "src": "gh-clone assets/cards/shrine/card_fronts_1.png(시트 0: 사당의 축복 7종 × 3), card_fronts_0.png(시트 1: 전설 이벤트 7 × 1 + 천상의 균열 × 7)",
+      "sheets": [
+        ["Fateful Encounter", "Unexpected Gift", "Equivalent Exchange", "Ancient Wisdom", "Splendid Banquet", "Hidden Treasure", "Tranquil Moment"],
+        ["A Song of Frost", "A Song of Thunder", "A Song of Fire", "A Visitor from Afar", "A Shadow Emerges", "A Beacon of Light", "A Giant Awakens", "Celestial Fracture"]
+      ]
+    },
+    "change_of_fate": {
+      "src": "gh-clone assets/cards/change_of_fate/card_fronts.png(앞면 위 이름 아래 줄의 신)",
+      "sheets": [["Dialga", "Palkia", "Giratina", "Arceus"]]
+    },
+    "ginkgo_trade": {
+      "src": "gh-clone assets/cards/ginkgo_trade/card_fronts.png(거래 표뿐, 이름 없음)",
+      "sheets": [[null, null, null, null, null, null, null, null, null]]
+    },
+    "distortion_breach": {
+      "src": "gh-clone assets/1_expansion_distortion_world/distortion_breach_card_fronts.png",
+      "sheets": [["Reckless Assault", "Rapid Strikes", "Gravitational Drag", "Nimble Frame", "Chromatic Union", "Status Overload"]]
+    },
+    "ultra_onslaught": {
+      "src": "gh-clone assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png(문구뿐, 이름 없음)",
+      "sheets": [[null, null, null, null, null, null]]
+    }
+  }
+}

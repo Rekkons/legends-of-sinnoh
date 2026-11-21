@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "note": "왜곡 균열 6면(36장 = 6종 × 6, 울트라 버스트 — 효과 구현은 M6, 전사·verified는 결정 75로 M5). en = 영문 카드 그림의 본문(공통 줄 다음 줄에 능력 문구). 영문 출처: 원작 GitHub master(pl-small.git@c0b717c, v1.4a) assets/1_expansion_distortion_world/distortion_breach_card_fronts.png(blob a1abbed, #n = 시트 칸) = Research/raw/trainer-gh/en/m-1_expansion_distortion_world_distortion_breach_card_fronts.png. ko = 한국어판 시트(Research/raw/cards/breach, CS-breach)를 옮기고 용어(스피드·위력·데미지·상태 이상·타입 없음)를 맞춘 화면 문자열.",
+  "deck": "distortion_breach",
+  "cards": {
+    "distortion_breach.reckless_assault": {
+      "name": { "en": "Reckless Assault", "ko": "무모한 강습" },
+      "en": "You must attach this ability to a Pokémon in your party.\nWhen the user attacks or is attacked, positive type effectiveness damage is increased by 2.",
+      "ko": "이 특성을 당신의 파티에 있는 포켓몬에게 장착시켜야 합니다.\n사용자가 공격하거나 공격받을 때, 유리한 타입 상성의 데미지가 2 증가합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/distortion_breach_card_fronts.png#1", "ko": "rules-summary §17.5 · raw/cards/breach#1" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "distortion_breach.rapid_strikes": {
+      "name": { "en": "Rapid Strikes", "ko": "신속한 공격" },
+      "en": "You must attach this ability to a Pokémon in your party.\nThe user always goes first but reduces its moves with greater than 3 total attack strength to 3 attack strength.",
+      "ko": "이 특성을 당신의 파티에 있는 포켓몬에게 장착시켜야 합니다.\n사용자는 스피드와 상관없이 항상 먼저 공격하지만, 위력이 3을 넘는 기술의 위력이 3이 됩니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/distortion_breach_card_fronts.png#2", "ko": "rules-summary §17.5 · raw/cards/breach#2" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "distortion_breach.gravitational_drag": {
+      "name": { "en": "Gravitational Drag", "ko": "중력의 이끌림" },
+      "en": "You must attach this ability to a Pokémon in your party.\nReduce the initiative of the user by 3 but increase the base health of the user by 3.",
+      "ko": "이 특성을 당신의 파티에 있는 포켓몬에게 장착시켜야 합니다.\n사용자의 스피드가 3 감소하고, 기본 체력이 3 증가합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/distortion_breach_card_fronts.png#3", "ko": "rules-summary §17.5 · raw/cards/breach#3" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "distortion_breach.nimble_frame": {
+      "name": { "en": "Nimble Frame", "ko": "날렵한 뼈대" },
+      "en": "You must attach this ability to a Pokémon in your party.\nWhen the user attacks, it takes 1 damage, but may switch out afterwards. Does not affect the current turn order.",
+      "ko": "이 특성을 당신의 파티에 있는 포켓몬에게 장착시켜야 합니다.\n사용자가 공격할 때, 1 데미지를 받지만, 그 후 교체할 수 있습니다. 현재 턴 순서에는 영향을 주지 않습니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/distortion_breach_card_fronts.png#4", "ko": "rules-summary §17.5 · raw/cards/breach#4" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "distortion_breach.chromatic_union": {
+      "name": { "en": "Chromatic Union", "ko": "크로마틱 유니온" },
+      "en": "You must attach this ability to a Pokémon in your party.\nThe moves of the user are now Typeless, but their attack strengths are increased by 1.",
+      "ko": "이 특성을 당신의 파티에 있는 포켓몬에게 장착시켜야 합니다.\n사용자의 기술이 모두 타입 없음이 되지만, 위력이 1 증가합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/distortion_breach_card_fronts.png#5", "ko": "rules-summary §17.5 · raw/cards/breach#5" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 「공격력이 1 감소합니다」는 오역(rulings A15: 영문 increased by 1)"
+    },
+    "distortion_breach.status_overload": {
+      "name": { "en": "Status Overload", "ko": "상태 과부하" },
+      "en": "You must attach this ability to a Pokémon in your party.\nWhen the user switches in, roll a status dice and inflict the result on both the user and the target.",
+      "ko": "이 특성을 당신의 파티에 있는 포켓몬에게 장착시켜야 합니다.\n사용자가 교체해서 들어왔을 때, 상태 이상 주사위 1개를 굴려 나온 결과를 사용자와 상대 모두에게 적용시킵니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/distortion_breach_card_fronts.png#6", "ko": "rules-summary §17.5 · raw/cards/breach#6" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    }
+  }
+}

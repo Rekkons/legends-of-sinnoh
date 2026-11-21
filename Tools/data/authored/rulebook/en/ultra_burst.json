@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 23~26쪽 「Ultra Burst Campaign」 — 원문 그대로, TTS 조작 문장은 원문 + 「디지털판」 꼬리표(결정 111 ④, plan §5 #307 영어판). 23쪽 난이도 셋 · 아르세우스의 축복과 25쪽 플레이어 수 아이콘은 그림 이름표 글을 목록 · 표로 옮김(표 머리는 원본에 없어 붙임).",
+  "chapter": "ultra_burst",
+  "title": "Ultra Burst Campaign",
+  "sections": [
+    {
+      "key": "ultra_burst.story",
+      "title": "Ultra Burst Campaign",
+      "pages": [23],
+      "blocks": [
+        { "p": "10 years have passed since the events that saw the Heart of Sinnoh restored and Team Galactic forced to retreat." },
+        { "p": "With the light of the Heart emanating across the region, a time of prosperity has descended upon Sinnoh. This has attracted new trainers from regions afar but also the attention of mysterious entities from beyond the bounds of this dimension…" },
+        { "p": "Without warning, a beast of pure light bursts through into the Distortion World, the counterbalance to our world, threatening to cast Sinnoh into total darkness. As the breach becomes increasingly unstable, more beasts spew forth wrecking havoc across the land." },
+        { "p": "Trainers from across the region must now work together to draw power away from the Ultra Burst and defeat the beast at its core before the light of our world is consumed forever." }
+      ]
+    },
+    {
+      "key": "ultra_burst.overview",
+      "title": "Overview",
+      "pages": [23],
+      "blocks": [
+        { "p": "The Ultra Burst Campaign adds a new area to the map, the Distortion World, with Necrozma residing at its centre." },
+        { "p": "The Ultra Beasts, represented by 9 figurines, are scattered across Sinnoh at the start of the game. Each time all trainers have taken a turn, click the button tracking “Breach Strength” next to the Distortion World to allow the Ultra Beasts to take their movement turn." },
+        { "p": "Your only objective is to defeat Necrozma before the breach reaches its critical threshold (70%), otherwise you lose. It is recommended that you defeat the majority of the Ultra Beasts first to weaken Necrozma!" },
+        { "digital": "In this game, the game runs the Ultra Beasts' turn once every trainer has taken a turn." }
+      ]
+    },
+    {
+      "key": "ultra_burst.setup",
+      "title": "Setup",
+      "pages": [23],
+      "blocks": [
+        { "p": "Unlike the Heart of Sinnoh campaign, you start with 3 Red, 3 Blue and 3 Yellow Apricorns and all 6 Pokémon slots unlocked. Furthermore, this campaign has several difficulty levels that determine how many Blessings of Arceus you as a group start with:" },
+        { "list": [
+          "New Trainer: 3 Blessings of Arceus",
+          "Veteran Trainer: 1 Blessing of Arceus",
+          "Master Trainer: 0 Blessings of Arceus"
+        ] },
+        { "figure": "ultra_burst.setup/difficulty", "caption": "New Trainer · Veteran Trainer · Master Trainer" },
+        { "p": "Blessing of Arceus: Use to skip a movement turn of the Ultra Beasts or revive an eliminated trainer." },
+        { "figure": "ultra_burst.setup/blessing", "caption": "Blessing of Arceus" },
+        { "p": "Repeat the same setup steps as in the base game but toggle the selected campaign to the “Ultra Burst Campaign” before pressing “Start Game”." },
+        { "digital": "In this game, you choose the campaign when setting up the game, and the game hands out the starting Apricorns and party slots for you." }
+      ]
+    },
+    {
+      "key": "ultra_burst.prism",
+      "title": "Prism Armour",
+      "pages": [24],
+      "blocks": [
+        { "p": "Necrozma and the Ultra Beasts protect themselves using Prism Armour. For every 2 Prism Armour tokens: Reduce the total damage taken per turn by 1." },
+        { "list": [
+          "Self-inflicted damage, fatigue damage and status effect damage (notably Poison) are examples of damage that may be reduced during their turns.",
+          "Attack damage is the primary example of damage that may be reduced during your turns."
+        ] },
+        { "figure": "ultra_burst.prism/token", "caption": "Prism Armour tokens are found on the campaign board." },
+        { "p": "At the start of the game, place all 9 Prism Armour tokens on the Ultra Burst side and no tokens on the Ultra Beast side of the Prism Armour areas." },
+        { "p": "So to begin with, Necrozma takes 4 less damage per turn whereas the Ultra Beasts take no less damage per turn." },
+        { "p": "When an Ultra Beast is defeated, move a Prism Armour token from the Ultra Burst side to the Ultra Beast side." },
+        { "figure": "ultra_burst.prism/shift", "caption": "Ultra Burst side now starts with 9 Prism Armour but now has 8 after an Ultra Beast is defeated. Ultra Beast side starts with 0 Prism Armour but now has 1 after an Ultra Beast is defeated." },
+        { "digital": "In this game, the game moves the Prism Armour tokens and reduces the damage for you." }
+      ]
+    },
+    {
+      "key": "ultra_burst.breach",
+      "title": "Distortion Breach Cards",
+      "pages": [24],
+      "blocks": [
+        { "p": "As the breach grows stronger, Pokémon start to experience strange effects that have seeped out from the Distortion World." },
+        { "p": "At every increment of 10% breach strength, trainers will be dealt a random Distortion Breach card that they must attach to a Pokémon in their party." },
+        { "p": "These cards are attached to the Pokémon like a move but grant a passive ability instead (like Galactic Retribution and Beast Boost). If it is not possible to attach the card when it is dealt, keep the card in your hand and attach it as soon as possible." },
+        { "figure": "ultra_burst.breach/card", "caption": "Distortion Breach card with the Reckless Assault ability." },
+        { "p": "Any action that leads to a Distortion Breach card leaving your party is not allowed. However, when an Ultra Beast is defeated, all trainers may discard or move 1 Distortion Breach card." },
+        { "figure": "ultra_burst.breach/roselia", "caption": "Reckless Assault ability added to a Roselia." }
+      ]
+    },
+    {
+      "key": "ultra_burst.movement",
+      "title": "Ultra Beast Movement",
+      "pages": [25],
+      "blocks": [
+        { "p": "The Ultra Beasts start with 4 tile moves per turn shared between all of them. Additionally, Necrozma will remotely target a number of tiles at random based on the number of players in the game:" },
+        { "table": { "head": ["Players", "Tiles targeted"], "rows": [
+          ["1–2", "1"],
+          ["3–4", "2"],
+          ["5–6", "3"]
+        ] } },
+        { "figure": "ultra_burst.movement/targets", "caption": "Tiles targeted by Necrozma for each number of players" },
+        { "p": "At every increment of 10% breach strength, the number of tile moves the Ultra Beasts have in total increases by 1." },
+        { "p": "What we have observed so far about how the Ultra Beasts interact with the world around them:" },
+        { "list": [
+          "Hidden Spots: These are sent into the Distortion World (or are discarded if there are no more free tiles).",
+          "Apricorn Trees/Reefs and Shrines: These are destroyed preventing all further interactions with those tokens by trainers (the tokens themselves become darker in colour when this happens).",
+          "Villages and Legendary Locations: They seem to steer clear of these places for unknown reasons.",
+          "The breach grows in strength when Apricorn Trees/Reefs or Shrines are destroyed by the Ultra Beasts or Necrozma."
+        ] }
+      ]
+    },
+    {
+      "key": "ultra_burst.battles",
+      "title": "Battles",
+      "pages": [25],
+      "blocks": [
+        { "p": "To initiate a battle with an Ultra Beast or Necrozma, click “Search” whilst standing on one of their tokens. They are treated like any other Legendary Pokémon for tactics and rewards but cannot be captured." },
+        { "p": "To decide which moves they use in battle, you can have another player control them or you can follow these principles in order:" },
+        { "ol": [
+          "Prioritise trying to use their signature move if it makes sense to.",
+          "Use the move that gives the highest value when you add together: Attack strength + Type effectiveness bonus + Move effect damage"
+        ] },
+        { "p": "If a trainer is defeated by Necrozma, they are eliminated from the game." },
+        { "p": "The Ultra Beasts and Necrozma are fully restored between battle attempts and phases." }
+      ]
+    },
+    {
+      "key": "ultra_burst.necrozma",
+      "title": "Necrozma Phases",
+      "pages": [25],
+      "blocks": [
+        { "p": "Necrozma has 3 phases that can be selected by changing the state of the Pokémon card. When a phase is successfully defeated, the battle ends and Necrozma proceeds to its next phase permanently." },
+        { "figure": "ultra_burst.necrozma/phases", "caption": "Phase 1 → Phase 2 (Use the Sun/Moon coin to determine which form to battle) → Phase 3" },
+        { "digital": "In this game, the game changes the phase and tosses the Sun/Moon coin for you." }
+      ]
+    },
+    {
+      "key": "ultra_burst.gates",
+      "title": "Distortion Gates",
+      "pages": [26],
+      "blocks": [
+        { "p": "You can now travel to the Distortion World using the 4 Distortion Gates found across the map." },
+        { "p": "Each Distortion Gate links to its exact counterpart and does not cost a tile move to use (for example, you can freely travel between the two Deepmarsh Gates)." },
+        { "figure": "ultra_burst.gates/deepmarsh", "caption": "One of the two Deepmarsh Gates." }
+      ]
+    },
+    {
+      "key": "ultra_burst.megalopolis",
+      "title": "Ultra Megalopolis",
+      "pages": [26],
+      "blocks": [
+        { "p": "The Ultra Megalopolis allows you to fully restore your party and trade with the Ginkgo Merchants once per turn like villages do, however you cannot fly to or from there." },
+        { "p": "The Ultra Megalopolis can be selected as a home village and has its own trainer token that starts there." },
+        { "figure": "ultra_burst.megalopolis/token", "caption": "Ultra Megalopolis" }
+      ]
+    },
+    {
+      "key": "ultra_burst.warped",
+      "title": "Warped Apricorn Trees",
+      "pages": [26],
+      "blocks": [
+        { "p": "These act like normal Apricorn Trees but offer a mixed selection of both Pokémon and Apricorns." },
+        { "p": "The rewards are based on the encounter tier of the Pokémon you choose to battle." },
+        { "figure": "ultra_burst.warped/token", "caption": "Warped Apricorn Tree" }
+      ]
+    },
+    {
+      "key": "ultra_burst.caverns",
+      "title": "Lake Caverns",
+      "pages": [26],
+      "blocks": [
+        { "p": "The Lake Guardians (Mesprit, Uxie, Azelf) can now be battled independently at each Lake Cavern." },
+        { "p": "However, they are immune to capture attempts and all damage until the turn after their trials are overcome:" },
+        { "figure": "ultra_burst.caverns/verity", "caption": "Lake Verity Cavern" },
+        { "list": [
+          "Trial of Emotion: Mesprit must take damage from battle fatigue.",
+          "Trial of Knowledge: Uxie must be attacked with 2 different types that are super effective.",
+          "Trial of Willpower: Azelf must be attacked with 2 or more critical hits over your last 2 turns."
+        ] },
+        { "p": "After each Lake Guardian is defeated or captured, all trainers gain +2 movement per turn for the rest of the game." }
+      ]
+    },
+    {
+      "key": "ultra_burst.temple",
+      "title": "Temple of Sinnoh",
+      "pages": [26],
+      "blocks": [
+        { "p": "Arceus is understandably wary of getting involved again after the events that occurred a decade ago." },
+        { "p": "He has however sent another Pokémon in his stead to the Temple of Sinnoh. Defeating or capturing this Pokémon grants 1 Blessing of Arceus." },
+        { "figure": "ultra_burst.temple/token", "caption": "The Temple of Sinnoh" }
+      ]
+    }
+  ]
+}

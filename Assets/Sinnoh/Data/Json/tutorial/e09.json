@@ -1,0 +1,13 @@
+{"schema":1,"id":"e09","start":{"campaign":"HeartOfSinnoh","seats":1,"seed":3,"trainerCards":null,"tops":[],"spots":[],"after":"stamp"},"bots":null,"steps":[
+{"id":"P01","ch":9,"text":null,"hint":null,"anchor":null,"advance":"demo","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[{"choice":"VillagePick","kind":"Pick"}],"dice":[],"expect":{},"ref":["01 §3-5","07 §5-1"]},
+{"id":"P02","ch":9,"text":null,"hint":null,"anchor":null,"advance":"demo","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"dice":[],"expect":{},"ref":["01 §3-5","07 §5-1"]},
+{"id":"S001","ch":9,"text":"tutorial.e09.S001","hint":null,"anchor":null,"advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["A30"]},
+{"id":"S003","ch":9,"text":"tutorial.e09.S003","hint":null,"anchor":"board-hud-party","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{"party":3},"ref":["01 §3-5","07 §5-1"]},
+{"id":"S004","ch":9,"text":"tutorial.e09.S004","hint":null,"anchor":"board-hud-stamp","advance":"screen","screen":"board-stamp","botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["A30","04 S16"]},
+{"id":"S005","ch":9,"text":"tutorial.e09.S005","hint":null,"anchor":"board-stamp-sheet","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["A30"]},
+{"id":"S006","ch":9,"text":"tutorial.e09.S006","hint":null,"anchor":"board-stamp-rewards","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["A30"]},
+{"id":"S007","ch":9,"text":"tutorial.e09.S007","hint":null,"anchor":"board-stamp-close+board-hud-maint","advance":"screen","screen":"board-party","botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["01 §3-4"]},
+{"id":"S008","ch":9,"text":"tutorial.e09.S008","hint":"tutorial.e09.S008.hint","anchor":"board-party-bag-1+board-party-item-0","advance":"command","screen":null,"botSeat":-1,"botAnswers":0,"allow":[{"maint":"HoldItem","party":0,"value":"item.lucky_egg"}],"auto":[{"maint":"HoldItem","party":0,"value":"item.lucky_egg"}],"dice":[],"expect":{},"ref":["01 §3-4","A30"]},
+{"id":"S009","ch":9,"text":"tutorial.e09.S009","hint":null,"anchor":"board-party-close+board-hud-stamp","advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{"stamps":1,"apricorn.red":4},"ref":["A30"]},
+{"id":"S010","ch":9,"text":"tutorial.e09.S010","hint":null,"anchor":null,"advance":"next","screen":null,"botSeat":-1,"botAnswers":0,"allow":[],"auto":[],"dice":[],"expect":{},"ref":["A30"]}
+]}

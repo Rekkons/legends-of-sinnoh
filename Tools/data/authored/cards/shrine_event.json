@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "note": "사당 이벤트 15면(35장 = 사당의 축복 7종 × 3 + 전설 이벤트 7 + 천상의 균열 × 7). en = 영문 카드 그림의 본문(축복은 「4+ trainers」 줄 다음 줄에 효과, 「/」 = 바친 규토리 1/2/3단계). 영문 출처: 원작 GitHub master(pl-small.git@c0b717c, v1.4a) assets/cards/shrine/card_fronts_1.png(축복, blob 09354f2)·card_fronts_0.png(전설·균열, blob 4867eba) = Research/raw/trainer-gh/en/m-cards_shrine_card_fronts_{1,0}.png(#n = 시트 칸). 풀이가 룰북에 더 있는 카드는 src.en에 행을 함께 적는다. ko = 한국어판 시트(Research/raw/cards/shrine1·shrine2, CS-shrine1·2)를 옮기고 용어·규토리 색 이름(빨강·파랑·노랑·분홍·초록·하양·검정)을 맞춘 화면 문자열.",
+  "deck": "shrine_event",
+  "cards": {
+    "shrine_event.fateful_encounter": {
+      "name": { "en": "Fateful Encounter", "ko": "운명적 조우" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nDraw 1/2/3 Change of Fate cards.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n운명의 변화 카드를 1/2/3장 뽑습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#1", "ko": "rules-summary §12.2 · raw/cards/shrine1#1" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.unexpected_gift": {
+      "name": { "en": "Unexpected Gift", "ko": "뜻밖의 선물" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nGain any 1/2/3 Apricorns.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n원하는 종류의 규토리를 1/2/3개 얻습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#2", "ko": "rules-summary §12.2 · raw/cards/shrine1#2" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.equivalent_exchange": {
+      "name": { "en": "Equivalent Exchange", "ko": "동등한 교환" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nYou may replace up to a Weak/Moderate/Strong Pokémon in your party with any wild Pokémon of the same encounter tier whilst keeping everything else attached.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n내 파티에 있는 약한/적당한/강한 조우 등급 이하의 포켓몬을 같은 등급의 야생 포켓몬과 교환할 수 있습니다. 교환한 포켓몬에게 붙어 있던 것들은 그대로 남습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#3 · Rulebook-en-master.txt:523-525", "ko": "rules-summary §12.2 · raw/cards/shrine1#3" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.ancient_wisdom": {
+      "name": { "en": "Ancient Wisdom", "ko": "고대의 지혜" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nYou may learn a move from a discarded Pokémon with encounter tier up to Moderate/Strong/Legendary.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n적당한/강한/전설 조우 등급 이하의 버려진 포켓몬으로부터 기술을 1개 배울 수 있습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#4", "ko": "rules-summary §12.2 · raw/cards/shrine1#4" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.splendid_banquet": {
+      "name": { "en": "Splendid Banquet", "ko": "화려한 만찬" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nUse 1/2/3 Apricorn Stew effects for free this turn. You cannot choose the same stew effect more than once.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n이 턴에 1/2/3개의 규토리 스튜 효과를 공짜로 사용할 수 있습니다. 같은 스튜 효과를 2번 이상 사용할 수는 없습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#5 · Rulebook-en-master.txt:527-531", "ko": "rules-summary §12.2 · raw/cards/shrine1#5" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.hidden_treasure": {
+      "name": { "en": "Hidden Treasure", "ko": "숨겨진 보물" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nGain a Greater Ball/Ultimate Ball/Keystone Ball.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n수퍼볼/하이퍼볼/키스톤볼을 1개 얻습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#6", "ko": "rules-summary §12.2 · raw/cards/shrine1#6" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.tranquil_moment": {
+      "name": { "en": "Tranquil Moment", "ko": "평온한 순간" },
+      "en": "4+ trainers: Choose another trainer to also get this effect\nGain 2/4/6 Journey Points.",
+      "ko": "4인 이상: 이 효과를 똑같이 받을 다른 트레이너 1명을 선택합니다.\n여행 점수를 2/4/6점 얻습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_1.png#7", "ko": "rules-summary §12.2 · raw/cards/shrine1#7" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.song_of_frost": {
+      "name": { "en": "A Song of Frost", "ko": "서리의 노래" },
+      "en": "All trainers gain 3 Blue Apricorns. Place the Articuno token on the Frostsong Shrine.",
+      "ko": "모든 트레이너는 파랑 규토리를 3개씩 얻습니다. 프리져 토큰을 서리노래 사당에 놓습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#1", "ko": "rules-summary §12.3 · raw/cards/shrine2#1" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.song_of_thunder": {
+      "name": { "en": "A Song of Thunder", "ko": "천둥의 노래" },
+      "en": "All trainers gain 3 Yellow Apricorns. Place the Zapdos token on the Thundersong Shrine.",
+      "ko": "모든 트레이너는 노랑 규토리를 3개씩 얻습니다. 썬더 토큰을 천둥노래 사당에 놓습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#2", "ko": "rules-summary §12.3 · raw/cards/shrine2#2" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.song_of_fire": {
+      "name": { "en": "A Song of Fire", "ko": "불꽃의 노래" },
+      "en": "All trainers gain 3 Red Apricorns. Place the Moltres token on the Firesong Shrine.",
+      "ko": "모든 트레이너는 빨강 규토리를 3개씩 얻습니다. 파이어 토큰을 불꽃노래 사당에 놓습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#3", "ko": "rules-summary §12.3 · raw/cards/shrine2#3" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.visitor_from_afar": {
+      "name": { "en": "A Visitor from Afar", "ko": "아득한 곳에서의 방문자" },
+      "en": "All trainers gain 2 Green Apricorns. Place the Celebi token on the Timeless Shrine.",
+      "ko": "모든 트레이너는 초록 규토리를 2개씩 얻습니다. 세레비 토큰을 시간의 사당에 놓습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#4", "ko": "rules-summary §12.3 · raw/cards/shrine2#4" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.shadow_emerges": {
+      "name": { "en": "A Shadow Emerges", "ko": "솟구치는 그림자" },
+      "en": "All trainers gain 1 Black Apricorn. Place the Darkrai token on the Moonglade Shrine (replaces the Cresselia token).",
+      "ko": "모든 트레이너는 검정 규토리를 1개 얻습니다. 다크라이 토큰을 달빛공터 사당에 놓습니다. (크레세리아 토큰을 교체합니다.)",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#5", "ko": "rules-summary §12.3 · raw/cards/shrine2#5" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.beacon_of_light": {
+      "name": { "en": "A Beacon of Light", "ko": "희망의 횃불" },
+      "en": "All trainers gain 2 Pink Apricorns. Place the Cresselia token on the Moonglade Shrine (replaces the Darkrai token).",
+      "ko": "모든 트레이너는 분홍 규토리를 2개씩 얻습니다. 크레세리아 토큰을 달빛공터 사당에 놓습니다. (다크라이 토큰을 교체합니다.)",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#6", "ko": "rules-summary §12.3 · raw/cards/shrine2#6" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.giant_awakens": {
+      "name": { "en": "A Giant Awakens", "ko": "깨어난 거인" },
+      "en": "All trainers gain 2 White Apricorns. Place the Regigigas token on the Colossus Shrine.",
+      "ko": "모든 트레이너는 하양 규토리를 2개씩 얻습니다. 레지기가스 토큰을 거상 사당에 놓습니다.",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#7", "ko": "rules-summary §12.3 · raw/cards/shrine2#7" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "shrine_event.celestial_fracture": {
+      "name": { "en": "Celestial Fracture", "ko": "천상의 균열" },
+      "en": "All trainers draw 1 Change of Fate card and may change their Follower token in secret. After revealing, place the God of Sinnoh token with the most Followers on the Origin Shrine (you choose if tied).",
+      "ko": "모든 트레이너가 운명의 변화 카드를 1장씩 뽑고, 추종자 토큰을 몰래 바꿀 수 있습니다. 공개 후, 가장 많은 추종자를 가진 신오의 신 토큰을 시작의 사당에 둡니다. (동률일 경우 선택)",
+      "src": { "en": "assets/cards/shrine/card_fronts_0.png#8 · Rulebook-en-master.txt:473-483", "ko": "rules-summary §12.4 · raw/cards/shrine2#8" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "note": "막 카드 5면(03 §1-3 이미지 전용 카드). en = 영문 카드 그림을 보고 옮긴 본문(제목·부제 제외, 문단은 \\n) — 효과의 정본. 영문 출처는 원작 GitHub master(pl-small.git@c0b717c, v1.4a)의 assets/cards/act/card_fronts.png(#n = 시트 칸, 1부터) = Research/raw/trainer-gh/en/m-cards_act_card_fronts.png(같은 blob 868e42c). ko = 한국어판 시트(Research/raw/cards/acts, rules-summary 부록 A CS-acts)를 옮기고 용어를 지침(ui-text-guide)에 맞춘 화면 문자열. 영문과 뜻이 달라 고친 곳은 review + note.",
+  "deck": "act",
+  "cards": {
+    "act.incursion": {
+      "name": { "en": "The Incursion", "ko": "침입" },
+      "en": "In the future, a pivotal battle for the fate of the world has been lost.\nBy harnessing the powers of the legendary Pokémon Dialga and Palkia, Team Galactic have travelled to our own time to shatter the Heart of Sinnoh, a primordial jewel that embodies the spirit of the world.\nTo prevent retribution whilst their plans are finalised, grunts have been dispatched to subdue the villages of the region.\nPlace one “Team Galactic Grunts” token on the home village of each trainer face-up. You cannot fly to or from a village with this token on. Draw the Act I card.",
+      "ko": "미래에서, 세계의 운명을 가르는 배틀이 패배로 끝났습니다.\n전설의 포켓몬 디아루가, 펄기아의 힘을 이용해서, 이 세계의 영혼을 품고 있는 태고의 보석인 신오의 심장을 조각내기 위해 갤럭시단이 여러분의 시간대로 시간여행해 왔습니다.\n계획을 마무리하는 동안 반격을 막으려고, 조무래기들이 이 지방의 마을들을 제압하러 파견됐습니다.\n“갤럭시단 조무래기” 토큰을 각 트레이너들의 고향 마을에 앞면으로 배치하세요. 이 토큰이 놓인 마을로는 공중날기로 드나들 수 없습니다. 토큰들을 모두 배치한 뒤 1막 카드를 뽑으세요.",
+      "src": { "en": "assets/cards/act/card_fronts.png#1", "ko": "rules-summary §16.2 · raw/cards/acts#1" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 「비행할 수 없습니다」 → 「공중날기로 드나들 수 없습니다」(ui-text-guide 공중날기, fly to or from). 결정 80 묻지 않고 고친 것: 「여러분은 … 패배했습니다」 → 영문은 누가 졌는지 말하지 않음(has been lost), 「여러분의 고향 마을」 → 이 지방의 마을들(the villages of the region)"
+    },
+    "act.journey": {
+      "name": { "en": "The Journey", "ko": "여정" },
+      "en": "Members of your village are hesitant to make a stand against Team Galactic. Set out on a journey to catch and train a small team capable of liberating your home.\nAs you leave, you grab 3 Red Apricorns to construct some Poké Balls with.\nObjective: Defeat the 2 Team Galactic Grunts at your home village.\nReward: +2 Movement per Turn\nOnce one trainer completes this objective: Draw the Act II card and flip over the tokens at each of the three lakes.",
+      "ko": "여러분의 고향 마을 사람들은 갤럭시단에 맞서길 망설이고 있습니다. 여행을 떠나 여러분의 고향을 해방시킬 수 있는 팀을 포획하고 훈련시키세요.\n여러분이 길을 떠날 때, 몬스터볼의 재료가 되는 빨강 규토리를 3개씩 챙겨 갑니다.\n목표: 내 고향 마을에 있는 갤럭시단 조무래기의 포켓몬 2마리를 쓰러뜨립니다.\n보상: 턴당 이동력 +2\n누군가 목표를 달성하면 2막 카드를 뽑고, 진실호수, 예지호수, 입지호수의 토큰들을 뒤집습니다.",
+      "src": { "en": "assets/cards/act/card_fronts.png#2", "ko": "rules-summary §16.2 · raw/cards/acts#2" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 「조무래기에게 2번 승리합니다」는 오역(rulings A1: 배틀 1번, 2마리를 모두 쓰러뜨림)"
+    },
+    "act.shards": {
+      "name": { "en": "The Shards", "ko": "파편" },
+      "en": "The Shards needed to restore the Heart are bestowed by the three mysterious Lake Guardians.\nKnowing this, Team Galactic have deployed their commanders to Lake Verity, Lake Acuity and Lake Valor to prevent anyone from collecting these Shards.\nObjective: Defeat the Galactic Commanders at each lake to collect all three Shards.\nReward: +1 Party Slot per Shard\nOnce one trainer completes this objective: Draw the Act III card and flip over the token at the Temple of Sinnoh.",
+      "ko": "심장을 복구하는 데 필요한 조각은 신비한 세 호수의 수호신이 내려 줍니다.\n이를 아는 갤럭시단은 아무도 조각을 모으지 못하도록 진실호수, 예지호수, 입지호수에 간부를 보냈습니다.\n목표: 각 호수에 있는 간부에게 승리해 3개의 조각을 모두 모읍니다.\n보상: 조각 1개당 파티 슬롯 +1\n누군가 목표를 달성하면 3막 카드를 뽑고, 신오신전 토큰을 뒤집습니다.",
+      "src": { "en": "assets/cards/act/card_fronts.png#3", "ko": "rules-summary §16.2 · raw/cards/acts#3" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 「예지호수, 의지호수, 입지호수」는 오기(영문 Lake Verity·Acuity·Valor = 진실·예지·입지). 결정 80 묻지 않고 고친 것: 「호수의 수호자들」 → 신비한 세 호수의 수호신(three mysterious Lake Guardians — 다른 곳은 모두 수호신), 주어를 영문대로(Team Galactic have deployed their commanders)"
+    },
+    "act.heart": {
+      "name": { "en": "The Heart", "ko": "심장" },
+      "en": "Without the power of the Heart, Arceus falls under the control of Cyrus and the world begins to reshape itself according to the machinations of its new God.\nRestore the Heart of Sinnoh at the Origin Shrine then proceed to the Temple of Sinnoh to confront Cyrus.\nObjective: Defeat Cyrus at the Temple of Sinnoh.\nReward: Draw the Ending card\nOnce one trainer completes this objective: They draw the Ending card.",
+      "ko": "심장의 힘을 잃은 아르세우스는 태홍의 손에 넘어가고, 세계는 새로운 신의 뜻대로 바뀌기 시작합니다.\n시작의 사당에서 신오의 심장을 복구한 다음, 신오신전에서 태홍에게 맞서세요.\n목표: 신오신전에서 태홍을 쓰러뜨립니다.\n보상: 종막 카드를 뽑습니다.\n누군가 목표를 달성하면 그 트레이너가 종막 카드를 뽑습니다.",
+      "src": { "en": "assets/cards/act/card_fronts.png#4", "ko": "rules-summary §16.2 · raw/cards/acts#4" },
+      "verified": "2026-11-14",
+      "review": true,
+      "note": "한국어판 「종막카드를 뒤집습니다」 → 영문 They draw the Ending card(달성한 트레이너가 뽑는다). 결정 80 묻지 않고 고친 것: 첫 문장의 덧붙은 말 「영혼 없고 왜곡된 곳」을 빼고 영문대로(the world begins to reshape itself … its new God)"
+    },
+    "act.choice": {
+      "name": { "en": "The Choice", "ko": "선택" },
+      "en": "Is it over? Arceus, awaking from its control, looks expectantly at the restored Heart of Sinnoh you hold in your hands.\nBut with this power, surely the world could be changed... for the better? Someone like Cyrus would never be able to rise again... right?\nHero of Sinnoh: Return the Heart to Arceus.\nTraitor of Sinnoh: Claim the Heart of Sinnoh. Challenge and defeat each of your fellow trainers in battle to be crowned as the undisputed strongest trainer.",
+      "ko": "이제 끝난 걸까요? 아르세우스는 정신을 차리고 당신의 손 안에 있는 복구된 신오의 심장을 기대하는 눈빛으로 보고 있습니다.\n하지만 이 힘이라면, 세상을 더 좋은 곳으로 만들 수 있을지도 모릅니다. 태홍 같은 사람이 다시 나타나지 못하도록 말이죠... 어때요?\n신오의 영웅: 아르세우스에게 심장을 돌려줍니다.\n신오의 배신자: 심장을 가져갑니다. 다른 동료 트레이너들에게 배틀을 도전하고 승리해 논란의 여지 없이 가장 강한 트레이너가 되세요.",
+      "src": { "en": "assets/cards/act/card_fronts.png#5", "ko": "rules-summary §16.2·§16.3 · raw/cards/acts#5" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    }
+  }
+}

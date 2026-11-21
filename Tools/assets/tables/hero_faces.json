@@ -1,0 +1,11 @@
+{"schema":1,"note":"주인공 8명 + 손님 인물(고를 수 없다 — 튜토리얼 봇 좌석 「용식」 = Pt 라이벌 pt_rival, 결정 96 Q5 나 · 원천이 셀 시트면 첫 프레임)의 얼굴 상자 그림(결정 54 ④·61 ③ — 좌석 칩·넘김 띠·내 턴 컷신·배틀 기둥의 얼굴 상자 = 그 좌석 주인공의 트레이너 앞모습 도트 얼굴). key = 주인공 키(공식 뒷모습 시트 이름 — Sinnoh.Rules.Session.Protagonists), source = rom:<게임>:<png/trainer_front 안 이름>(80×80, 원작 자산에 이미 있다 — rom.mjs를 고치지 않는다), face = 그 그림 안 조각의 왼쪽 위 px(왼쪽 위 (0,0), y 아래로), 조각 크기는 size × size. build.mjs trainers 묶음이 Gen/Trainers/Hero/<key>.png와 trainers.json heroes 행의 face [x, y, size, size]로 싣는다. 값은 8장을 묶어 눈으로 보고 정한 것(모자·머리가 조각 안에 들고 얼굴이 가운데) — 앞모습 그림을 바꾸면 그 행을 다시 본다","size":30,"rows":[
+{"key":"pt_player_male","source":"rom:pt:player_male","face":[24,11]},
+{"key":"pt_player_female","source":"rom:pt:player_female","face":[25,12]},
+{"key":"hgss_000_ethan","source":"rom:hgss:000_pkmn_trainer_ethan","face":[23,12]},
+{"key":"hgss_001_lyra","source":"rom:hgss:001_pkmn_trainer_lyra","face":[23,12]},
+{"key":"bw_000_hilbert","source":"rom:bw:000_hilbert","face":[24,6]},
+{"key":"bw_001_hilda","source":"rom:bw:001_hilda","face":[22,6]},
+{"key":"b2w2_000_nate","source":"rom:b2w2:000_nate","face":[22,7]},
+{"key":"b2w2_001_rosa","source":"rom:b2w2:001_rosa","face":[29,10]},
+{"key":"pt_rival","source":"rom:pt:rival","face":[21,9]}
+]}

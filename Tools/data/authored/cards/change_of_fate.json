@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "note": "운명의 변화 4면(42장 = 디아루가·펄기아·기라티나 12 + 아르세우스 6). en = 영문 카드 그림의 글(위 효과 이름, 「PLAY 3」 아래 효과 이름 — 장식 글자 줄은 글이 아니라 옮기지 않는다). 카드에는 효과 이름만 있고 풀이는 룰북에 있다 → src.en에 룰북 행을 함께 적는다. 영문 출처: 원작 GitHub master(pl-small.git@c0b717c, v1.4a) assets/cards/change_of_fate/card_fronts.png(#n = 시트 칸) = AssetSources/download/levatius/assets/cards/change_of_fate/card_fronts.png(같은 blob b902b85) · Research/raw/original-gh/Rulebook-en-master.txt. ko = 한국어판 시트(Research/raw/cards/fate, CS-fate) 그대로(결정 43 ⑨).",
+  "deck": "change_of_fate",
+  "cards": {
+    "change_of_fate.dialga": {
+      "name": { "en": "Dialga", "ko": "디아루가" },
+      "en": "Reroll 1\nPlay 3: Reroll Any",
+      "ko": "재굴림 1\n3장 사용: 원하는 만큼 재굴림",
+      "src": { "en": "assets/cards/change_of_fate/card_fronts.png#1 · Rulebook-en-master.txt:504-505", "ko": "rules-summary §13 · raw/cards/fate#1" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "change_of_fate.palkia": {
+      "name": { "en": "Palkia", "ko": "펄기아" },
+      "en": "Teleport 3\nPlay 3: Teleport Anywhere",
+      "ko": "순간이동 3\n3장 사용: 원하는 위치로 순간이동",
+      "src": { "en": "assets/cards/change_of_fate/card_fronts.png#2 · Rulebook-en-master.txt:507-508", "ko": "rules-summary §13 · raw/cards/fate#2" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "change_of_fate.giratina": {
+      "name": { "en": "Giratina", "ko": "기라티나" },
+      "en": "Sacrifice 2\nPlay 3: Sacrifice All",
+      "ko": "희생 2\n3장 사용: 전부 희생",
+      "src": { "en": "assets/cards/change_of_fate/card_fronts.png#3 · Rulebook-en-master.txt:510-517", "ko": "rules-summary §13 · raw/cards/fate#3" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "change_of_fate.arceus": {
+      "name": { "en": "Arceus", "ko": "아르세우스" },
+      "en": "Wildcard\nPlay 3: Blessing of Arceus",
+      "ko": "와일드카드\n3장 사용: 아르세우스의 축복",
+      "src": { "en": "assets/cards/change_of_fate/card_fronts.png#4 · Rulebook-en-master.txt:519-520", "ko": "rules-summary §13 · raw/cards/fate#4" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    }
+  }
+}

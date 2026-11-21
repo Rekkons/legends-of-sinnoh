@@ -1,0 +1,10 @@
+{
+  "name": "com.rekkon.uikit",
+  "version": "0.1.0",
+  "displayName": "Rekkon UI Kit",
+  "description": "UI Toolkit 공용 부품(PC 층). Core는 엔진 없이 컴파일되는 순수 C#이다.",
+  "unity": "6000.6",
+  "dependencies": {
+    "com.unity.modules.uielements": "1.0.0"
+  }
+}

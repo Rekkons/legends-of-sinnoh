@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    에디터 없이 규칙 코어 시험을 도는 dotnet test 프로젝트(엔진 가이드 §7, isekai Tools/dotnet-test와 같은 방식).
+    소스는 복사하지 않고 Assets에서 링크한다. Rules·Ai·Data·Fx·Tests/EditMode는 UnityEngine을 쓰지 않으므로 제외 목록이 없다 —
+    여기서 빌드가 깨지면 엔진 코드가 섞인 것이다.
+    공용 UI 키트(결정 51, 내장 패키지 Packages/com.rekkon.uikit)의 엔진 무관 부분(Runtime/Core·Tests/Core)도
+    같은 어셈블리로 함께 돈다 — Unity에서는 Rekkon.UiKit.Core.Tests가 같은 시험을 돈다(관문 대조: dotnet 수 = Sinnoh.Tests.EditMode + Rekkon.UiKit.Core.Tests).
+    실행: "D:/Unity/Editors/6000.6.3f1/Editor/Data/DotNetSdk/dotnet.exe" test Tools/dotnet-test/SinnohCore.Tests.csproj
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- 복원은 받아 둔 패키지(%USERPROFILE%/.nuget/packages)만 쓴다. 취약점 조회로 망에 나가지 않게 끈다 -->
+    <NuGetAudit>false</NuGetAudit>
+    <SinnohCode>$(MSBuildThisFileDirectory)../../Assets/Sinnoh/</SinnohCode>
+    <UiKitCode>$(MSBuildThisFileDirectory)../../Packages/com.rekkon.uikit/</UiKitCode>
+  </PropertyGroup>
+
+  <!-- 키트 저장소가 그 자리에 없으면 키트 시험이 소리 없이 빠진 채 통과하지 않게 막는다 -->
+  <Target Name="CheckUiKit" BeforeTargets="CoreCompile">
+    <Error Condition="!Exists('$(UiKitCode)package.json')" Text="공용 UI 키트 없음: $(UiKitCode) (내장 패키지 Packages/com.rekkon.uikit)" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Include="$(SinnohCode)Rules/**/*.cs" Link="Rules/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(SinnohCode)Ai/**/*.cs" Link="Ai/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(SinnohCode)Data/**/*.cs" Link="Data/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(SinnohCode)Fx/**/*.cs" Link="Fx/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(SinnohCode)Tests/EditMode/**/*.cs" Link="Tests/EditMode/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(UiKitCode)Runtime/Core/**/*.cs" Link="UiKit/Core/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(UiKitCode)Tests/Core/**/*.cs" Link="UiKit/Tests/Core/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <!-- Sinnoh.Data용. Unity는 com.unity.nuget.newtonsoft-json 3.2.2(13.0.2) -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,182 @@
+/* 키트 토큰 원본 — L1 도트(단색·모서리 0·딱딱한 그림자 = 단추 아래 테두리, 도트 글꼴 12/24px). 값을 고치는 곳은 여기 하나다.
+   node Tools~/build-uss.mjs 가 Runtime/UiKit/Resources/RekkonUiKit/Kit720.uss·Kit1080.uss 두 벌을 만든다(생성물은 손으로 고치지 않는다).
+
+   적는 법
+   - 길이는 720 화면 기준 px. 1080 벌은 ×1.5 반올림(0px·1px은 그대로 — 1px 테두리는 두 벌 모두 1px).
+   - Npx! 는 두 벌 모두 그 값 그대로.
+   - T(a, b) 는 720 벌에 a, 1080 벌에 b.
+   - 색 값은 @palette 안에만 적는다(밖에 #·rgb()가 있으면 생성이 실패한다). scrim(r, g, b, a)는 어둡게 덮는 반투명 색 —
+     a는 sRGB 화면에서 고른 값이고 생성기가 Linear 색 공간용으로 1 − (1 − a)^2.2 로 바꾼다.
+   - 3단: @palette(원시 색) → 의미 토큰(--kit-*: $이름) → 부품 클래스(var(--kit-*)). $이름은 --kit-* 선언에만 쓴다.
+   - 글꼴과 창틀 그림은 USS에 없다 — 쓰는 프로젝트가 KitSkin으로 넣는다.
+   - 글자 그림자(text-shadow)는 적지 않는다 — 비트맵 글꼴(RASTER_HINTED)에서는 그려지지 않는다. 글꼴 방식을 바꾸는 날 온 화면에 그림자가 생기지 않게. */
+
+@palette {
+  ink: #383838;
+  ink-soft: #707880;
+  title: #3868a8;
+  paper: #f8f8f8;
+  paper-dim: #e8ecf0;
+  paper-line: #c0c8d0;
+  steel: #d8e0e8;
+  night: #2c3848;
+  night-edge: #141c24;
+  edge: #283038;
+  white: #ffffff;
+  pale: #a8b0c0;
+  blue: #5890d8;
+  blue-edge: #203048;
+  green: #48b060;
+  green-edge: #183820;
+  red: #e05040;
+  red-edge: #401810;
+  gold: #f8d040;
+  gold-ink: #503800;
+  orange: #f0a050;
+  orange-ink: #402000;
+  mint: #78d088;
+  mint-ink: #103818;
+  low: #ff5050;
+  high: #70ff70;
+  dim: scrim(16, 24, 32, 0.55);
+}
+
+/* ── 의미 토큰 ── */
+.kit-root {
+  --kit-text: $ink;
+  --kit-text-muted: $ink-soft;
+  --kit-text-title: $title;
+  --kit-text-on-dark: $paper;
+  --kit-surface: $paper;
+  --kit-surface-dim: $paper-dim;
+  --kit-line: $paper-line;
+  --kit-edge: $edge;
+  --kit-bar: $night;
+  --kit-bar-edge: $night-edge;
+  --kit-scrim: $dim;
+  --kit-btn: $blue;
+  --kit-btn-edge: $blue-edge;
+  --kit-btn-main: $green;
+  --kit-btn-main-edge: $green-edge;
+  --kit-btn-end: $red;
+  --kit-btn-end-edge: $red-edge;
+  --kit-btn-text: $white;
+  --kit-slider-track: $steel;
+  --kit-slider-fill: $blue;
+  --kit-pill: $night;
+  --kit-pill-edge: $night-edge;
+  --kit-pill-text: $white;
+  --kit-pill-text-low: $low;
+  --kit-pill-text-high: $high;
+  --kit-pill-text-max: $pale;
+  --kit-badge: $steel;
+  --kit-badge-text: $ink;
+  --kit-badge-gold: $gold;
+  --kit-badge-gold-text: $gold-ink;
+  --kit-badge-silver: $paper-line;
+  --kit-badge-silver-text: $edge;
+  --kit-badge-warn: $orange;
+  --kit-badge-warn-text: $orange-ink;
+  --kit-badge-ok: $mint;
+  --kit-badge-ok-text: $mint-ink;
+  --kit-badge-red: $red;
+  --kit-badge-red-text: $white;
+}
+
+/* ── 바탕 ── */
+.kit-root {
+  color: var(--kit-text);
+  font-size: T(12px!, 24px!);
+}
+.kit-root Label { margin: 0; padding: 0; white-space: nowrap; -unity-text-align: middle-left; }
+
+/* 글자 크기는 12px·24px(+ 1080 벌 제목 36px)뿐(도트 글꼴은 정수배만 선명하다). f1 = 늘 12, f2 = 본문(720 벌 12 · 1080 벌 24), f3 = 늘 24, ftitle = 창 제목(24 · 36).
+   USS에 line-height가 없어 한 줄 글은 높이를 고정한다. 여러 줄은 kit-wrap(JoinWords를 거친 글). */
+.kit-f1 { font-size: 12px!; height: 14px!; }
+.kit-f2 { font-size: T(12px!, 24px!); height: T(14px!, 26px!); }
+.kit-f3 { font-size: 24px!; height: 26px!; }
+/* 창·판 제목: 720 벌 24 · 1080 벌 36(= 12 × 3, 720 × 1.5). 1080 벌 본문이 24라 f3로는 제목이 본문과 같아진다.
+   36px는 표본 36 글꼴(KitSkin.TitleFont)이라야 선명하다 — Kit.Text가 1080 벌에서 이 클래스의 글에 그 글꼴을 건다(없으면 뿌리 글꼴). */
+.kit-ftitle { font-size: T(24px!, 36px!); height: T(26px!, 38px!); }
+.kit-root .kit-wrap { white-space: normal; height: auto; }
+.kit-title { color: var(--kit-text-title); }
+.kit-muted { color: var(--kit-text-muted); }
+
+/* ── 창틀 판·툴팁: 9-slice 그림과 조각 크기는 KitSkin이 넣는다. 조각 배율 = 720 벌 1px · 1080 벌 2px ── */
+.kit-panel { -unity-slice-scale: T(1px!, 2px!); padding: T(9px!, 16px!); }
+/* --kit-tip-gap = 대상과 툴팁 사이 간격(패널 px, KitTooltip이 읽는다) */
+.kit-tip { position: absolute; max-width: 360px; -unity-slice-scale: T(1px!, 2px!); padding: T(9px! 12px!, 16px! 20px!); --kit-tip-gap: T(4, 6); }
+
+/* 어둡게 덮는 막(창 뒤) */
+.kit-scrim { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: var(--kit-scrim); }
+
+/* ── 단추: 보통 · 주 행동 · 턴 종료. 꺼짐은 SetEnabled(false) ──
+   1080 벌의 위 여백 1px: 안쪽 높이가 33 − 1 − 5 = 27(홀수)인데 24px 글자의 줄 높이는 28이라, 가운데 맞춘 글자가 반 픽셀 자리에 온다
+   (배율 1은 정수 자리로 내려 그리고 배율 2는 물리 1px 위에 그려 2160이 1080의 2배가 아니었다). 위 여백 1px면 안쪽이 26이 돼 글자가
+   정수 자리에 온다 — 1080 화면의 글자 자리는 그대로다. 720 벌은 안쪽 18·줄 높이 14라 그대로. */
+.kit-btn {
+  height: 22px;
+  margin: 0;
+  padding: T(0 8px, 1px! 12px! 0 12px!);
+  flex-shrink: 0;
+  background-color: var(--kit-btn);
+  border-width: 1px;
+  border-bottom-width: 3px;
+  border-color: var(--kit-btn-edge);
+  border-radius: 0;
+  color: var(--kit-btn-text);
+  font-size: T(12px!, 24px!);
+  white-space: nowrap;
+  -unity-text-align: middle-center;
+}
+.kit-btn-main { background-color: var(--kit-btn-main); border-color: var(--kit-btn-main-edge); }
+.kit-btn-end { background-color: var(--kit-btn-end); border-color: var(--kit-btn-end-edge); }
+.kit-btn:disabled { opacity: 0.45; }
+
+/* ── 슬라이더(KitSlider): 홈 + 채운 부분 + 손잡이. 손잡이·채운 부분의 가로 자리는 코드가 넣는다(SliderMath — 정수 px). 꺼짐은 SetEnabled(false) ── */
+.kit-slider { width: 120px; height: 14px; flex-shrink: 0; }
+.kit-slider-track { position: absolute; left: 0; right: 0; top: 4px; height: 6px; background-color: var(--kit-slider-track); border-width: 1px; border-color: var(--kit-edge); }
+.kit-slider-fill { position: absolute; left: 0; top: 4px; height: 6px; background-color: var(--kit-slider-fill); border-width: 1px; border-color: var(--kit-edge); }
+.kit-slider-knob { position: absolute; top: 0; width: 8px; height: 14px; background-color: var(--kit-btn); border-width: 1px; border-bottom-width: 3px; border-color: var(--kit-btn-edge); }
+.kit-slider:disabled { opacity: 0.45; }
+
+/* ── 알약(아이콘 + 숫자): 어두운 바탕. 숫자 색은 기본·낮음·높음 ── */
+.kit-pill {
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 44px;
+  padding: 1px 4px 1px 3px;
+  background-color: var(--kit-pill);
+  border-width: 1px;
+  border-color: var(--kit-pill-edge);
+  color: var(--kit-pill-text);
+}
+.kit-pill Label { height: T(14px!, 22px!); }
+.kit-pill-icon { width: T(12px!, 18px!); height: T(12px!, 18px!); margin-right: 2px; flex-shrink: 0; }
+.kit-pill-low { color: var(--kit-pill-text-low); }
+.kit-pill-high { color: var(--kit-pill-text-high); }
+.kit-pill-max { color: var(--kit-pill-text-max); }
+
+/* ── 배지(짧은 꼬리표) ── */
+.kit-badge {
+  flex-shrink: 0;
+  background-color: var(--kit-badge);
+  color: var(--kit-badge-text);
+}
+/* 배지는 Label이다 — 바탕의 「.kit-root Label」(여백 0·왼쪽 맞춤)을 이기도록 .kit-root를 붙인다 */
+.kit-root .kit-badge { padding: 0 5px; -unity-text-align: middle-center; }
+.kit-badge-gold { background-color: var(--kit-badge-gold); color: var(--kit-badge-gold-text); }
+.kit-badge-silver { background-color: var(--kit-badge-silver); color: var(--kit-badge-silver-text); }
+.kit-badge-warn { background-color: var(--kit-badge-warn); color: var(--kit-badge-warn-text); }
+.kit-badge-ok { background-color: var(--kit-badge-ok); color: var(--kit-badge-ok-text); }
+.kit-badge-red { background-color: var(--kit-badge-red); color: var(--kit-badge-red-text); }
+
+/* ── 줄 세우기·간격: 화면 코드가 px를 직접 적지 않게(벌마다 값이 다르다). 부품의 margin: 0을 이기도록 .kit-root를 붙이고 맨 끝에 둔다 ── */
+.kit-row { flex-direction: row; align-items: center; }
+.kit-root .kit-gap2 > * { margin-right: 2px; }
+.kit-root .kit-gap4 > * { margin-right: 4px; }
+.kit-root .kit-gap6 > * { margin-right: 6px; }
+.kit-root .kit-mt2 { margin-top: 2px; }
+.kit-root .kit-mt4 { margin-top: 4px; }
+.kit-root .kit-mt6 { margin-top: 6px; }

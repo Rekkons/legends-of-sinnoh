@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "note": "확장 장 E12 트레이너 카드 능력(07 §5-2 — 1인). 판: 시드 3 · 트레이너 카드 3장(반바지 꼬마 · 엘리트 트레이너 · 아기씨) · 셋업은 마박사가 대신(demo — 반바지 꼬마를 고른다) → 막 길 card-swap(SoloTrail.CardSwap — 카드를 실버로, 강한 나무 검정 1(칸 16, 숲)에, 파티 앞에 펄기아 · 히드런, 트레이너 카드 덱 맨 위 = 캠프파이어). 강한 포켓몬을 쓰러뜨려 골드 → 반바지 꼬마 빨강 「어른이 되어」로 캠프파이어(골드)로 바꾸기 → 다음 턴 보드 능력 [장작 모으기](옆 나무 칸 10) → 같은 나무에서 히드런으로 배틀 → 빨강 「점화」(장작 1로 화상 + 데미지 2). 주사위는 시드 그대로.",
+  "id": "e12",
+  "start": {"seed":3,"trainerCards":[["youngster","ace_trainer","lady"]],"after":"card-swap"},
+  "steps": [
+    {"id":"P01","ch":12,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["01 §3-5","07 §5-1"]},
+    {"id":"P02","ch":12,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick","target":"trainer_card.youngster"}],"ref":["A20-1","07 §5-1"]},
+    {"id":"S001","ch":12,"advance":"next","ref":["A20-2","A20-5"]},
+    {"id":"S003","ch":12,"advance":"next","ref":["A20-1","07 §5-1"]},
+    {"id":"S004","ch":12,"anchor":"board-hud-trainer","advance":"next","expect":{"tier":2},"ref":["A20-2","A20-3"]},
+    {"id":"S005","ch":12,"anchor":"cell:16","advance":"next","ref":["A20-2","A20-5"]},
+    {"id":"S006","ch":12,"anchor":"board-hud-act-search","advance":"command","allow":[{"kind":"Search"}],"auto":[{"kind":"Search"}],"ref":["01 §3-2","S5_1"]},
+    {"id":"S007","ch":12,"advance":"command","allow":[{"choice":"EncounterPick","kind":"Pick"}],"auto":[{"choice":"EncounterPick","kind":"Pick"}],"ref":["S5_1"]},
+    {"id":"S008","ch":12,"advance":"command","allow":[{"choice":"SendIn","kind":"Pick","target":2}],"auto":[{"choice":"SendIn","kind":"Pick","target":2}],"ref":["01 §6"]},
+    {"id":"S009","ch":12,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"expect":{"tier":3},"ref":["A20-2","A20-5"]},
+    {"id":"S010","ch":12,"anchor":"battle-reward","advance":"command","allow":[{"choice":"Reward","kind":"Decline"}],"auto":[{"choice":"Reward","kind":"Decline"}],"ref":["A8"]},
+    {"id":"S011","ch":12,"anchor":"board-card-swap-fan+board-card-swap-go","advance":"command","allow":[{"choice":"Reaction","kind":"Pick","target":"trainer_card.kindler"}],"auto":[{"choice":"Reaction","kind":"Pick","target":"trainer_card.kindler"}],"ref":["A20-5","A40"]},
+    {"id":"S012","ch":12,"advance":"next","ref":["A40","A20-6"]},
+    {"id":"S013","ch":12,"anchor":"board-hud-trainer","advance":"screen:board-trainer","ref":["A20-2"]},
+    {"id":"S014","ch":12,"anchor":"board-trainer-close+board-hud-act-ability","advance":"command","allow":[{"kind":"UseAbility","target":0}],"auto":[{"kind":"UseAbility","target":0}],"ref":["A37","A20-6"]},
+    {"id":"S015","ch":12,"anchor":"board-hud-act-search","advance":"command","allow":[{"kind":"Search"}],"auto":[{"kind":"Search"}],"ref":["01 §3-2"]},
+    {"id":"S016","ch":12,"advance":"command","allow":[{"choice":"EncounterPick","kind":"Pick"}],"auto":[{"choice":"EncounterPick","kind":"Pick"}],"ref":["S5_1"]},
+    {"id":"S017","ch":12,"advance":"command","allow":[{"choice":"SendIn","kind":"Pick","target":1}],"auto":[{"choice":"SendIn","kind":"Pick","target":1}],"ref":["01 §6"]},
+    {"id":"S018","ch":12,"advance":"command","allow":[{"choice":"Reaction","kind":"Decline"}],"auto":[{"choice":"Reaction","kind":"Decline"}],"ref":["01 §6"]},
+    {"id":"S019","ch":12,"advance":"command","allow":[{"kind":"UseMove"}],"auto":[{"kind":"UseMove"}],"ref":["01 §6","A35"]},
+    {"id":"S020","ch":12,"advance":"command","allow":[{"choice":"Reaction","kind":"Accept"}],"auto":[{"choice":"Reaction","kind":"Accept"}],"ref":["A35","A20-6"]},
+    {"id":"S021","ch":12,"advance":"command","allow":[{"kind":"UseMove"},{"choice":"Reaction"}],"auto":[{"kind":"UseMove"},{"choice":"Reaction","kind":"Decline"}],"ref":["A35","01 §6"]},
+    {"id":"S022","ch":12,"advance":"next","ref":["A20-6","A32"]}
+  ]
+}

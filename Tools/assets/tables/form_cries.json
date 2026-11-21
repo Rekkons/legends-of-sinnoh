@@ -1,0 +1,5 @@
+{"schema":1,"note":"폼 울음(결정 143 ④): 종(도감 번호)과 다른 울음을 PokeAPI가 따로 둔 폼 — 포켓몬 표 키(pokemon.json key) → PokeAPI 포켓몬 id(cries/pokemon/latest/<id>.ogg, 10001 이후 = 폼). fetch.mjs cries가 받고 build cry 묶음이 Gen/Audio/Cry/<id>.ogg + cry.json 행(dex 칸 = 이 id, form = 표 키)으로 둔다. 화면은 Sinnoh.Fx CryBook.Form(표 키)으로 찾는다(없으면 종의 울음). 지금은 울트라 버스트 판의 네크로즈마 폼 셋(2·3페이즈 · 울트라 네크로즈마 — UB 턴의 원격 파괴 · 배틀 등장) — 다른 폼은 종의 울음을 같이 쓴다 [가정 plan §5 #783]","rows":[
+{"key":"800:2","id":10155,"name":"necrozma-dusk"},
+{"key":"800:3","id":10156,"name":"necrozma-dawn"},
+{"key":"800:4","id":10157,"name":"necrozma-ultra"}
+]}

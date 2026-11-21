@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "note": "영문 원본(v1.4a) 28쪽 「Credits」 — 원문 그대로. 한국어판의 번역자 크레딧(3JA2 · 로씨온)과 한국어 설명서 꼬리표는 영문 원본에 없어 넣지 않았다(절 키만 같다). 「Workshop Link」는 원본 PDF 링크 글자(창작마당 728231721 · 947696302 · 1175805652 — Research/inventory.md).",
+  "chapter": "credits",
+  "title": "Credits",
+  "sections": [
+    {
+      "key": "credits.credits",
+      "title": "Credits",
+      "pages": [28],
+      "blocks": [
+        { "p": "I hope you enjoyed your playthrough of Pokémon: Legends of Sinnoh, I appreciate you taking the time to play it!" },
+        { "h": "Workshop Assets" },
+        { "list": ["Hexagon Tile: Workshop Link", "Pokémon Models: Workshop Link", "Poké Ball Model: Workshop Link"] },
+        { "h": "Music Cartridges" },
+        { "p": "The Pokémon Company and Braxton Burks @braxtonburks." },
+        { "h": "Art, Scripts and Game Design" },
+        { "p": "Created by me, Lev." },
+        { "h": "Beta Testers" },
+        { "p": "Shoutout to my friends A2.0, Dongoboy, Just-, Lord O’Chocolates and TheOMega for their feedback and suggestions, they have experienced the worst forms of this game so that you do not have to!" },
+        { "p": "I would also like to thank our amazing Legends of Sinnoh Discord community for their feedback and ongoing support of the game." },
+        { "p": "This game is a non-profit fan-made creation, all Pokémon are trademarks of: © 2022 Pokémon, © 1995–2022 Nintendo/Creatures Inc./GAME FREAK" }
+      ]
+    }
+  ]
+}

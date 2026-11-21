@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "note": "확장 장 E3 은행상회·공중날기(07 §5-2): 막 길 market(SoloTrail.Market = GiveWork + 좌석 0을 조무래기 없는 영원시티(칸 107)에 세운 판). 은행상회 덱 맨 위 = ginkgo_trade.1(노랑+빨강 → 분홍 · 초록+하양 → 검정). [마을] → [두 줄 모두] 거래(A4 — 첫 명령 끝에 스탬프 3 「규토리 일곱 색」) → 공중날기 빨강 1개로 봉신마을(A5 — 고향 운하시티는 조무래기 점거라 못 간다).",
+  "id": "e03",
+  "start": {"seed":3,"trainerCards":null,"tops":[{"deck":"GinkgoTrade","keys":["ginkgo_trade.1"]}],"after":"market"},
+  "steps": [
+    {"id":"P01","ch":0,"advance":"demo","auto":[{"choice":"VillagePick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"P02","ch":0,"advance":"demo","auto":[{"choice":"StarterPick","kind":"Pick"},{"choice":"TrainerCardPick","kind":"Pick"}],"ref":["07 §5-1"]},
+    {"id":"S001","ch":0,"advance":"next","ref":["07 §5-1"]},
+    {"id":"S002","ch":0,"anchor":"cell:107","advance":"next","expect":{"apricorn.pink":3},"ref":["07 §5-1"]},
+    {"id":"S003","ch":0,"anchor":"board-hud-act-village","advance":"screen:board-village","ref":["A4"]},
+    {"id":"S004","ch":0,"anchor":"board-village-bank-card","advance":"next","ref":["A4"]},
+    {"id":"S005","ch":0,"anchor":"board-village-bank-both","advance":"command","allow":[{"kind":"Ginkgo","target":2}],"auto":[{"kind":"Ginkgo","target":2}],"expect":{"apricorn.black":4},"ref":["A4"]},
+    {"id":"S006","ch":0,"anchor":"board-village-bank-card","advance":"next","ref":["A4"]},
+    {"id":"S007","ch":0,"advance":"next","expect":{"stamps":1},"ref":["A30"]},
+    {"id":"S008","ch":0,"anchor":"board-village-fly","advance":"next","ref":["A5"]},
+    {"id":"S009","ch":0,"anchor":"board-village-dest-village-celestic+board-village-color-red+board-village-fly","advance":"command","allow":[{"kind":"Fly","target":"village.celestic","arg":0}],"auto":[{"kind":"Fly","target":"village.celestic","arg":0}],"expect":{"apricorn.red":2},"ref":["A5"]},
+    {"id":"S010","ch":0,"anchor":"board-village-close+board-hud-moves","advance":"next","expect":{"movesLeft":3},"ref":["A5"]}
+  ]
+}

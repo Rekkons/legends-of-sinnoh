@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "note": "울트라 온슬롯 6면(6장, 실험 규칙 — 효과 구현은 M6, 전사·verified는 결정 75로 M5). 앞면에 이름이 없어 키는 시트 칸 번호다. en = 영문 카드 그림의 본문. 영문 출처: 원작 GitHub master(pl-small.git@c0b717c, v1.4a) assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png(blob c596f09, #n = 시트 칸) = Research/raw/trainer-gh/en/m-1_expansion_distortion_world_ultra_onslaught_card_fronts.png. ko = 한국어판 시트(Research/raw/cards/onslaught, CS-onslaught)를 옮기고 용어(급소·데미지·상태 이상)를 맞춘 화면 문자열.",
+  "deck": "ultra_onslaught",
+  "cards": {
+    "ultra_onslaught.1": {
+      "name": { "en": "Ultra Onslaught", "ko": "울트라 온슬롯" },
+      "en": "Do not attack this turn.\nHeal 4 damage and all status effects.",
+      "ko": "이번 턴에 공격하지 않습니다.\n모든 상태 이상과 4 데미지를 회복합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png#1", "ko": "rules-summary §17.8 · raw/cards/onslaught#1" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ultra_onslaught.2": {
+      "name": { "en": "Ultra Onslaught", "ko": "울트라 온슬롯" },
+      "en": "Replace all status symbols with critical hits.",
+      "ko": "모든 상태 이상 심볼을 급소로 교체합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png#2", "ko": "rules-summary §17.8 · raw/cards/onslaught#2" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ultra_onslaught.3": {
+      "name": { "en": "Ultra Onslaught", "ko": "울트라 온슬롯" },
+      "en": "Immediately trigger the effects of Beast Boost. If Beast Boost is already active, add to its effect.",
+      "ko": "비스트 부스트의 효과를 즉시 발동합니다. 만약 비스트 부스트가 이미 활성화된 상태라면, 두 효과를 더합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png#3", "ko": "rules-summary §17.8 · raw/cards/onslaught#3" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ultra_onslaught.4": {
+      "name": { "en": "Ultra Onslaught", "ko": "울트라 온슬롯" },
+      "en": "When next attacked, all regular hits damage the attacker as well.",
+      "ko": "다음번에 공격당할 때, 모든 일반 타격에 대한 데미지를 공격자도 받습니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png#4", "ko": "rules-summary §17.8 · raw/cards/onslaught#4" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ultra_onslaught.5": {
+      "name": { "en": "Ultra Onslaught", "ko": "울트라 온슬롯" },
+      "en": "Use Alpha Strike twice this turn.",
+      "ko": "이번 턴에 알파 스트라이크를 2번 사용합니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png#5", "ko": "rules-summary §17.8 · raw/cards/onslaught#5" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    },
+    "ultra_onslaught.6": {
+      "name": { "en": "Ultra Onslaught", "ko": "울트라 온슬롯" },
+      "en": "Deal double damage to the opposing Pokémon if they have any Distortion Breach cards attached.",
+      "ko": "상대 포켓몬에 왜곡 균열 카드가 부착되어 있다면 데미지를 2배로 입힙니다.",
+      "src": { "en": "assets/1_expansion_distortion_world/ultra_onslaught_card_fronts.png#6", "ko": "rules-summary §17.8 · raw/cards/onslaught#6" },
+      "verified": "2026-11-14",
+      "review": false,
+      "note": ""
+    }
+  }
+}

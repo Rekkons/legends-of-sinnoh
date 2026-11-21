@@ -1,0 +1,17 @@
+{"schema":1,"rows":[
+{"sprite":"680","missing":["animFront","animBack"]},
+{"sprite":"686","missing":["animBack"]},
+{"sprite":"690","missing":["animFront","animBack"]},
+{"sprite":"691","missing":["animBack"]},
+{"sprite":"706","missing":["animBack"]},
+{"sprite":"723","missing":["animFront","animBack"]},
+{"sprite":"724","missing":["animFront","animBack"]},
+{"sprite":"757","missing":["animFront","animBack"]},
+{"sprite":"758","missing":["animFront","animBack"]},
+{"sprite":"793","missing":["animBack"]},
+{"sprite":"794","missing":["animBack"]},
+{"sprite":"799","missing":["animFront","animBack"]},
+{"sprite":"803","missing":["animFront","animBack"]},
+{"sprite":"805","missing":["animBack"]},
+{"sprite":"484:2","missing":["animFront","animBack"]}
+]}
