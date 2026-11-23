@@ -166,16 +166,11 @@ namespace Sinnoh.Editor
             var head = flow.Stage.Root.Q("battle-info-foe");
             string want = flow.Stage.T("screen.battle.foe." + BattleFeed.UbFoe(feed.Kind));
             if (head == null || head.Query<Label>().Where(l => l.text == want).First() == null) throw new InvalidOperationException("상대 기둥 머리가 「" + want + "」가 아니다");
-            if (feed.Kind == BattleKind.UltraBeast) ArtWhole(flow.Stage.Root, "battle-foe-art");
-        }
-
-        // 기둥 도트 칸이 그림 조각을 다 담는다(결정 87 V22 ① — 페로코체 더듬이가 잘렸다): 칸 > 캔버스 > 조각
-        static void ArtWhole(VisualElement root, string name)
-        {
-            var box = root.Q(name);
-            if (box == null || box.childCount == 0 || box[0].childCount == 0) throw new InvalidOperationException(name + " 도트가 없다");
-            UnityEngine.Rect at = box.worldBound, piece = box[0][0].worldBound;
-            if (piece.xMin < at.xMin - 0.5f || piece.yMin < at.yMin - 0.5f || piece.xMax > at.xMax + 0.5f || piece.yMax > at.yMax + 0.5f) throw new InvalidOperationException(name + " 도트가 칸에 잘린다(칸 " + at + " · 그림 " + piece + ")");
+            if (feed.Kind == BattleKind.UltraBeast)   // 결정 206 ②: 기둥은 원작 카드 앞면(도트가 잘리던 칸이 없다) — 그림이 실렸나
+            {
+                var art = flow.Stage.Root.Q("battle-foe-art");
+                if (art == null || art.resolvedStyle.backgroundImage.texture == null) throw new InvalidOperationException("상대 카드 앞면 그림이 없다");
+            }
         }
 
         // 890 온슬롯 카드: 제목 글이 그림 아래 변과 띄어져 있다(결정 87 V22 ①)

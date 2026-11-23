@@ -23,15 +23,21 @@ namespace Sinnoh.Editor
         {
             var flow = SwarmBattle(s, stage);
             var screen = (BattleScreen)flow.Stage.Current;
+            // 결정 206 ②: 엇겹친 무리 카드에 마우스 = 셋을 펼친 엔트리 판(n번째 카드 = 그 포켓몬 — 아직 안 나온 · 쓰러진 것도)
             if (!screen.HoverSwarm(n)) throw new InvalidOperationException("무리 칸 " + n + "에 카드가 걸리지 않았다");
             s.Panel.Tick(3);
             var view = flow.Client.View;
-            int want = view.Pokemon[view.Battle.Sides[1 - flow.Battle.MySide].Roster[n - 1]].Def;
-            if (screen.MonTipShown != want) throw new InvalidOperationException("카드 " + screen.MonTipShown + " ≠ 무리 칸 " + n + "의 포켓몬 " + want);
-            var card = screen.MonTipElement.worldBound;
+            var roster = view.Battle.Sides[1 - flow.Battle.MySide].Roster;
+            if (!screen.EntryOpen || screen.EntryShown.Count != roster.Count) throw new InvalidOperationException("엔트리 판이 셋을 펼치지 않았다(" + screen.EntryShown.Count + ")");
+            int want = view.Pokemon[roster[n - 1]].Def;
+            int got = view.Pokemon[screen.EntryShown[n - 1]].Def;
+            if (got != want) throw new InvalidOperationException("카드 " + got + " ≠ 무리 칸 " + n + "의 포켓몬 " + want);
+            if (stage == 2 && n == 1 && screen.EntryTag(1) != "screen.info.fainted") throw new InvalidOperationException("쓰러진 첫째의 꼬리표가 「기절」이 아니다(" + screen.EntryTag(1) + ")");
+            var panel = flow.Stage.Root.Q(BattleScreen.EntryPanel);
+            var card = panel.worldBound;
             var root = flow.Stage.Root.worldBound;
-            if (card.xMin < root.xMin || card.xMax > root.xMax || card.yMin < root.yMin || card.yMax > root.yMax) throw new InvalidOperationException("카드가 화면 밖: " + card);
-            var bad = WorkUi.Overflows(screen.MonTipElement);
+            if (card.xMin < root.xMin || card.xMax > root.xMax || card.yMin < root.yMin || card.yMax > root.yMax) throw new InvalidOperationException("엔트리 판이 화면 밖: " + card);
+            var bad = WorkUi.Overflows(panel);
             if (bad.Count > 0) throw new InvalidOperationException("글자 넘침 " + string.Join(" / ", bad));
         }
 

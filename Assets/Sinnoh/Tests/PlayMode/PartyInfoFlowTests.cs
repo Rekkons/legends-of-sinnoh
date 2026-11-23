@@ -123,13 +123,16 @@ namespace Sinnoh.Tests.PlayMode
 
             // T23: 우두머리 = 지닌물건 칸에 토큰(뗄 수 없음) + 카드의 「우두머리」 칩 · T27: 기술을 배우지 않은 전설 = 「비스트 부스트」 칩
             int ai = PokemonRules.PartyIndexOf(flow.Client.View.Seats[0], alpha), li = PokemonRules.PartyIndexOf(flow.Client.View.Seats[0], legend);
+            // 결정 206 ③: 정비 칸 = 원작 카드 — 우두머리 토큰은 카드의 지닌물건 동그라미(첫 토큰), 비스트 부스트는 카드 밑 전설 전술 판의 상자
             var slot = root.Q("board-party-item-" + ai);
             Assert.That(slot.ClassListContains("sn-party-alpha"), Is.True, "우두머리 토큰 칸");
-            Assert.That(slot.Q<Label>().text, Is.EqualTo(stage.T("item.alpha_pokemon")));
+            Assert.That(slot.userData, Is.EqualTo(stage.T("item.alpha_pokemon")));
+            Assert.That(root.Q("board-party-mon-" + ai).Q("card-item-1"), Is.Not.Null, "카드의 우두머리 토큰 그림");
             Assert.That(party.PressItemSlot(ai, 0), Is.False, "뗄 수 없다");
-            Assert.That(root.Q("board-party-passive-" + ai + "-alpha"), Is.Not.Null, "카드의 우두머리 칩");
-            Assert.That(root.Q("board-party-passive-" + li + "-beast"), Is.Not.Null, "전설의 비스트 부스트 칩");
-            Assert.That(root.Q("board-party-passive-0-beast"), Is.Null, "스타팅 포켓몬에는 없다");
+            var beast = root.Q("board-party-slot-" + li + "-2");
+            Assert.That(beast, Is.Not.Null, "전설의 비스트 부스트 상자");
+            Assert.That(beast.ClassListContains(MonParts.LegendSlotClass) && (string)beast.userData == stage.T("screen.passive.beast_boost"), Is.True, "칸 2 = 비스트 부스트");
+            Assert.That(root.Q("board-party-mon-0").Q(className: MonParts.LegendSlotClass), Is.Null, "스타팅 포켓몬에는 없다");
             Assert.That(stage.TOrNull("item.alpha_pokemon.text"), Is.Not.Null);
 
             // T17: 가방의 유물 · 지닌물건 효과 글

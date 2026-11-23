@@ -9,7 +9,7 @@ namespace Sinnoh.Editor
     /// <list type="bullet">
     /// <item>픽셀 그림(Gen/Sprites·Stage·Trainers·Fonts·Field·Tutorial): Texture2D, Point, 밉맵 없음, 무압축 RGBA32(글꼴 아틀라스 pt_*.png는 R8·선형), Clamp, 최대 4096, 크기 그대로(NPOT 그대로).</item>
     /// <item>일반 그림(Gen/Cards·Board·Rulebook):Bilinear, Clamp, alphaIsTransparency 켬(투명 칸에 이웃 색을 번지게 — 투명 RGB가 검정이라 밉맵·쌍선형 가장자리가 어두워지는 것을 막는다).
-    /// 원본 가로·세로가 4의 배수면 PC BC7·WebGL DXT1(불투명 = PNG 색 형식에 알파 없음)/DXT5, 아니면 무압축. Board만 밉맵.
+    /// 원본 가로·세로가 4의 배수면 PC BC7·WebGL DXT1(불투명 = PNG 색 형식에 알파 없음)/DXT5, 아니면 무압축. Board · 포켓몬 카드 그림(Cards/Faces · Moves · Strips · Digits — 결정 206)만 밉맵.
     /// 헥스 디퓨즈(Board/hex_*.png, 4157²)는 가장 가까운 2의 거듭제곱으로 맞춘 뒤 최대 1024 [가정 M4-1e, 03 §2-4 「크기·압축은 M4-1e」].</item>
     /// <item>피규어 텍스처(Gen/Figures): 번들 원본(DXT1/DXT5)을 PNG로 뽑은 것 → PC·WebGL 모두 DXT1(불투명)/DXT5, 밉맵, Repeat, Bilinear, 최대 2048.</item>
     /// <item>BGM(Gen/Audio/Bgm): Vorbis 품질 0.5, Streaming(03 §3-2). Pt 원곡 WAV(M9 소리 ② — 앞부분 · 반복 클립).</item>
@@ -27,7 +27,8 @@ namespace Sinnoh.Editor
         static readonly string[] PixelDirs = { "Sprites/", "Stage/", "Trainers/", "Fonts/", "Field/", "Tutorial/" };
         static readonly string[] GeneralDirs = { "Cards/", "Board/", "Rulebook/" };   // Rulebook = 설명서 그림(M9 — PDF에서 자른 그림이라 픽셀 그림이 아니다, plan §5 #341)
 
-        // 1: M4-1e 처음(03 §2-0 표). 2: 일반 그림 alphaIsTransparency 켬(검토 반영 M4-1)
+        // 1: M4-1e 처음(03 §2-0 표). 2: 일반 그림 alphaIsTransparency 켬(검토 반영 M4-1).
+        // 포켓몬 카드 그림 밉맵(결정 206)은 판을 올리지 않았다 — 판을 올리면 모든 텍스처를 다시 들인다. 견본 18장의 .meta를 고쳐 다시 들였다
         public override uint GetVersion() => 2;
 
         /// <summary>경로 → 종류. Gen 밖·모르는 폴더는 None(설정을 건드리지 않는다).</summary>
@@ -42,8 +43,14 @@ namespace Sinnoh.Editor
             return Kind.None;
         }
 
-        /// <summary>일반 그림 중 밉맵을 쓰는 것: 보드(3D 판 위, 멀리서 본다).</summary>
-        public static bool BoardMips(string path) => path.StartsWith(GenRoot + "Board/");
+        /// <summary>
+        /// 일반 그림 중 밉맵을 쓰는 것: 보드(3D 판 위, 멀리서 본다) · 포켓몬 카드(결정 206 — 432 폭으로 구운 그림을 화면에서 150~430 px로 줄여 그린다: 밉맵 없이 줄이면 계단이 진다).
+        /// </summary>
+        public static bool BoardMips(string path) => path.StartsWith(GenRoot + "Board/") || IsCardArt(path);
+
+        /// <summary>포켓몬 카드 그림(결정 206 — cardfaces 묶음): 앞면 · 기술 띠 · 균열 · 전술 판 띠 · 숫자 글자.</summary>
+        public static bool IsCardArt(string path) =>
+            path.StartsWith(GenRoot + "Cards/Faces/") || path.StartsWith(GenRoot + "Cards/Moves/") || path.StartsWith(GenRoot + "Cards/Strips/") || path.StartsWith(GenRoot + "Cards/Digits/");
 
         /// <summary>헥스 디퓨즈: 2의 거듭제곱으로 맞추고 최대 1024.</summary>
         public static bool IsHexDiffuse(string path) => path.StartsWith(GenRoot + "Board/hex_") && path.EndsWith(".png");

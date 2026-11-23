@@ -10,16 +10,26 @@ namespace Sinnoh.Client
 {
     /// <summary>
     /// S38 포켓몬 카드 확대(04 §3-3 「누름 — 확대 S38(카드 고정 값)·기술 효과」): 정비 판(<see cref="PartyScreen"/>)의 포켓몬 카드를 누르면 뜨는 큰 보기.
-    /// 카드의 고정 값(타입 · 체력 · 스피드 · 배우는 타입 · 서식지 · 등급 · 진화와 그 비용)과 지금 값(체력 · 상태 · 잡은 볼), 기술 셋(★ 고유 기술 + 배운 칸 — 효과 문구를 줄로 다 적는다)과 지닌물건(문구)을 보인다.
-    /// 모두 보기에 있는 공개 정보라 남 좌석의 포켓몬도 같은 화면이다. 고치는 것은 없다. [닫기]·창 밖 누르기는 그 좌석의 정비 판으로 돌아간다.
-    /// 요소 이름: <c>mon-detail</c>·<c>mon-detail-panel</c>·<c>mon-detail-name</c>·<c>mon-detail-move-&lt;0|1|2&gt;</c>·<c>mon-detail-item</c>·<c>mon-detail-evolve</c>·<c>mon-detail-close</c>.
+    /// 결정 206 ①(목업 B-party): 원작 TTS 카드를 크게 — 카드(<see cref="CardStack"/> 옆으로 펼친 짜임: 지금 체력/최대 · 스피드 · 상태 주사위 · 토큰) + 오른쪽 기둥(배운 기술 · 균열 · 전술 판 띠 ·
+    /// 지닌물건 글 상자) + 카드에 없는 값(진화할 포켓몬 · 잡은 볼)과 [닫기]. 카드의 자리(★ 고유 기술 · 띠 · 토큰 · 상태)에 마우스를 올리면 효과 글. 화면 높이에 넘치면 카드를 줄인다.
+    /// 카드 그림이 없으면(웹 손님판 · 짝 없는 카드) 예전 판(도트 + 사실 줄 + 기술 줄 — 효과 문구를 줄로 다 적는다)으로 그린다.
+    /// 모두 보기에 있는 공개 정보라 남 좌석의 포켓몬도 같은 화면이다. 고치는 것은 없다. [닫기]·창 밖 누르기는 그 좌석의 정비 판으로 돌아간다(카드를 눌러서는 닫히지 않는다).
+    /// 요소 이름: <c>mon-detail</c>·<c>mon-detail-panel</c>·<c>mon-detail-move-0</c>(★ 고유 기술 자리)·<c>mon-detail-evolve</c>·<c>mon-detail-ball</c>·<c>mon-detail-close</c> — 카드 안은 <see cref="CardStack"/>의 이름.
+    /// 예전 판은 그 밖에 <c>mon-detail-name</c>·<c>mon-detail-move-&lt;1|2&gt;</c>·<c>mon-detail-item</c>.
     /// </summary>
     public sealed class MonScreen : IUiScreen
     {
+        /// <summary>카드 폭(카드 한 장 = 16 cm — 패널 px, USS <c>.kit-root</c>의 값 · 목업 B-party 크기 표). 화면 높이에 넘치면 이보다 작게 그린다.</summary>
+        static readonly CustomStyleProperty<float> ZoomWidth = new CustomStyleProperty<float>("--sn-card-zoom-w");
+
         readonly GameFlow flow;
         UiStage stage;
-        VisualElement panel;
-        int painted = -1;
+        VisualElement page, panel;
+        int painted = -1, shrunk;
+        float width, designWidth;
+
+        /// <summary>지금 그린 원작 카드(예전 판이면 null — 캡처 · 시험).</summary>
+        public CardStack Stack { get; private set; }
 
         /// <summary>보는 포켓몬(인스턴스 색인) · 그 주인 좌석(닫으면 그 좌석의 정비 판으로).</summary>
         public readonly int Pokemon, Seat;
@@ -36,16 +46,14 @@ namespace Sinnoh.Client
         public VisualElement Build(UiStage stage)
         {
             this.stage = stage;
-            var page = new VisualElement { pickingMode = PickingMode.Ignore };   // 판 밖(위 띠 · 아래 판 HUD)의 입력을 먹지 않는다 — 창 밖 누르기는 어둠이 받는다(T35)
+            page = new VisualElement { pickingMode = PickingMode.Ignore };   // 판 밖(위 띠 · 아래 판 HUD)의 입력을 먹지 않는다 — 창 밖 누르기는 어둠이 받는다(T35)
             var scrim = new VisualElement { name = "mon-detail-scrim" };
             scrim.AddToClassList("sn-party-scrim");
             scrim.RegisterCallback<PointerDownEvent>(e => flow.CloseMon());
             page.Add(scrim);
-            panel = Kit.Panel(stage.Skin);
-            panel.name = "mon-detail-panel";
-            panel.AddToClassList("sn-mon-panel");
-            page.Add(panel);
             painted = -1;
+            width = designWidth = stage.Root != null && stage.Root.customStyle.TryGetValue(ZoomWidth, out float w) && w > 0f ? w : 352f * stage.Grade.TokenHeight / 720f;
+            shrunk = 0;
             Refresh();
             return page;
         }
@@ -53,13 +61,16 @@ namespace Sinnoh.Client
         public void Close()
         {
             stage = null;
+            page = null;
             panel = null;
+            zoomHead = null;
+            Stack = null;
         }
 
         /// <summary>보기가 바뀌었다: 다시 그린다. 그 포켓몬이 파티를 떠났으면(놓아주기 등) 정비 판으로 돌아간다.</summary>
         public void Refresh()
         {
-            if (stage == null || panel == null || flow.Client == null) return;
+            if (stage == null || page == null || flow.Client == null) return;
             var view = flow.Client.View;
             if (view == null || Seat < 0 || Seat >= view.Seats.Length || PokemonRules.PartyIndexOf(view.Seats[Seat], Pokemon) < 0)
             {
@@ -68,11 +79,108 @@ namespace Sinnoh.Client
             }
             if (painted == flow.Client.Version) return;
             painted = flow.Client.Version;
+            Paint();
+        }
+
+        int Hp()
+        {
+            var pk = flow.Client.View.Pokemon[Pokemon];
+            return flow.Fx != null ? flow.Fx.Sequencer.Shown.Get(ShownKey.Hp(Pokemon), PokemonRules.Hp(flow.Ctx, pk)) : PokemonRules.Hp(flow.Ctx, pk);
+        }
+
+        void Paint()
+        {
+            panel?.RemoveFromHierarchy();
+            Stack = null;
+            var mon = CardMon.Of(flow.Ctx, flow.Client.View, Pokemon, hp: Hp());
+            if (CardStack.CanDraw(stage, flow.Ctx, mon)) Zoom(mon);
+            else Plain();
+        }
+
+        // 원작 카드 확대(목업 B-party): 화면 가운데 카드 + 오른쪽 기둥 · [닫기]는 기둥 맨 아래
+        void Zoom(CardMon mon)
+        {
             var ctx = flow.Ctx;
             var inv = CultureInfo.InvariantCulture;
+            var pk = mon.Pk;
+            var def = ctx.Cards.Pokemon[pk.Def];
+            panel = new VisualElement { name = "mon-detail-panel", pickingMode = PickingMode.Ignore };
+            panel.AddToClassList("sn-mon-zoom");
+            page.Add(panel);
+            // 카드 묶음(머리 줄의 [닫기] + 카드 + 기둥): 위 띠 아래 ~ 아래 판 위 자리 가운데 — [닫기]는 묶음 오른쪽 위(아래 판 단추를 덮지 않는다)
+            var block = Add(panel, new VisualElement { pickingMode = PickingMode.Position }, "mon-detail-block", null);   // 묶음을 눌러도 창 밖 누르기(닫기)가 되지 않는다
+            zoomHead = Add(block, new VisualElement { pickingMode = PickingMode.Ignore }, null, "sn-card-zoomhead");
+            var close = Add(zoomHead, Kit.Button(stage.T("screen.mon.close"), KitButtonKind.Main, () => flow.CloseMon()), "mon-detail-close", "sn-card-close");
+            close.pickingMode = PickingMode.Position;
+            Stack = CardStack.Build(stage, ctx, mon, width, CardLayout.Spread);
+            block.Add(Stack.Root);
+            Stack.HookTips(TipSide.Below);
+            foreach (var part in Stack.Parts)
+                if (part.Kind == CardPartKind.Signature) part.Element.name = "mon-detail-move-0";
+            var col = Stack.Column;
+            // 카드에 없는 값: 진화할 포켓몬(카드에는 비용만 — 「진화 → ○○」 칩, 없으면 「진화하지 않음」 한 마디) · 잡은 볼
+            var facts = Add(col, new VisualElement(), null, "sn-card-facts");
+            var evolve = Add(facts, new VisualElement(), "mon-detail-evolve", "sn-card-evolve");
+            if (def.EvolveInto.Count == 0) Add(evolve, Kit.Text(stage.T("screen.mon.evolve.none"), Kit.F2), null, "kit-muted");
+            else
+            {
+                foreach (int into in def.EvolveInto)
+                    evolve.Add(Kit.Badge(stage.T("screen.mon.evolve.into").Replace("{name}", stage.T("pokemon." + ctx.Cards.Pokemon[into].Key)), KitBadgeKind.Plain, Kit.F2));
+                if (def.EvolveCost.HasValue) evolve.Add(Kit.Badge(stage.T("screen.mon.evolve.cost").Replace("{n}", def.EvolveCost.Value.ToString(inv)), KitBadgeKind.Plain, Kit.F2));
+            }
+            if (pk.Ball >= 0) Ball(Fact(facts, "screen.mon.ball"), pk).name = "mon-detail-ball";
+            panel.RegisterCallback<GeometryChangedEvent>(Fit);
+        }
+
+        VisualElement zoomHead;
+
+        // 자리(위 띠 아래 ~ 아래 판 위)에 넘치면 한 규칙으로(목업 B — 글 상자는 띠 밑 · 묶음은 가운데): ① 카드 자체가 높으면 그만큼 줄인다
+        // ② 그래도 기둥(띠 + 글 상자 + 진화 줄)이 넘치면 그 비율로 더 줄인다 — 카드가 처음 폭의 3/4 밑으로 줄어야 할 때만 띠 밑 상자를 옆 기둥으로. 글 상자 글은 줄지 않으니 몇 번 되풀이한다
+        void Fit(GeometryChangedEvent e)
+        {
+            if (Stack == null || panel == null || shrunk >= 6) return;
+            var box = panel.layout;
+            var size = Stack.Root.layout;
+            if (float.IsNaN(size.height) || size.height <= 0f || box.height <= 0f) return;
+            float head = zoomHead != null && !float.IsNaN(zoomHead.layout.height) ? zoomHead.layout.height + zoomHead.resolvedStyle.marginBottom : 0f;
+            float maxH = box.height - 2f * InfoCard.Gap - head, maxW = box.width - 2f * InfoCard.Gap;
+            if (Stack.Height > maxH + 0.5f)
+            {
+                shrunk++;
+                width = Mathf.Floor(width * Mathf.Min(maxH / Stack.Height, 0.98f));
+                Paint();
+                return;
+            }
+            float k = Mathf.Min(maxH / size.height, maxW / size.width);
+            if (k >= 1f) return;
+            // 줄여도 카드가 너무 작아지면(글 상자가 길어 줄일수록 길어진다 — 영어 · 1080 벌) 그때만 띠 밑 상자들을 옆 기둥으로
+            if (width * k < designWidth * 0.75f && Stack.SplitColumn()) return;
+            shrunk++;
+            width = Mathf.Floor(width * Mathf.Min(k, 0.98f));
+            Paint();
+        }
+
+        VisualElement Ball(VisualElement row, PokemonState pk)
+        {
+            var icon = Add(row, new VisualElement(), null, "sn-icon");
+            var tex = GenAssets.Load<Texture2D>(GenAssets.ItemIcons + BattleFeed.BallItem(pk.Ball) + ".png");
+            if (tex != null) icon.style.backgroundImage = new StyleBackground(tex);
+            row.Add(Kit.Text(stage.T(BattleFeed.BallKey(pk.Ball)), Kit.F2));
+            return row;
+        }
+
+        // 예전 판(카드 그림이 없을 때 — 웹 손님판 · 짝 없는 카드)
+        void Plain()
+        {
+            var ctx = flow.Ctx;
+            var inv = CultureInfo.InvariantCulture;
+            var view = flow.Client.View;
             var pk = view.Pokemon[Pokemon];
             var def = ctx.Cards.Pokemon[pk.Def];
-            panel.Clear();
+            panel = Kit.Panel(stage.Skin);
+            panel.name = "mon-detail-panel";
+            panel.AddToClassList("sn-mon-panel");
+            page.Add(panel);
 
             var head = Add(panel, new VisualElement(), null, "sn-party-head");
             var title = Add(head, new VisualElement(), null, "sn-party-line");
@@ -88,7 +196,7 @@ namespace Sinnoh.Client
 
             var stats = Add(facts, new VisualElement(), null, "sn-party-line");
             int max = PokemonRules.MaxHp(ctx, pk);
-            int hp = flow.Fx != null ? flow.Fx.Sequencer.Shown.Get(ShownKey.Hp(Pokemon), PokemonRules.Hp(ctx, pk)) : PokemonRules.Hp(ctx, pk);
+            int hp = Hp();
             var hpPill = Kit.Pill(GenAssets.Load<Texture2D>(KitGallery.HealthIconKey), hp.ToString(inv), hp * 2 <= max ? KitTone.Low : KitTone.Base, max.ToString(inv));
             var spPill = Kit.Pill(GenAssets.Load<Texture2D>(KitGallery.SpeedIconKey), def.Initiative.ToString(inv));
             stats.Add(hpPill);
@@ -107,22 +215,15 @@ namespace Sinnoh.Client
             if (biome != null || climate != null) Fact(facts, "screen.mon.habitat").Add(Kit.Text(biome != null && climate != null ? biome + " · " + climate : biome ?? climate, Kit.F2));
             string tier = stage.TOrNull("screen.encounter.grade." + def.Tier.ToString().ToLowerInvariant());
             if (tier != null) Fact(facts, "screen.mon.tier").Add(Kit.Text(tier, Kit.F2));
-            var evolve = Fact(facts, "screen.mon.evolve");
-            evolve.name = "mon-detail-evolve";
+            var evolve = Add(facts, new VisualElement(), "mon-detail-evolve", "sn-party-line");   // 카드 확대와 같은 말(「진화 → ○○」 · 「진화하지 않음」)
             if (def.EvolveInto.Count == 0) Add(evolve, Kit.Text(stage.T("screen.mon.evolve.none"), Kit.F2), null, "kit-muted");
             else
             {
-                foreach (int into in def.EvolveInto) evolve.Add(Kit.Text(stage.T("pokemon." + ctx.Cards.Pokemon[into].Key), Kit.F2));
+                foreach (int into in def.EvolveInto)
+                    evolve.Add(Kit.Badge(stage.T("screen.mon.evolve.into").Replace("{name}", stage.T("pokemon." + ctx.Cards.Pokemon[into].Key)), KitBadgeKind.Plain, Kit.F2));
                 if (def.EvolveCost.HasValue) evolve.Add(Kit.Badge(stage.T("screen.mon.evolve.cost").Replace("{n}", def.EvolveCost.Value.ToString(inv)), KitBadgeKind.Plain, Kit.F2));
             }
-            if (pk.Ball >= 0)
-            {
-                var ball = Fact(facts, "screen.mon.ball");
-                var icon = Add(ball, new VisualElement(), null, "sn-icon");
-                var tex = GenAssets.Load<Texture2D>(GenAssets.ItemIcons + BattleFeed.BallItem(pk.Ball) + ".png");
-                if (tex != null) icon.style.backgroundImage = new StyleBackground(tex);
-                ball.Add(Kit.Text(stage.T(BattleFeed.BallKey(pk.Ball)), Kit.F2));
-            }
+            if (pk.Ball >= 0) Ball(Fact(facts, "screen.mon.ball"), pk);
 
             // 기술: ★ 고유 기술 + 배운 칸(효과 문구를 줄로 적는다 — 큰 보기라 툴팁에 숨기지 않는다)
             Add(panel, Kit.Text(stage.T("screen.mon.sig"), Kit.F2), null, "kit-muted");

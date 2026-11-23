@@ -38,6 +38,7 @@ namespace Sinnoh.Client
         /// 소리(M4-3 소리 뼈대, 결정 66 ④): 상황 곡 표·효과음 표와 그 클립 <c>Audio/**</c> → audio(번들에 넣는 것은 표가 가리키는 곡만 — <c>BoardBuild.Plan</c>). 울음 <c>Audio/Cry/**</c> → cries(M9 소리 ③, 나눠 받기).
         /// 튜토리얼 안내 마박사(M6.5, 결정 90 Q2 가): 소개 전신 도트 <see cref="RowanFull"/>와 목차 얼굴 필드 도트 <see cref="RowanFace"/> → tutorial.
         /// 설명서 그림(M9 「설명서 그림」, 결정 35): 원작 룰북에서 자른 예시 그림과 그 표 <c>Rulebook/**</c> → rulebook(웹 손님판은 나눠 받기 — <see cref="Split"/>).
+        /// 포켓몬 카드(결정 206): 구운 카드 그림과 카드에 얹는 것 → <see cref="CardBundle"/>(PC만 — <see cref="WebSkips"/>).
         /// 화면이 아직 읽지 않는 키는 null(그 화면을 만들 때·M7에 더한다).
         /// 에디터 번들 만들기(BoardBuild)와 플레이어 읽기가 이 한 곳을 같이 쓴다.
         /// </summary>
@@ -51,6 +52,7 @@ namespace Sinnoh.Client
             if (key == UiSkin.FontKey || key == UiSkin.PanelFrameKey || key == UiSkin.TipFrameKey) return "ui";
             if (key.StartsWith("Stage/", StringComparison.Ordinal) || key.StartsWith("Fonts/pt_", StringComparison.Ordinal)) return "stage";
             if (key.StartsWith("Sprites/Static/", StringComparison.Ordinal)) return "sprites";
+            if (IsCardArt(key)) return CardBundleFor(key);
             if (key.StartsWith("Cards/Village/", StringComparison.Ordinal) || key.StartsWith("Cards/Generator/stats_icons/", StringComparison.Ordinal)) return "cards";
             if (key.StartsWith("Cards/Generator/encounter_icons/", StringComparison.Ordinal) || IsItemIcon(key)) return "cards";
             if (key.StartsWith(TrainerFrame, StringComparison.Ordinal) && key.IndexOf('/', TrainerFrame.Length) < 0 && key.EndsWith(".png", StringComparison.Ordinal)) return "cards";   // 세로 뒷면 부품 둘 + 카드 틀(해금 연출)
@@ -71,6 +73,54 @@ namespace Sinnoh.Client
                 return slash > "Figures/".Length ? "fig_" + key.Substring("Figures/".Length, slash - "Figures/".Length).ToLowerInvariant() : null;
             }
             return null;
+        }
+
+        /// <summary>
+        /// 포켓몬 카드 번들(결정 206 1단계 — <see cref="CardStack"/>): 구운 앞면 · 기술 띠 · 균열 · 전술 판 띠 · 숫자 글자(<see cref="CardFaces"/> · <see cref="CardMoves"/> · <see cref="CardStrips"/> · <see cref="CardDigits"/>),
+        /// 카드에 얹는 상태 주사위 면 <c>Cards/Dice/status_*.png</c> · ♥ · ≫ 상자 <c>Cards/Generator/stats_bases/</c> · 생성기 타입 그림 <c>Cards/Generator/types/</c> · 지닌물건 토큰(<see cref="HeldTokens"/>).
+        /// PC(Win64)만 싣는다 — 웹 손님판 빌드에는 넣지 않는다(<see cref="WebSkips"/>, 첫 받기 40 MB 문턱 · [가정] 웹은 도트 카드로 대신, 뒤에서 받기는 다음 단계).
+        /// </summary>
+        public const string CardBundle = "pokecards";
+        public const string CardFaces = "Cards/Faces/", CardMoves = "Cards/Moves/", CardStrips = "Cards/Strips/", CardDigits = "Cards/Digits/";
+
+        /// <summary>카드 지닌물건 동그라미에 얹는 토큰(지닌물건 아이템 <c>item.&lt;이름&gt;</c> — 유물 · 우두머리 토큰은 <see cref="SpotTokens"/>로 cards 번들).</summary>
+        public static readonly string[] HeldTokens = { "blast_crystal", "choice_band", "eviolite", "heart_of_sinnoh", "lucky_egg", "scroll_of_nobility", "star_shield", "swiftness_sash" };
+
+        /// <summary>
+        /// 카드 그림의 번들(자동 업데이트는 파일 단위 — 카드 한 장을 고치면 그 묶음만 다시 받게 나눈다):
+        /// 앞면 <c>Cards/Faces/&lt;언어&gt;/&lt;도감 번호&gt;_…</c> → <c>pokecards_&lt;언어&gt;_&lt;도감 번호 백 단위&gt;</c>(예 <c>pokecards_ko_400</c> = 400~499번),
+        /// 기술 띠 · 균열 · 전술 판 띠 <c>Cards/Moves|Strips/&lt;언어&gt;/</c> → <c>pokecards_&lt;언어&gt;_moves</c>, 나머지(숫자 글자 · 문장 · 주사위 · 상자 · 타입 · 지닌물건) → <see cref="CardBundle"/>.
+        /// </summary>
+        static string CardBundleFor(string key)
+        {
+            string lang = LangOf(key, CardFaces);
+            if (lang != null)
+            {
+                int i = CardFaces.Length + lang.Length + 1, dex = 0;
+                while (i < key.Length && key[i] >= '0' && key[i] <= '9') dex = dex * 10 + (key[i++] - '0');
+                return CardBundle + "_" + lang + "_" + (dex / 100 * 100).ToString("000", System.Globalization.CultureInfo.InvariantCulture);
+            }
+            lang = LangOf(key, CardMoves) ?? LangOf(key, CardStrips);
+            return lang != null ? CardBundle + "_" + lang + "_moves" : CardBundle;
+        }
+
+        /// <summary><c>&lt;폴더&gt;&lt;언어&gt;/&lt;파일&gt;</c>의 언어(폴더 바로 아래 파일이면 null).</summary>
+        static string LangOf(string key, string folder)
+        {
+            if (!key.StartsWith(folder, StringComparison.Ordinal)) return null;
+            int slash = key.IndexOf('/', folder.Length);
+            return slash > folder.Length ? key.Substring(folder.Length, slash - folder.Length) : null;
+        }
+
+        /// <summary>웹 손님판 빌드에서 빼는 번들(카드 그림 — <see cref="CardBundle"/>와 그 나눈 묶음 <c>pokecards_*</c>).</summary>
+        public static bool WebSkips(string bundle) => bundle != null && (bundle == CardBundle || bundle.StartsWith(CardBundle + "_", StringComparison.Ordinal));
+
+        static bool IsCardArt(string key)
+        {
+            if (!key.EndsWith(".png", StringComparison.Ordinal)) return false;
+            if (key.StartsWith(CardFaces, StringComparison.Ordinal) || key.StartsWith(CardMoves, StringComparison.Ordinal) || key.StartsWith(CardStrips, StringComparison.Ordinal) || key.StartsWith(CardDigits, StringComparison.Ordinal)) return true;
+            if (key.StartsWith("Cards/Dice/status_", StringComparison.Ordinal) || key.StartsWith("Cards/Generator/stats_bases/", StringComparison.Ordinal) || key.StartsWith("Cards/Generator/types/", StringComparison.Ordinal)) return true;
+            return key.StartsWith(ItemTokens, StringComparison.Ordinal) && Array.IndexOf(HeldTokens, key.Substring(ItemTokens.Length, key.Length - ItemTokens.Length - 4)) >= 0;
         }
 
         const string MusicFolder = "Audio/Bgm/", MusicTable = "Audio/Bgm/bgm.json", CryFolder = "Audio/Cry/";

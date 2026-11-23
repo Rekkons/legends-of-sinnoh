@@ -137,7 +137,9 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(row.pickingMode, Is.EqualTo(PickingMode.Position), "명단 줄은 마우스를 받는다");
             Send(PointerEnterEvent.GetPooled(), row);
             Assert.That(flow.Hud.Info.MonShown, Is.EqualTo(def), index + "번 줄의 마우스 오버 카드 = 그 포켓몬");
-            Assert.That(flow.Hud.Info.MonTipElement.Q<Label>("mon-tip-name").text, Is.EqualTo(Wrapped(T("pokemon." + flow.Ctx.Cards.Pokemon[def].Key))));
+            // 결정 206 ①: 야생 카드 = 원작 카드 앞면(갤럭시단 카드) + 포획률 칩
+            Assert.That(flow.Hud.Info.MonTipElement.Q("card-face"), Is.Not.Null, index + "번 줄: 카드 앞면");
+            Assert.That(flow.Hud.Info.MonTipElement.Q("mon-tip-rate"), Is.Not.Null, index + "번 줄: 포획률 칩");
             Send(PointerLeaveEvent.GetPooled(), row);
             Assert.That(flow.Hud.Info.MonShown, Is.EqualTo(-1), "줄에서 나가면 걷힌다");
         }

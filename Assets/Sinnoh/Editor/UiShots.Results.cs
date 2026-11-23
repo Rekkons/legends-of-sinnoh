@@ -64,6 +64,11 @@ namespace Sinnoh.Editor
             foreach (var kv in RosterScreens) OverBoard.Add(kv.Key);   // 갤럭시단 명단 줄(UiShots.Roster201.cs — 결정 201, 배틀 화면)
             foreach (var kv in GalacticHoverScreens) OverBoard.Add(kv.Key);   // 갤럭시단 상대 명단 마우스 오버(UiShots.GalacticHover.cs — 결정 201 ②, 보드 위)
             foreach (var kv in TutorialExplainScreens) OverBoard.Add(kv.Key);   // 튜토리얼 설명 보강(UiShots.TutorialExplain.cs — 결정 204, 보드 위)
+            foreach (var kv in HeldScreens) OverBoard.Add(kv.Key);   // 배틀 기둥의 지닌물건(UiShots.Held207.cs — 결정 207, 배틀 화면)
+            foreach (var kv in CardStackScreens) OverBoard.Add(kv.Key);   // 포켓몬 카드 쌓기 부품 시트(UiShots.CardStack.cs — 결정 206, 보드 위 판)
+            foreach (var kv in CardHoverScreens) OverBoard.Add(kv.Key);   // 결정 206 ① 마우스 오버 카드 · 정비 확대(UiShots.CardHover.cs — 보드 위)
+            foreach (var kv in BattleInfoScreens) OverBoard.Add(kv.Key);   // 배틀 정보 기둥 · 엔트리 · 무리(UiShots.BattleInfo206.cs — 결정 206 ②, 배틀 화면)
+            foreach (var kv in PartyCardScreens) OverBoard.Add(kv.Key);   // 정비 판 카드 칸(UiShots.PartyCard.cs — 결정 206 ③, 보드 위 판)
         }
 
         /// <summary><see cref="Screens"/> + 이 묶음의 장면(이름으로 찾는 곳은 이 목록을 쓴다).</summary>
@@ -119,6 +124,11 @@ namespace Sinnoh.Editor
                 foreach (var s in RosterScreens) yield return s;
                 foreach (var s in GalacticHoverScreens) yield return s;
                 foreach (var s in TutorialExplainScreens) yield return s;
+                foreach (var s in HeldScreens) yield return s;
+                foreach (var s in CardStackScreens) yield return s;
+                foreach (var s in CardHoverScreens) yield return s;
+                foreach (var s in BattleInfoScreens) yield return s;
+                foreach (var s in PartyCardScreens) yield return s;
             }
         }
 
@@ -628,7 +638,7 @@ namespace Sinnoh.Editor
             if (screen == null || flow.Client.Choice(ChoiceKind.SendIn) == null) throw new InvalidOperationException("첫 출전을 묻는 우두머리 배틀 화면이 아니다");
             flow.Layout(s.Width, s.Height);
             s.Panel.Tick(3);
-            if (!screen.FoePreviewed || flow.Stage.Root.Q("battle-foe-moves") == null) throw new InvalidOperationException("첫 출전 전에 상대(우두머리)가 기둥에 보이지 않는다");
+            if (!screen.FoePreviewed || flow.Stage.Root.Q("battle-foe-art") == null) throw new InvalidOperationException("첫 출전 전에 상대(우두머리)가 기둥에 보이지 않는다");
         }
 
         static void OtherDid(UiShot s, AnswerKind kind, int row, int ms)
@@ -760,7 +770,7 @@ namespace Sinnoh.Editor
             var bad = new List<string>();
             // 톡 커지는 중인 칩·점(scale)은 제 크기로 돌려 놓고 잰 뒤 그 순간의 크기로 되돌린다(늘어난 크기는 배치가 아니다)
             var scaled = new List<KeyValuePair<VisualElement, StyleScale>>();
-            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm", "battle-swarm-slots" })
+            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm" })
             {
                 var line = root.Q(name);
                 if (line == null) continue;
@@ -771,14 +781,14 @@ namespace Sinnoh.Editor
                 }
             }
             if (scaled.Count > 0) s.Panel.Tick(3);
-            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm", "battle-swarm-slots", "battle-roster", "battle-reward", "battle-result-lines" })
+            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-foe-wild", "battle-swarm", "battle-reward", "battle-result-lines" })
                 bad.AddRange(WorkUi.Overflows(root.Q(name)));
             foreach (var kv in scaled) kv.Key.style.scale = kv.Value;
             var screen = s.Made.Stage.Current as BattleScreen;
             if (screen != null && screen.AlphaOpen) bad.AddRange(WorkUi.Overflows(root.Q("battle-moves")));
             // 기둥의 덧줄이 기둥 판 아래로 밀려나지 않았나
             var info = root.Q("battle-info");
-            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-swarm-slots", "battle-roster" })
+            foreach (var name in new[] { "battle-me-extra", "battle-foe-extra", "battle-foe-wild" })
             {
                 var e = root.Q(name);
                 if (e != null && info != null && e.worldBound.yMax > info.worldBound.yMax + 1f) bad.Add(name + ": 기둥 아래로 넘친다");

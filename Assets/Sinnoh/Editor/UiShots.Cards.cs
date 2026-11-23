@@ -92,16 +92,16 @@ namespace Sinnoh.Editor
             if (!rows[0].worldBound.Contains(a.worldBound.center) || !rows[0].worldBound.Contains(b.worldBound.center)) throw new InvalidOperationException("타입 단추가 첫 기술 칸 밖에 있다(" + a.worldBound + " · " + rows[0].worldBound + ")");
         }
 
-        // 결정 87 V1 ①: 고른(빛나는) 포켓몬 카드도 체력 · 스피드가 한 줄
+        // 결정 87 V1 ①: 고른(빛나는) 포켓몬 카드도 모양이 그대로 — 결정 206 ③부터 원작 카드 그림 + 앞면 둘레의 테(그림 크기 그대로)
         static void PickedOneLine(UiShot s, GameFlow flow)
         {
             s.Panel.Tick(3);
             var card = flow.Stage.Root.Q("board-party-mon-0");
             if (card == null || !card.ClassListContains("sn-party-ok")) throw new InvalidOperationException("고른 포켓몬 카드(빛남)가 없다");
-            var lines = card.Query(className: "sn-party-line").ToList();
-            var stats = lines.Count >= 2 ? lines[1] : null;   // 타입 줄 · 체력·스피드 줄
-            if (stats == null || stats.childCount < 2) throw new InvalidOperationException("고른 카드의 체력·스피드 줄이 없다");
-            if (Math.Abs(stats[0].worldBound.y - stats[1].worldBound.y) > 0.5f) throw new InvalidOperationException("고른 카드의 체력 · 스피드가 두 줄로 갈렸다(" + stats[0].worldBound + " · " + stats[1].worldBound + ")");
+            var face = card.Q("card-face");
+            var ring = card.Q(className: "sn-pcard-ring");
+            if (face == null || ring == null) throw new InvalidOperationException("고른 카드가 카드 그림 + 테가 아니다");
+            if (Math.Abs(face.worldBound.width - ring.worldBound.width) > 0.5f || Math.Abs(face.worldBound.height - ring.worldBound.height) > 0.5f) throw new InvalidOperationException("테가 카드 앞면과 크기가 다르다(" + face.worldBound + " · " + ring.worldBound + ")");
         }
 
         // 결정 87 V1 ①: 파티 칸 꼬리표는 도트 칸을 덮지 않고 아래 판 안에 든다

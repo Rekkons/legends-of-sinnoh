@@ -12,6 +12,7 @@
   night-edge: #141c24;
   ink-soft: #707880;
   blue: #5890d8;
+  title: #3868a8;   /* 키트 제목 글 색(kit-title)과 같은 값 — 배틀 기둥 이름 줄(결정 206 ②) */
   red: #e05040;
   edge: #283038;
   paper-line: #c0c8d0;
@@ -75,6 +76,16 @@
   grade-strong: #f09050;
   grade-legendary: #f8d040;
   grade-alpha: #e05040;
+  card-hole: #b0954a;
+  card-hover: rgba(255, 240, 176, 0.3);
+  card-rim: #210d05;
+  card-line: #290f08;
+  card-soft: rgba(26, 10, 5, 0.7);
+  card-die-edge: #f49a9a;
+  card-tag-up: #2f9e5a;
+  card-tag-down: #d83848;
+  card-tag-edge: #faf5f0;
+  card-note-edge: #9a4b33;
 }
 
 .kit-root {
@@ -508,32 +519,21 @@
 .sn-battle-info { left: 8px; }
 .sn-battle-log { right: 8px; }
 .sn-battle-head { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-.sn-battle-block { padding: 6px; margin-bottom: 6px; border-width: 1px; border-color: var(--sn-line); background-color: var(--sn-fill); }
 .sn-battle-line { flex-direction: row; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
 .kit-root .sn-battle-line > * { margin-right: 6px; }
 /* 독 차례 칸의 [운명의 변화 n/5](손패 훑어보기 — 결정 80 N3 나 · 자리 결정 170): 글 폭만큼만 */
 .sn-battle-fate { align-self: flex-start; }
-/* 도트 창 아래 틈: 큰 도트(전설·최종 진화)는 창을 아래 끝까지 채워 바로 밑 줄의 「대기」·「기술」 글자에 닿았다 */
-.sn-battle-mon { flex-direction: row; align-items: center; margin-bottom: 4px; }
 .sn-battle-mon-info { margin-left: 6px; flex-shrink: 1; }
-/* UB 배틀의 상대 기둥: 캔버스를 통째로 — 도트가 캔버스를 거의 채워 가운데 칸에서 잘렸다(결정 87 V22 ①) */
-.sn-battle-mon .sn-mon-full { width: T(96px!, 192px!); height: T(96px!, 192px!); }
-.sn-battle-mon .sn-mon-full .sn-mon-canvas { left: 0; top: 0; }
 /* 기둥의 타입 · 상태 칩 사이(결정 87 V22 ①): 이름 줄 · 덧칩 줄은 조금 더 띄우고, 덧칩이 두 줄로 감기면 줄 사이도 띄운다 */
 .kit-root .sn-battle-mon-info > .sn-battle-line > *, .kit-root .sn-battle-extra > * { margin-right: T(9px!, 12px!); }
 .kit-root .sn-battle-extra > * { margin-bottom: T(3px!, 4px!); }
 /* 타입·상태 그림(Pt 틀 32×16): 벌마다 정수배 */
 .sn-type-icon { width: T(32px!, 64px!); height: T(16px!, 32px!); flex-shrink: 0; }
-/* 상대 기술 칩 한 묶음(결정 187 [가정]): [타입][이름 위력][상성]이 붙어 선다 — 칩 줄이 꺾여도 묶음째 */
-.sn-battle-foe-move { flex-direction: row; align-items: center; flex-shrink: 0; margin-bottom: 2px; }
-.kit-root .sn-battle-foe-move > * { margin-right: 3px; }
 /* 알파 스트라이크 옆 배울 수 있는 타입(결정 182 [가정]): 타입 그림을 붙여 한 묶음 — 칩 줄 · 기술 줄 안에서 줄지 않는다 */
 .sn-battle-alpha-types { flex-direction: row; align-items: center; flex-shrink: 0; }
 .kit-root .sn-battle-alpha-types > .sn-type-icon { width: 32px!; height: 16px!; margin-right: 2px; }   /* 1080에서도 1배(정수배 — 줄 폭 안) */
 /* 우선권 토큰 그림(16×16 도트, 결정 73 ⑦): 벌마다 정수배 */
 .sn-token-icon { width: T(16px!, 32px!); height: T(16px!, 32px!); flex-shrink: 0; margin-left: 4px; }
-/* 상대 머리 줄(야생·갤럭시단은 글 한 줄뿐)은 처음부터 토큰 그림 높이 — 토큰이 넘어와도 줄이 늘지 않는다(결정 73 검토 반영) */
-.sn-battle-who { min-height: T(16px!, 32px!); }
 /* 기록: 새 줄이 아래에 쌓이고 넘치는 옛 줄은 위로 잘린다 */
 .sn-battle-lines { flex-grow: 1; justify-content: flex-end; overflow: hidden; }
 .sn-battle-logline { flex-direction: row; align-items: flex-start; flex-shrink: 0; padding: 2px 0; border-top-width: 1px; border-color: var(--sn-line); }
@@ -1361,13 +1361,8 @@
 .sn-result-banner { position: absolute; left: 0; top: 0; width: 200px; margin-left: -100px; margin-top: -16px; align-items: center; }
 /* 배틀 기둥의 덧칩 줄 · 무리 진행(S55) · 응징 구슬 · 승리 보상 단추 */
 .sn-battle-extra { margin-top: 2px; }
-.sn-battle-swarm { flex-direction: row; flex-wrap: wrap; }
-.sn-battle-swarm-slot { flex-direction: row; align-items: center; margin-right: 6px; margin-bottom: 3px; }
-.kit-root .sn-battle-swarm-slot > * { margin-right: 3px; }
 .sn-battle-swarm-dot { width: T(8px!, 12px!); height: T(8px!, 12px!); border-width: 1px!; border-color: var(--sn-edge); border-radius: T(4px!, 6px!); background-color: var(--sn-clear); }
 .sn-battle-swarm-dot-on { background-color: var(--sn-turn); }
-.sn-battle-roster-done { opacity: 0.45; }
-.kit-root .sn-battle-roster .sn-type-icon { width: 32px!; height: 16px!; margin-right: 2px; }   /* 갤럭시단 명단 줄(결정 201): 1080에서도 1배 — 태홍 여섯이 기둥 안에 든다 */
 .sn-battle-orb { position: absolute; left: 0; top: 0; width: T(16px!, 24px!); height: T(16px!, 24px!); margin-left: T(-8px!, -12px!); margin-top: T(-8px!, -12px!); border-radius: T(8px!, 12px!); border-width: T(2px!, 3px!); border-color: var(--sn-orb-edge); background-color: var(--sn-orb); }
 /* 울트라 버스트 배틀(M6 「UB 배틀 화면 묶음」 — 88~92행): DS 위에 떠 있는 것(마우스 안 받음). 자리는 DS 화면의 비율(256×192) */
 .sn-battle-ub-block { position: absolute; left: 66%; top: 14%; }
@@ -1636,8 +1631,6 @@
 .kit-root.sn-lang-en .sn-stamp-pool .sn-enc-move .kit-muted { display: none; }
 .kit-root.sn-lang-en .sn-hud-mons-many .sn-hud-mon-info { margin-left: T(5px, 4px!); }
 .kit-root.sn-lang-en .sn-party-poolcard .kit-muted { display: none; }
-.kit-root.sn-lang-en .sn-battle-swarm-info .sn-battle-line { margin-bottom: T(4px, 1px!); }
-.kit-root.sn-lang-en .sn-battle-swarm-info .sn-battle-swarm-slot { margin-bottom: T(3px, 0px!); }
 .kit-root.sn-lang-en .sn-hud-actions-card > * { margin-right: 2px; }
 .kit-root.sn-lang-en .sn-hud-actions-card > .kit-badge, .kit-root.sn-lang-en .sn-hud-actions-card > .kit-btn { padding-left: 2px!; padding-right: 2px!; }
 .kit-root.sn-lang-en .sn-challenge-panel { width: 540px; margin-left: -270px; }
@@ -1649,8 +1642,6 @@
 .kit-root.sn-lang-en .sn-card-fx-ability { overflow: hidden; text-overflow: ellipsis; }
 .kit-root.sn-lang-en .sn-party-item > Label { flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }
 .kit-root.sn-lang-en .sn-hud-actions-card > .sn-hud-actions-title { display: none; }
-/* 넘침 전수 2(11-20): 배틀 기둥의 상대 기술 줄은 1080 벌에서 둘째 줄로 감기면 감긴 칩이 줄 칸 밖으로 나간다(두 언어 — UB · 갤럭시단 기술 둘) — 1080 벌은 「기술」 머리를 빼 한 줄에(칩 마우스 오버에 기술 이름 · 문구) */
-.kit-root #battle-foe-moves > .kit-muted { display: T(flex, none); }
 /* 글 칸(닉네임 · 참가 칸): 엔진 기본 글 칸의 모양을 판 색으로 */
 .sn-field { width: 200px; height: 22px; margin: 0; padding: 0; flex-shrink: 0; }
 .sn-field-wide { width: 230px; }
@@ -1887,3 +1878,122 @@
 .kit-root .sn-credits-notice { margin-bottom: 6px; flex-shrink: 0; }
 .sn-credits-tab { justify-content: space-between; min-height: 22px; margin-bottom: 2px; }
 .kit-root .sn-credits-tab-name { flex-shrink: 1; margin-right: 6px; }
+/* 포켓몬 카드 쌓기(결정 206 — CardStack): 원작 카드 앞면 + 끼운 띠. 자리 · 크기는 부모가 준 폭으로 코드가 정하고(cm × 폭/16), 색만 여기. 블럭 실루엣 그림자 색은 코드가 읽는다(--sn-card-rim · -line · -soft) */
+.kit-root { --sn-card-rim-c: $card-rim; --sn-card-line-c: $card-line; --sn-card-soft-c: $card-soft; --sn-card-ink: $card-back; --sn-card-die-edge: $card-die-edge; --sn-card-tag-up: $card-tag-up; --sn-card-tag-down: $card-tag-down; --sn-card-tag-edge: $card-tag-edge; }
+.sn-card-stack { --sn-card-rim: var(--sn-card-rim-c); --sn-card-line: var(--sn-card-line-c); --sn-card-soft: var(--sn-card-soft-c); flex-shrink: 0; }
+.sn-card-out { filter: grayscale(100%); opacity: 0.85; }
+.sn-card-num { -unity-background-image-tint-color: var(--sn-card-ink); }
+.sn-card-num-max { opacity: 0.75; }
+.sn-card-tag { background-color: var(--sn-card-tag-up); border-color: var(--sn-card-tag-edge); justify-content: center; align-items: center; }
+.sn-card-tag-down { background-color: var(--sn-card-tag-down); }
+.sn-card-statpad { background-color: var(--sn-card-note-bg); }
+.sn-card-die { background-color: var(--sn-card-ink); border-color: var(--sn-card-die-edge); flex-direction: row; justify-content: center; align-items: center; }
+.sn-card-dot { width: 340px; }
+/* 좁은 자리의 도트 카드(웹 손님판 배틀 기둥 · 엔트리 — CardStack.Dot): 도트 위 · 값 아래, 기술 줄 · 머리 글은 뺀다 */
+.sn-card-dotslim .sn-mon-tip-head { flex-direction: column; align-items: center; }
+.sn-card-dotslim .sn-mon-tip-info { margin-left: 0; align-self: stretch; }
+.sn-card-dotslim > .sn-mon-move, .sn-card-dotslim > .kit-muted { display: none; }
+/* 결정 206 ① 카드 마우스 오버 · 정비 확대(MonTip · MonScreen — 목업 B): 카드 폭(카드 한 장 = 16 cm, 패널 px — 코드가 뿌리에서 읽고 화면에 넘치면 줄인다) · 떠 있는 상자 · 오른쪽 기둥의 지닌물건 글 상자(크림 바탕 · 갈색 테 — 테 두께 · 여백은 카드 크기로 코드가) */
+.kit-root { --sn-card-tip-w: T(288, 432); --sn-card-wild-w: T(288, 432); --sn-card-zoom-w: T(352, 528); --sn-card-note-bg: $card-tag-edge; --sn-card-note-edge: $card-note-edge; }
+.sn-card-tip { position: absolute; align-items: center; }
+.kit-root .sn-card-tip-rate { margin-top: 3px; }
+.sn-card-note { background-color: var(--sn-card-note-bg); border-color: var(--sn-card-note-edge); flex-shrink: 0; }
+.sn-card-note-head { flex-direction: row; align-items: center; }
+.kit-root .sn-card-note-ink { color: var(--sn-card-ink); }
+.sn-card-facts { margin-top: 4px; padding: 3px 6px; background-color: var(--sn-card-note-bg); border-width: 2px; border-radius: 4px; border-color: var(--sn-card-note-edge); flex-shrink: 0; }
+.kit-root .kit-btn.sn-card-close { margin: 0; }
+/* 위 띠 아래 ~ 아래 판 위(정비 판 어둠과 같은 자리) — 이 안에 넘치면 코드가 기둥을 나누고 카드를 줄인다 */
+.sn-mon-zoom { position: absolute; left: 0; right: 0; top: T(50px!, 95px!); bottom: 126px; align-items: center; justify-content: center; }
+.sn-card-zoomhead { flex-direction: row; justify-content: flex-end; flex-shrink: 0; margin-bottom: 4px; }
+.sn-card-evolve { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.kit-root .sn-card-evolve > * { margin-right: 4px; margin-bottom: 2px; }
+
+/* 결정 206 ② 배틀 정보 기둥 · 엔트리 */
+/* 기둥: 머리 줄 오른쪽 [내 엔트리 n] · [상대 엔트리 n] — 아래는 좌우 두 쪽(이름 줄 · 카드 칸 · 덧칩 줄). 카드 폭은 코드가 카드 칸 크기에 맞춘다(두 쪽 같은 크기) */
+.kit-root { --sn-battle-sidename: $title; }
+.sn-battle-entries { flex-direction: row; flex-shrink: 0; }
+.kit-root .sn-battle-entries > * { margin-left: 4px; }
+.sn-battle-entry-on { border-width: 2px; border-color: var(--sn-pick-strong); }
+.sn-battle-cols { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.sn-battle-infoside { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; align-items: center; }
+.sn-battle-infoside-foe { margin-left: 6px; }
+.sn-battle-sidehead { justify-content: center; flex-wrap: nowrap; margin-bottom: 2px; align-self: stretch; }
+/* 머리 줄의 두 묶음(왼쪽 = 내 쪽 얼굴 상자 + 「배틀 정보」, 오른쪽 = [엔트리] + 상대 좌석 얼굴 상자) — 얼굴 상자는 두 벌 모두 조각 30(결정 64 정수배 ×1, 머리 줄 높이를 단추 높이 안에) */
+.sn-battle-headside { flex-direction: row; align-items: center; flex-shrink: 1; min-width: 0; }
+.kit-root .sn-battle-headside > .sn-battle-headface { margin-right: 4px; }
+.kit-root .sn-battle-headside > .sn-battle-headface-end { margin-left: 4px; margin-right: 0; }
+.sn-battle-headface .sn-face-art { width: 30px!; height: 30px!; }
+.kit-root .sn-battle-sidehead > * { margin-right: 4px; }
+.kit-root .sn-battle-sidename { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; white-space: normal; height: auto; -unity-text-align: middle-center; color: var(--sn-battle-sidename); }
+.sn-battle-cards { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; align-self: stretch; align-items: center; overflow: hidden; }
+.sn-battle-card { flex-shrink: 0; }
+.sn-battle-swarmcards { flex-shrink: 0; }
+.sn-battle-swarmcard { position: absolute; }
+.sn-battle-infoside > .sn-battle-extra { justify-content: center; align-items: flex-start; align-content: flex-start; align-self: stretch; margin-top: 2px; margin-bottom: 0; }
+.sn-battle-swarmdots { flex-direction: row; align-items: center; flex-shrink: 0; }
+.kit-root .sn-battle-swarmdots > * { margin-right: 3px; }
+/* 카드 글 판(마우스 오버 — 목업 r10-battle-hover): 기둥 오른쪽(DS 위), 자리는 코드가 기둥에 붙인다 */
+.sn-battle-cardtip { position: absolute; width: T(320px!, 560px!); margin-left: 8px; padding: T(7px!, 14px!); }
+.sn-battle-tiprow { margin-top: 4px; }
+.sn-battle-tiphead { flex-direction: row; align-items: center; padding: 2px 4px; border-width: 1px; border-color: var(--sn-line); background-color: var(--sn-fill); }
+.kit-root .sn-battle-tiphead > * { margin-right: 4px; }
+.kit-root .sn-battle-tiphead > .sn-icon { width: T(16px!, 24px!); height: T(16px!, 24px!); }
+.sn-battle-tipgap { flex-grow: 1; }
+.kit-root .sn-battle-tiptext { margin-top: 2px; }
+/* 엔트리 판(목업 4차 · 10차): 기둥 오른쪽에 붙어 카드만큼 넓다(가장 넓으면 화면 오른쪽 끝까지) — 위 · 높이 · 최대 폭은 코드가 기둥에 맞추고, 카드 폭은 여섯 장 기준 */
+.sn-battle-entry { position: absolute; margin-left: 8px; padding: T(7px!, 14px!); }
+.sn-battle-entry-head { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 4px; flex-shrink: 0; }
+.sn-battle-entry-cards { flex-direction: row; flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; overflow: hidden; }
+.sn-battle-entry-col { align-items: center; justify-content: space-between; flex-shrink: 0; margin-right: 4px; padding: 2px; border-width: 2px; border-radius: 6px; border-color: var(--sn-clear); }
+/* 「배틀 중」 카드 칸의 노란 테(목업 10차 — 엔트리 판 · 무리 마우스 오버 판) */
+.sn-battle-entry-col.sn-battle-entry-now { border-color: var(--sn-pick-strong); }
+.kit-root .sn-battle-entry-tag { margin-top: 2px; }
+/* 무리 마우스 오버로 연 판: 높이는 내용만큼 · 꼬리표는 카드 바로 밑(검토 지적 5) */
+.sn-battle-entry-fit > .sn-battle-entry-cards { flex-grow: 0; flex-basis: auto; }
+.sn-battle-entry-fit .sn-battle-entry-col { justify-content: flex-start; }
+/* 결정 206 ③ 정비 판 카드 칸(PartyScreen — 목업 r10-party-row6 · r10-party-drag): 왼쪽 = 카드 여섯 열(열 폭은 코드가 카드 폭으로 · 쌓기는 위, [◀][▶][놓아주기]는 기술 수와 상관없이 맨 아래 같은 높이) ·
+   오른쪽 기둥 = 능력 줄 · 물음 줄 · 기술 카드 · 가방. 받는 칸(띠 · 홈 · 지닌물건 동그라미)은 그림을 덮지 않는 테로 빛난다, 홈 = 띠 크기의 금색 판(그림자 없음) */
+.kit-root { --sn-card-hole: $card-hole; --sn-pcard-hover: $card-hover; }
+/* 720 벌은 두 띠 쌓기 + 단추 줄이 판 높이에 꼭 맞는다(목업 6차) — 판 아래 여백 · 머리 줄 아래 간격만 줄인다 */
+.kit-root .sn-pcard-panel { padding-bottom: T(5px!, 10px!); }
+.sn-pcard-panel > .sn-party-head { margin-bottom: 2px; }
+.sn-card-holelook { background-color: var(--sn-card-hole); border-color: var(--sn-pick-strong); }
+.sn-pcard-body { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.sn-pcard-cols { flex-direction: row; flex-shrink: 0; }
+.sn-pcard-col { flex-shrink: 0; margin-right: 4px; justify-content: space-between; }
+.sn-pcard-top { flex-shrink: 1; min-height: 0; overflow: hidden; }
+.sn-pcard-off { align-items: center; justify-content: center; border-width: 1px; border-color: var(--sn-line); background-color: var(--sn-clear); }
+.sn-pcard-mon { flex-shrink: 0; }
+.sn-pcard-mon.sn-party-ok, .sn-pcard-mon.sn-party-picked { border-width: 0; margin: 0; background-color: var(--sn-clear); }
+.sn-pcard-ring { position: absolute; left: 0; top: 0; border-width: 3px; border-color: var(--sn-pick-strong); border-radius: 8px; }
+.sn-party-picked > .sn-pcard-ring { border-color: var(--sn-turn); }
+.sn-pcard-did { position: absolute; left: 0; top: 0; right: 0; bottom: 0; border-width: 3px; border-radius: 8px; }
+.sn-pcard-hit { border-radius: 6px; }
+.sn-pcard-hit.sn-party-ok { border-width: 2px; border-color: var(--sn-pick-strong); background-color: var(--sn-clear); }
+.sn-pcard-hit.sn-party-picked { border-width: 3px; border-color: var(--sn-turn); background-color: var(--sn-clear); }
+.sn-pcard-hit.sn-party-press:hover, .sn-pcard-hit.sn-party-ok:hover { background-color: var(--sn-pcard-hover); }
+.sn-pcard-hit.sn-party-no { opacity: 1; }
+.sn-pcard-item { position: absolute; border-radius: 50%; }
+.sn-pcard-item.sn-party-ok { border-width: 3px; border-color: var(--sn-pick-strong); background-color: var(--sn-pcard-hover); }
+.sn-pcard-item.sn-party-picked { border-width: 3px; border-color: var(--sn-turn); background-color: var(--sn-pcard-hover); }
+.sn-pcard-item.sn-party-press:hover { background-color: var(--sn-pcard-hover); }
+.sn-pcard-foot { flex-shrink: 0; margin-top: 0; }
+/* 1080 벌: [◀][▶][놓아주기]가 카드 폭(232) 안에 들게 단추 옆 여백만 줄인다 */
+.kit-root .sn-pcard-foot > * { margin-right: T(4px!, 4px!); }
+.kit-root .sn-pcard-foot > .kit-btn { padding-left: T(8px!, 8px!); padding-right: T(8px!, 8px!); }
+/* [폼] 단추가 같은 줄에 설 때: 단추 옆 여백을 더 줄여 카드 폭 안에(720 벌 160) */
+.kit-root .sn-pcard-foot-tight > * { margin-right: T(3px!, 3px!); }
+.kit-root .sn-pcard-foot-tight > .kit-btn { padding-left: T(4px!, 3px!); padding-right: T(4px!, 3px!); }
+.kit-root .sn-pcard-formicon .sn-card-pick-icon { margin-right: 0; }
+.sn-pcard-dot-hole { align-self: stretch; height: 28px; border-width: 2px; border-color: var(--sn-pick-strong); background-color: var(--sn-card-hole); }
+/* 끄는 것은 반투명(밑의 홈 · 칸이 비친다 — 목업 r10-party-drag) */
+.sn-pcard-ghost { overflow: hidden; opacity: 0.8; }
+.sn-pcard-side { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.sn-pcard-side > .sn-party-box { margin-right: 0; margin-bottom: 4px; flex-basis: 0; }
+.sn-pcard-side > .sn-party-abil { flex-wrap: wrap; margin-top: 0; margin-bottom: 4px; }
+.sn-pcard-side > .sn-party-ask { flex-direction: column; align-items: stretch; margin-top: 0; margin-bottom: 4px; padding-top: 0; padding-bottom: 4px; border-top-width: 0; border-bottom-width: 1px; }
+.kit-root .sn-pcard-side .sn-party-ask-text { flex-grow: 0; flex-shrink: 0; margin-bottom: 2px; }
+.sn-pcard-ask-row { flex-direction: row; flex-wrap: wrap; justify-content: flex-end; }
+.kit-root .sn-pcard-ask-row > * { margin-left: 6px; margin-top: 2px; }
+.sn-pcard-side .sn-party-pool { flex-direction: column; }
+.kit-root .sn-pcard-side .sn-party-poolcard { width: auto; margin-right: 0; margin-bottom: 4px; align-self: stretch; }

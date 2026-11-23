@@ -39,11 +39,23 @@ namespace Sinnoh.Client
             }
         }
 
-        /// <summary>아틀라스 표와 그림을 읽는다. Gen 본체가 없으면 null.</summary>
+        // 읽은 표(같은 TextAsset이면 다시 파싱하지 않는다 — 카드 · 마우스 오버가 카드마다 부른다, 표 약 113 KB). 도메인 리로드를 끈 Play에서도 비운다(CLAUDE.md)
+        static MonArt cached;
+        static TextAsset cachedJson;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetCache()
+        {
+            cached = null;
+            cachedJson = null;
+        }
+
+        /// <summary>아틀라스 표와 그림을 읽는다(같은 표면 읽어 둔 것). Gen 본체가 없으면 null.</summary>
         public static MonArt Load()
         {
             var json = GenAssets.Load<TextAsset>(TableKey);
             if (json == null) return null;
+            if (cached != null && ReferenceEquals(json, cachedJson) && Array.TrueForAll(cached.pages, p => p != null)) return cached;
             var table = JsonUtility.FromJson<Table>(json.text);
             var pages = new Texture2D[table.pages.Length];
             for (int i = 0; i < pages.Length; i++)
@@ -51,7 +63,8 @@ namespace Sinnoh.Client
                 pages[i] = GenAssets.Load<Texture2D>(Dir + table.pages[i].file);
                 if (pages[i] == null) return null;
             }
-            return new MonArt(table, pages);
+            cachedJson = json;
+            return cached = new MonArt(table, pages);
         }
 
         /// <summary>포켓몬 표의 키 → 도트 표의 키: 갤럭시단 카드는 같은 종의 그림을 쓴다(「436:0@male_grunt」 → 「436:0」).</summary>

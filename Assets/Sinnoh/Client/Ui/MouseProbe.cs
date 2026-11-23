@@ -2205,7 +2205,7 @@ namespace Sinnoh.Client
                 yield return Frames(3);
             }
             var party = stage.Current as PartyScreen;
-            bool open = party != null && party.Mine && Laid(Q("board-party-pool-1")) && Laid(Q("board-party-slot-0-1")) && Laid(Q("board-party-title"));
+            bool open = party != null && party.Mine && Laid(Q("board-party-pool-1")) && Laid(Q("board-party-mon-0")) && Laid(Q("board-party-title"));   // 빈 기술 칸은 끄는 동안에만 홈으로 선다(결정 206 ③)
             if (!Check("정비 끌어 놓기", open, "쥐여 준 판에서 정비 판(기술 카드 풀)이 열리지 않았다")) { Step("party-drag", "ok", false, "at", at, "open", open); yield break; }
             var client = flow.Client;
             int starter = client.View.Seats[client.Seat].Party[0], commands = flow.Session.CommandCount;
@@ -2214,7 +2214,7 @@ namespace Sinnoh.Client
             // ① 끌다 빛나지 않는 곳(판의 제목 줄)에서 뗀다 → 제자리
             yield return Drag(Px(Q("board-party-pool-1")), Px(Q("board-party-title")), 6);
             yield return Frames(2);
-            bool dragging = party.Dragging && party.Held == PartyScreen.Hold.Move && ghost != null && ghost.resolvedStyle.display == DisplayStyle.Flex && Laid(ghost.Q(className: "sn-enc-move"));   // 결정 73 ④: 기술 카드 그림이 따라온다
+            bool dragging = party.Dragging && party.Held == PartyScreen.Hold.Move && ghost != null && ghost.resolvedStyle.display == DisplayStyle.Flex && (Laid(ghost.Q(className: "sn-pcard-ghost")) || Laid(ghost.Q(className: "sn-enc-move")));   // 결정 73 ④ · 206 ③: 기술 띠 그림(웹 손님판은 기술 줄)이 따라온다
             bool lit = Q("board-party-slot-0-1") != null && Q("board-party-slot-0-1").ClassListContains("sn-party-ok");
             yield return Snap("24-party-drag");
             Queue(at, false);
@@ -2222,9 +2222,19 @@ namespace Sinnoh.Client
             bool back = !party.Dragging && party.Held == PartyScreen.Hold.None && flow.Session.CommandCount == commands && client.View.Pokemon[starter].Moves[0] < 0
                 && ghost != null && ghost.resolvedStyle.display == DisplayStyle.None;
 
-            // ② 다시 끌어 빛나는 기술 칸에서 뗀다 → 가르치기
-            yield return Drag(Px(Q("board-party-pool-1")), Px(Q("board-party-slot-0-1")), 6);
+            // ② 다시 끌어(끌기가 시작되면 빈 칸에 홈이 선다 — 결정 206 ③) 빛나는 홈에서 뗀다 → 가르치기
+            yield return Drag(Px(Q("board-party-pool-1")), Px(Q("board-party-title")), 6);
             yield return Frames(2);
+            var hole = Q("board-party-slot-0-1");
+            if (Laid(hole))
+            {
+                Vector2 from = at, to = Px(hole);
+                for (int step = 1; step <= 6; step++)
+                {
+                    Queue(Vector2.Lerp(from, to, step / 6f), true);
+                    yield return Frames(2);
+                }
+            }
             bool over = party.Dragging;
             yield return Snap("25-party-drag-over");
             Queue(at, false);

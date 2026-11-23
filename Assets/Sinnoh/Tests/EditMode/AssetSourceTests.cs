@@ -32,7 +32,9 @@ namespace Sinnoh.Tests.EditMode
             ("https://raw.githubusercontent.com/PokeAPI/sprites/1b3b7c0a538dd2226ae08d0d2f8955125075bbd4/sprites/pokemon/versions/generation-v/black-white/", 1344,
                 "PokeAPI BW: 종 322 정지 앞·뒤 + 애니 앞 314·뒤 308, 폼 20 정지 앞·뒤 + 애니 19·19"),
             ("https://play.pokemonshowdown.com/sprites/trainers/", 18, "쇼다운 트레이너: 원작 자산에 없는 직업 14 + 화풍 다름 4(색 바꿈 바탕 2는 14 안)"),
-            ("https://raw.githubusercontent.com/Levatius/pokemon-legends/c0b717c515751d3237ac0d68ed24e5ccbad991c8/assets/", 184, "원작 GitHub 카드 부품 25 + 마을 카드 1 + 운명 카드·카드 아이콘·토큰·주사위 151(결정 43 ⑪) + 사당 카드 시트 2 · 막 카드 뒷면 시트 1(결정 80 L12·L1 나) + 왜곡 균열 카드 시트 1(M6 그림 에셋) + 울트라 온슬롯 카드 시트 1(결정 87 V24 나) + 여행 스탬프 시트 · 도장 2(M9 다듬기 P12)"),
+            ("https://raw.githubusercontent.com/Levatius/pokemon-legends/c0b717c515751d3237ac0d68ed24e5ccbad991c8/assets/", 184 + 404, "원작 GitHub 카드 부품 25 + 마을 카드 1 + 운명 카드·카드 아이콘·토큰·주사위 151(결정 43 ⑪) + 사당 카드 시트 2 · 막 카드 뒷면 시트 1(결정 80 L12·L1 나) + 왜곡 균열 카드 시트 1(M6 그림 에셋) + 울트라 온슬롯 카드 시트 1(결정 87 V24 나) + 여행 스탬프 시트 · 도장 2(M9 다듬기 P12) + 포켓몬 카드 굽기 card-gen: 생성기 부품 38 · 카드 뒷면 1 · 아레나 전술 판 1 · 글꼴 2 · 공식 그림 362(결정 206)"),
+            ("https://raw.githubusercontent.com/orioncactus/pretendard/5c41199ea0024a9e0b2cb31735265056e5472d76/packages/pretendard/dist/", 2, "Pretendard SemiBold + OFL — 포켓몬 카드 한글(결정 206)"),
+            ("https://raw.githubusercontent.com/google/fonts/8acd41abf23f6795163d97ffef8406d2449c63da/ofl/barlow/", 1, "Barlow OFL 전문 — 원작 카드 생성기 글꼴의 라이선스(결정 206 크레딧)"),
             ("https://raw.githubusercontent.com/quiple/galmuri/71e1cacf1437a11220307120e63e30bc275312d4/dist/", 3, "Galmuri11 TTF·BDF + OFL"),
             ("https://steamusercontent-a.akamaihd.net/ugc/", 141, "TTS: 피규어 번들 37 + 헥스 디퓨즈 5·토큰 그림 68 + 원작 mp3 31"),
             ("https://raw.githubusercontent.com/PokeAPI/pokeapi/6ea97b5641faa12e090866e8144ae8f57764fc64/data/v2/csv/", 1, "PokeAPI move_names.csv: 현행 공식 한국어 기술명(결정 43 ⑩·44 ②, 원작 자산 이름은 대조용)"),
@@ -65,7 +67,7 @@ namespace Sinnoh.Tests.EditMode
                 Assert.IsTrue(Origins.Any(o => u.StartsWith(o.Prefix, StringComparison.Ordinal)), $"설계에 없는 원천: {u}");
             foreach (var o in Origins)
                 Assert.AreEqual(o.Files, urls.Count(u => u.StartsWith(o.Prefix, StringComparison.Ordinal)), o.What);
-            Assert.AreEqual(1691 + 322 + 3, urls.Count, "fetch.mjs --list all 합계(+ 울음 322 — M9 소리 ③ · + 폼 울음 3 — 결정 143 ④)");
+            Assert.AreEqual(1691 + 322 + 3 + 407, urls.Count, "fetch.mjs --list all 합계(+ 울음 322 — M9 소리 ③ · + 폼 울음 3 — 결정 143 ④ · + 카드 굽기 406 · Barlow OFL 1 — 결정 206)");
         }
 
         [Test]
@@ -194,7 +196,7 @@ namespace Sinnoh.Tests.EditMode
                     }
                 }
             }
-            Assert.AreEqual(32, entries, "손 표 항목(원작 9 · 원작 자산 6 · 공개 6 · 도구 11 — 한국어판은 결정 172로 뺌)");
+            Assert.AreEqual(35, entries, "손 표 항목(원작 9 · 원작 자산 6 · 공개 6 · 도구 14 — 한국어판은 결정 172로 뺌 · 카드 글꼴 셋은 결정 206)");
             Assert.Greater(urls, 40);
         }
 

@@ -431,6 +431,8 @@ namespace Sinnoh.Editor
                 if (!flow.OpenParty() || !(flow.Top is PartyScreen party) || !party.BeginDrag(PartyScreen.Hold.Move, 0)) throw new InvalidOperationException("배틀 화면 위 정비 판에서 끌지 못했다");
                 s.Panel.Tick(3);
                 party.DragTo(s.Made.Stage.Root.Q("board-party-slot-0-1").worldBound.center);
+                s.Panel.Tick(3);
+                StacksFit(flow);   // 결정 206 ③: 낮은 판(독 위)에서도 홈 둘을 끼운 쌓기가 단추 줄 위
             }),
             Screen("battle-captured", s => Trail(s, SoloTrail.Catch, f => Battle(f, b => b.ShowsResult && !b.AskingReward && f.Battle.Result == Sinnoh.Rules.BattleResult.Captured), false)),   // 잡은 뒤의 결과 창
             Screen("battle-sendin", s => Trail(s, SoloTrail.Catch, f => Battle(f, b => b.Open && b.Bench.Count > 0 && !b.CanStay))),   // 파티 둘: 출전 포켓몬 고르기
@@ -473,12 +475,14 @@ namespace Sinnoh.Editor
                 s.Panel.Tick(3);
                 s.Made.Stage.Tips.Show(s.Made.Stage.Root.Q("board-party-slot-0-1"));
             }),
-            Screen("legend-slot-mon", s =>                                       // 카드 확대(MonScreen): 칸 1 · 2 = 전설 특수기술 + 효과 · 채우면 사라진다 줄
+            Screen("legend-slot-mon", s =>                                       // 카드 확대(MonScreen — 결정 206 ①): 오른쪽 기둥 첫 띠 = 전설 전술 판(알파 스트라이크 + 배울 수 있는 타입 그림 · 비스트 부스트)
             {
                 LegendMaint(s);
                 var flow = s.Made;
                 if (!flow.OpenMon(flow.Client.View.Seats[flow.Client.Seat].Party[0], flow.Client.Seat)) throw new InvalidOperationException("카드 확대가 열리지 않았다");
-                if (flow.Stage.Root.Q("mon-detail-move-1")?.Q(className: MonParts.LegendSlotClass) == null) throw new InvalidOperationException("카드 확대 칸 1이 전설 특수기술이 아니다");
+                s.Panel.Tick(3);
+                var col = flow.Stage.Root.Q("mon-detail-panel")?.Q("card-col");
+                if (col?.Q("card-strip-1") == null || col.Q("card-alpha-type-1") == null) throw new InvalidOperationException("카드 확대의 첫 띠가 전설 전술 판(알파 스트라이크 타입 그림)이 아니다");
             }),
             Screen("board-party-drag", s =>                                      // 끌어 놓는 중(결정 70 ⑪): 기술 카드를 끌어 빛나는 칸 위 — 카드 그림이 포인터를 따라온다(결정 73 ④)
             {
@@ -1433,14 +1437,27 @@ namespace Sinnoh.Editor
             {
                 if (party[i] < 0) continue;
                 var pk = view.Pokemon[party[i]];
-                var row = root.Q("board-party-status-" + i);
-                if ((row != null) != (pk.Status != Sinnoh.Rules.StatusEffect.None)) throw new InvalidOperationException("정비 판 칸 " + i + " 상태 줄 " + (row != null ? "있음" : "없음") + " · 상태 " + pk.Status);
-                if (row == null) continue;
-                total += StatusIconsCheck(flow, row, root.Q("board-party-mon-" + i), pk, "정비 판 칸 " + i);
+                total += PartyDice(root, i, pk, "정비 판 칸 " + i);
             }
             if (total < 2) throw new InvalidOperationException("정비 판 상태 아이콘 " + total + " < 2");
             if (!(flow.Front is PartyScreen)) throw new InvalidOperationException("맨 앞 창이 정비 판이 아니다");
             if (seat >= 0) OwnerCheck(flow, root.Q(FaceBox.OwnerName), seat, flow.Front.Name);
+        }
+
+        // 정비 판 카드(결정 206 ③)의 상태 주사위 board-party-status-<칸>-<상태>: 걸린 상태마다 하나 · 주사위 그림 · 그 카드 안
+        static int PartyDice(VisualElement root, int i, Sinnoh.Rules.PokemonState pk, string what)
+        {
+            var want = new List<Sinnoh.Rules.StatusEffect>();
+            Sinnoh.Rules.StatusRules.Statuses(pk, want);
+            var mon = root.Q("board-party-mon-" + i);
+            foreach (var st in want)
+            {
+                var die = root.Q("board-party-status-" + i + "-" + st.ToString().ToLowerInvariant());
+                if (die == null) throw new InvalidOperationException(what + ": " + st + " 주사위가 없다");
+                if (die.resolvedStyle.backgroundImage.texture == null) throw new InvalidOperationException(what + ": " + st + " 주사위 그림이 없다");
+                if (mon == null || !mon.worldBound.Contains(die.worldBound.center)) throw new InvalidOperationException(what + ": " + st + " 주사위가 카드 밖이다");
+            }
+            return want.Count;
         }
 
         // 정비 판의 가장 긴 열: 전설 셋(전설 특수기술 있음 · 기술 없음 = 빈 칸 둘이 전설 특수기술 ·배우는 타입 넷 · 독 + 화상 · 유물 + 둘째 지닌물건(backpacker R) · [폼체인지]) + 찌르꼬(애크러뱃).
@@ -1472,7 +1489,7 @@ namespace Sinnoh.Editor
             var root = flow.Stage.Root;
             for (int i = 0; i < 3; i++)
             {
-                if (root.Q("board-party-status-" + i)?.Query(className: "sn-status-icon").ToList().Count != 2) throw new InvalidOperationException("칸 " + i + ": 상태 아이콘 둘이 아니다");
+                if (PartyDice(root, i, flow.Client.View.Pokemon[flow.Client.View.Seats[flow.Client.Seat].Party[i]], "칸 " + i) != 2) throw new InvalidOperationException("칸 " + i + ": 상태 주사위 둘이 아니다");
                 if (root.Q("board-party-form-" + i) == null) throw new InvalidOperationException("칸 " + i + ": [폼체인지]가 없다");
                 if (root.Q("board-party-item2-" + i) == null) throw new InvalidOperationException("칸 " + i + ": 둘째 지닌물건 칸이 없다");
                 for (int k = 1; k <= 2; k++)
@@ -2424,7 +2441,7 @@ namespace Sinnoh.Editor
             foreach (var (slot, key) in new[] { ("board-party-slot-0-1", "screen.battle.move.alpha_strike"), ("board-party-slot-0-2", "screen.passive.beast_boost") })
             {
                 var row = flow.Stage.Root.Q(slot);
-                if (row == null || !row.ClassListContains(MonParts.LegendSlotClass) || !row.Query<Label>().ToList().Exists(l => l.text == flow.Stage.T(key)))
+                if (row == null || !row.ClassListContains(MonParts.LegendSlotClass) || (row.userData as string) != flow.Stage.T(key))   // 결정 206 ③: 카드의 전술 판 상자(이름 = 그 자리의 툴팁 머리)
                     throw new InvalidOperationException(slot + "이 전설 특수기술 줄(" + flow.Stage.T(key) + ")이 아니다");
             }
             return (PartyScreen)flow.Stage.Current;
@@ -3445,7 +3462,10 @@ namespace Sinnoh.Editor
             for (int y = want.y; y < want.yMax && y < shot.Height; y += 3)
                 for (int x = want.x; x < want.xMax && x < shot.Width; x += 3)
                     colors.Add(px[(shot.Height - 1 - y) * shot.Width + x]);
-            if (colors.Count < 16) fails.Add($"{at} DS 화면이 비었다(색 {colors.Count} — 셰이더·Gen 무대 그림)");
+            // 배틀 위에 연 정비 판이 DS를 다 덮으면 볼 것이 없다(결정 206 ③ — 판의 빈 칸 · 잠긴 칸이 DS 자리에 와 색이 적다)
+            var cover = shot.Panel.Root.Q("board-party-panel");
+            bool covered = cover != null && cover.worldBound.Contains(wb.min) && cover.worldBound.Contains(wb.max - Vector2.one);
+            if (colors.Count < 16 && !covered) fails.Add($"{at} DS 화면이 비었다(색 {colors.Count} — 셰이더·Gen 무대 그림)");
             // 글자 자리(배틀 화면 장면 모두): DS 층의 글(체력 상자 이름 · 메시지)은 DsFont 폭으로, 독·기둥의 글은 WorkUi.Overflows로 — 잘리거나 넘치거나 겹치면 실패
             var battle = shot.Made != null ? shot.Made.Stage.Current as BattleScreen : null;
             if (battle != null)
@@ -3477,18 +3497,15 @@ namespace Sinnoh.Editor
                         if (at2 > 0 && turnBox[at2 - 1].worldBound.yMax > line.worldBound.yMin + 0.5f) fails.Add($"{at} [운명의 변화] 줄이 위 줄({turnBox[at2 - 1].name})과 겹친다");
                     }
                 }
-                // 결정 169: 포켓몬 칸의 마우스 오버 카드는 화면 안 · 독과 DS를 가리지 않는다
+                // 결정 169 · 206 ①: 포켓몬 칸의 마우스 오버 카드는 화면 안 · 독을 가리지 않는다(목업 B — 기록 기둥 아래 끝에 바닥을 맞추고 DS 쪽은 덮는다)
                 var monTip = battle.MonTipElement;
                 if (battle.MonTipShown >= 0 && monTip != null && monTip.panel != null)
                 {
                     var mt = monTip.worldBound;
                     var screenBox = shot.Panel.Root.worldBound;
                     if (mt.xMin < screenBox.xMin - 0.5f || mt.yMin < screenBox.yMin - 0.5f || mt.xMax > screenBox.xMax + 0.5f || mt.yMax > screenBox.yMax + 0.5f) fails.Add($"{at} 포켓몬 카드가 화면 밖으로 나간다({mt})");
-                    foreach (string other in new[] { "battle-dock", "battle-ds-frame" })
-                    {
-                        var o = shot.Panel.Root.Q(other);
-                        if (o != null && o.worldBound.Overlaps(mt)) fails.Add($"{at} 포켓몬 카드가 {other}을 가린다(카드 {mt} · {o.worldBound})");
-                    }
+                    var dockBox = shot.Panel.Root.Q("battle-dock");
+                    if (dockBox != null && dockBox.worldBound.Overlaps(mt)) fails.Add($"{at} 포켓몬 카드가 battle-dock을 가린다(카드 {mt} · {dockBox.worldBound})");
                     foreach (string bad in WorkUi.Overflows(monTip)) fails.Add($"{at} 글자 넘침(mon-tip): {bad}");
                 }
                 // 독의 포켓몬 고르기 줄(내보내기·교체): 칸이 줄 밖으로 넘치면 말없이 잘려 누를 수 없다(M5 마감 검토 — 파티 6)

@@ -183,8 +183,9 @@ namespace Sinnoh.Editor
             var flow = CardParty(s, "backpacker", 5);
             s.Panel.Tick(3);
             var root = flow.Stage.Root;
-            var empty = root.Q(className: "sn-party-slot-empty");   // 빈 기술 칸(가방의 지닌물건을 집은 채여도 기술 칸의 툴팁은 그대로)
-            if (empty == null) throw new InvalidOperationException("빈 기술 칸이 없다");
+            // 결정 206 ③: 빈 기술 칸은 그리지 않으니 빈 둘째 지닌물건 자리(카드의 동그라미)의 툴팁 — 「둘째 지닌물건 칸」
+            var empty = root.Q("board-party-item2-0");
+            if (empty == null) throw new InvalidOperationException("빈 둘째 지닌물건 자리가 없다");
             flow.Stage.Tips.Show(empty);
         }
 

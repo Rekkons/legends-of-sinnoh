@@ -1303,13 +1303,6 @@
     justify-content: space-between;
     margin-bottom: 6px;
 }
-.sn-battle-block {
-    padding: 6px;
-    margin-bottom: 6px;
-    border-width: 1px;
-    border-color: var(--sn-line);
-    background-color: var(--sn-fill);
-}
 .sn-battle-line {
     flex-direction: row;
     align-items: center;
@@ -1322,22 +1315,9 @@
 .sn-battle-fate {
     align-self: flex-start;
 }
-.sn-battle-mon {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 4px;
-}
 .sn-battle-mon-info {
     margin-left: 6px;
     flex-shrink: 1;
-}
-.sn-battle-mon .sn-mon-full {
-    width: 96px;
-    height: 96px;
-}
-.sn-battle-mon .sn-mon-full .sn-mon-canvas {
-    left: 0;
-    top: 0;
 }
 .kit-root .sn-battle-mon-info > .sn-battle-line > *, .kit-root .sn-battle-extra > * {
     margin-right: 9px;
@@ -1349,15 +1329,6 @@
     width: 32px;
     height: 16px;
     flex-shrink: 0;
-}
-.sn-battle-foe-move {
-    flex-direction: row;
-    align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 2px;
-}
-.kit-root .sn-battle-foe-move > * {
-    margin-right: 3px;
 }
 .sn-battle-alpha-types {
     flex-direction: row;
@@ -1374,9 +1345,6 @@
     height: 16px;
     flex-shrink: 0;
     margin-left: 4px;
-}
-.sn-battle-who {
-    min-height: 16px;
 }
 .sn-battle-lines {
     flex-grow: 1;
@@ -5126,19 +5094,6 @@
 .sn-battle-extra {
     margin-top: 2px;
 }
-.sn-battle-swarm {
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-.sn-battle-swarm-slot {
-    flex-direction: row;
-    align-items: center;
-    margin-right: 6px;
-    margin-bottom: 3px;
-}
-.kit-root .sn-battle-swarm-slot > * {
-    margin-right: 3px;
-}
 .sn-battle-swarm-dot {
     width: 8px;
     height: 8px;
@@ -5149,14 +5104,6 @@
 }
 .sn-battle-swarm-dot-on {
     background-color: var(--sn-turn);
-}
-.sn-battle-roster-done {
-    opacity: 0.45;
-}
-.kit-root .sn-battle-roster .sn-type-icon {
-    width: 32px;
-    height: 16px;
-    margin-right: 2px;
 }
 .sn-battle-orb {
     position: absolute;
@@ -6270,12 +6217,6 @@
 .kit-root.sn-lang-en .sn-party-poolcard .kit-muted {
     display: none;
 }
-.kit-root.sn-lang-en .sn-battle-swarm-info .sn-battle-line {
-    margin-bottom: 4px;
-}
-.kit-root.sn-lang-en .sn-battle-swarm-info .sn-battle-swarm-slot {
-    margin-bottom: 3px;
-}
 .kit-root.sn-lang-en .sn-hud-actions-card > * {
     margin-right: 2px;
 }
@@ -6316,9 +6257,6 @@
 }
 .kit-root.sn-lang-en .sn-hud-actions-card > .sn-hud-actions-title {
     display: none;
-}
-.kit-root #battle-foe-moves > .kit-muted {
-    display: flex;
 }
 .sn-field {
     width: 200px;
@@ -7376,4 +7314,483 @@
 .kit-root .sn-credits-tab-name {
     flex-shrink: 1;
     margin-right: 6px;
+}
+.kit-root {
+    --sn-card-rim-c: #210d05;
+    --sn-card-line-c: #290f08;
+    --sn-card-soft-c: rgba(26, 10, 5, 0.7);
+    --sn-card-ink: #252532;
+    --sn-card-die-edge: #f49a9a;
+    --sn-card-tag-up: #2f9e5a;
+    --sn-card-tag-down: #d83848;
+    --sn-card-tag-edge: #faf5f0;
+}
+.sn-card-stack {
+    --sn-card-rim: var(--sn-card-rim-c);
+    --sn-card-line: var(--sn-card-line-c);
+    --sn-card-soft: var(--sn-card-soft-c);
+    flex-shrink: 0;
+}
+.sn-card-out {
+    filter: grayscale(100%);
+    opacity: 0.85;
+}
+.sn-card-num {
+    -unity-background-image-tint-color: var(--sn-card-ink);
+}
+.sn-card-num-max {
+    opacity: 0.75;
+}
+.sn-card-tag {
+    background-color: var(--sn-card-tag-up);
+    border-color: var(--sn-card-tag-edge);
+    justify-content: center;
+    align-items: center;
+}
+.sn-card-tag-down {
+    background-color: var(--sn-card-tag-down);
+}
+.sn-card-statpad {
+    background-color: var(--sn-card-note-bg);
+}
+.sn-card-die {
+    background-color: var(--sn-card-ink);
+    border-color: var(--sn-card-die-edge);
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.sn-card-dot {
+    width: 340px;
+}
+.sn-card-dotslim .sn-mon-tip-head {
+    flex-direction: column;
+    align-items: center;
+}
+.sn-card-dotslim .sn-mon-tip-info {
+    margin-left: 0;
+    align-self: stretch;
+}
+.sn-card-dotslim > .sn-mon-move, .sn-card-dotslim > .kit-muted {
+    display: none;
+}
+.kit-root {
+    --sn-card-tip-w: 288;
+    --sn-card-wild-w: 288;
+    --sn-card-zoom-w: 352;
+    --sn-card-note-bg: #faf5f0;
+    --sn-card-note-edge: #9a4b33;
+}
+.sn-card-tip {
+    position: absolute;
+    align-items: center;
+}
+.kit-root .sn-card-tip-rate {
+    margin-top: 3px;
+}
+.sn-card-note {
+    background-color: var(--sn-card-note-bg);
+    border-color: var(--sn-card-note-edge);
+    flex-shrink: 0;
+}
+.sn-card-note-head {
+    flex-direction: row;
+    align-items: center;
+}
+.kit-root .sn-card-note-ink {
+    color: var(--sn-card-ink);
+}
+.sn-card-facts {
+    margin-top: 4px;
+    padding: 3px 6px;
+    background-color: var(--sn-card-note-bg);
+    border-width: 2px;
+    border-radius: 4px;
+    border-color: var(--sn-card-note-edge);
+    flex-shrink: 0;
+}
+.kit-root .kit-btn.sn-card-close {
+    margin: 0;
+}
+.sn-mon-zoom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50px;
+    bottom: 126px;
+    align-items: center;
+    justify-content: center;
+}
+.sn-card-zoomhead {
+    flex-direction: row;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-bottom: 4px;
+}
+.sn-card-evolve {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.kit-root .sn-card-evolve > * {
+    margin-right: 4px;
+    margin-bottom: 2px;
+}
+.kit-root {
+    --sn-battle-sidename: #3868a8;
+}
+.sn-battle-entries {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+.kit-root .sn-battle-entries > * {
+    margin-left: 4px;
+}
+.sn-battle-entry-on {
+    border-width: 2px;
+    border-color: var(--sn-pick-strong);
+}
+.sn-battle-cols {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+.sn-battle-infoside {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    align-items: center;
+}
+.sn-battle-infoside-foe {
+    margin-left: 6px;
+}
+.sn-battle-sidehead {
+    justify-content: center;
+    flex-wrap: nowrap;
+    margin-bottom: 2px;
+    align-self: stretch;
+}
+.sn-battle-headside {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 1;
+    min-width: 0;
+}
+.kit-root .sn-battle-headside > .sn-battle-headface {
+    margin-right: 4px;
+}
+.kit-root .sn-battle-headside > .sn-battle-headface-end {
+    margin-left: 4px;
+    margin-right: 0;
+}
+.sn-battle-headface .sn-face-art {
+    width: 30px;
+    height: 30px;
+}
+.kit-root .sn-battle-sidehead > * {
+    margin-right: 4px;
+}
+.kit-root .sn-battle-sidename {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    white-space: normal;
+    height: auto;
+    -unity-text-align: middle-center;
+    color: var(--sn-battle-sidename);
+}
+.sn-battle-cards {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-height: 0;
+    align-self: stretch;
+    align-items: center;
+    overflow: hidden;
+}
+.sn-battle-card {
+    flex-shrink: 0;
+}
+.sn-battle-swarmcards {
+    flex-shrink: 0;
+}
+.sn-battle-swarmcard {
+    position: absolute;
+}
+.sn-battle-infoside > .sn-battle-extra {
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+    align-self: stretch;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+.sn-battle-swarmdots {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+}
+.kit-root .sn-battle-swarmdots > * {
+    margin-right: 3px;
+}
+.sn-battle-cardtip {
+    position: absolute;
+    width: 320px;
+    margin-left: 8px;
+    padding: 7px;
+}
+.sn-battle-tiprow {
+    margin-top: 4px;
+}
+.sn-battle-tiphead {
+    flex-direction: row;
+    align-items: center;
+    padding: 2px 4px;
+    border-width: 1px;
+    border-color: var(--sn-line);
+    background-color: var(--sn-fill);
+}
+.kit-root .sn-battle-tiphead > * {
+    margin-right: 4px;
+}
+.kit-root .sn-battle-tiphead > .sn-icon {
+    width: 16px;
+    height: 16px;
+}
+.sn-battle-tipgap {
+    flex-grow: 1;
+}
+.kit-root .sn-battle-tiptext {
+    margin-top: 2px;
+}
+.sn-battle-entry {
+    position: absolute;
+    margin-left: 8px;
+    padding: 7px;
+}
+.sn-battle-entry-head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+}
+.sn-battle-entry-cards {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+.sn-battle-entry-col {
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    margin-right: 4px;
+    padding: 2px;
+    border-width: 2px;
+    border-radius: 6px;
+    border-color: var(--sn-clear);
+}
+.sn-battle-entry-col.sn-battle-entry-now {
+    border-color: var(--sn-pick-strong);
+}
+.kit-root .sn-battle-entry-tag {
+    margin-top: 2px;
+}
+.sn-battle-entry-fit > .sn-battle-entry-cards {
+    flex-grow: 0;
+    flex-basis: auto;
+}
+.sn-battle-entry-fit .sn-battle-entry-col {
+    justify-content: flex-start;
+}
+.kit-root {
+    --sn-card-hole: #b0954a;
+    --sn-pcard-hover: rgba(255, 240, 176, 0.3);
+}
+.kit-root .sn-pcard-panel {
+    padding-bottom: 5px;
+}
+.sn-pcard-panel > .sn-party-head {
+    margin-bottom: 2px;
+}
+.sn-card-holelook {
+    background-color: var(--sn-card-hole);
+    border-color: var(--sn-pick-strong);
+}
+.sn-pcard-body {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+.sn-pcard-cols {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+.sn-pcard-col {
+    flex-shrink: 0;
+    margin-right: 4px;
+    justify-content: space-between;
+}
+.sn-pcard-top {
+    flex-shrink: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+.sn-pcard-off {
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
+    border-color: var(--sn-line);
+    background-color: var(--sn-clear);
+}
+.sn-pcard-mon {
+    flex-shrink: 0;
+}
+.sn-pcard-mon.sn-party-ok, .sn-pcard-mon.sn-party-picked {
+    border-width: 0;
+    margin: 0;
+    background-color: var(--sn-clear);
+}
+.sn-pcard-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-width: 3px;
+    border-color: var(--sn-pick-strong);
+    border-radius: 8px;
+}
+.sn-party-picked > .sn-pcard-ring {
+    border-color: var(--sn-turn);
+}
+.sn-pcard-did {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-width: 3px;
+    border-radius: 8px;
+}
+.sn-pcard-hit {
+    border-radius: 6px;
+}
+.sn-pcard-hit.sn-party-ok {
+    border-width: 2px;
+    border-color: var(--sn-pick-strong);
+    background-color: var(--sn-clear);
+}
+.sn-pcard-hit.sn-party-picked {
+    border-width: 3px;
+    border-color: var(--sn-turn);
+    background-color: var(--sn-clear);
+}
+.sn-pcard-hit.sn-party-press:hover, .sn-pcard-hit.sn-party-ok:hover {
+    background-color: var(--sn-pcard-hover);
+}
+.sn-pcard-hit.sn-party-no {
+    opacity: 1;
+}
+.sn-pcard-item {
+    position: absolute;
+    border-radius: 50%;
+}
+.sn-pcard-item.sn-party-ok {
+    border-width: 3px;
+    border-color: var(--sn-pick-strong);
+    background-color: var(--sn-pcard-hover);
+}
+.sn-pcard-item.sn-party-picked {
+    border-width: 3px;
+    border-color: var(--sn-turn);
+    background-color: var(--sn-pcard-hover);
+}
+.sn-pcard-item.sn-party-press:hover {
+    background-color: var(--sn-pcard-hover);
+}
+.sn-pcard-foot {
+    flex-shrink: 0;
+    margin-top: 0;
+}
+.kit-root .sn-pcard-foot > * {
+    margin-right: 4px;
+}
+.kit-root .sn-pcard-foot > .kit-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.kit-root .sn-pcard-foot-tight > * {
+    margin-right: 3px;
+}
+.kit-root .sn-pcard-foot-tight > .kit-btn {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.kit-root .sn-pcard-formicon .sn-card-pick-icon {
+    margin-right: 0;
+}
+.sn-pcard-dot-hole {
+    align-self: stretch;
+    height: 28px;
+    border-width: 2px;
+    border-color: var(--sn-pick-strong);
+    background-color: var(--sn-card-hole);
+}
+.sn-pcard-ghost {
+    overflow: hidden;
+    opacity: 0.8;
+}
+.sn-pcard-side {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+}
+.sn-pcard-side > .sn-party-box {
+    margin-right: 0;
+    margin-bottom: 4px;
+    flex-basis: 0;
+}
+.sn-pcard-side > .sn-party-abil {
+    flex-wrap: wrap;
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+.sn-pcard-side > .sn-party-ask {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 0;
+    margin-bottom: 4px;
+    padding-top: 0;
+    padding-bottom: 4px;
+    border-top-width: 0;
+    border-bottom-width: 1px;
+}
+.kit-root .sn-pcard-side .sn-party-ask-text {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+}
+.sn-pcard-ask-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+.kit-root .sn-pcard-ask-row > * {
+    margin-left: 6px;
+    margin-top: 2px;
+}
+.sn-pcard-side .sn-party-pool {
+    flex-direction: column;
+}
+.kit-root .sn-pcard-side .sn-party-poolcard {
+    width: auto;
+    margin-right: 0;
+    margin-bottom: 4px;
+    align-self: stretch;
 }

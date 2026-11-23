@@ -4828,6 +4828,7 @@ namespace Sinnoh.Client
                 case ActScreen _: CloseAct(); break;
                 case TypeChartScreen _: CloseTypes(); break;
                 case DiscardScreen _: CloseDiscards(); break;
+                case BattleScreen battle when battle.CloseEntry(): return true;   // 기둥의 엔트리 판(결정 206 ②) = [닫기]
                 case BattleScreen battle when !Tutorial.Running && battle.CloseRow(): return true;   // 독의 가방 줄 등 = [뒤로](P23 — 배틀 화면은 그대로)
                 case BattleScreen _ when WatchingWild: CloseWildWatch(); break;   // 열어 본 남의 야생 배틀(결정 114) = [보드로]
                 default: return false;

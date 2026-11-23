@@ -132,7 +132,7 @@
     "tutorial.e02.S009.hint": {"ko":"별의 방패의 [제작]을 누르거라.","en":"Press [Craft] on the Star Shield."},
     "tutorial.e02.S010": {"ko":"만든 지닌물건은 가방에 들어간다. 제작 창을 닫고 [정비]를 눌러 파티를 열거라.","en":"Crafted held items go into your bag. Close the crafting window and press [Manage]."},
     "tutorial.e02.S010.hint": {"ko":"창을 닫고 [정비]를 눌러 보거라.","en":"Close the window and press [Manage]."},
-    "tutorial.e02.S011": {"ko":"가방의 별의 방패를 팽도리의 지닌물건 칸으로 끌어 지니게 하거라.","en":"Drag the Star Shield from your bag onto Piplup's held item slot."},
+    "tutorial.e02.S011": {"ko":"가방의 별의 방패를 팽도리 카드의 지닌물건 자리로 끌어 지니게 하거라.","en":"Drag the Star Shield from your bag onto the held item spot on Piplup's card."},
     "tutorial.e02.S011.hint": {"ko":"별의 방패를 팽도리 칸으로 옮기거라.","en":"Move the Star Shield onto Piplup."},
     "tutorial.e02.S012": {"ko":"잘했다! 지니게 하기는 정비라 배틀 밖이면 언제든 바꿀 수 있다. 효과는 툴팁을 보거라.","en":"Good! Giving items is part of managing, so change them anytime outside battle. See the tooltips."},
     "tutorial.e03.S001": {"ko":"흐음! 이번에는 은행상회와 공중날기를 알아보자.","en":"This time, let's learn about the Ginkgo Merchants and Fly."},

@@ -60,7 +60,7 @@ namespace Sinnoh.Tests.EditorAssets
                     if (isFont) font++; else pixel++;
                 }
 
-            // 일반 그림: Bilinear, Clamp, alphaIsTransparency 켬(투명 칸에 이웃 색 번지기 — 밉맵·쌍선형 가장자리가 검게 번지지 않게, 검토 반영 M4-1). 4의 배수면 PC BC7 / WebGL DXT1(불투명)·DXT5, 아니면 무압축. Board만 밉맵, 헥스 디퓨즈는 2의 거듭제곱·최대 1024
+            // 일반 그림: Bilinear, Clamp, alphaIsTransparency 켬(투명 칸에 이웃 색 번지기 — 밉맵·쌍선형 가장자리가 검게 번지지 않게, 검토 반영 M4-1). 4의 배수면 PC BC7 / WebGL DXT1(불투명)·DXT5, 아니면 무압축. Board · 포켓몬 카드 그림만 밉맵, 헥스 디퓨즈는 2의 거듭제곱·최대 1024
             foreach (var dir in new[] { "Cards", "Board" })
                 foreach (var p in Textures(dir))
                 {
@@ -69,7 +69,8 @@ namespace Sinnoh.Tests.EditorAssets
                     bool hex = p.StartsWith(Gen + "Board/hex_");
                     bool compress = hex || (w % 4 == 0 && h % 4 == 0);
                     int max = hex ? 1024 : 4096;
-                    if (ti.filterMode != FilterMode.Bilinear || ti.wrapMode != TextureWrapMode.Clamp || ti.mipmapEnabled != (dir == "Board") || ti.maxTextureSize != max
+                    bool mips = dir == "Board" || new[] { "Faces/", "Moves/", "Strips/", "Digits/" }.Any(d => p.StartsWith(Gen + "Cards/" + d));   // 포켓몬 카드 그림(결정 206 — 줄여 그린다)도 밉맵
+                    if (ti.filterMode != FilterMode.Bilinear || ti.wrapMode != TextureWrapMode.Clamp || ti.mipmapEnabled != mips || ti.maxTextureSize != max
                         || ti.npotScale != (hex ? TextureImporterNPOTScale.ToNearest : TextureImporterNPOTScale.None)
                         || ti.textureCompression != (compress ? TextureImporterCompression.Compressed : TextureImporterCompression.Uncompressed) || !ti.alphaIsTransparency)
                         bad.Add($"{p}: 일반 그림 설정 {ti.filterMode}/{ti.wrapMode}/밉맵 {ti.mipmapEnabled}/{ti.maxTextureSize}/{ti.npotScale}/{ti.textureCompression}/알파 투명 {ti.alphaIsTransparency}");
@@ -118,7 +119,7 @@ namespace Sinnoh.Tests.EditorAssets
             TestContext.WriteLine($"픽셀 {pixel}, 글꼴 아틀라스 {font}, 일반 {general}, 피규어 {figure}, BGM {bgm}, 효과음 {se}");
             Assert.AreEqual(3, font, "글꼴 아틀라스 pt_system·message·subscreen");
             Assert.AreEqual(334 + 277 + 128 + 9 + 2, pixel, "픽셀 그림 수(도트 334·무대 277(공중날기 컷인 띠 1(결정 167)·진화 화면 배경 1(P10)·영문 아이콘 25(결정 115)·볼 8·조무래기 앞모습 2·간부·태홍 앞모습 4(결정 80 L4 나)·pixelfx 이펙트 시트 42·저녁·밤 무대 그림 48·우선권 토큰 앞뒤 2 포함)·트레이너 128(주인공 앞모습 8 + 손님 인물 용식 1 포함 — 결정 96 Q5 나)·필드 9(용식 포함)·튜토리얼 마박사 2(M6.5))");
-            Assert.AreEqual(38 + 161 + 10 + 17 + 73 + 1 + 2, general, "일반 그림 수(+ 2 = 여행 스탬프 시트 · 도장(P12) · + 1 = 울트라 온슬롯 카드 그림 — 결정 87 V24 나 · 카드 38(트레이너 카드 세로 뒷면 부품 2 포함) + 결정 43 ⑪ 운명·아이콘·토큰·주사위 161 + 사당 카드 그림 9 · 종막 문양 1(결정 80 L12·L1 나) + 전용 아이템 아이콘 11 · 균열 카드 그림 6(M6 그림 에셋) + 보드 73)");
+            Assert.AreEqual(38 + 161 + 10 + 17 + 73 + 1 + 2 + 1304, general, "일반 그림 수(+ 1304 = 포켓몬 카드 앞면 780(390 × ko · en) · 기술 띠 472(236 × 2) · 균열 · 전술 판 띠 19 · 숫자 글자 33 — 결정 206 · + 2 = 여행 스탬프 시트 · 도장(P12) · + 1 = 울트라 온슬롯 카드 그림 — 결정 87 V24 나 · 카드 38(트레이너 카드 세로 뒷면 부품 2 포함) + 결정 43 ⑪ 운명·아이콘·토큰·주사위 161 + 사당 카드 그림 9 · 종막 문양 1(결정 80 L12·L1 나) + 전용 아이템 아이콘 11 · 균열 카드 그림 6(M6 그림 에셋) + 보드 73)");
             Assert.AreEqual(125, figure, "피규어 텍스처(03 §2-5: 번들 125장)");
             Assert.AreEqual(41, bgm, "곡 23의 클립 41(Pt 원곡 21곡 = 반복 19 + 앞부분 18 + 끝 곡 1 + 통째 되풀이 1(타이틀 SEQ_TITLE00 — 결정 130) · 원작 TTS 곡 2 = 통짜 반복 2 — M9 소리 ②, plan §5 #525 · #666) 들여오기 설정");
             Assert.AreEqual(Sinnoh.Fx.SoundKeys.All.Length, se, "임시 효과음(키마다 하나) 들여오기 설정");

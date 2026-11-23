@@ -22,8 +22,8 @@ namespace Sinnoh.Editor
             Battle("battle-calc-dealt", s => CalcAt(s, false)),                                               // 결정 171: 내가 준 피해 — 맞는 순간 뒤 상성 단계 중에 이미 데미지 · 왼쪽 · 붉은 이름표
             Battle("battle-calc-taken", s => CalcAt(s, true)),                                                // 받은 피해 — 오른쪽 · 내 좌석 색 이름표
             Battle("battle-forfeit-key", s => ForfeitKey(s)),                                                 // E 한 번: 기권하지 않고 차례 칸에 「E를 한 번 더 누르면 기권합니다.」
-            Battle("battle-alpha-foe-types", s => AlphaTypesAt(s, false)),                                    // 결정 182: 우두머리 상대의 기술 칩 줄 — 알파 스트라이크 옆 배울 수 있는 타입 그림
-            Battle("battle-alpha-foe-tip", s => AlphaTypesAt(s, true)),                                       // 상대 포켓몬 그림에 마우스 오버 = 그 카드(「배우는 타입」 줄)
+            Battle("battle-alpha-foe-types", s => AlphaTypesAt(s, false)),                                    // 결정 182: 우두머리 상대 카드의 알파 스트라이크 띠 — 배울 수 있는 타입 그림(결정 206 ②)
+            Battle("battle-alpha-foe-tip", s => AlphaTypesAt(s, true)),                                       // 상대 카드에 마우스 오버 = 카드 글 판(알파 스트라이크 옆 배우는 타입)
             Battle("battle-alpha-move-types", s => AlphaMoveTypes(s)),                                        // 내 기술 줄의 알파 스트라이크 행: 「타입 선택」 옆 고를 수 있는 타입 그림
         };
 
@@ -34,23 +34,29 @@ namespace Sinnoh.Editor
             var flow = s.Made;
             var screen = (BattleScreen)flow.Stage.Current;
             var root = flow.Stage.Root;
-            var box = root.Q("battle-foe-alpha-types") ?? throw new InvalidOperationException("상대 알파 스트라이크 옆에 타입 그림이 없다");
             var battle = flow.Client.View.Battle;
             var side = battle.Sides[battle.Sides[0].Owner == flow.Client.Seat ? 1 : 0];
             int foe = side.Active >= 0 ? side.Active : side.Roster[0];   // 첫 출전 전 미리 보기(T14)는 명단의 첫 포켓몬
             var want = new List<int>();
             LegendRules.AlphaTypes(flow.Ctx, flow.Client.View.Pokemon[foe], want);
-            int icons = box.Query(className: "sn-type-icon").ToList().Count;
+            // 결정 206 ②: 상대 카드의 전술 판 띠(알파 스트라이크)에 배울 수 있는 타입 그림 — 상대 기둥 안
+            var card = root.Q("battle-foe") ?? throw new InvalidOperationException("상대 카드가 없다");
+            int icons = 0;
+            while (card.Q("card-alpha-type-" + (icons + 1)) != null) icons++;
             if (icons != want.Count) throw new InvalidOperationException("타입 그림 수 " + icons + " ≠ 배울 수 있는 타입 " + want.Count);
             var pillar = root.Q("battle-info-foe").worldBound;
-            if (box.worldBound.xMax > pillar.xMax + 0.5f) throw new InvalidOperationException("타입 그림이 상대 기둥 밖이다(" + box.worldBound + " · " + pillar + ")");
+            var last = card.Q("card-alpha-type-" + icons).worldBound;
+            if (last.xMax > pillar.xMax + 0.5f || last.yMax > pillar.yMax + 0.5f) throw new InvalidOperationException("타입 그림이 상대 기둥 밖이다(" + last + " · " + pillar + ")");
             if (!hover) return;
-            if (!screen.HoverMon("battle-foe-art")) throw new InvalidOperationException("상대 그림에 카드가 걸려 있지 않다");
+            // 상대 카드에 마우스 오버 = 카드 글 판(기술 줄의 알파 스트라이크 옆 배우는 타입 그림)
+            if (!screen.HoverCard(false)) throw new InvalidOperationException("상대 카드에 글 판이 걸려 있지 않다");
             s.Panel.Tick(3);
-            var tip = screen.MonTipElement;
-            if (screen.MonTipShown < 0 || tip == null || tip.resolvedStyle.visibility != Visibility.Visible) throw new InvalidOperationException("상대 포켓몬 카드가 뜨지 않았다");
-            int learn = tip.Q("mon-tip-learn")?.Query(className: "sn-type-icon").ToList().Count ?? -1;
-            if (learn != flow.Ctx.Cards.Pokemon[flow.Client.View.Pokemon[foe].Def].LearnTypes.Count) throw new InvalidOperationException("카드의 배우는 타입 그림 수가 다르다: " + learn);
+            var tip = screen.CardTipElement;
+            if (screen.CardTipSide != 1 || tip == null || tip.resolvedStyle.display == DisplayStyle.None) throw new InvalidOperationException("상대 카드 글 판이 뜨지 않았다");
+            int learn = tip.Q("battle-foe-alpha-types")?.Query(className: "sn-type-icon").ToList().Count ?? -1;
+            if (learn != want.Count) throw new InvalidOperationException("글 판의 배우는 타입 그림 수가 다르다: " + learn + " ≠ " + want.Count);
+            var bad = WorkUi.Overflows(tip);
+            if (bad.Count > 0) throw new InvalidOperationException("글 판 글자 넘침 " + string.Join(" / ", bad));
         }
 
         // 결정 182: 전설 특수기술을 가진 디아루가의 차례 — 알파 스트라이크 행에 고를 수 있는 타입 그림, 행 폭 안
@@ -99,11 +105,22 @@ namespace Sinnoh.Editor
             s.Panel.Tick(3);
             var tip = screen.MonTipElement;
             if (screen.MonTipShown < 0 || tip == null || tip.resolvedStyle.display == DisplayStyle.None || tip.resolvedStyle.visibility != Visibility.Visible) throw new InvalidOperationException("포켓몬 카드가 뜨지 않았다");
-            if (tip.Q("mon-tip-move-0") == null || tip.Q("mon-tip-move-1") == null) throw new InvalidOperationException("카드에 기술 칸(★ · 배운 칸)이 없다");
-            if (tip.Q(className: "sn-mon-text") == null) throw new InvalidOperationException("카드에 기술 효과 글이 없다");
+            MonCardShown(tip, cell + "의 포켓몬 카드");
+            // 결정 206 ①(목업 B-battle): 기록 기둥 아래 끝에 바닥 · 기둥 오른쪽 끝을 넘지 않는다(넓으면 DS 쪽으로)
             var log = flow.Stage.Root.Q("battle-log").worldBound;
-            if (tip.worldBound.xMin < log.xMin - 0.5f || tip.worldBound.xMax > log.xMax + 0.5f) throw new InvalidOperationException("포켓몬 카드가 기록 기둥 폭 밖이다(" + tip.worldBound + " · 기둥 " + log + ")");
+            if (tip.worldBound.xMax > log.xMax + 0.5f || Math.Abs(tip.worldBound.yMax - log.yMax) > 1f) throw new InvalidOperationException("포켓몬 카드가 기록 기둥 아래 끝 · 오른쪽 끝에 맞지 않는다(" + tip.worldBound + " · 기둥 " + log + ")");
             UnityEngine.Debug.Log($"[UiShots] battle-mon-tip {s.Grade.Height} {cell}: 카드 {tip.worldBound} · 기둥 {log}");
+        }
+
+        // 결정 206 ①: 마우스 오버 카드 = 원작 카드(앞면 + 오른쪽 기둥) — 띠 수 = card-strip-n, 지닌물건 글 상자 수 = 카드의 토큰 수(마우스를 받지 않는 카드라 글이 다 보인다)
+        static void MonCardShown(VisualElement tip, string what)
+        {
+            if (tip.Q("card-face") == null) throw new InvalidOperationException(what + ": 원작 카드 앞면이 없다(도트 카드로 대신 — Gen Cards/Faces)");
+            _ = tip.Q("card-col") ?? throw new InvalidOperationException(what + ": 오른쪽 기둥(card-col)이 없다");
+            int items = 0, notes = 0;
+            while (tip.Q("card-item-" + (items + 1)) != null) items++;
+            while (tip.Q("card-note-" + (notes + 1)) != null) notes++;
+            if (notes < items) throw new InvalidOperationException(what + ": 지닌물건 글 상자 " + notes + " ≠ 토큰 " + items);
         }
 
         // 결정 170: 내 차례 — [운명의 변화]는 차례 칸 안, 스피드 줄 아래

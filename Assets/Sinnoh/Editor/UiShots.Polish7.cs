@@ -64,14 +64,6 @@ namespace Sinnoh.Editor
             Debug.Log($"[UiShots] p22 {s.Grade.Height}: 답 {shrine.Options.Count} · 보임 {shrine.ShownOptions.Count} · 쪽 {shrine.Page + 1}/{shrine.Pages} · 타입 칩 {types.childCount - 1}");
         }
 
-        // 글자 · 숫자만(줄바꿈 막는 공백을 넣은 글과 견줄 때)
-        static string Squash22(string text)
-        {
-            var sb = new System.Text.StringBuilder();
-            foreach (char c in text) if (char.IsLetterOrDigit(c)) sb.Append(c);
-            return sb.ToString();
-        }
-
         static bool Shown22(ShrineScreen shrine, int index)
         {
             foreach (int i in shrine.ShownOptions) if (i == index) return true;
@@ -147,8 +139,10 @@ namespace Sinnoh.Editor
             if (box.xMin < all.xMin - 0.5f || box.yMin < all.yMin - 0.5f || box.xMax > all.xMax + 0.5f || box.yMax > all.yMax + 0.5f) throw new InvalidOperationException("마우스 오버 카드가 화면 밖으로 나간다");
             if (box.Overlaps(panel)) throw new InvalidOperationException("마우스 오버 카드가 사당 판을 덮는다");
             var def = flow.Ctx.Cards.Pokemon[shrine.MonShown];
-            if (Squash22(tip.Q<Label>("mon-tip-name").text) != Squash22(flow.Stage.T("pokemon." + def.Key)) || tip.Q("mon-tip-rate") == null || tip.Q("mon-tip-move") == null || tip.Q(className: "sn-mon") == null) throw new InvalidOperationException("카드에 이름 · 포획률 · 기술 · 그림이 없다");
-            if (tip.Q(className: "sn-mon-canvas") == null) throw new InvalidOperationException("카드에 도트 그림이 없다(" + def.Key + ")");
+            // 결정 206 ①(목업 B-wild): 원작 카드 앞면(이름 · 스펙 · 고유 기술이 카드에 인쇄돼 있다) + 카드에 없는 포획률 칩
+            if (tip.Q("card-face") == null || tip.Q("card-strip-1") != null) throw new InvalidOperationException("야생 카드 앞면이 없다(" + def.Key + " — 도트 카드로 대신했거나 띠가 붙었다)");
+            var rate = tip.Q("mon-tip-rate") ?? throw new InvalidOperationException("카드에 포획률 칩이 없다");
+            if (rate.worldBound.yMin < tip.Q("card-face").worldBound.yMax - 0.5f) throw new InvalidOperationException("포획률 칩이 카드 앞면 아래에 있지 않다");
             var bad = WorkUi.Overflows(tip);
             if (bad.Count > 0) throw new InvalidOperationException("글자 넘침 " + string.Join(" / ", bad));
             Check22(s, shrine);

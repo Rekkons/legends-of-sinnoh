@@ -142,7 +142,10 @@ export function buildCube(xlsxPath, errors) {
     species.set(d, name);
   });
 
-  return { pokemon, moves, trainerCards, species };
+  // 카드 굽기(Tools/assets/lib/card-faces.mjs, 결정 206)만 쓰는 열: 원작 생성기가 그림 파일 이름 · 그림 크기 · 이름 아래 줄 · 지닌물건 받침을 정하는 값. 데이터 표에는 쓰지 않는다
+  const cards = raw.map((r, i) => ({ key: keys[i], number: r.pokedex_number, total: Number(r.total), description: r.description.trim() }));
+
+  return { pokemon, moves, trainerCards, species, cards };
 }
 
 /** 03 §1-4 검증(pokemon·moves·trainer_cards). 틀리면 errors에 더한다. */

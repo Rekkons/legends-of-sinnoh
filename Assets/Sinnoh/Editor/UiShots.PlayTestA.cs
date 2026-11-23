@@ -50,13 +50,14 @@ namespace Sinnoh.Editor
             }),
             Screen("pta-party-pool-tip", s => PartyTip(s, "board-party-pool-1-back")),                                         // 기술 카드의 등급 배지에 마우스: 「○○ 카드의 뒷면」(T30 ①)
             Screen("pta-party-alpha-tip", s => PartyTip(s, "board-party-item-1")),                                              // 우두머리 토큰 칸에 마우스(T23)
-            Screen("pta-party-passive-tip", s => PartyTip(s, "board-party-passive-2-beast")),                                   // 전설의 「비스트 부스트」 칩에 마우스(T27)
-            Screen("pta-mon-alpha", s =>                                                                                        // 우두머리 포켓몬의 카드 확대: 칩 + 지닌물건 자리의 토큰 · 효과 글(T23)
+            Screen("pta-party-passive-tip", s => PartyTip(s, "board-party-slot-2-2")),                                          // 전설의 「비스트 부스트」(결정 206 ③ — 카드 전술 판의 상자)에 마우스(T27)
+            Screen("pta-mon-alpha", s =>                                                                                        // 우두머리 포켓몬의 카드 확대: 카드 지닌물건 동그라미의 우두머리 토큰 + 기둥의 효과 글 상자(T23 · 결정 206 ①)
             {
                 PartyA(s);
                 if (!s.Made.OpenMon(s.Made.Client.View.Seats[0].Party[1], 0)) throw new InvalidOperationException("카드 확대가 열리지 않았다");
                 s.Panel.Tick(3);
-                if (s.Made.Stage.Root.Q("mon-detail-alpha") == null || s.Made.Stage.Root.Q("mon-detail-passive-alpha") == null) throw new InvalidOperationException("카드 확대에 우두머리 표시가 없다");
+                var zoom = s.Made.Stage.Root.Q("mon-detail-panel");
+                if (zoom?.Q("card-item-1") == null || zoom.Q("card-note-1") == null) throw new InvalidOperationException("카드 확대에 우두머리 토큰 · 효과 글 상자가 없다");
             }),
             Screen("pta-hud-passive", s => HudPassive(s, false, null)),                                                        // 아래 판 파티 칸: 우두머리 루카리오(우두머리 · 비스트 부스트) · 유크시(비스트 부스트) 칩(T23 · T27)
             Screen("pta-hud-passive-tip", s => HudPassive(s, false, "board-hud-mon-2-passive-beast")),                          // 파티 칸의 「비스트 부스트」에 마우스 — 효과 글이 위로(판을 덮지 않게)

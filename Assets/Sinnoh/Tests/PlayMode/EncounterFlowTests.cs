@@ -524,19 +524,24 @@ namespace Sinnoh.Tests.PlayMode
                         {
                             seen.WildTurns++;
                             Assert.That(stage.Root.Q("battle-foe-wild"), Is.Not.Null, "야생: 등급 · 포획률 · 보상 규토리");
-                            // 상대 기술 칩 = 그 포켓몬의 기술(엔진 순서) + 카드 공격력. 카드에 공격력이 없는 기술(흉내내기 …)은 「0」이 아니라 「?」다
+                            // 상대 카드 글 판(결정 206 ② — 옛 기술 칩 줄 자리): 그 포켓몬의 기술(엔진 순서) + 카드 공격력. 카드에 공격력이 없는 기술(흉내내기 …)은 「0」이 아니라 「?」다
                             var foeMon = battle.ShownMon(1 - flow.Battle.MySide);
                             var foeMoves = new List<int>();
                             PokemonRules.MoveOptions(flow.Ctx, flow.Battle.Source.Pokemon[foeMon.Id], foeMoves);
-                            var chips = stage.Root.Q("battle-foe-moves").Query<Label>(className: "kit-badge").ToList().FindAll(l => l.name != "battle-foe-move-bonus");   // 상성 배지(T19)는 기술 칩이 아니다
-                            Assert.That(chips.Count, Is.EqualTo(foeMoves.Count), "상대 기술 칩 수");
+                            Assert.That(battle.HoverCard(false), Is.True, "상대 카드 마우스 오버 = 글 판");
+                            var tip = battle.CardTipElement;
                             for (int i = 0; i < foeMoves.Count; i++)
                             {
-                                Assert.That(chips[i].text, Does.EndWith(stage.T(BattleFeed.MoveNameKey(flow.Ctx, foeMoves[i])) + " " + BattleScreen.CardStrength(flow.Ctx, foeMoves[i])));
-                                // 결정 187: 칩 묶음 안에 그 기술의 타입 그림(타입 없는 전술 · 알파 스트라이크는 없다)
+                                var row = tip.Q("battle-card-tip-move-" + i);
+                                Assert.That(row, Is.Not.Null, "글 판 기술 줄 " + i);
+                                var labels = row.Query<Label>().ToList();
+                                Assert.That(labels.Exists(l => l.text.EndsWith(stage.T(BattleFeed.MoveNameKey(flow.Ctx, foeMoves[i])), System.StringComparison.Ordinal)), Is.True, "기술 이름 " + i);
+                                Assert.That(labels.Exists(l => l.text == stage.T("screen.battle.power") + " " + BattleScreen.CardStrength(flow.Ctx, foeMoves[i])), Is.True, "위력 " + i);
+                                // 결정 187: 그 기술의 타입 그림(타입 없는 전술 · 알파 스트라이크는 없다)
                                 bool typed = BattleRules.MoveType(flow.Ctx, foeMoves[i]) != PokemonType.Typeless && foeMoves[i] != BattleRules.AlphaStrike;
-                                Assert.That(stage.Root.Q("battle-foe-move-" + i).Query(className: "sn-type-icon").ToList().Count, Is.EqualTo(typed ? 1 : 0), "상대 기술 칩의 타입 그림 " + i);
+                                Assert.That(row.Q(className: "sn-battle-tiphead").Query(className: "sn-type-icon").ToList().Count, Is.EqualTo(typed ? 1 : 0), "글 판 기술 줄의 타입 그림 " + i);
                             }
+                            Assert.That(tip.Q("battle-card-tip-move-" + foeMoves.Count), Is.Null, "글 판 기술 줄 수");
                             int mimic = -1;
                             for (int i = 0; i < flow.Ctx.Cards.Moves.Count; i++) if (flow.Ctx.Cards.Moves[i].Key == "mimic") mimic = i;
                             Assert.That(flow.Ctx.Cards.Moves[mimic].AttackStrength, Is.Null, "흉내내기: 카드에 공격력이 없다");

@@ -7,7 +7,8 @@
 //       node Tools/gate.mjs --self-test
 // 층(기본은 바뀐 경로로 고른다 — commit-task가 요구하는 층과 같은 함수)
 //   md     문서(*.md·Docs/)만 → precheck
-//   fast   (--fast) precheck → dotnet test → 조건부 --check(Tools/data·Data/Json·Research/*.csv → data, Tools/assets → assets)
+//   fast   (--fast) precheck → dotnet test → 조건부 --check(Tools/data·Data/Json·Research/*.csv → data, Tools/assets → assets,
+//          그 밖에 카드 굽기 입력(Data/Json의 pokemon·moves·strings.ko·strings.en · Tools/data/lib/cube.mjs) → assets --only cardfaces)
 //          + 연결 저장소의 생성기 --self-test → --check(늘 — 키트 토큰 생성기의 자기 시험, USS 두 벌이 원본에서 다시 만든 것과 같은가, LINKED_CHECK)
 //          + 그 생성기로 만든 이 프로젝트의 화면 USS --check(늘 — Client/Ui/Styles~/Sinnoh.uss → Resources/SinnohUi 두 벌, LINKED_PROJECT_CHECK)
 //   tools  Tools/만(Gen을 만드는 Tools/assets·sources.json 빼고) → fast + 진입점 연기 검사(빈 임시 cwd에서 --help 5초·있으면 --self-test, 저장소 git status 그대로)
@@ -72,7 +73,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const GATE = path.join(ROOT, GATE_DIR)
 const BELOW = os.constants.priority.PRIORITY_BELOW_NORMAL
 const MIN = 60_000
-const TIMEOUT = { precheck: 2 * MIN, dotnet: 20 * MIN, check: 15 * MIN, help: 5000, selfTest: 5 * MIN, unity: 35 * MIN, git: 2 * MIN }
+const TIMEOUT = { precheck: 2 * MIN, dotnet: 20 * MIN, check: 15 * MIN, bake: 40 * MIN, help: 5000, selfTest: 5 * MIN, unity: 35 * MIN, git: 2 * MIN }
 const ASM_DOTNET = 'dotnet'
 const ASM_EDIT = 'Sinnoh.Tests.EditMode'
 // 연결 저장소의 시험 중 dotnet csproj가 같은 소스로 함께 도는 Unity 어셈블리(패키지 이름 → 어셈블리). dotnet 수 = ASM_EDIT + 이것들의 합
@@ -386,10 +387,15 @@ async function dotnetStep(ctx) {
 /** 돌릴 검사 목록 [[이름, 스크립트 경로, 차례로 부를 인자들]]: 프로젝트 것(`--check`)은 바뀐 경로로 고르고, 연결 저장소의 생성물 검사(LINKED_CHECK —
  *  생성기 `--self-test` 뒤 `--check`)는 늘 넣는다(그 저장소는 작업 트리 전체가 대상이고 검사가 싸다 — 생성기는 연기 검사(프로젝트 Tools/만 훑는다)에
  *  들지 않아 자기 시험을 여기서 부른다). 프로젝트 스크립트는 루트 기준, 연결 저장소 스크립트는 절대 경로. */
+// 카드 굽기(Tools/assets/lib/card-faces.mjs loadData — 결정 206)가 읽는 프로젝트 파일: 이것만 바뀌어도 cardfaces 묶음 --check(약 12분)를 돈다
+// (Tools/assets/가 바뀌어 전체 --check가 돌면 그 안에 들어 있어 따로 넣지 않는다)
+const CARDFACES_IN = ['Assets/Sinnoh/Data/Json/pokemon.json', 'Assets/Sinnoh/Data/Json/moves.json', 'Assets/Sinnoh/Data/Json/strings.ko.json',
+  'Assets/Sinnoh/Data/Json/strings.en.json', 'Tools/data/lib/cube.mjs']
 export function checksFor(scope, links) {
   const which = []
   if (scope.some(p => p.startsWith('Tools/data/') || p.startsWith('Assets/Sinnoh/Data/Json/') || /^Research\/[^/]+\.csv$/.test(p))) which.push(['data', 'Tools/data/build.mjs', ['--check']])
   if (scope.some(p => p.startsWith('Tools/assets/'))) which.push(['assets', 'Tools/assets/build.mjs', ['--check']])
+  else if (scope.some(p => CARDFACES_IN.includes(p))) which.push(['cardfaces', 'Tools/assets/build.mjs', [['--check', '--only', 'cardfaces']]])
   for (const l of links) {
     const c = LINKED_CHECK[l.name]
     if (c) which.push([`${l.label}-${c[0]}`, `${l.dir}/${c[1]}`, ['--self-test', '--check']])
@@ -403,7 +409,8 @@ async function checkStep(ctx) {
   const which = checksFor(ctx.scope, ctx.links)
   if (!which.length) return null
   for (const [name, script, args] of which) for (const arg of args) {
-    const r = await run(process.execPath, [path.resolve(ROOT, script), ...[].concat(arg)], { timeout: TIMEOUT.check })
+    // 카드 굽기를 다시 해 보는 검사(assets 전체 · cardfaces)는 혼자 약 12분, 다른 작업과 겹치면 15분을 넘는다(11-23 관문 시간 초과) — 굽기 몫 한도
+    const r = await run(process.execPath, [path.resolve(ROOT, script), ...[].concat(arg)], { timeout: name === 'assets' || name === 'cardfaces' ? TIMEOUT.bake : TIMEOUT.check })
     if (r.error) throw new Exit(2, `${script} 실행 실패: ${r.error.message}`)
     if (r.code !== 0 || r.timedOut) return { ok: false, label: `check:${name}`, failures: r.timedOut ? ['시간 초과'] : tailLines(r.out), log: `node ${script} ${[].concat(arg).join(' ')}` }
   }
@@ -964,6 +971,11 @@ at Sinnoh.Tests.EditMode.BarTests.M4_나 () [0x00001] in <PROJECT>\\Assets\\Sinn
   eq('check 목록 — 키트 USS와 화면 USS는 늘(생성기 자기 시험 → --check, 화면 USS --check)', checksFor(['Assets/Sinnoh/Client/A.cs'], kitLink), [['uikit-uss', 'D:/x/uikit/Tools~/build-uss.mjs', ['--self-test', '--check']], uiUss])
   eq('check 목록 — 프로젝트 것은 --check만', checksFor(['Tools/data/build.mjs'], []), [['data', 'Tools/data/build.mjs', ['--check']]])
   eq('check 목록 — 프로젝트 것 + 키트', checksFor(['Tools/data/build.mjs', 'Tools/assets/build.mjs'], kitLink).map(w => w[0]), ['data', 'assets', 'uikit-uss', 'ui-uss'])
+  const cf = ['cardfaces', 'Tools/assets/build.mjs', [['--check', '--only', 'cardfaces']]]
+  eq('check 목록 — 카드 굽기 입력(문자열 · 포켓몬 · 기술 표 · cube)이면 cardfaces --check', [checksFor(['Assets/Sinnoh/Data/Json/strings.ko.json'], []), checksFor(['Tools/data/lib/cube.mjs'], [])],
+    [[['data', 'Tools/data/build.mjs', ['--check']], cf], [['data', 'Tools/data/build.mjs', ['--check']], cf]])
+  eq('check 목록 — 카드 굽기 입력이 아닌 데이터는 data만', checksFor(['Assets/Sinnoh/Data/Json/items.json', 'Tools/data/build.mjs'], []), [['data', 'Tools/data/build.mjs', ['--check']]])
+  eq('check 목록 — Tools/assets/면 전체 assets만(cardfaces 겹치지 않게)', checksFor(['Tools/assets/lib/card-faces.mjs', 'Assets/Sinnoh/Data/Json/moves.json'], []).map(w => w[0]), ['data', 'assets'])
   eq('check 목록 — 연결 저장소 없음·모르는 패키지', [checksFor(['Docs/a.cs'], []), checksFor([], [{ name: 'com.other', dir: 'D:/y', label: 'y' }])], [[], []])
   const rcs = [{ ok: true, fingerprint: 'a', at: 't1', counts: { dotnet: { total: 258, skipped: 0 }, X: { total: 10, skipped: 0 } } },
     { ok: false, fingerprint: 'b', counts: { dotnet: { total: 300, skipped: 0 } } },

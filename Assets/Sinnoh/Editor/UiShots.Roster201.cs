@@ -8,8 +8,8 @@ using UnityEngine.UIElements;
 namespace Sinnoh.Editor
 {
     /// <summary>
-    /// 사용자 결정 201 ①(2026-11-22): 갤럭시단 배틀의 상대 기둥에 앞면으로 공개된 명단 줄(<c>battle-roster-slot-n</c> — 타입 그림 + 이름, 나와 있는 것 금색 · 쓰러진 것 흐림)과
-    /// 칸 마우스 오버 = 그 포켓몬 카드. 판은 막 길 <c>SoloTrail.Lake</c>(새턴 4) · <c>Heart</c>(태홍 6) · 고향 마을 조무래기(2) · 관전(좌석 2의 조무래기전).
+    /// 사용자 결정 201 ①(2026-11-22): 갤럭시단 배틀의 앞면으로 공개된 명단 — 결정 206 ②부터 상대 기둥 머리 줄의 [상대 엔트리 n] → 엔트리 판(<c>battle-entry-n</c> — 카드 + 기술 띠,
+    /// 꼬리표 「배틀 중」 · 「대기」 · 「기절」, 쓰러진 카드 흐림). 판은 막 길 <c>SoloTrail.Lake</c>(새턴 4) · <c>Heart</c>(태홍 6) · 고향 마을 조무래기(2) · 관전(좌석 2의 조무래기전).
     /// 그림 <c>Logs/Review/m10/galactic-lineup/</c>. PlayMode <c>GalacticRosterFlowTests</c>.
     /// </summary>
     public static partial class UiShots
@@ -46,40 +46,47 @@ namespace Sinnoh.Editor
             RosterCheck(s.Made, BattleFlow.GruntLineup);
         }
 
-        // 칸 수 = 명단 수 · 흐린 칸 수 = 쓰러진 수 · 나와 있는 칸은 흐리지 않다
+        // 결정 206 ②: 명단 줄 대신 [상대 엔트리 n] — 판을 열어 카드 수 = 명단 수 · 흐린(기절) 카드 수 = 쓰러진 수 · 나와 있는 카드는 흐리지 않다 · 단추 글의 n
         static void RosterCheck(GameFlow flow, int count)
         {
             var screen = (BattleScreen)flow.Stage.Current;
             var roster = flow.Client.View.Battle.Sides[1 - flow.Battle.MySide].Roster;
-            if (screen.RosterCount != count || roster.Count != count) throw new InvalidOperationException("명단 칸 " + screen.RosterCount + " · 명단 " + roster.Count + " ≠ " + count);
+            if (screen.RosterCount != count || roster.Count != count) throw new InvalidOperationException("명단 " + screen.RosterCount + " · 보기 명단 " + roster.Count + " ≠ " + count);
+            var button = flow.Stage.Root.Q<Button>(BattleScreen.EntryFoeButton) ?? throw new InvalidOperationException("[상대 엔트리] 단추가 없다");
+            if (!button.text.EndsWith(" " + count, StringComparison.Ordinal)) throw new InvalidOperationException("[상대 엔트리] 단추 글 「" + button.text + "」의 수가 " + count + "가 아니다");
+            if (!screen.EntryOpen && !screen.OpenEntry(false, false)) throw new InvalidOperationException("상대 엔트리 판이 열리지 않았다");
+                        if (screen.EntryShown.Count != count) throw new InvalidOperationException("엔트리 카드 " + screen.EntryShown.Count + " ≠ " + count);
             int dim = 0;
             for (int n = 1; n <= count; n++)
             {
-                var slot = flow.Stage.Root.Q("battle-roster-slot-" + n);
-                if (slot == null) throw new InvalidOperationException("명단 칸 " + n + "이 없다");
+                var slot = flow.Stage.Root.Q(BattleScreen.EntryPanel + "-" + n);
+                if (slot == null) throw new InvalidOperationException("엔트리 카드 " + n + "이 없다");
                 if (slot.ClassListContains(BattleScreen.RosterDoneClass)) dim++;
             }
-            if (dim != screen.RosterDone) throw new InvalidOperationException("흐린 칸 " + dim + " ≠ 쓰러진 수 " + screen.RosterDone);
-            if (screen.RosterActive >= 0 && flow.Stage.Root.Q("battle-roster-slot-" + (screen.RosterActive + 1)).ClassListContains(BattleScreen.RosterDoneClass))
-                throw new InvalidOperationException("나와 있는 칸이 흐리다");
+            if (dim != screen.RosterDone) throw new InvalidOperationException("흐린 카드 " + dim + " ≠ 쓰러진 수 " + screen.RosterDone);
+            if (screen.RosterActive >= 0 && flow.Stage.Root.Q(BattleScreen.EntryPanel + "-" + (screen.RosterActive + 1)).ClassListContains(BattleScreen.RosterDoneClass))
+                throw new InvalidOperationException("나와 있는 카드가 흐리다");
         }
 
-        // n번째 칸(−1 = 처음 쓰러진 칸)에 마우스 — 카드 = 그 포켓몬 · 화면 안 · 글 넘침 없음
+        // n번째 카드(−1 = 처음 쓰러진 카드) — 카드 = 그 포켓몬 · 꼬리표 · 판이 화면 안 · 글 넘침 없음
         static void RosterTip(UiShot s, GameFlow flow, int n)
         {
             var screen = (BattleScreen)flow.Stage.Current;
             if (n < 0)
                 for (int k = 1; k <= screen.RosterCount && n < 0; k++)
-                    if (flow.Stage.Root.Q("battle-roster-slot-" + k).ClassListContains(BattleScreen.RosterDoneClass)) n = k;
-            if (!screen.HoverRoster(n)) throw new InvalidOperationException("명단 칸 " + n + "에 카드가 걸리지 않았다");
+                    if (flow.Stage.Root.Q(BattleScreen.EntryPanel + "-" + k).ClassListContains(BattleScreen.RosterDoneClass)) n = k;
+            if (!screen.HoverRoster(n)) throw new InvalidOperationException("엔트리 카드 " + n + "이 없다");
             var view = flow.Client.View;
             int want = view.Pokemon[view.Battle.Sides[1 - flow.Battle.MySide].Roster[n - 1]].Def;
-            if (screen.MonTipShown != want) throw new InvalidOperationException("카드 " + screen.MonTipShown + " ≠ 명단 칸 " + n + "의 포켓몬 " + want);
+            int got = view.Pokemon[screen.EntryShown[n - 1]].Def;
+            if (got != want) throw new InvalidOperationException("카드 " + got + " ≠ 명단 " + n + "의 포켓몬 " + want);
+            flow.Layout(s.Width, s.Height);
             s.Panel.Tick(3);
-            var card = screen.MonTipElement.worldBound;
+            var panel = flow.Stage.Root.Q(BattleScreen.EntryPanel);
+            var card = panel.worldBound;
             var root = flow.Stage.Root.worldBound;
-            if (card.xMin < root.xMin || card.xMax > root.xMax || card.yMin < root.yMin || card.yMax > root.yMax) throw new InvalidOperationException("카드가 화면 밖: " + card);
-            var bad = WorkUi.Overflows(screen.MonTipElement);
+            if (card.xMin < root.xMin || card.xMax > root.xMax + 0.5f || card.yMin < root.yMin || card.yMax > root.yMax + 0.5f) throw new InvalidOperationException("엔트리 판이 화면 밖: " + card);
+            var bad = WorkUi.Overflows(panel);
             if (bad.Count > 0) throw new InvalidOperationException("글자 넘침 " + string.Join(" / ", bad));
         }
     }

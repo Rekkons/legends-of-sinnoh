@@ -523,16 +523,19 @@ namespace Sinnoh.Tests.PlayMode
                     Assert.That(stage.Root.Q(BattleScreen.FateButton), Is.Null, "남의 배틀에는 내 [운명의 변화]가 없다");
                     Assert.That(screen.FateOn, Is.False);
                     column = true;
-                    roster = System.Math.Max(roster, screen.RosterCount);   // 결정 201 ①: 남의 갤럭시단 배틀에도 상대 명단 줄
+                    roster = System.Math.Max(roster, screen.RosterCount);   // 결정 201 ①: 남의 갤럭시단 배틀에도 상대 명단([상대 엔트리] — 결정 206 ②)
                     var active = screen.ShownMon(flow.Battle.MySide);
-                    var box = stage.Root.Q("battle-bench");
-                    if (active.Exists && box != null)
+                    if (active.Exists)
                     {
+                        // 결정 206 ②: 옛 「대기」 줄 = [내 엔트리 n] — 싸우는 좌석의 파티(내 파티가 아니다)
                         int want = 0;
                         foreach (int id in flow.Battle.Source.Seats[other].Party)
-                            if (id >= 0 && id != active.Id && flow.Battle.MonOf(id).Exists) want++;
-                        Assert.That(want, Is.GreaterThan(1), "좌석 2의 대기 포켓몬이 여럿(내 파티는 하나뿐 — 섞이면 갈린다)");
-                        Assert.That(box.childCount - 1, Is.EqualTo(want), "대기 = 싸우는 좌석의 파티(머리 줄 빼고)");
+                            if (id >= 0 && flow.Battle.MonOf(id).Exists) want++;
+                        Assert.That(want, Is.GreaterThan(2), "좌석 2의 파티가 여럿(내 파티는 하나뿐 — 섞이면 갈린다)");
+                        Assert.That(screen.EntryCount(true), Is.EqualTo(want), "내 쪽 엔트리 = 싸우는 좌석의 파티");
+                        var button = stage.Root.Q<Button>(BattleScreen.EntryMineButton);
+                        Assert.That(button, Is.Not.Null, "[내 엔트리] 단추");
+                        Assert.That(button.text, Does.EndWith(" " + want), "[내 엔트리 n]의 n");
                         bench = true;
                     }
                     if (screen.ShowsResult) break;
@@ -663,7 +666,7 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(tip, Is.Not.Null);
             Assert.That(tip.resolvedStyle.display, Is.EqualTo(DisplayStyle.Flex));
             Assert.That(tip.Q("mon-tip-rate"), Is.Not.Null, "포획률");
-            Assert.That(tip.Q("mon-tip-move"), Is.Not.Null, "고유 기술");
+            Assert.That(tip.Q("card-face"), Is.Not.Null, "원작 카드 앞면(고유 기술 · 스펙이 인쇄돼 있다 — 결정 206 ①)");
             Assert.That(shrine.HoverMon(last), Is.False, "지금 쪽에 없는 줄");
             Assert.That(shrine.MonShown, Is.EqualTo(-1));
             Assert.That(flow.Session.CommandCount, Is.EqualTo(commands), "찾기 · 거르기 · 마우스 오버는 답을 내지 않는다");

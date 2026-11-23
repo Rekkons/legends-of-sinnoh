@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Rekkon.UiKit;
 using UnityEngine;
@@ -32,6 +33,12 @@ namespace Sinnoh.Client
 
         /// <summary><c>Shader.Find</c>로 찾는 셰이더(<see cref="DiceBoard"/> 넷 · <see cref="DsStage"/> 하나).</summary>
         public static readonly string[] FoundShaders = { "Sinnoh/DiceLit", "Sinnoh/DiceFlat", "Sinnoh/DiceGlitch", "Sinnoh/DiceDot", DsStage.ShaderName, DsStage.WarpShaderName };
+
+        /// <summary>
+        /// UI Toolkit 필터(USS <c>filter</c> — drop-shadow · blur = 카드 블럭 그림자 결정 206, grayscale 같은 색 효과 = ColorEffect)가 쓰는 기본 셰이더. 씬이 가리키지 않아 플레이어 빌드에서 빠지면 그 요소를 그릴 때마다 예외가 나 화면이 서지 않는다(11-23 0.2.2 감사) —
+        /// <c>BoardBuild.EnsureFilterShaders</c>가 Always Included Shaders에 넣는다.
+        /// </summary>
+        public static readonly string[] FilterShaders = { "Hidden/UIR/GaussianBlur", "Hidden/UIR/DropShadowComposite", "Hidden/UIR/ColorEffect" };
 
         static readonly int[][] Sizes =
         {
@@ -105,12 +112,13 @@ namespace Sinnoh.Client
             if (stage.Tweens.Busy != 0 || !root.Idle || Application.targetFrameRate != ScreenRoot.IdleFps) fails.Add("타이틀에서 유휴 프레임 제한이 아니다");
 
             sb.Append(",\"shaders\":{");
-            for (int i = 0; i < FoundShaders.Length; i++)
+            var probed = FoundShaders.Concat(FilterShaders).ToArray();
+            for (int i = 0; i < probed.Length; i++)
             {
-                var s = Shader.Find(FoundShaders[i]);
+                var s = Shader.Find(probed[i]);
                 bool ok = s != null && s.isSupported;
-                if (!ok) fails.Add("셰이더 없음: " + FoundShaders[i]);
-                sb.Append(i > 0 ? "," : "").Append('"').Append(FoundShaders[i]).Append("\":").Append(ok ? "true" : "false");
+                if (!ok) fails.Add("셰이더 없음: " + probed[i]);
+                sb.Append(i > 0 ? "," : "").Append('"').Append(probed[i]).Append("\":").Append(ok ? "true" : "false");
             }
             sb.Append('}');
 
@@ -546,7 +554,8 @@ namespace Sinnoh.Client
                         dsPlaced = dsBox.x == 576 && dsBox.y == 187 && dsBox.width == 768 && dsBox.height == 576;
                         if (!dsPlaced) fails.Add("DS 자리 " + dsBox + " ≠ (576, 187) 768×576(04 §4-3)");
                         if (stage.Root.Q("battle-move-1") == null && !battle.ShowsResult) fails.Add("기술 줄이 없다");
-                        if (stage.Root.Q("battle-info-foe").Q(className: "sn-type-icon") == null) fails.Add("타입 그림을 읽지 못했다(stage 번들)");
+                        var foeArt = stage.Root.Q("battle-foe-art");   // 결정 206 ②: 기둥은 원작 카드 앞면(cardfaces 번들)
+                        if (foeArt == null || foeArt.resolvedStyle.backgroundImage.texture == null) fails.Add("상대 카드 그림을 읽지 못했다(cardfaces 번들)");
                         Snap(cam, flowRt, "flow-battle.png", out _, out _, out _);
                         NoteMusic("battle", flow.Music());
 

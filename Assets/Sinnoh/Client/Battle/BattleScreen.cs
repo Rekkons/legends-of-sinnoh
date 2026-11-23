@@ -423,6 +423,7 @@ namespace Sinnoh.Client
 
             info = Add(field, Kit.Panel(stage.Skin), "battle-info", "sn-battle-col");
             info.AddToClassList("sn-battle-info");
+            info.RegisterCallback<GeometryChangedEvent>(e => InfoMoved());   // 엔트리 판 · 카드 글 판은 기둥 옆에 붙는다(결정 206 ②)
             var log = logBox = Add(field, Kit.Panel(stage.Skin), "battle-log", "sn-battle-col");
             log.AddToClassList("sn-battle-log");
             monTip?.Detach();
@@ -450,6 +451,7 @@ namespace Sinnoh.Client
             ShutOver();
             monTip?.Detach();
             monTip = null;
+            ShutInfo();
             logBox = null;
             page = null;
             if (stage != null && ambient >= 0) stage.Tweens.Stop(ambient);
@@ -1266,116 +1268,6 @@ namespace Sinnoh.Client
             return messageText;
         }
 
-        void FillInfo(BattleFeed feed, BattleMon me, BattleMon foe)
-        {
-            var inv = CultureInfo.InvariantCulture;
-            info.Clear();
-            var head = Add(info, new VisualElement(), null, "sn-battle-head");
-            Add(head, Kit.Text(stage.T("screen.battle.title.info"), Kit.F2), null, "kit-title");
-            string kind = stage.TOrNull("screen.battle.kind." + feed.Kind.ToString().ToLowerInvariant()) ?? stage.T("screen.battle.kind.other");
-            Add(head, Kit.Badge(kind, KitBadgeKind.Silver, Kit.F2), "battle-kind", null);
-
-            var state = feed.Source;
-            var mons = MonArt.Load();
-
-            // 내 쪽(아래쪽 = feed.MySide의 좌석 — 남의 배틀을 볼 때는 그 쪽에서 싸우는 좌석, M7 마감 감사 1): 얼굴 상자 · 이름 · 우선권 토큰 · 나와 있는 포켓몬 · 대기
-            int seat = InfoSeat = SideSeat(feed);
-            var mine = Add(info, new VisualElement(), "battle-info-me", "sn-battle-block");
-            var who = Add(mine, new VisualElement(), null, "sn-battle-line");
-            var face = Add(who, FaceBox.Make(), "battle-me-face", null);
-            FaceBox.Paint(face, seat, flow.SeatColor(seat), flow.Protagonist(seat));
-            who.Add(Kit.Text(flow.SeatName(seat), Kit.F2));
-            if (seen.TokenSide == feed.MySide) Token(who, "battle-me-token");
-            // 날씨(결정 87 V7): 놓여 있으면 이름 줄 끝에 — 배틀 중에 날씨 보너스를 바로 본다(마우스 오버 = 「○ 타입 기술 위력 +2」)
-            if (state != null && TrainerRules.WeatherType(state).HasValue)
-            {
-                var sky = Add(who, Kit.Badge(CardAsk.Weather(stage, state.Weather), KitBadgeKind.Plain, Kit.F2), WeatherChip, null);
-                stage.Tips.Hook(sky, CardAsk.WeatherBonus(stage, state.Weather), stage.T("screen.board.weather.tip"), TipSide.Below, reading: true);
-            }
-            MonBlock(mine, mons, me, "battle-me");
-            if (state != null && state.Battle != null)
-            {
-                var bench = Add(mine, new VisualElement(), "battle-bench", "sn-battle-line");
-                var benchTitle = Add(bench, Kit.Text(stage.T("screen.battle.bench"), Kit.F2), null, "kit-muted");
-                int waiting = 0;
-                foreach (int id in state.Seats[seat].Party)
-                {
-                    if (id < 0 || id == me.Id) continue;
-                    var m = Shown(id);
-                    if (!m.Exists) continue;
-                    var pill = Kit.Pill(heart, m.Hp.ToString(inv), m.Hp * 2 <= m.MaxHp ? KitTone.Low : KitTone.Base, m.MaxHp.ToString(inv));
-                    bench.Add(pill);
-                    stage.Tips.Hook(pill, FullName(m), null, TipSide.Below);
-                    waiting++;
-                }
-                if (waiting == 0) benchTitle.text = stage.T("screen.battle.bench.none");
-            }
-
-            // 상대 쪽: 이름 · 우선권 토큰 · 나와 있는 포켓몬 · 기술 짧은 줄 · 남은 포켓몬
-            var other = Add(info, new VisualElement(), "battle-info-foe", "sn-battle-block");
-            var foeWho = Add(other, new VisualElement(), null, "sn-battle-line");
-            foeWho.AddToClassList("sn-battle-who");   // 얼굴 없는 줄도 토큰 그림 높이 — 토큰이 넘어와도 아래 블록이 밀리지 않는다
-            // 상대가 사람(좌석)이면 그 좌석의 얼굴 상자, 야생·갤럭시단은 이름만(결정 54 ④ — 사람끼리의 배틀은 M7)
-            int foeSeat = state != null && state.Battle != null ? state.Battle.Sides[1 - feed.MySide].Owner : -1;
-            if (foeSeat >= 0)
-            {
-                var foeFace = Add(foeWho, FaceBox.Make(), "battle-foe-face", null);
-                FaceBox.Paint(foeFace, foeSeat, flow.SeatColor(foeSeat), flow.Protagonist(foeSeat));
-            }
-            string foeKey = feed.Kind == BattleKind.Galactic ? "galactic" + feed.LeaderSuffix : feed.Kind == BattleKind.Trainer || feed.Kind == BattleKind.Traitor ? "other" : BattleFeed.UbFoe(feed.Kind) ?? "wild";
-            foeWho.Add(Kit.Text(stage.T("screen.battle.foe." + foeKey), Kit.F2));
-            if (seen.TokenSide == 1 - feed.MySide) Token(foeWho, "battle-foe-token");
-            MonBlock(other, mons, foe, "battle-foe");
-            if (foe.Exists && state != null)
-            {
-                var line = Add(other, new VisualElement(), "battle-foe-moves", "sn-battle-line");
-                Add(line, Kit.Text(stage.T("screen.battle.moves"), Kit.F2), null, "kit-muted");
-                var options = new List<int>();
-                PokemonRules.MoveOptions(flow.Ctx, state.Pokemon[foe.Id], options);
-                int signature = flow.Ctx.Cards.Pokemon[foe.Def].Signature;
-                int k = 0;
-                foreach (int move in options)
-                {
-                    string name = (move == signature ? "★" : "") + stage.T(BattleFeed.MoveNameKey(flow.Ctx, move));
-                    var chip = Kit.Badge(name + " " + CardStrength(flow.Ctx, move), move == signature ? KitBadgeKind.Gold : KitBadgeKind.Plain, Kit.F2);
-                    // 결정 187: [타입][이름 위력][상성]을 한 묶음으로 — 칩 줄이 꺾여도 떨어지지 않는다. 알파 스트라이크(타입 미정 — 옆에 배울 수 있는 타입) · 타입 없는 전술은 타입 그림 없음
-                    var cell = Add(line, new VisualElement(), "battle-foe-move-" + (k++).ToString(inv), FoeMoveClass);
-                    var mt = BattleRules.MoveType(flow.Ctx, move);
-                    if (mt != PokemonType.Typeless && move != BattleRules.AlphaStrike) TypeIcon(cell, IconArt.Type(mt), stage.T("ui.types." + mt));
-                    cell.Add(chip);
-                    if (me.Exists && mt != PokemonType.Typeless)
-                    {
-                        var meTypes = flow.Ctx.Cards.Pokemon[me.Def].Types;
-                        int bonus = TypeChart.Bonus(mt, meTypes[0], meTypes.Count > 1 ? meTypes[1] : PokemonType.Typeless);
-                        if (bonus != 0) Add(cell, Kit.Badge(Signed(bonus), bonus > 0 ? KitBadgeKind.Ok : KitBadgeKind.Red, Kit.F2), "battle-foe-move-bonus", null);
-                    }
-                    if (move == BattleRules.AlphaStrike) AlphaTypeIcons(line, state.Pokemon[foe.Id], "battle-foe-alpha-types");   // 결정 182: 어느 타입으로 올지 — 배울 수 있는 타입
-                    stage.Tips.Hook(chip, stage.T(BattleFeed.MoveNameKey(flow.Ctx, move)), stage.TOrNull(BattleFeed.MoveNameKey(flow.Ctx, move) + ".text"), TipSide.Below, reading: true);
-                }
-            }
-            if (foe.Exists && state != null && state.Battle != null && ChoiceRules.CaptureAllowed(state.Battle) && !UbTrial.Guards(state, flow.Ctx, state.Battle, foe.Id))   // 시련을 넘기기 전의 수호신은 포획률 대신 「면역」 칩(FillUb)
-            {
-                // 야생: 조우 등급 · 포획률 · 보상 규토리(04 §4-1 — 값은 엔진 함수와 그 칸 토큰의 고정물에서)
-                var wild = state.Pokemon[foe.Id];
-                var grade = MapActions.GradeOf(flow.Ctx, wild.Def);
-                var line = Add(other, new VisualElement(), "battle-foe-wild", "sn-battle-line");
-                line.Add(MonParts.GradeBadge(stage, wild.Alpha ? "alpha" : grade.ToString().ToLowerInvariant(), Kit.F2) ?? new Label());   // 등급 색(결정 192)
-                int rate = BattleRules.CatchRate(grade, wild.Alpha);
-                var rateChip = Add(line, Kit.Badge(stage.T("screen.encounter.rate").Replace("{n}", rate.ToString(inv)), KitBadgeKind.Silver, Kit.F2), "battle-foe-rate", null);
-                stage.Tips.Hook(rateChip, null, stage.T("screen.encounter.rate.tip").Replace("{n}", rate.ToString(inv)), TipSide.Below, reading: true);
-                int token = state.Battle.Token;
-                if (token >= 0 && token < state.Tokens.Count && state.Tokens[token].Def >= 0)
-                    foreach (var color in flow.Ctx.Fixtures.Fixtures[state.Tokens[token].Def].Apricorns) Icon(line, EncounterScreen.ApricornKey(color));
-            }
-            if (state != null && state.Battle != null && state.Battle.Sides[1 - feed.MySide].Owner < 0 && state.Battle.Sides[1 - feed.MySide].Roster.Count > 1)
-            {
-                int left = 0;
-                foreach (int id in state.Battle.Sides[1 - feed.MySide].Roster)
-                    if (!Shown(id).Fainted && Shown(id).Exists) left++;
-                Add(other, Kit.Text(stage.T("screen.battle.left").Replace("{n}", left.ToString(inv)), Kit.F2), "battle-foe-left", "kit-muted");
-            }
-        }
-
         // 우선권 토큰의 그림(결정 73 ⑦ — DS 상자 옆과 같은 16×16 도트, 정수배) + 마우스 오버 이름표 「우선권 토큰」과 짧은 설명. 그림이 없으면 글자 배지
         void Token(VisualElement line, string name)
         {
@@ -1390,43 +1282,6 @@ namespace Sinnoh.Client
             stage.Tips.Hook(token, stage.T("screen.battle.token"), stage.T("screen.battle.token.tip"), TipSide.Below, reading: true);
         }
 
-        // 포켓몬 한 마리: 도트 · 이름 · 타입 · ♥ · ⌃⌃ · 상태 · 전투 피로
-        void MonBlock(VisualElement parent, MonArt mons, BattleMon mon, string name)
-        {
-            var inv = CultureInfo.InvariantCulture;
-            var row = Add(parent, new VisualElement(), name, "sn-battle-mon");
-            if (!mon.Exists) return;
-            var def = flow.Ctx.Cards.Pokemon[mon.Def];
-            var art = Add(row, mons != null ? mons.Front(def.Key) : new VisualElement(), name + "-art", null);
-            // 울트라 비스트는 도트가 캔버스를 거의 채워 가운데 칸에서 잘렸다(결정 87 V22 ① — 페로코체 더듬이): UB 배틀의 상대 쪽은 캔버스를 통째로 보인다
-            // (네크로즈마 · 호수 시련은 덧칩 줄이 길어 1080에서 기둥이 넘친다 — 그대로)
-            if (name == "battle-foe" && flow.Battle != null && flow.Battle.Kind == BattleKind.UltraBeast) art.AddToClassList("sn-mon-full");
-            if (name == "battle-foe") HookMon(art, mon.Id);   // 상대 포켓몬 그림에 마우스 오버 = 그 카드(배울 수 있는 타입 · 기술 효과 — 결정 182)
-            var col = Add(row, new VisualElement(), null, "sn-battle-mon-info");
-            var title = Add(col, new VisualElement(), null, "sn-battle-line");
-            var nameLabel = Add(title, Kit.Text(MonName(mon), Kit.F2), name + "-name", null);
-            if (FullName(mon) != MonName(mon)) stage.Tips.Hook(nameLabel, FullName(mon), null, TipSide.Below);   // 폼 꼬리는 마우스 오버에 [가정]
-            foreach (var t in def.Types) TypeIcon(title, IconArt.Type(t), stage.T("ui.types." + t));
-            if (mon.Status != StatusEffect.None) TypeIcon(title, DsStage.StatusKey(mon.Status), null);
-            var stats = Add(col, new VisualElement(), null, "sn-battle-line");
-            var hp = Kit.Pill(heart, mon.Hp.ToString(inv), mon.Hp * 2 <= mon.MaxHp ? KitTone.Low : KitTone.Base, mon.MaxHp.ToString(inv));
-            hp.name = name + "-hp";
-            var sp = Kit.Pill(speed, mon.Speed.ToString(inv), mon.Speed < mon.BaseSpeed ? KitTone.Low : mon.Speed > mon.BaseSpeed ? KitTone.High : KitTone.Base);
-            stats.Add(hp);
-            stats.Add(sp);
-            stage.Tips.Hook(hp, stage.T("screen.common.health"), null, TipSide.Below);
-            stage.Tips.Hook(sp, stage.T("screen.common.speed"), null, TipSide.Below);
-            var fatigue = Kit.Badge(stage.T("screen.battle.fatigue").Replace("{n}", mon.Fatigue.ToString(inv)).Replace("{max}", FatigueRules.Max.ToString(inv)),
-                mon.Fatigue >= FatigueRules.Max ? KitBadgeKind.Red : KitBadgeKind.Plain, Kit.F2);
-            fatigue.name = name + "-fatigue";
-            var tired = Add(col, new VisualElement(), null, "sn-battle-line");
-            tired.Add(fatigue);
-            stage.Tips.Hook(fatigue, null, stage.T("screen.battle.fatigue.tip"), TipSide.Below, reading: true);
-            // 패시브(플레이 시험 T27): 비스트 부스트 — 우두머리는 등급 배지가 이미 말한다
-            var known = flow.Client != null ? flow.Client.View : null;
-            if (known != null && mon.Id >= 0 && mon.Id < known.Pokemon.Count) MonParts.Passives(stage, tired, known.Pokemon[mon.Id], false, name + "-passive");
-        }
-
         // Pt 틀 32×16 그림(타입·상태). 그림이 없으면 글 배지로 대신한다
         void TypeIcon(VisualElement parent, string key, string fallback)
         {
@@ -1438,9 +1293,6 @@ namespace Sinnoh.Client
             }
             else if (fallback != null) parent.Add(Kit.Badge(fallback, KitBadgeKind.Plain, Kit.F2));
         }
-
-        /// <summary>상대 기둥의 기술 칩 한 묶음([타입][이름 위력][상성] — 결정 187)의 클래스. 요소 이름은 <c>battle-foe-move-n</c>(0부터).</summary>
-        public const string FoeMoveClass = "sn-battle-foe-move";
 
         /// <summary>알파 스트라이크 옆 배울 수 있는 타입 아이콘 묶음의 클래스(결정 182 — 상대 기술 칩 줄 · 내 기술 줄).</summary>
         public const string AlphaTypesClass = "sn-battle-alpha-types";

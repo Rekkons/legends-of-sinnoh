@@ -185,7 +185,27 @@ namespace Sinnoh.Tests.EditorAssets
             Assert.AreEqual(71, rulebook.Count(), "설명서 그림 자리 71(M9 「설명서 글 ①②」 66 − 상태 아이콘 띠 1 + 상태 표 줄 머리 아이콘 6 — 결정 143 ③)");
             Assert.AreEqual(1 + figureFiles.Count, byName[GenAssets.RulebookBundle].assetNames.Length, "rulebook = 표 + 그림(한 벌 + 언어마다)");
             Assert.That(GenAssets.Split(GenAssets.RulebookBundle), "설명서 그림은 나눠 받기(웹 첫 받기 40 MB 밖)");
-            Assert.AreEqual(11 + figures.Count + 1 + songs.Count, plan.Count, "번들 수 = board·trainers·figures·ui·sprites·cards·stage·audio·tutorial·rulebook·cries + 피규어 + fig_shaders + 곡");
+            // 포켓몬 카드(결정 206 1단계): 구운 앞면 · 띠 · 숫자 글자 + 카드에 얹는 상태 주사위 · ♥ · ≫ 상자 · 생성기 타입 그림 · 지닌물건 토큰 = pokecards — PC만(웹 손님판 목록에는 없다)
+            int cardArt = new[] { "Faces", "Moves", "Strips", "Digits" }.Sum(d => Directory.GetFiles(Gen + "Cards/" + d, "*.png", SearchOption.AllDirectories).Length);
+            Assert.Greater(cardArt, 1000, "포켓몬 카드 그림: node Tools/assets/build.mjs --only cardfaces");
+            // 나눈 카드 번들(자동 업데이트는 파일 단위): 앞면 = 언어 × 도감 번호 백 단위, 띠 = 언어마다 하나, 나머지 = pokecards
+            var cardBundles = plan.Where(b => GenAssets.WebSkips(b.assetBundleName)).ToList();
+            Assert.AreEqual(cardArt + 6 + 2 + 19 + GenAssets.HeldTokens.Length, cardBundles.Sum(b => b.assetNames.Length), "카드 번들 합 = 카드 그림 + 상태 주사위 6 + ♥ · ≫ 상자 2 + 생성기 타입 그림 19 + 지닌물건 토큰");
+            var faceGroups = Directory.GetFiles(Gen + "Cards/Faces", "*.png", SearchOption.AllDirectories)
+                .Select(f => f.Replace('\\', '/').Substring((Gen + "Cards/Faces/").Length)).Select(f => f.Split('/')[0] + "_" + (int.Parse(new string(f.Split('/')[1].TakeWhile(char.IsDigit).ToArray())) / 100 * 100).ToString("000")).Distinct().ToList();
+            var langs = Directory.GetDirectories(Gen + "Cards/Moves").Select(Path.GetFileName).ToList();
+            Assert.AreEqual(1 + faceGroups.Count + langs.Count, cardBundles.Count, "카드 번들 수 = pokecards + 앞면 묶음(언어 × 백 단위) + 언어마다 띠 묶음");
+            foreach (string g in faceGroups) Assert.That(byName.ContainsKey(GenAssets.CardBundle + "_" + g), g);
+            foreach (string l in langs) Assert.That(byName[GenAssets.CardBundle + "_" + l + "_moves"].assetNames.All(n => n.Contains("/Moves/" + l + "/") || n.Contains("/Strips/" + l + "/")), l + " 띠 묶음");
+            Assert.AreEqual(GenAssets.CardBundle + "_ko_400", GenAssets.BundleFor(GenAssets.CardFaces + "ko/493_0@cyrus.png"));
+            Assert.AreEqual(GenAssets.CardBundle + "_en_000", GenAssets.BundleFor(GenAssets.CardFaces + "en/41_0@female_grunt.png"));
+            Assert.AreEqual(GenAssets.CardBundle, GenAssets.BundleFor(GenAssets.CardDigits + "num_0.png"), "숫자 글자는 언어 없이 공용");
+            foreach (string held in GenAssets.HeldTokens) Assert.AreEqual(GenAssets.CardBundle, where[GenAssets.ItemTokens + held + ".png"], held);
+            var web = BoardBuild.Plan(true);
+            Assert.That(web.All(b => !GenAssets.WebSkips(b.assetBundleName)), "웹 손님판에는 카드 번들을 싣지 않는다([가정] 결정 206 — 도트 카드로 대신)");
+            Assert.AreEqual(plan.Count - cardBundles.Count, web.Count, "웹 = PC − 카드 번들");
+            Assert.That(cardBundles.All(b => !GenAssets.Split(b.assetBundleName)));
+            Assert.AreEqual(11 + cardBundles.Count + figures.Count + 1 + songs.Count, plan.Count, "번들 수 = board·trainers·figures·ui·sprites·cards·stage·audio·tutorial·rulebook·cries + 카드 묶음 + 피규어 + fig_shaders + 곡");
             Assert.IsNull(GenAssets.BundleFor("Sprites/Anim/front.png"), "화면이 아직 읽지 않는 키는 번들에 넣지 않는다(그 화면을 만들 때·M7)");
         }
 
@@ -284,6 +304,20 @@ namespace Sinnoh.Tests.EditorAssets
                 var urp = rp as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
                 Assert.That(urp, Is.Not.Null, names[i] + " 품질의 URP 자산");
                 Assert.AreEqual(1f, urp.renderScale, names[i] + " 품질(" + urp.name + ") 렌더 배율");
+            }
+        }
+
+        [Test]
+        public void M10_UI필터셰이더는플레이어빌드에들어간다_결정206()
+        {
+            // USS filter: drop-shadow(카드 블럭 그림자)의 기본 셰이더가 빌드에서 빠지면 플레이어가 그 요소를 그릴 때마다 예외(11-23 0.2.2 감사) — 커밋된 그래픽 설정에 있어야 한다
+            var gs = AssetDatabase.LoadAssetAtPath<UnityEngine.Rendering.GraphicsSettings>("ProjectSettings/GraphicsSettings.asset");
+            var list = new SerializedObject(gs).FindProperty("m_AlwaysIncludedShaders");
+            var names = Enumerable.Range(0, list.arraySize).Select(i => list.GetArrayElementAtIndex(i).objectReferenceValue).OfType<UnityEngine.Shader>().Select(s => s.name).ToList();
+            foreach (string name in ScreenProbe.FilterShaders)
+            {
+                Assert.IsNotNull(UnityEngine.Shader.Find(name), name);
+                Assert.That(names, Does.Contain(name), "Always Included Shaders — BoardBuild.EnsureFilterShaders");
             }
         }
 

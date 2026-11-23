@@ -419,8 +419,14 @@ namespace Sinnoh.Client
             }
             if (before >= 0)
             {
+                var now = flow.Ctx.Cards.Pokemon[feed.MonOf(mon.Id).Def];
+                var old = flow.Ctx.Cards.Pokemon[before];
                 mon.Def = before;
-                mon.MaxHp = flow.Ctx.Cards.Pokemon[before].Health + (mon.MaxHp - flow.Ctx.Cards.Pokemon[feed.MonOf(mon.Id).Def].Health);
+                mon.MaxHp = old.Health + (mon.MaxHp - now.Health);
+                // 스피드도 옛 폼 카드 값으로(지닌물건 · 마비 등 ±는 그대로) — 새 폼 값이 옛 앞면 위에 틀린 ±로 보이지 않게
+                int shift = old.Initiative - now.Initiative;
+                mon.Speed += shift;
+                mon.BaseSpeed += shift;
             }
             // 둘째 폼은 완전 회복해 나온다(체력을 싣는 이벤트가 없다 — 쓰러질 때 붙잡힌 0을 보기 값으로 푼다)
             if (ascended && mon.Hp <= 0)
@@ -436,7 +442,7 @@ namespace Sinnoh.Client
         VisualElement retribution, orb;
         readonly VisualElement[] locks = new VisualElement[2];
         readonly List<VisualElement> swarmDots = new List<VisualElement>();
-        readonly List<VisualElement> swarmSlots = new List<VisualElement>();
+        readonly List<VisualElement> swarmSlots = new List<VisualElement>();   // 무리 카드(엇겹침 — 인트로 동안 약한 것부터 하나씩 선다)
 
         /// <summary>상대 기둥의 「은하의 응징 n」(없으면 0) · 그 쪽(0 내 쪽 · 1 상대 쪽)의 교체 불가 이유 글(없으면 null) · 무리 진행(끝난 수 / 명단 수 — 무리가 아니면 0) — 확인용.</summary>
         public int RetributionShown { get; private set; }
@@ -483,37 +489,21 @@ namespace Sinnoh.Client
             locks[0] = locks[1] = null;
             lockText[0] = lockText[1] = null;
             swarmDots.Clear();
-            swarmSlots.Clear();
             RetributionShown = SwarmDone = SwarmCount = 0;
-            AlphaChipShown = false;
             foreach (var hit in dsHits) hit.RemoveFromHierarchy();
             dsHits.Clear();
             var state = feed.Source;
+            AlphaChipShown = info != null && info.Q("battle-foe-alpha") != null;   // 우두머리(77행): 카드 지닌물건 동그라미의 우두머리 토큰(결정 206 ② — 칩 대신) + ♥ 상자 「+4」
             if (info == null || state == null) return;
             ReadRows(feed, out int stored, lockedNow);
             for (int k = 0; k < 2; k++)
             {
                 bool mine = k == 0;
-                var block = info.Q(mine ? "battle-info-me" : "battle-info-foe");
+                var line = info.Q(mine ? "battle-me-extra" : "battle-foe-extra");
                 var mon = mine ? me : foe;
-                if (block == null) continue;
+                if (line == null) continue;
                 int side = mine ? feed.MySide : 1 - feed.MySide;
-                var line = new VisualElement { name = mine ? "battle-me-extra" : "battle-foe-extra" };
-                line.AddToClassList("sn-battle-line");
-                line.AddToClassList("sn-battle-extra");
-                // 둘째 상태 이상(상태 둘 — rulings G20)
-                if (mon.Exists && mon.Id < state.Pokemon.Count)
-                {
-                    var second = state.Pokemon[mon.Id].Status2;
-                    if (second != StatusEffect.None) TypeIcon(line, DsStage.StatusKey(second), stage.TOrNull("screen.status." + second.ToString().ToLowerInvariant()));
-                }
-                // 우두머리(77행): 체력 +4
-                if (!mine && mon.Exists && mon.Id < state.Pokemon.Count && state.Pokemon[mon.Id].Alpha)
-                {
-                    var chip = Add(line, Kit.Badge(stage.T("screen.battle.alpha.chip").Replace("{n}", SpotResultBeats.HpBonus.ToString(inv)), KitBadgeKind.Red, Kit.F2), "battle-foe-alpha", null);
-                    stage.Tips.Hook(chip, stage.T("item.alpha_pokemon"), stage.T("screen.battle.alpha.tip"), TipSide.Below, reading: true);
-                    AlphaChipShown = true;
-                }
+                // 둘째 상태 이상은 카드의 상태 주사위가 보인다(결정 206 ②)
                 // 천상의 오라(78행 — 신 배틀): 걸려 있으면 포획 7 · 둘째 폼, 천상의 유물로 막았으면 「오라 무효」
                 if (!mine && feed.Kind == BattleKind.God && state.Battle != null)
                 {
@@ -521,12 +511,17 @@ namespace Sinnoh.Client
                     var chip = Add(line, Kit.Badge(stage.T(aura ? "screen.battle.aura.chip" : "screen.battle.aura.off"), aura ? KitBadgeKind.Gold : KitBadgeKind.Silver, Kit.F2), "battle-foe-aura", null);
                     stage.Tips.Hook(chip, stage.T("screen.battle.aura"), stage.T(aura ? "screen.battle.aura.tip" : "screen.battle.aura.off.tip"), TipSide.Below, reading: true);
                 }
-                // 은하의 응징(74행): 저장된 수
+                // 은하의 응징(74행): 저장된 수는 카드의 갤럭시단 띠 위 피해 주사위 하나로만 보인다(칩을 따로 두지 않는다) — 구슬이 날아드는 자리도 그 주사위
                 if (!mine && feed.Kind == BattleKind.Galactic && stored > 0)
                 {
-                    retribution = Add(line, Kit.Badge(stage.T("screen.battle.retribution.chip").Replace("{n}", stored.ToString(inv)), KitBadgeKind.Red, Kit.F2), "battle-foe-retribution", null);
-                    FxUi.OriginLeft(retribution);   // 톡 커질 때 기둥 밖(왼쪽)으로 나가지 않게
-                    stage.Tips.Hook(retribution, stage.T("screen.battle.retribution"), stage.T("screen.battle.retribution.tip"), TipSide.Below, reading: true);
+                    retribution = info.Q("battle-foe-cards")?.Q("card-retribution");
+                    if (retribution == null)
+                    {
+                        // 도트 카드(웹 손님판 — 띠 · 주사위가 없다)는 예전처럼 칩(튜토리얼 앵커 e06 S006도 같은 이름)
+                        retribution = Add(line, Kit.Badge(stage.T("screen.battle.retribution.chip").Replace("{n}", stored.ToString(inv)), KitBadgeKind.Red, Kit.F2), "battle-foe-retribution", null);
+                        FxUi.OriginLeft(retribution);
+                        stage.Tips.Hook(retribution, stage.T("screen.battle.retribution"), stage.T("screen.battle.retribution.tip"), TipSide.Below, reading: true);
+                    }
                     RetributionShown = stored;
                 }
                 // 교체 금지(75행): 자물쇠 칩 + 이유(마우스 오버)
@@ -538,7 +533,6 @@ namespace Sinnoh.Client
                     stage.Tips.Hook(locks[k], stage.T("screen.battle.lock.chip"), lockText[k], TipSide.Below, reading: true);
                 }
                 if (!mine) FillUb(feed, line, mon, state);   // 울트라 버스트: 페이즈 · 포획 불가 · 프리즘 아머 · 시련 · 면역 · 온슬롯(BattleScreen.Ub.cs)
-                if (line.childCount > 0) block.Add(line);
             }
             // DS 체력 상자 옆의 작은 그림(결정 80 L16 나 — DsMon.Retribution·Locked)에 마우스를 올리면 기둥의 칩과 같은 설명
             if (dsBox != null)
@@ -548,7 +542,12 @@ namespace Sinnoh.Client
                 if (lockText[0] != null) DsHit("battle-ds-me-lock", DsStage.LockRect(false), stage.T("screen.battle.lock.chip"), lockText[0]);
             }
             FillSwarm(feed, state);
-            FillRoster(feed, state);
+            // 덧칩 줄은 두 쪽이 같이 선다(한쪽만 있어도 — 카드 칸 높이 · 위 끝이 두 쪽 같게, 높이는 EvenSides가 맞춘다)
+            var meLine = info.Q("battle-me-extra");
+            var foeLine = info.Q("battle-foe-extra");
+            bool any = (meLine != null && meLine.childCount > 0) || (foeLine != null && foeLine.childCount > 0);
+            foreach (var line in new[] { meLine, foeLine })
+                if (line != null) line.style.display = any ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         readonly List<VisualElement> dsHits = new List<VisualElement>();
@@ -565,132 +564,24 @@ namespace Sinnoh.Client
             dsHits.Add(hit);
         }
 
-        // 무리 배틀(S55 — 24·81행): 「남은 포켓몬」 줄 자리에 진행 점 ●○○ + 명단 세 칸(등급 · 이름 · 끝난 것은 흐리게)
+        // 무리 배틀(S55 — 24·81행): 상대 덧칩 줄에 진행 점 ●○○(카드 셋의 엇겹침은 BattleScreen.Info.cs — 결정 206 ②)
         void FillSwarm(BattleFeed feed, GameState state)
         {
             if (feed.Kind != BattleKind.Swarm || state.Battle == null) return;
-            var block = info.Q("battle-info-foe");
-            if (block == null) return;
-            var left = block.Q("battle-foe-left");
-            if (left != null) left.RemoveFromHierarchy();
+            var line = info.Q("battle-foe-extra");
+            if (line == null) return;
             var roster = state.Battle.Sides[1 - feed.MySide].Roster;
-            swarmCells.Clear();
-            var head = Add(block, new VisualElement(), "battle-swarm", "sn-battle-line");
+            var head = Add(line, new VisualElement(), "battle-swarm", "sn-battle-swarmdots");
             Add(head, Kit.Text(stage.T("screen.battle.swarm"), Kit.F2), null, "kit-muted");
-            var slots = Add(block, new VisualElement(), "battle-swarm-slots", "sn-battle-swarm");
-            info.AddToClassList("sn-battle-swarm-info");   // 영어 1080 벌: 등급 + 이름 칸이 세 줄이라 기둥의 줄 사이를 좁힌다(USS sn-lang-en, M9 lang3)
             SwarmCount = roster.Count;
             for (int i = 0; i < roster.Count; i++)
             {
-                int id = roster[i];
-                bool caught = false;
-                foreach (var e in feed.Events)
-                    if (e is CaptureAttempt c && c.Success && c.TargetId == id && !hidden.Contains(e)) caught = true;
-                var mon = Shown(id);
-                bool done = caught || (mon.Exists && mon.Fainted) || (!mon.Exists && id != seen.Active[1 - feed.MySide] && feed.Ended);
+                bool done = SwarmOver(feed, roster[i]);
                 if (done) SwarmDone++;
                 var dot = Add(head, new VisualElement(), "battle-swarm-dot-" + (i + 1).ToString(CultureInfo.InvariantCulture), "sn-battle-swarm-dot");
                 if (done) dot.AddToClassList("sn-battle-swarm-dot-on");
                 swarmDots.Add(dot);
-                int def = id >= 0 && id < state.Pokemon.Count ? state.Pokemon[id].Def : -1;
-                var slot = Add(slots, new VisualElement(), "battle-swarm-slot-" + (i + 1).ToString(CultureInfo.InvariantCulture), "sn-battle-swarm-slot");
-                if (def >= 0)
-                {
-                    var grade = MapActions.GradeOf(flow.Ctx, def);
-                    slot.Add(Kit.Badge(stage.T("screen.encounter.grade." + grade.ToString().ToLowerInvariant()), id == seen.Active[1 - feed.MySide] && !done ? KitBadgeKind.Gold : KitBadgeKind.Plain, Kit.F2));
-                    var name = Add(slot, Kit.Text(BoardHud.ShortName(stage.T("pokemon." + flow.Ctx.Cards.Pokemon[def].Key)), Kit.F2), null, "sn-battle-swarm-name");
-                    if (done) name.AddToClassList("kit-muted");
-                    if (caught) slot.Add(Kit.Badge(stage.T("screen.battle.swarm.caught"), KitBadgeKind.Ok, Kit.F2));
-                    HookSwarm(slot, id, state);   // 마우스 오버 = 그 포켓몬 카드(결정 199 ① — 무리 셋은 공개 정보, 아직 안 나온 · 잡은 · 쓰러진 칸도)
-                }
-                else slot.Add(Kit.Text(stage.T(caught ? "screen.battle.swarm.caught" : "screen.battle.swarm.done"), Kit.F2));
-                swarmSlots.Add(slot);
             }
-        }
-
-        // 갤럭시단 명단(결정 201 ① — rulings A1 · A16 · F12): 앞면으로 공개된 명단(조무래기 둘 · 간부 조각 수 + 2 · 태홍 6)을 「남은 포켓몬 n」 줄 아래에 늘어놓는다.
-        // 칸 = 타입 그림 + 이름(지금 나와 있는 것 금색 · 쓰러진 것 흐림), 마우스 오버 = 그 포켓몬 카드. 보기 사본의 배틀 명단은 명단을 고른 뒤(ApplyLineup)에야 생기니 고르기 전에는 줄이 없다
-        void FillRoster(BattleFeed feed, GameState state)
-        {
-            RosterCount = RosterDone = 0;
-            RosterActive = -1;
-            if (feed.Kind != BattleKind.Galactic || state.Battle == null) return;
-            var side = state.Battle.Sides[1 - feed.MySide];
-            if (side.Owner != SeatId.Galactic || side.Roster.Count < 2) return;
-            var block = info.Q("battle-info-foe");
-            var left = block != null ? block.Q("battle-foe-left") : null;
-            if (left == null) return;
-            swarmCells.Clear();
-            var slots = new VisualElement { name = "battle-roster" };
-            slots.AddToClassList("sn-battle-swarm");
-            slots.AddToClassList("sn-battle-roster");   // 타입 그림은 1080에서도 1배(태홍 여섯이 기둥 안에 들게)
-            block.Insert(block.IndexOf(left) + 1, slots);
-            info.AddToClassList("sn-battle-swarm-info");   // 영어 1080 벌: 명단 칸이 여러 줄이라 기둥의 줄 사이를 좁힌다(무리 줄과 같은 클래스)
-            RosterCount = side.Roster.Count;
-            int active = seen.Active[1 - feed.MySide];
-            for (int i = 0; i < side.Roster.Count; i++)
-            {
-                int id = side.Roster[i];
-                var slot = Add(slots, new VisualElement(), "battle-roster-slot-" + (i + 1).ToString(CultureInfo.InvariantCulture), "sn-battle-swarm-slot");
-                int def = id >= 0 && id < state.Pokemon.Count ? state.Pokemon[id].Def : -1;
-                var mon = Shown(id);
-                bool done = !mon.Exists || mon.Fainted;
-                if (done)
-                {
-                    RosterDone++;
-                    slot.AddToClassList(RosterDoneClass);
-                }
-                else if (id == active) RosterActive = i;
-                if (def < 0)
-                {
-                    slot.Add(Kit.Text(stage.T("screen.battle.swarm.done"), Kit.F2));
-                    continue;
-                }
-                var card = flow.Ctx.Cards.Pokemon[def];
-                foreach (var t in card.Types) TypeIcon(slot, IconArt.Type(t), stage.T("ui.types." + t));
-                slot.Add(Kit.Badge(BoardHud.ShortName(stage.T("pokemon." + card.Key)), !done && id == active ? KitBadgeKind.Gold : KitBadgeKind.Plain, Kit.F2));
-                HookSwarm(slot, id, state);   // 마우스 오버 = 그 포켓몬 카드(무리 칸과 같은 MonTip — 아직 안 나온 · 쓰러진 칸도)
-            }
-        }
-
-        /// <summary>갤럭시단 명단 줄(결정 201 ①)의 쓰러진 칸 클래스(흐림).</summary>
-        public const string RosterDoneClass = "sn-battle-roster-done";
-
-        /// <summary>상대 기둥의 갤럭시단 명단 줄(결정 201 ①): 칸 수 · 쓰러진 칸 수 · 지금 나와 있는 칸(0부터, 없으면 −1) — 줄이 없으면 0 · 0 · −1(확인용).</summary>
-        public int RosterCount { get; private set; }
-        public int RosterDone { get; private set; }
-        public int RosterActive { get; private set; } = -1;
-
-        /// <summary>명단 줄의 n번째 칸(1부터 — <c>battle-roster-slot-n</c>)에 마우스를 올린 것처럼 카드를 띄운다(캡처 · 시험). 그 칸이 없으면 false.</summary>
-        public bool HoverRoster(int n)
-        {
-            var el = info != null ? info.Q("battle-roster-slot-" + n.ToString(CultureInfo.InvariantCulture)) : null;
-            if (el == null || !swarmCells.TryGetValue(el, out var show)) return false;
-            show();
-            return true;
-        }
-
-        readonly Dictionary<VisualElement, Action> swarmCells = new Dictionary<VisualElement, Action>();
-
-        // 무리 칸의 포켓몬 카드(결정 199 ①): 배틀 포켓몬 카드와 같은 내용(기록 기둥 위). 나온 포켓몬은 화면이 그리는 지금 체력 · 스피드, 아직 안 나온 것은 보기 값 그대로
-        void HookSwarm(VisualElement el, int id, GameState state)
-        {
-            if (monTip == null || el == null || state == null || id < 0 || id >= state.Pokemon.Count || state.Pokemon[id].Def < 0) return;
-            var pk = state.Pokemon[id];
-            var mon = Shown(id);
-            int hp = mon.Exists ? mon.Hp : PokemonRules.Hp(flow.Ctx, pk);
-            int speed = mon.Exists ? mon.Speed : flow.Ctx.Cards.Pokemon[pk.Def].Initiative;
-            monTip.HookMon(el, pk, hp, speed, logBox);
-            swarmCells[el] = () => monTip.ShowMon(el, pk, hp, speed, logBox);
-        }
-
-        /// <summary>무리 줄의 n번째 칸(1부터 — <c>battle-swarm-slot-n</c>)에 마우스를 올린 것처럼 카드를 띄운다(캡처 · 시험). 그 칸이 없으면 false.</summary>
-        public bool HoverSwarm(int n)
-        {
-            var el = info != null ? info.Q("battle-swarm-slot-" + n.ToString(CultureInfo.InvariantCulture)) : null;
-            if (el == null || !swarmCells.TryGetValue(el, out var show)) return false;
-            show();
-            return true;
         }
 
         // 덧칩의 움직임(74·75·81행 · 24행): 응징 구슬·배지 · 자물쇠 톡 · 진행 점 톡 · 명단이 하나씩 선다
@@ -710,6 +601,8 @@ namespace Sinnoh.Client
                 RetributionBeats.Moved(local - moved.StartMs, moved.Ms, out orbFly, out orbShow, out burst);
                 toBadge = false;
             }
+            if (RetributionShown > 0) retribution = info?.Q("battle-foe-cards")?.Q("card-retribution") ?? info?.Q("battle-foe-extra")?.Q("battle-foe-retribution");   // 카드는 자리에 맞춰 다시 그려진다 — 그때그때 찾는다
+            if (RetributionShown > 0) retribution = info?.Q("battle-foe-cards")?.Q("card-retribution");   // 카드는 자리에 맞춰 다시 그려진다 — 그때그때 찾는다
             if (retribution != null) FxUi.Scale(retribution, pop, pop);
             if (orb != null)
             {

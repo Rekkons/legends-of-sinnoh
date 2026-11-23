@@ -56,7 +56,10 @@ namespace Sinnoh.Editor
         /// 플레이어 번들 목록: 보드가 읽는 Gen 키(Board/**, Trainers/trainers.json·Front/**, Figures/figures.json·폴더마다 프리팹)와 PC 층 겉모양(UiSkin의 글꼴·창틀 키 셋 → ui), 셋업 화면 그림(정지 도트 아틀라스 → sprites, 마을 카드 그림·체력·스피드 아이콘 → cards)을 GenAssets.BundleFor로 묶는다.
         /// 피규어 재질의 셰이더는 fig_shaders 하나로 뺀다(피규어마다 겹치지 않게, FigureImport 크기 재기와 같다). 디스크 순서가 아니라 서수 정렬(결정적).
         /// </summary>
-        public static List<AssetBundleBuild> Plan()
+        public static List<AssetBundleBuild> Plan() => Plan(false);
+
+        /// <summary>그 대상의 번들 목록 — 웹 손님판(web)은 <see cref="GenAssets.WebSkips"/> 번들(포켓몬 카드 그림 — 결정 206 [가정])을 뺀다.</summary>
+        public static List<AssetBundleBuild> Plan(bool web)
         {
             var byBundle = new SortedDictionary<string, SortedSet<string>>(StringComparer.Ordinal);
             void Add(string key)
@@ -114,6 +117,10 @@ namespace Sinnoh.Editor
             foreach (var k in Keys("Tutorial", true)) Add(k);
             // 설명서 그림(M9 「설명서 그림」, 결정 35): 원작 룰북에서 자른 그림 + 표 — 나눠 받기 번들 rulebook
             foreach (var k in Keys("Rulebook", true)) Add(k);
+            // 포켓몬 카드(결정 206): 구운 앞면 · 띠 · 숫자 글자 + 카드에 얹는 상태 주사위 · 상자 · 타입 그림 · 지닌물건 토큰 — PC만(웹은 도트 카드로 대신 [가정])
+            if (!web)
+                foreach (var dir in new[] { "Cards/Faces", "Cards/Moves", "Cards/Strips", "Cards/Digits", "Cards/Dice", "Cards/Generator/stats_bases", "Cards/Generator/types", "Cards/Tokens/item_tokens" })
+                    foreach (var k in Keys(dir, true).Where(k => GenAssets.WebSkips(GenAssets.BundleFor(k)))) Add(k);
             var shaders = new SortedSet<string>(StringComparer.Ordinal);
             string figRoot = GenAssets.Root + "Figures";
             if (Directory.Exists(figRoot))
@@ -182,10 +189,35 @@ namespace Sinnoh.Editor
             return tex;
         }
 
+        /// <summary>
+        /// UI Toolkit 필터의 기본 셰이더(<see cref="ScreenProbe.FilterShaders"/>)를 그래픽 설정 Always Included Shaders에 넣는다(없는 것만 — 커밋된 설정에 이미 있다).
+        /// 플레이어 빌드에서 빠지면 USS <c>filter: drop-shadow</c> 요소(카드 블럭 그림자)를 그릴 때마다 예외가 난다. 셰이더를 찾지 못하면 예외(빌드 실패).
+        /// </summary>
+        public static void EnsureFilterShaders()
+        {
+            var gs = AssetDatabase.LoadAssetAtPath<UnityEngine.Rendering.GraphicsSettings>("ProjectSettings/GraphicsSettings.asset");
+            var so = new SerializedObject(gs);
+            var list = so.FindProperty("m_AlwaysIncludedShaders");
+            foreach (string name in ScreenProbe.FilterShaders)
+            {
+                var sh = Shader.Find(name) ?? throw new InvalidOperationException("[BoardBuild] UI 필터 셰이더 없음 " + name);
+                bool has = false;
+                for (int i = 0; i < list.arraySize; i++) has |= list.GetArrayElementAtIndex(i).objectReferenceValue == sh;
+                if (has) continue;
+                list.InsertArrayElementAtIndex(list.arraySize);
+                list.GetArrayElementAtIndex(list.arraySize - 1).objectReferenceValue = sh;
+                Debug.Log("[BoardBuild] Always Included Shaders += " + name);
+            }
+            if (so.ApplyModifiedPropertiesWithoutUndo()) AssetDatabase.SaveAssets();
+        }
+
+        public static void FilterShaders() => Batch(() => { EnsureFilterShaders(); return true; });
+
         public static bool BuildWin64()
         {
             PlayerSettings.enableFrameTimingStats = true; // d3-3 §2-4
             PlayerSettings.SplashScreen.show = false;     // 03 §5
+            EnsureFilterShaders();                        // 카드 블럭 그림자(결정 206)
             ApplyIcons();                                 // 결정 159 ①
             SavePlayerSettings();
             bool ok = Build(BuildTarget.StandaloneWindows64, "win64", Path.Combine(OutRoot, "Win64", ExeName + ".exe"), Path.Combine(OutRoot, "Win64", ExeName + "_Data", "StreamingAssets"));
@@ -251,6 +283,7 @@ namespace Sinnoh.Editor
             PlayerSettings.WebGL.decompressionFallback = false;
             PlayerSettings.WebGL.template = WebTemplate;   // 창을 채우는 캔버스 · Gen 번들 받기 막대(M7 웹 손님)
             PlayerSettings.SplashScreen.show = false;
+            EnsureFilterShaders();                         // 카드 블럭 그림자(결정 206 — 웹은 도트 카드지만 같은 USS)
             ApplyIcons();                                  // 결정 159 ① (웹 탭 아이콘은 템플릿의 favicon.ico)
             SavePlayerSettings();
             if (prev != BuildTarget.WebGL && !EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL))
@@ -294,7 +327,7 @@ namespace Sinnoh.Editor
             string bundleDir = Path.Combine(OutRoot, "bundles", target.ToString(), GenAssets.ContentFolder);
             if (Directory.Exists(bundleDir)) Directory.Delete(bundleDir, true);
             Directory.CreateDirectory(bundleDir);
-            var plan = Plan();
+            var plan = Plan(target == BuildTarget.WebGL);
             if (plan.Count == 0) { Debug.LogError("[BoardBuild] Gen 없음: rebuild-all 먼저"); return false; }
             var manifest = BuildPipeline.BuildAssetBundles(bundleDir, plan.ToArray(), BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.StrictMode, target);
             if (manifest == null) { Debug.LogError("[BoardBuild] 번들 만들기 실패"); return false; }

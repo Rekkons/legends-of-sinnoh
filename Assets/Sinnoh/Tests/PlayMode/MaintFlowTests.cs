@@ -114,9 +114,20 @@ namespace Sinnoh.Tests.PlayMode
                         var m = new Maintenance { Kind = MaintKind.SetMove, Pokemon = me.Party[i], Slot = k, Value = party.HeldValue };
                         bool can = client.CanMaintain(m) == RejectReason.None;
                         var slot = stage.Root.Q("board-party-slot-" + i + "-" + (k + 1));
+                        Assert.That(party.CanPut(i, k), Is.EqualTo(can));
+                        // 결정 206 ③: 빈 칸은 받을 수 있을 때만 홈이 선다(받지 못하는 빈 칸은 그리지 않는다) · 찬 칸은 띠 그대로 빛남 / 흐림
+                        var pk = client.View.Pokemon[me.Party[i]];
+                        bool empty = pk.Moves[k] < 0 && pk.Breach[k] < 0 && LegendRules.TacticAt(pk, k) == LegendTactic.None;
+                        if (empty && !can)
+                        {
+                            Assert.That(slot, Is.Null, "받지 못하는 빈 칸 " + i + "-" + k + "은 그리지 않는다");
+                            no++;
+                            continue;
+                        }
+                        Assert.That(slot, Is.Not.Null, "칸 " + i + "-" + k);
+                        if (empty) Assert.That(slot.parent.ClassListContains("sn-card-hole"), Is.True, "받는 빈 칸 = 홈 " + i + "-" + k);
                         Assert.That(slot.ClassListContains("sn-party-ok"), Is.EqualTo(can), "칸 " + i + "-" + k);
                         Assert.That(slot.ClassListContains("sn-party-no"), Is.EqualTo(!can));
-                        Assert.That(party.CanPut(i, k), Is.EqualTo(can));
                         if (can) ok++; else no++;
                     }
                 Assert.That(ok, Is.GreaterThan(0), "배울 수 있는 포켓몬이 있다");
@@ -178,7 +189,8 @@ namespace Sinnoh.Tests.PlayMode
                 yield return null;
                 Assert.That(client.View.Pokemon[me.Party[1]].HeldItem, Is.EqualTo(band));
                 Assert.That(party.Bag.Count, Is.EqualTo(SoloTrail.KitItems.Length - 1));
-                Assert.That(stage.Root.Q("board-party-item-1").Q<Label>().text, Is.EqualTo(stage.T(ctx.Items.Items[band].Key)));
+                Assert.That(stage.Root.Q("board-party-item-1").userData, Is.EqualTo(stage.T(ctx.Items.Items[band].Key)), "카드의 지닌물건 동그라미(결정 206 ③)");
+                Assert.That(stage.Root.Q("board-party-mon-1").Q("card-item-1"), Is.Not.Null, "카드에 지닌물건 토큰");
                 Assert.That(party.PressItemSlot(1), Is.True, "지닌 것을 집는다");
                 Assert.That(party.HeldFrom, Is.EqualTo(me.Party[1]));
                 Assert.That(party.PressItemSlot(2), Is.True, "다른 포켓몬으로 옮긴다");
@@ -204,10 +216,24 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(party.PressMon(1), Is.True);
                 yield return null;
                 Assert.That(stage.Current, Is.InstanceOf<MonScreen>());
-                Assert.That(stage.Root.Q<Label>("mon-detail-name").text, Is.EqualTo(stage.T("pokemon." + ctx.Cards.Pokemon[client.View.Pokemon[a].Def].Key)));
-                Assert.That(stage.Root.Q("mon-detail-move-0"), Is.Not.Null);
-                Assert.That(stage.Root.Q("mon-detail-evolve"), Is.Not.Null);
-                Assert.That(stage.Root.Q("mon-detail-item"), Is.Not.Null);
+                // 결정 206 ①(목업 B-party): 원작 카드 앞면 + 오른쪽 기둥(띠 · 지닌물건 글 상자) + 진화 줄 · [닫기]
+                var zoom = (MonScreen)stage.Current;
+                var zpk = client.View.Pokemon[a];
+                Assert.That(zoom.Stack, Is.Not.Null, "원작 카드로 그린다");
+                Assert.That(zoom.Stack.Art, Is.True, zoom.Stack.FaceKey);
+                StringAssert.EndsWith("/" + ctx.Cards.Pokemon[zpk.Def].Key.Replace(':', '_') + ".png", zoom.Stack.FaceKey, "그 포켓몬의 카드");
+                var zcol = zoom.Stack.Column;
+                Assert.That(zcol, Is.Not.Null, "오른쪽 기둥");
+                Assert.That(zcol.worldBound.xMin, Is.GreaterThanOrEqualTo(zoom.Stack.Root.Q("card-face").worldBound.xMax), "기둥은 카드 오른쪽");
+                Assert.That(zoom.Stack.StripCount, Is.EqualTo(CardMon.Of(ctx, client.View, a).Slots.Count), "띠 = 배운 칸(빈 칸은 없다)");
+                int zitems = (zpk.Alpha ? 1 : 0) + (zpk.HeldItem >= 0 ? 1 : 0) + (zpk.HeldItem2 >= 0 ? 1 : 0), znotes = 0;
+                while (zoom.Stack.Root.Q("card-note-" + (znotes + 1)) != null) znotes++;
+                Assert.That(znotes, Is.EqualTo(zitems), "지닌물건 글 상자 = 지닌물건 수");
+                Assert.That(stage.Root.Q("mon-detail-move-0"), Is.Not.Null, "★ 고유 기술 자리");
+                Assert.That(zoom.Stack.Root.Q("mon-detail-evolve"), Is.Not.Null, "진화 줄(카드에 없는 값)");
+                Assert.That(stage.Root.Q("mon-detail-block").Q("mon-detail-close"), Is.Not.Null, "[닫기]는 카드 묶음 오른쪽 위(검토 지적 1)");
+                var zbox = stage.Root.Q("mon-detail-block").worldBound;
+                Assert.That(zbox.yMin >= stage.Root.worldBound.yMin - 0.5f && zbox.yMax <= stage.Root.worldBound.yMax + 0.5f, Is.True, "화면 안(" + zbox + ")");
                 flow.CloseMon();
                 yield return null;
                 Assert.That(stage.Current, Is.InstanceOf<PartyScreen>());
@@ -312,17 +338,19 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(party.Held, Is.EqualTo(PartyScreen.Hold.Move));
                 int first = party.HeldValue;
                 Assert.That(ghost.resolvedStyle.display, Is.EqualTo(DisplayStyle.Flex));
-                // 결정 73 ④(C7 ① 나 「카드 그림 전체가 따라온다」): 이름표가 아니라 풀의 기술 카드와 같은 카드(타입 · 이름 · 위력)가 같은 폭으로 따라온다
-                var ghostCard = ghost.Q(className: "sn-enc-move");
-                Assert.That(ghostCard, Is.Not.Null, "따라오는 것 = 기술 카드");
-                Assert.That(ghostCard.Q(className: "sn-type-icon"), Is.Not.Null, "타입 아이콘");
-                Assert.That(ghostCard.Q<Label>(className: "sn-enc-move-name").text, Is.EqualTo(stage.T("move." + SoloTrail.KitMoves[0])));
-                Assert.That(ghostCard.Query<Label>().ToList().Exists(l => l.text == stage.T("screen.battle.power")), Is.True, "위력");
-                Assert.That(ghostCard.worldBound.width, Is.EqualTo(stage.Root.Q("board-party-pool-1").worldBound.width).Within(1f), "풀의 카드와 같은 폭");
+                // 결정 73 ④ · 결정 206 ③: 그 기술 띠(포켓몬 카드 뒷면의 홈 ~ 아래 끝 — 원작 그림)가 판의 카드와 같은 폭으로 따라온다
+                var ghostCard = ghost.Q(className: "sn-pcard-ghost");
+                Assert.That(ghostCard, Is.Not.Null, "따라오는 것 = 기술 띠");
+                var stripTex = GenAssets.Load<Texture2D>(GenAssets.CardMoves + "ko/" + SoloTrail.KitMoves[0] + ".png");
+                Assert.That(stripTex, Is.Not.Null, "기술 띠 그림(Gen Cards/Moves)");
+                Assert.That(ghostCard.resolvedStyle.backgroundImage.texture, Is.SameAs(stripTex), "끄는 기술의 띠 그림");
+                Assert.That(ghostCard.worldBound.width, Is.EqualTo(stage.Root.Q("board-party-mon-0").worldBound.width).Within(1f), "판의 카드와 같은 폭");
                 Assert.That(ghost.pickingMode, Is.EqualTo(PickingMode.Ignore));
                 Assert.That(ghostCard.pickingMode, Is.EqualTo(PickingMode.Ignore), "따라오는 카드는 마우스를 받지 않는다(놓을 칸을 가리지 않게)");
                 var slot = stage.Root.Q("board-party-slot-0-1");
                 Assert.That(slot.ClassListContains("sn-party-ok"), Is.True, "스타팅 포켓몬의 빈 칸이 빛난다");
+                Assert.That(slot.parent.ClassListContains("sn-card-hole"), Is.True, "빈 칸 = 끄는 동안만 서는 홈");
+                Assert.That(slot.parent.worldBound.height, Is.EqualTo(Mathf.Round(slot.parent.worldBound.width * CardStack.MoveStripPx / (CardStack.WidthCm * CardStack.PxPerCm))).Within(1f), "홈 = 기술 띠 크기");
                 Assert.That(party.BeginDrag(PartyScreen.Hold.Move, 1), Is.False, "끄는 중에는 다른 것을 끌지 못한다");
                 Vector2 mid = slot.worldBound.center + new Vector2(-40f, 60f);
                 party.DragTo(mid);
@@ -360,10 +388,12 @@ namespace Sinnoh.Tests.PlayMode
                 int item = party.HeldValue;
                 var itemSlot = stage.Root.Q("board-party-item-0");
                 Assert.That(itemSlot.ClassListContains("sn-party-ok"), Is.True);
-                var ghostChip = ghost.Q(className: "sn-party-chip");
-                Assert.That(ghostChip, Is.Not.Null, "따라오는 것 = 가방의 지닌물건 칩과 같은 카드");
-                Assert.That(ghostChip.Q<Label>().text, Is.EqualTo(stage.T(flow.Ctx.Items.Items[item].Key)));
-                Assert.That(ghost.Q(className: "sn-enc-move"), Is.Null, "앞서 끈 기술 카드는 남지 않는다");
+                // 검토 지적 14: 카드 그림 판에서는 카드 동그라미에 얹히는 토큰 그림 하나가 따라온다(가방 칩이 카드 타입 줄 위에 얹히지 않게)
+                var ghostToken = ghost.Q(className: "sn-pcard-ghost");
+                Assert.That(ghostToken, Is.Not.Null, "따라오는 것 = 지닌물건 토큰");
+                Assert.That(ghostToken.style.backgroundImage.value.texture, Is.EqualTo(GenAssets.Load<Texture2D>(CardStack.TokenOrIcon(flow.Ctx, item))), "그 지닌물건의 토큰 그림");
+                Assert.That(ghost.Q(className: "sn-party-chip"), Is.Null, "가방 칩이 아니다");
+                Assert.That(itemSlot.ClassListContains("sn-pcard-item") && stage.Root.Q("board-party-mon-0").Q("card-face").worldBound.Contains(itemSlot.worldBound.center), Is.True, "받는 자리 = 카드의 지닌물건 동그라미");
                 Assert.That(party.EndDrag(itemSlot.worldBound.center), Is.True);
                 yield return null;
                 Assert.That(client.View.Pokemon[starter].HeldItem, Is.EqualTo(item), "끌어 놓아 지니게 했다");
@@ -374,7 +404,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(party.BeginDrag(PartyScreen.Hold.Item, 0, true), Is.True);
                 yield return null;
                 Assert.That(party.HeldFrom, Is.EqualTo(starter));
-                Assert.That(ghost.Q(className: "sn-party-chip").Q<Label>().text, Is.EqualTo(stage.T(flow.Ctx.Items.Items[item].Key)), "포켓몬이 지닌 것도 칩 카드가 따라온다");
+                Assert.That(ghost.Q(className: "sn-pcard-ghost").style.backgroundImage.value.texture, Is.EqualTo(GenAssets.Load<Texture2D>(CardStack.TokenOrIcon(flow.Ctx, item))), "포켓몬이 지닌 것도 토큰이 따라온다");
                 var bagBox = stage.Root.Q("board-party-bag");
                 Assert.That(bagBox.ClassListContains("sn-party-ok"), Is.True);
                 Assert.That(party.EndDrag(bagBox.worldBound.center), Is.True);
@@ -641,7 +671,8 @@ namespace Sinnoh.Tests.PlayMode
                 {
                     Assert.That(row, Is.Not.Null, where);
                     Assert.That(row.ClassListContains(MonParts.LegendSlotClass) || row.Q(className: MonParts.LegendSlotClass) != null, Is.True, where + ": 전설 특수기술 칸");
-                    Assert.That(row.Query<Label>().ToList().Exists(l => l.text == name), Is.True, where + ": 「" + name + "」");
+                    // 정비 판(결정 206 ③) = 카드 밑 전설 전술 판의 상자(이름 = 그 자리의 툴팁 머리) · 카드 확대 = 줄 글
+                    Assert.That(row.userData as string == name || row.Query<Label>().ToList().Exists(l => l.text == name), Is.True, where + ": 「" + name + "」");
                     Assert.That(row.Query<Label>().ToList().Exists(l => l.text == stage.T("screen.party.slot.empty")), Is.False, where + ": 「빈 칸」이 아니다");
                 }
 
@@ -669,9 +700,16 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(flow.OpenMon(starter, seat), Is.True, "카드 확대");
                 yield return null;
                 yield return null;
-                Slot(stage.Root.Q("mon-detail-move-1"), alpha, "카드 확대 칸 1");
-                Assert.That(stage.Root.Q("mon-detail-move-1").Q(className: MonParts.LegendSlotClass).Query(className: "sn-type-icon").ToList().Count, Is.EqualTo(learn.Count), "알파 스트라이크 = 배우는 타입 그림");
-                Slot(stage.Root.Q("mon-detail-move-2"), beast, "카드 확대 칸 2");
+                // 결정 206 ①: 카드 확대 = 원작 카드 — 오른쪽 기둥의 첫 띠가 전설 전술 판 한 장(알파 스트라이크 + 배울 수 있는 타입 그림 · 비스트 부스트)
+                var zoom = (MonScreen)stage.Current;
+                Assert.That(zoom.Stack != null && zoom.Stack.Art, Is.True, "원작 카드");
+                Assert.That(zoom.Stack.StripCount, Is.EqualTo(1), "전술 판 한 장");
+                Assert.That(zoom.Stack.Column.Q("card-strip-1"), Is.Not.Null);
+                int types = 0;
+                while (zoom.Stack.Column.Q("card-alpha-type-" + (types + 1)) != null) types++;
+                Assert.That(types, Is.EqualTo(learn.Count), "알파 스트라이크 = 배우는 타입 그림");
+                Assert.That(zoom.Stack.Parts.Any(p => p.Kind == CardPartKind.AlphaStrike && p.Title == alpha), Is.True, "알파 스트라이크 자리(효과 글 툴팁)");
+                Assert.That(zoom.Stack.Parts.Any(p => p.Kind == CardPartKind.BeastBoost && p.Title == beast), Is.True, "비스트 부스트 자리");
                 Assert.That(errors, Is.Empty, string.Join(" | ", errors));
             }
             finally

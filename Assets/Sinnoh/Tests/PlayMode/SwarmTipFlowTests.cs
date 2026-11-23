@@ -8,12 +8,13 @@ using Sinnoh.Rules.Session;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Sinnoh.Tests.PlayMode
 {
     /// <summary>
-    /// 결정 199 ①(2026-11-21): 배틀 화면 상대 기둥의 무리 줄(<c>battle-swarm-slot-n</c>)에 마우스를 올리면 그 포켓몬 카드(배틀 포켓몬 카드와 같은 MonTip)가 뜬다 —
+    /// 결정 199 ①(2026-11-21): 배틀 화면 상대 기둥의 무리 카드(<c>battle-swarm-slot-n</c> — 결정 206 ②부터 엇겹친 카드 셋)에 마우스를 올리면 셋을 펼친 엔트리 판(<c>battle-entry-n</c>)이 뜬다 —
     /// 아직 안 나온 포켓몬도(무리 셋은 공개 정보, 룰북 p.12). 왜곡 게이트(디프마시)의 무리 배틀. UiShots <c>swarm-tip-*</c>가 같은 판을 찍는다.
     /// </summary>
     public sealed class SwarmTipFlowTests
@@ -81,14 +82,30 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(screen.SwarmCount, Is.EqualTo(3), "무리 셋");
                 var view = flow.Client.View;
                 var roster = view.Battle.Sides[1 - flow.Battle.MySide].Roster;
+                // 판 기하(한 번 — 마우스 오버로 연 판): 화면 안 · 기둥 오른쪽 · 기록 기둥 가운데에서 끊기지 않는다(검토 지적 5 · 23)
+                Assert.That(screen.HoverSwarm(1), Is.True, "무리 카드 1");
+                yield return null;
+                yield return null;
+                Assert.That(screen.EntryOpen, Is.True, "엇겹친 카드 마우스 오버 = 셋을 펼친 엔트리 판(결정 206 ②)");
+                Assert.That(screen.EntryShown.Count, Is.EqualTo(roster.Count), "판에 셋 모두");
+                var panel = stage.Root.Q(BattleScreen.EntryPanel).worldBound;
+                var root = stage.Root.worldBound;
+                Assert.That(panel.xMin >= root.xMin && panel.xMax <= root.xMax && panel.yMin >= root.yMin && panel.yMax <= root.yMax, Is.True, "판이 화면 안: " + panel);
+                Assert.That(panel.xMin, Is.GreaterThanOrEqualTo(stage.Root.Q("battle-info").worldBound.xMax - 0.5f), "판은 기둥 오른쪽");
+                var log = stage.Root.Q("battle-log").worldBound;
+                Assert.That(panel.xMax <= log.xMin + 0.5f || panel.xMax >= log.xMax - 0.5f, Is.True, "판 오른쪽 끝이 기록 기둥 가운데에 걸리지 않는다: " + panel + " · " + log);
+                int active = screen.ShownMon(1 - flow.Battle.MySide).Id;
+                // 마우스 오버 대상마다: 그 엇겹친 칸 → 판의 그 카드(같은 포켓몬 · 판 안 · 나와 있는 것만 「배틀 중」 테)
                 for (int n = 1; n <= roster.Count; n++)
                 {
-                    Assert.That(screen.HoverSwarm(n), Is.True, "무리 칸 " + n);
+                    Assert.That(stage.Root.Q("battle-swarm-slot-" + n), Is.Not.Null, "엇겹친 무리 칸 " + n);
+                    Assert.That(screen.HoverSwarm(n), Is.True, "무리 카드 " + n);
                     yield return null;
-                    Assert.That(screen.MonTipShown, Is.EqualTo(view.Pokemon[roster[n - 1]].Def), "무리 칸 " + n + "의 카드 = 그 포켓몬(아직 안 나온 것도)");
-                    var card = screen.MonTipElement.worldBound;
-                    var root = stage.Root.worldBound;
-                    Assert.That(card.xMin >= root.xMin && card.xMax <= root.xMax && card.yMin >= root.yMin && card.yMax <= root.yMax, Is.True, "카드가 화면 안: " + card);
+                    var col = stage.Root.Q(BattleScreen.EntryPanel + "-" + n);
+                    Assert.That(col, Is.Not.Null, "판의 카드 " + n);
+                    Assert.That(view.Pokemon[screen.EntryShown[n - 1]].Def, Is.EqualTo(view.Pokemon[roster[n - 1]].Def), "판의 카드 " + n + " = 그 포켓몬(아직 안 나온 것도)");
+                    Assert.That(stage.Root.Q(BattleScreen.EntryPanel).worldBound.Contains(col.worldBound.center), Is.True, "카드 " + n + "는 판 안");
+                    Assert.That(col.ClassListContains(BattleScreen.EntryNowClass), Is.EqualTo(roster[n - 1] == active), "「배틀 중」 테는 나와 있는 카드에만 " + n);
                 }
                 Assert.That(errors, Is.Empty, "에러 로그: " + string.Join(" | ", errors));
             }

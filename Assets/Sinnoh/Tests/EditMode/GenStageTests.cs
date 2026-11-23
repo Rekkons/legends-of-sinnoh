@@ -291,6 +291,37 @@ namespace Sinnoh.Tests.EditMode
         }
 
         [Test]
+        public void M10_포켓몬카드()
+        {
+            // 결정 206: 원작 카드 생성기로 우리 글을 넣어 구운 앞면(432×756) · 기술 띠(기술 카드 = 포켓몬 카드 뒷면의 아래 432×284) · 균열 · 전술 판 띠 · 숫자 글자.
+            // ko · en 같은 벌(숫자 글자 · 전설 표지는 all 한 벌). faces.json 행 = Faces/ · Moves/ · Strips/ · Digits/ 그림 전부. 1단계 = 전체(포켓몬 표 · 기술 표 모두)
+            string json = GenText("Cards/Faces/faces.json");
+            var rows = Lines(json, "^\\{\"kind\":\"(face|move|strip|digit)\",\"key\":\"([^\"]+)\",\"lang\":\"(ko|en|all)\",\"file\":\"((?:Faces|Moves|Strips|Digits)/(?:(?:ko|en)/)?[^\"/]+\\.png)\",\"w\":([0-9]+),\"h\":([0-9]+)\\}");
+            Assert.AreEqual(Regex.Matches(json, "\"file\":").Count, rows.Count, "faces.json 모든 행 형식");
+            int pokemon = Lines(TestData.ReadText("pokemon.json"), "^\\{\"key\":").Count, moves = Lines(TestData.ReadText("moves.json"), "^\\{\"key\":").Count;
+            Assert.AreEqual(2 * pokemon, rows.Count(r => r.Groups[1].Value == "face"), "앞면 = 포켓몬 표 × 두 언어");
+            Assert.AreEqual(2 * moves, rows.Count(r => r.Groups[1].Value == "move"), "기술 띠 = 기술 표 × 두 언어");
+            Assert.AreEqual(2 * (6 + 3) + 1, rows.Count(r => r.Groups[1].Value == "strip"), "균열 6 · 전술 판 3(legend · legend_beast · galactic) × 두 언어 + 전설 표지");
+            Assert.AreEqual(11 + 10 + 12, rows.Count(r => r.Groups[1].Value == "digit"), "숫자 글자 num 11 · die 10 · tag 12");
+            string cards = Path.Combine(Gen, "Cards");
+            var onDisk = new[] { "Faces", "Moves", "Strips", "Digits" }.SelectMany(d => Directory.GetFiles(Path.Combine(cards, d), "*.png", SearchOption.AllDirectories))
+                .Select(f => f.Replace('\\', '/').Substring(cards.Replace('\\', '/').Length + 1));
+            CollectionAssert.AreEquivalent(onDisk, rows.Select(r => r.Groups[4].Value), "Faces/ · Moves/ · Strips/ · Digits/ 그림 = faces.json 행");
+            foreach (var r in rows)
+            {
+                var got = (int.Parse(r.Groups[5].Value), int.Parse(r.Groups[6].Value));
+                Assert.AreEqual(got, PngSize(Path.Combine(cards, r.Groups[4].Value)), r.Groups[4].Value);
+                string kind = r.Groups[1].Value;
+                if (kind == "face") Assert.AreEqual((432, 756), got, r.Groups[4].Value);
+                if (kind == "move" || r.Groups[2].Value.StartsWith("breach_")) Assert.AreEqual((432, 284), got, r.Groups[4].Value + " — 띠 = 17.48~28 cm(C# CardStack.HideCm)");
+                if (kind == "strip" && r.Groups[3].Value != "all") Assert.That(got.Item1 == 432 && got.Item2 % 4 == 0, r.Groups[4].Value + " 폭 432 · 높이 4의 배수");
+            }
+            var ko = rows.Where(r => r.Groups[3].Value == "ko").Select(r => r.Groups[1].Value + " " + r.Groups[2].Value);
+            var en = rows.Where(r => r.Groups[3].Value == "en").Select(r => r.Groups[1].Value + " " + r.Groups[2].Value);
+            CollectionAssert.AreEquivalent(ko, en, "ko · en 같은 벌");
+        }
+
+        [Test]
         public void M4_마을카드9()
         {
             // 03 §2-4: 고향 마을 카드 9 = cards.json home_village = 마을 고정물, 가운데 그림 1524×1236 → 640폭
@@ -322,7 +353,9 @@ namespace Sinnoh.Tests.EditMode
             var rows = Lines(json, "^\\{\"file\":\"([A-Za-z0-9_/]+\\.png)\",\"w\":([0-9]+),\"h\":([0-9]+),\"source\":\"levatius:assets/[a-z0-9_/.]+\"(?:,\"key\":\"([A-Za-z_.]+)\")?\\}");
             Assert.AreEqual(Regex.Matches(json, "\"file\":").Count, rows.Count, "cards.json 모든 행 형식");
             string cards = Path.Combine(Gen, "Cards");
-            var onDisk = Directory.GetFiles(cards, "*.png", SearchOption.AllDirectories).Select(f => f.Replace('\\', '/').Substring(cards.Replace('\\', '/').Length + 1));
+            // 포켓몬 카드 앞면 · 띠 · 숫자 글자(Faces/ · Moves/ · Strips/ · Digits/)는 cardfaces 묶음 것 — 목록은 Faces/faces.json(M10_포켓몬카드)
+            var onDisk = Directory.GetFiles(cards, "*.png", SearchOption.AllDirectories).Select(f => f.Replace('\\', '/').Substring(cards.Replace('\\', '/').Length + 1))
+                .Where(f => !f.StartsWith("Faces/") && !f.StartsWith("Moves/") && !f.StartsWith("Strips/") && !f.StartsWith("Digits/"));
             CollectionAssert.AreEquivalent(onDisk, rows.Select(r => r.Groups[1].Value), "Cards/ 그림 = cards.json 행");
             foreach (var r in rows) Assert.AreEqual((int.Parse(r.Groups[2].Value), int.Parse(r.Groups[3].Value)), PngSize(Path.Combine(cards, r.Groups[1].Value)), r.Groups[1].Value);
             List<Match> In(string dir) => rows.Where(r => r.Groups[1].Value.StartsWith(dir + "/")).ToList();

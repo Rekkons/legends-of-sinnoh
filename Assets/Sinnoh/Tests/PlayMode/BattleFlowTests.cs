@@ -351,7 +351,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(screen.Ds.Output.width, Is.EqualTo(256));
                 Assert.That(screen.Ds.Output.height, Is.EqualTo(192));
                 Assert.That(screen.Ds.Output.filterMode, Is.EqualTo(FilterMode.Point));
-                Assert.That(stage.Root.Q<Label>("battle-kind").text, Is.EqualTo("갤럭시단 배틀"));
+                Assert.That(stage.Root.Q<Label>("battle-foe-who").text, Is.EqualTo(stage.T("screen.battle.foe.galactic")), "기둥 상대 쪽 이름 줄(결정 206 ② — 배틀 종류 배지 대신)");
                 // 조무래기 둘 가운데 누가 먼저 나올지는 상대(AI)가 고른다 — 방장 멈춤 뒤에 답이 온다. 그동안은 내 포켓몬만 나와 있다
                 yield return Until(() =>
                 {
@@ -360,10 +360,10 @@ namespace Sinnoh.Tests.PlayMode
                 }, 30f);
                 yield return null;
                 Assert.That(screen.ShownMon(1).Exists, Is.True, "상대의 첫 포켓몬이 나왔다");
-                Assert.That(stage.Root.Q("battle-info-me").Q(className: "sn-mon"), Is.Not.Null, "내 포켓몬");
+                Assert.That(stage.Root.Q("battle-info-me").Q("battle-me-art"), Is.Not.Null, "내 포켓몬 카드(결정 206 ②)");
                 Assert.That(FaceBox.Shown(stage.Root.Q("battle-me-face")), Is.EqualTo(flow.Protagonist(flow.Client.Seat)), "배틀 기둥(내 쪽) 얼굴 상자 = 내 좌석 주인공(결정 61 ③)");
                 Assert.That(stage.Root.Q("battle-foe-face"), Is.Null, "갤럭시단 쪽은 얼굴 상자 없이 이름만");
-                Assert.That(stage.Root.Q("battle-info-foe").Q(className: "sn-mon"), Is.Not.Null, "상대 포켓몬(갤럭시단 카드도 같은 종의 도트)");
+                Assert.That(stage.Root.Q("battle-info-foe").Q("battle-foe-art"), Is.Not.Null, "상대 포켓몬 카드");
                 Assert.That(stage.Root.Q("battle-log-lines").childCount, Is.GreaterThanOrEqualTo(3), "기록: 승부를 걸어왔다 · 출전 둘");
 
                 // DS 화면에 무대가 그려졌다(빈 화면이 아니다)
@@ -398,7 +398,7 @@ namespace Sinnoh.Tests.PlayMode
                     // 작은 얼굴 상자(위 띠 칩 · 기둥) = 조각 30×30의 정수배: 720 벌 ×1 · 1080 벌 ×2(결정 64). 기둥은 좌석 칩 아래에서 시작한다
                     float faceSide = stage.Grade.TokenHeight == 720 ? 30f : 60f;
                     Assert.That(stage.Root.Q("board-hud-seat-1-face").Q<Image>(className: "sn-face-art").worldBound.size, Is.EqualTo(new Vector2(faceSide, faceSide)), at + " 위 띠 얼굴 조각");
-                    Assert.That(stage.Root.Q("battle-me-face").Q<Image>(className: "sn-face-art").worldBound.size, Is.EqualTo(new Vector2(faceSide, faceSide)), at + " 기둥 얼굴 조각");
+                    Assert.That(stage.Root.Q("battle-me-face").Q<Image>(className: "sn-face-art").worldBound.size, Is.EqualTo(new Vector2(30f, 30f)), at + " 기둥 머리 줄 얼굴 조각(두 벌 모두 30 — 머리 줄 높이를 단추 높이 안에, 검토 지적 2)");
                     Assert.That(stage.Root.Q("battle-info").worldBound.yMin, Is.GreaterThanOrEqualTo(stage.Root.Q("board-hud-seat-1").worldBound.yMax), at + " 기둥이 좌석 칩과 겹치지 않는다");
                     Assert.That(stage.Current, Is.InstanceOf<BattleScreen>(), at + ": 화면은 그대로");
                 }

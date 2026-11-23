@@ -317,6 +317,50 @@ namespace Sinnoh.Ai
         /// <summary>막 길의 파티(좌석 0): 전설 다섯 + 스타팅 포켓몬(맨 뒤) — 간부·태홍의 명단을 이기는 판을 찾기 쉽게.</summary>
         public static readonly string[] Team = { "483:2", "484:2", "487:2", "468:2", "389:2" };
 
+        /// <summary>카드 쌓기 견본(결정 206 — 목업 r10-stats의 다섯 + 갤럭시단 조무래기 하나)의 포켓몬 키.</summary>
+        public static readonly string[] CardTeam = { "389:1", "392:1", "483:2", "405:1", "398:1" };
+        public const string CardGrunt = "436:0@male_grunt";
+
+        /// <summary>
+        /// 카드 쌓기 견본 판(결정 206 — 캡처 · 시험이 같이 쓴다): 좌석 0 파티 = 토대부기(피해 6 · 독 · 깨물어부수기 · 지진 · 구애머리띠 + 화산의 돌) · 초염몽(마비 · 화염방사 · 칸 2 균열 카드 재빠른 공격 · 별의 방패) ·
+        /// 디아루가 오리진폼(큰금강옥 · 전설 특수기술 — 알파 스트라이크 · 비스트 부스트) · 렌트라(우두머리 · 전설 특수기술 · 깜짝베기 → 비스트 부스트만 · 피해 2) · 찌르호크(기절)
+        /// + 갤럭시단 주인의 동미러(파티 밖 — 플랜 B · 은하의 응징). 반환 = 여섯 포켓몬 색인(파티 순 + 동미러).
+        /// </summary>
+        public static int[] PrepareCards(Ctx ctx, GameState s)
+        {
+            var st = s.Seats[0];
+            st.OpenSlots = st.Party.Length;
+            for (int i = 0; i < st.Party.Length; i++) st.Party[i] = -1;
+            var ids = new int[CardTeam.Length + 1];
+            for (int i = 0; i < CardTeam.Length; i++) PokemonRules.AddToParty(st, ids[i] = PokemonRules.Spawn(s, ctx.Cards.PokemonIds.IndexOf(CardTeam[i]), 0, (int)DeckId.Legendary));
+            int Move(string k) => ctx.Cards.MoveIds.IndexOf(k);
+            int Item(string k) => ctx.Items.Ids.IndexOf("item." + k);
+            var torterra = s.Pokemon[ids[0]];
+            torterra.Damage = 6;
+            torterra.Status = StatusEffect.Poisoned;
+            torterra.Moves[0] = Move("crunch");
+            torterra.Moves[1] = Move("earthquake");
+            torterra.HeldItem = Item("choice_band");
+            torterra.HeldItem2 = Item("magma_stone");
+            var infernape = s.Pokemon[ids[1]];
+            infernape.Status = StatusEffect.Paralysed;
+            infernape.Moves[0] = Move("flamethrower");
+            infernape.Breach[1] = BreachRules.CardOf(ctx, BreachKind.RapidStrikes);
+            infernape.HeldItem = Item("star_shield");
+            var dialga = s.Pokemon[ids[2]];
+            dialga.HasLegendaryMove = true;
+            dialga.HeldItem = Item("adamant_artifact");
+            var luxray = s.Pokemon[ids[3]];
+            luxray.Alpha = true;
+            luxray.HasLegendaryMove = true;
+            luxray.Moves[0] = Move("night_slash");
+            luxray.Damage = 2;
+            var staraptor = s.Pokemon[ids[4]];
+            staraptor.Damage = PokemonRules.MaxHp(ctx, staraptor);
+            ids[CardTeam.Length] = PokemonRules.Spawn(s, ctx.Cards.PokemonIds.IndexOf(CardGrunt), SeatId.Galactic, (int)DeckId.GalacticGrunt);
+            return ids;
+        }
+
         static void Advance(Ctx ctx, GameState s, int act, int held, bool heart)
         {
             var fx = new Emitter(s, null);

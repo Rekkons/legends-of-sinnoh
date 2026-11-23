@@ -19,7 +19,10 @@
 ]},
 {"tab":"sound","title":{"ko":"소리 · 글꼴","en":"Sound & fonts"},"entries":[
 {"who":"Braxton Burks · The Pokémon Company","role":{"ko":"BGM 「Ultra Beast」 · 「Ultra Burst」","en":"Music “Ultra Beast” and “Ultra Burst”"},"from":["music"],"links":["https://steamcommunity.com/sharedfiles/filedetails/?id=2652573878"]},
-{"who":"Lee Minseo (quiple)","role":{"ko":"Galmuri 글꼴","en":"Galmuri font"},"from":["galmuri"],"links":["https://github.com/quiple/galmuri"],"terms":"SIL Open Font License 1.1","license":"Tools/assets/credits/Galmuri-OFL.txt"}
+{"who":"Lee Minseo (quiple)","role":{"ko":"Galmuri 글꼴","en":"Galmuri font"},"from":["galmuri"],"links":["https://github.com/quiple/galmuri"],"terms":"SIL Open Font License 1.1","license":"Tools/assets/credits/Galmuri-OFL.txt"},
+{"who":"Kil Hyung-jin (orioncactus)","role":{"ko":"Pretendard 글꼴 (포켓몬 카드 한국어 글)","en":"Pretendard font (Korean text on Pokémon cards)"},"from":["pretendard"],"links":["https://github.com/orioncactus/pretendard"],"terms":"SIL Open Font License 1.1","license":"Tools/assets/credits/Pretendard-OFL.txt"},
+{"who":"Jeremy Tribby","role":{"ko":"Barlow 글꼴 (포켓몬 카드 영어 글)","en":"Barlow font (English text on Pokémon cards)"},"from":["barlow"],"links":["https://github.com/jpt/barlow"],"terms":"SIL Open Font License 1.1","license":"Tools/assets/credits/Barlow-OFL.txt"},
+{"who":"Don Marciano (Juan Miguel Castillo)","role":{"ko":"La Oriental 글꼴 (포켓몬 카드 숫자)","en":"La Oriental font (numbers on Pokémon cards)"},"from":["la-oriental"],"links":["https://www.1001fonts.com/la-oriental-font.html","https://www.1001fonts.com/licenses/ffc.html"],"terms":{"ko":"1001Fonts 「Free For Commercial Use」 — 개인 · 상업 사용 무료(글꼴 파일은 함께 배포하지 않습니다)","en":"1001Fonts “Free For Commercial Use” — free for personal and commercial use (the font file itself is not distributed)"}}
 ]},
 {"tab":"program","title":{"ko":"프로그램","en":"Software"},"entries":[
 {"who":"Unity Technologies","role":{"ko":"Unity 엔진 · 네트워크 · 온라인 방","en":"Unity engine, networking and online rooms"},"from":["unity","ngo","ugs"],"links":["https://unity.com/"],"terms":{"ko":"Unity 이용 약관 · Unity Companion License","en":"Unity Terms of Service · Unity Companion License"}},

@@ -9,9 +9,10 @@
 {"dir":"assets/cards/change_of_fate","usedFor":"운명 카드 앞면 4·뒷면(Cards/Fate)"},
 {"dir":"assets/cards/shrine","usedFor":"사당 카드 그림 부분(Cards/Shrine)"},
 {"dir":"assets/cards/act","usedFor":"종막 카드 뒷면 문양(Cards/Act)"},
-{"dir":"assets/1_expansion_distortion_world","usedFor":"왜곡 균열 카드 그림 부분(Cards/Breach) · 울트라 온슬롯 카드 그림 부분(Cards/Onslaught)"},
-{"dir":"assets/card_generator","usedFor":"카드 생성기 부품(Cards/Generator)"},
+{"dir":"assets/1_expansion_distortion_world","usedFor":"왜곡 균열 카드 그림 부분(Cards/Breach) · 울트라 온슬롯 카드 그림 부분(Cards/Onslaught) · 균열 카드 효과 띠(Cards/Strips)"},
+{"dir":"assets/card_generator","usedFor":"카드 생성기 부품(Cards/Generator) · 포켓몬 카드 앞면 · 기술 띠 굽기의 부품 · 공식 그림 · 글꼴 · 카드 뒷면(Cards/Faces · Cards/Moves · Cards/Digits)"},
 {"dir":"assets/tokens","usedFor":"아이템 아이콘·토큰·상징 아이콘(Cards/Tokens) · 여행 스탬프 도장(Cards/Stamp)"},
 {"dir":"assets/bases/trainer_area","usedFor":"여행 스탬프 시트 앞면(Cards/Stamp)"},
+{"dir":"assets/bases/battle_arena","usedFor":"아레나 전술 판 — 알파 스트라이크 · 비스트 부스트 · 플랜 B · 은하의 응징 띠(Cards/Strips)"},
 {"dir":"assets/dice","usedFor":"공격·상태 주사위 면(Cards/Dice)"}
 ]}

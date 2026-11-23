@@ -151,18 +151,21 @@ namespace Sinnoh.Tests.PlayMode
             var tip = screen.MonTipElement;
             Assert.That(tip.resolvedStyle.display, Is.EqualTo(DisplayStyle.Flex));
             Assert.That(tip.resolvedStyle.visibility, Is.EqualTo(Visibility.Visible), "크기가 정해진 뒤 자리를 잡아 보인다");
-            Assert.That(tip.Q("mon-tip-name"), Is.Not.Null);
-            Assert.That(tip.Q("mon-tip-stats"), Is.Not.Null, "체력 · 스피드");
-            Assert.That(tip.Q("mon-tip-learn").Query(className: "sn-type-icon").ToList().Count, Is.EqualTo(flow.Ctx.Cards.Pokemon[pk.Def].LearnTypes.Count), "배울 수 있는 타입(결정 182 — 알파 스트라이크의 타입)");
-            for (int k = 0; k <= pk.Moves.Length; k++) Assert.That(tip.Q("mon-tip-move-" + k), Is.Not.Null, "기술 칸 " + k + "(0 = ★ 고유 기술)");
-            Assert.That(tip.Q(className: "sn-mon-text"), Is.Not.Null, "기술 효과 문구");
+            // 결정 206 ①(목업 B-battle): 원작 카드 앞면 + 오른쪽 기둥(띠 · 지닌물건 글 상자 — 마우스를 받지 않는 카드라 글이 다 보인다)
+            Assert.That(tip.Q("card-face"), Is.Not.Null, "카드 앞면");
+            var col = tip.Q("card-col");
+            Assert.That(col, Is.Not.Null, "오른쪽 기둥");
+            int strips = 0;
+            while (col.Q("card-strip-" + (strips + 1)) != null) strips++;
+            Assert.That(strips, Is.EqualTo(CardMon.Of(flow.Ctx, pk, 1, 1).Slots.Count), "띠 = 배운 칸 · 전술 판(빈 칸은 없다)");
+            Assert.That(tip.Q(className: "sn-mon-text"), Is.Null, "도트 카드가 아니다");
             var card = tip.worldBound;
             var screenBox = root.worldBound;
             Assert.That(card.xMin >= screenBox.xMin - 0.5f && card.yMin >= screenBox.yMin - 0.5f && card.xMax <= screenBox.xMax + 0.5f && card.yMax <= screenBox.yMax + 0.5f, Is.True, "화면 안(" + card + ")");
             Apart(root, card, "battle-dock");
-            Apart(root, card, "battle-ds-frame");
             var log = root.Q("battle-log").worldBound;
-            Assert.That(card.xMin >= log.xMin - 0.5f && card.xMax <= log.xMax + 0.5f, Is.True, "기록 기둥 폭 안(" + card + " · " + log + ")");
+            Assert.That(card.xMax, Is.LessThanOrEqualTo(log.xMax + 0.5f), "기록 기둥 오른쪽 끝을 넘지 않는다(" + card + " · " + log + ")");
+            Assert.That(card.yMax, Is.EqualTo(log.yMax).Within(1f), "기록 기둥 아래 끝에 바닥(" + card + " · " + log + ")");
             // 칸을 누르면(답) 카드가 걷힌다(칸이 떨어진다)
             Assert.That(screen.PressBench(0), Is.True);
             for (int i = 0; i < 3; i++) yield return null;
