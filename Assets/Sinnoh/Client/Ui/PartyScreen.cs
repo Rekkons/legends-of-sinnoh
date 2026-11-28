@@ -13,7 +13,7 @@ namespace Sinnoh.Client
     /// 정비 판(04 §3-5 「정비」·§10-3 — S18 「내 판」 + S28 기술 가르치기 + S29 지닌물건): 보드 HUD의 [정비](단축키 T)로 여는 창. 내 좌석이 아니면 같은 판을 읽기만 한다(S39 트레이너 상세 — 좌석 칩을 눌러 연다).
     /// <list type="bullet">
     /// <item>파티 칸 여섯 열(결정 206 ③ — 목업 r10-party-row6): 원작 세로 쌓기 카드(<see cref="CardStack"/> — 카드 앞면 + 끼운 띠, 빈 기술 칸은 그리지 않는다 · 누르면 카드 확대 S38) · 열 맨 아래 같은 높이의 [◀][▶] 순서 · [놓아주기].
-    /// 기술 칸 = 띠의 자리, 지닌물건 칸 = 카드의 지닌물건 동그라미 자리, 기술 카드를 집거나 끄는 동안 받을 수 있는 빈 칸에는 띠 크기의 홈(찬 칸은 금색 테). 카드 그림이 없으면(웹 손님판) 도트 카드 + 기술 줄.
+    /// 기술 칸 = 띠의 자리, 지닌물건 칸 = 카드의 지닌물건 동그라미 자리, 기술 카드를 집거나 끄는 동안 받을 수 있는 빈 칸에는 띠 크기의 홈(찬 칸은 금색 테). 카드 그림이 없으면 도트 카드 + 기술 줄.
     /// 열리지 않은 칸은 「잠긴 칸」(조각을 얻으면 열린다 — rulings A3).</item>
     /// <item>오른쪽 기둥: 카드 능력 줄 · 물음 줄 · 기술 카드 풀(여행 스탬프 보상으로 받은 기술 — 보기의 <c>StampMoves</c>) · 가방(지닌물건 · 볼 · 규토리 · 여행 점수 · 스탬프 · 조각 · 운명의 변화 장수).</item>
     /// <item>조작은 두 번 누르기 + 끌어 놓기(결정 70 ⑪ #42 「정비에 끌어 놓기도 넣는다」): 기술 카드나 지닌물건을 누르면 집히고, 넣을 수 있는 칸이 빛난다 → 칸을 누르면 낸다.
@@ -653,7 +653,7 @@ namespace Sinnoh.Client
             VisualElement card;
             var ctx = flow.Ctx;
             float width = CardWidth;
-            // 결정 206 ③: 기술 카드는 그 기술 띠(포켓몬 카드 뒷면의 홈 ~ 아래 끝 — 판의 띠와 같은 폭, 위 모서리 둥글게) · 포켓몬은 카드 앞면이 따라온다. 그림이 없으면(웹 손님판) 판의 줄 꼴
+            // 결정 206 ③: 기술 카드는 그 기술 띠(포켓몬 카드 뒷면의 홈 ~ 아래 끝 — 판의 띠와 같은 폭, 위 모서리 둥글게) · 포켓몬은 카드 앞면이 따라온다. 그림이 없으면 판의 줄 꼴
             var strip = Held == Hold.Move ? GenAssets.Load<Texture2D>(GenAssets.CardMoves + (stage.Lang == "en" ? "en" : "ko") + "/" + ctx.Cards.Moves[HeldValue].Key + ".png") : null;
             var face = Held == Hold.Mon ? CardStack.Build(stage, ctx, CardMon.Wild(ctx, flow.Client.View.Pokemon[HeldValue].Def), Mathf.Round(width * 0.6f)) : null;
             // 지닌물건: 카드 그림 판이면 카드 동그라미에 얹히는 토큰 그림 하나(포인터 가운데 — 가방 칩이 카드 타입 줄 위에 얹히지 않게, 검토 지적 14)
@@ -750,7 +750,7 @@ namespace Sinnoh.Client
         Vector2 ghostSize;
         bool ghostCenter, ghostKeep;
 
-        // 이 판이 원작 카드 그림으로 그려졌나(첫 카드 열 기준 — 웹 손님판은 거짓)
+        // 이 판이 원작 카드 그림으로 그려졌나(첫 카드 열 기준)
         bool CardArt => cols != null && cols.Q("card-face") != null;
 
         /// <summary>
@@ -1177,7 +1177,7 @@ namespace Sinnoh.Client
             stage.Tips.Hook(p.Element, p.Title, p.Text, TipSide.Below, reading: true);
         }
 
-        // 카드 그림이 없을 때(웹 손님판 — 카드 묶음을 싣지 않는다 · 짝 없는 카드): 도트 카드 + 기술 줄(빈 칸은 받을 때만 홈 줄) + 지닌물건 칸
+        // 카드 그림이 없을 때(짝 없는 카드): 도트 카드 + 기술 줄(빈 칸은 받을 때만 홈 줄) + 지닌물건 칸
         VisualElement DotCard(VisualElement top, int index, int pokemon, PokemonState pk, int hp, VisualElement[] slots)
         {
             var inv = CultureInfo.InvariantCulture;

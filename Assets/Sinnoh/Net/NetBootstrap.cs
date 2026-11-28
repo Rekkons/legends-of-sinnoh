@@ -13,7 +13,7 @@ namespace Sinnoh.Net
 {
     /// <summary>
     /// NetworkManager + UnityTransport를 코드로 차리고 호스트·손님으로 시작하는 정적 도우미(02 §1 · §2-3, isekai Net/NetBootstrap을 옮김 — Relay 몫 <see cref="UseRelay"/>·<see cref="StartClientRelay"/>는 Net ②).
-    /// NGO는 연결·승인·이름 붙은 메시지 통로로만 쓴다(NetworkObject·RPC·씬 동기화 없음). 전송은 늘 WebSocket(웹 손님이 WebSocket만 되고 드라이버는 하나라 PC끼리도 같은 길).
+    /// NGO는 연결·승인·이름 붙은 메시지 통로로만 쓴다(NetworkObject·RPC·씬 동기화 없음). 전송은 늘 WebSocket(Relay · 터널도 같은 길 — 웹 손님판이 있던 때 정한 것을 결정 210 뒤에도 그대로 둔다).
     /// </summary>
     public static class NetBootstrap
     {
@@ -42,7 +42,7 @@ namespace Sinnoh.Net
             return manager;
         }
 
-        /// <summary>UnityTransport를 붙이고 차린다: WebSocket · 연결 시도 1초 × 10번 · 끊김 판정 30초(웹 탭 숨김을 버티게, 02 §2-3) · 큐 512칸.</summary>
+        /// <summary>UnityTransport를 붙이고 차린다: WebSocket · 연결 시도 1초 × 10번 · 끊김 판정 30초(02 §2-3) · 큐 512칸.</summary>
         public static UnityTransport AddTransport(GameObject go)
         {
             var transport = go.AddComponent<UnityTransport>();
@@ -54,18 +54,10 @@ namespace Sinnoh.Net
             return transport;
         }
 
-        /// <summary>이 빌드가 방을 열 수 있나. WebGL 빌드는 손님 전용이다(Transport가 WebGL 서버를 지원하지 않는다, 02 §2-1).</summary>
-        public static bool CanHost => Application.platform != RuntimePlatform.WebGLPlayer;
-
-        /// <summary>호스트로 시작한다(기본 0.0.0.0). false = 포트를 열 수 없음(사용 중 등) 또는 WebGL.</summary>
+        /// <summary>호스트로 시작한다(기본 0.0.0.0). false = 포트를 열 수 없음(사용 중 등).</summary>
         public static bool StartHost(NetworkManager manager, ushort port,
             Action<NetworkManager.ConnectionApprovalRequest, NetworkManager.ConnectionApprovalResponse> approval, string listenAddress = ListenAll)
         {
-            if (!CanHost)
-            {
-                Debug.LogError("[Net] WebGL 빌드는 방을 열 수 없다(손님 전용)");
-                return false;
-            }
             var t = (UnityTransport)manager.NetworkConfig.NetworkTransport;
             if (t.Protocol != UnityTransport.ProtocolType.RelayUnityTransport) t.SetConnectionData(listenAddress, port, listenAddress);
             manager.ConnectionApprovalCallback = approval;
@@ -92,7 +84,7 @@ namespace Sinnoh.Net
             t.UseEncryption = true;
             t.SetClientSecrets(host);
             t.SetConnectionData(address ?? host, port);
-            if (Application.platform != RuntimePlatform.WebGLPlayer) t.ConnectionData.WebSocketPath = SecureHandshakePath(host, port);
+            t.ConnectionData.WebSocketPath = SecureHandshakePath(host, port);
             manager.NetworkConfig.ConnectionData = connectionData;
             return manager.StartClient();
         }

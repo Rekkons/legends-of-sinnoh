@@ -524,7 +524,7 @@ namespace Sinnoh.Rules.Session
             if (seat < 0)
             {
                 if (!AnyOpenSeat()) return Approval.Reject(NetCode.InGame);
-                // 자리 확인 대기(02 §6-3): 거절하지 않고 방장에게 맡긴다 — 웹 손님은 터널 주소가 바뀌면 브라우저 저장소(토큰)가 새로 생긴다
+                // 자리 확인 대기(02 §6-3): 거절하지 않고 방장에게 맡긴다 — 다른 PC로 들어오면 토큰이 새로 생긴다
                 var c = new Claim { Id = ++claimIds, Conn = conn, Token = hello.Token, Nickname = hello.Nickname, Platform = hello.Platform };
                 claims.Add(c);
                 link.Send(conn, new NoticeMsg { Code = NetCode.SeatClaim });

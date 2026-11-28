@@ -63,18 +63,12 @@ namespace Sinnoh.Net
 
         static async Task InitializeAsync()
         {
-            if (!CanUse(Application.platform == RuntimePlatform.WebGLPlayer, Application.absoluteURL))
-                throw new OnlineError(OnlineFail.RelayAuth, new Exception("웹 페이지가 https가 아니면 UGS를 쓸 수 없다: " + Application.absoluteURL));
             var options = new InitializationOptions();
             var profile = ProfileFor(Environment.GetCommandLineArgs());
             if (profile != null) options.SetProfile(profile);
             Debug.Log($"[Net] UGS 초기화: 프로필 {profile ?? "(기본)"}");
             await UnityServices.InitializeAsync(options);
         }
-
-        /// <summary>웹인데 페이지가 https가 아니면 못 쓴다(Services Core가 안전하지 않은 연결을 막는다 [추정, isekai]). PC는 늘 쓴다.</summary>
-        public static bool CanUse(bool web, string absoluteUrl) =>
-            !web || absoluteUrl != null && absoluteUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>UGS 프로필 이름: ProfileOverride 또는 마지막 「-profile 값」, 없으면 null(기본). 규칙 밖 글자는 '_'로, 바꿨거나 30자를 넘으면 앞 23자 + '_' + 해시 6자.</summary>
         public static string ProfileFor(string[] args)

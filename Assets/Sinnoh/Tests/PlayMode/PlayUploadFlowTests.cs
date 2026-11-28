@@ -232,9 +232,6 @@ namespace Sinnoh.Tests.PlayMode
             public IReadOnlyList<KeyValuePair<string, string>> Addresses { get; } = new KeyValuePair<string, string>[0];
             public int Port => 0;
             public bool Tunneled => false;
-            public IReadOnlyList<string> WebLinks { get; } = new string[0];
-            public string WebNotice => null;
-            public bool WebPending => false;
             public void Send(RoomMsg msg) { }
 
             public static FakeLobby With(bool records, bool host) => new FakeLobby
@@ -278,10 +275,9 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(prefs, Is.Not.InstanceOf<StoredSoundPrefs>(), "시험은 사용자의 PlayerPrefs에 쓰지 않는다");
                 Assert.That(prefs.PlayUpload, Is.True, "기본 켜짐");
                 Assert.That(prefs.PlayNotice, Is.False, "아직 알림을 보지 않았다");
-                Assert.That(flow.PlayNoticeDue, Is.False, "올리는 창구가 없는 흐름(에디터 · 웹)은 알림을 띄우지 않는다");
-                Assert.That(ScreenBoot.MakesUploads(false, RuntimePlatform.WebGLPlayer), Is.False, "웹 손님판은 창구를 만들지 않는다");
-                Assert.That(ScreenBoot.MakesUploads(true, RuntimePlatform.WindowsEditor), Is.False, "에디터도 만들지 않는다");
-                Assert.That(ScreenBoot.MakesUploads(false, RuntimePlatform.WindowsPlayer), Is.True, "PC 플레이어만 만든다");
+                Assert.That(flow.PlayNoticeDue, Is.False, "올리는 창구가 없는 흐름(에디터)은 알림을 띄우지 않는다");
+                Assert.That(ScreenBoot.MakesUploads(true), Is.False, "에디터도 만들지 않는다");
+                Assert.That(ScreenBoot.MakesUploads(false), Is.True, "PC 플레이어만 만든다");
 
                 var fake = new Fake();
                 var uploads = flow.Uploads = new PlayUploads(fake, "0.0.test", () => PlayUploads.Allowed(prefs));

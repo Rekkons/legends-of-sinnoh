@@ -18,7 +18,7 @@ using Object = UnityEngine.Object;
 namespace Sinnoh.Tests.PlayMode
 {
     /// <summary>
-    /// 게임 안 [버그 신고](M9 — 결정 132 ①)를 화면 흐름으로: 창구가 없는 화면(에디터 · 웹)은 「PC판에서만」으로 잠김 · 게임 메뉴 → 신고 쪽 · 설명 없으면 [보내기] 꺼짐 ·
+    /// 게임 안 [버그 신고](M9 — 결정 132 ①)를 화면 흐름으로: 창구가 없는 화면(에디터)은 「PC판에서만」으로 잠김 · 게임 메뉴 → 신고 쪽 · 설명 없으면 [보내기] 꺼짐 ·
     /// 가짜 창구(<see cref="Fake"/>)로 실패 → [다시 보내기](같은 묶음) → 보냄 · 보낸 묶음 내용(설명 · 판 · 로그 끝부분 · 지금 판 기록, 닉네임 · 토큰 지움) · 플레이 기록 설정이 꺼져 있어도 보낸다 ·
     /// Esc · 타이틀 설정에서 연 창. 저장 · 로그는 임시 폴더(사용자 저장 폴더 · 실제 Player.log를 읽지 않는다 — <see cref="GameFlow.BugLogPath"/>를 시험 파일로).
     /// </summary>
@@ -81,7 +81,7 @@ namespace Sinnoh.Tests.PlayMode
                 var stage = flow.Stage;
                 Assert.That(flow.BugLogPath, Is.Null, "에디터는 로그를 싣지 않는다(Editor.log를 읽지 않는다)");
 
-                // ── 창구가 없는 화면(에디터 · 웹 손님판): 타이틀 설정 · 게임 메뉴의 [버그 신고]가 「PC판에서만」 흐린 단추 ──
+                // ── 창구가 없는 화면(에디터): 타이틀 설정 · 게임 메뉴의 [버그 신고]가 「PC판에서만」 흐린 단추 ──
                 Assert.That(flow.BugReady, Is.False);
                 flow.OpenSettings();
                 var lockedSet = stage.Root.Q<Button>("settings-bug");

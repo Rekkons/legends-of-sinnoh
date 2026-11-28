@@ -1,4 +1,3 @@
-#if !UNITY_WEBGL || UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +12,6 @@ namespace Sinnoh.Net
     /// 출력에서 <c>https://….trycloudflare.com</c>을 읽는다(읽기 · 30초 · 끝남 판정은 Data <see cref="TunnelWatch"/>). 원 서버가 TcpListener라 Host 헤더를 바꾸지 않는다(isekai의 --http-host-header는 HttpListener 몫).
     /// - 실행 파일(<see cref="FindExe"/>): 실행 파일 옆 <c>cloudflared.exe</c> → <c>Tools/bin/cloudflared.exe</c>(개발 — <c>node Tools/fetch-cloudflared.mjs</c>, 결정 91: winget <c>Cloudflare.cloudflared</c>) → winget·MSI 설치 자리.
     /// - 수명: <see cref="Dispose"/>(방 닫기)·앱 종료(Application.quitting)에서 프로세스를 끝낸다. 강제 종료로 남은 것은 다음 실행의 첫 <see cref="Start"/>가 같은 경로의 것만 끝낸다(<see cref="CleanupStale"/>).
-    /// WebGL 빌드에서는 컴파일하지 않는다.
     /// </summary>
     public sealed class CloudflaredTunnel : ITunnel
     {
@@ -169,4 +167,3 @@ namespace Sinnoh.Net
         }
     }
 }
-#endif

@@ -18,7 +18,7 @@ namespace Sinnoh.Rules
 
     /// <summary>
     /// PCG32(XSH RR 64/32, O'Neill pcg32_random_r·pcg32_srandom_r·pcg32_boundedrand_r와 같은 수열).
-    /// 정수 연산만 써서 dotnet과 Unity(Mono·IL2CPP·WebGL)가 같은 수열을 낸다. 상태는 public 필드라 세이브·복제가 된다(01 §2-2 Rng).
+    /// 정수 연산만 써서 dotnet과 Unity(Mono·IL2CPP)가 같은 수열을 낸다. 상태는 public 필드라 세이브·복제가 된다(01 §2-2 Rng).
     /// </summary>
     public sealed class Pcg32 : IRng
     {

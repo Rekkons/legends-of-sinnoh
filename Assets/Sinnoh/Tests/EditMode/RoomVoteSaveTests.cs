@@ -323,7 +323,7 @@ namespace Sinnoh.Tests.EditMode
                 JoinAll(b);
                 Finish(b, hash, count, crashCount, "로그 끝 잘림");
 
-                // ③ 가장 새 스냅샷 깨짐 + 2번 좌석이 새 토큰(웹 손님)으로 → 자리 확인 대기 → 맡기기
+                // ③ 가장 새 스냅샷 깨짐 + 2번 좌석이 새 토큰(다른 PC)으로 → 자리 확인 대기 → 맡기기
                 var c = ResumeRoom(broken, out var recBroken);
                 Assert.IsTrue(recBroken.Warnings.Exists(w => w.Contains("깨진 스냅샷")), string.Join(" / ", recBroken.Warnings));
                 Assert.IsTrue(c.Host.Approve(0, Hi("owner"), 0).Ok);

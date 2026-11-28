@@ -219,8 +219,8 @@ namespace Sinnoh.Net
             return false;
         }
 
-        // 데스크톱에서 호스트 이름을 먼저 푼다: Transport 6.6은 이름 풀기가 실패하면 알림 없이 연결을 닫아 NGO가 「접속 중」에 멈춘다(isekai 10-09 확인). 웹은 브라우저가 푼다
-        static bool NeedsLookup(string host) => Application.platform != RuntimePlatform.WebGLPlayer && !System.Net.IPAddress.TryParse(host, out _);
+        // 데스크톱에서 호스트 이름을 먼저 푼다: Transport 6.6은 이름 풀기가 실패하면 알림 없이 연결을 닫아 NGO가 「접속 중」에 멈춘다(isekai 10-09 확인)
+        static bool NeedsLookup(string host) => !System.Net.IPAddress.TryParse(host, out _);
 
         async void Lookup(string host, int mine)
         {

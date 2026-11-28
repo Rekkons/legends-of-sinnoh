@@ -13,7 +13,7 @@ namespace Sinnoh.Editor
 {
     /// <summary>
     /// 게임 안 [버그 신고](M9 — 결정 132 ①): 게임 메뉴의 [버그 신고] · 신고 쪽(빈 설명 · 적은 설명 · 보내는 것 마우스 오버 · 보내는 중 · 보냄 · 실패) · 방 판 메뉴 · 타이틀 설정에서 연 창 ·
-    /// 창구가 없는 화면(웹 손님판 · 에디터)의 「PC판에서만」. 흐름에 서버를 부르지 않는 창구(<see cref="PlayUploads.Quiet"/> + <see cref="ShotUploader"/>)를 넣어 PC 플레이어처럼 열고,
+    /// 창구가 없는 화면(에디터)의 「PC판에서만」. 흐름에 서버를 부르지 않는 창구(<see cref="PlayUploads.Quiet"/> + <see cref="ShotUploader"/>)를 넣어 PC 플레이어처럼 열고,
     /// 로그는 임시 파일(실제 Player.log를 읽지 않는다). 장면마다 판이 화면 안 · 글 넘침을 단정한다. 모두 보드 위 화면이다. 그림은 <c>Logs/Review/m9/bugreport/</c>.
     /// </summary>
     public static partial class UiShots
@@ -42,8 +42,8 @@ namespace Sinnoh.Editor
             Screen("bug-room-guest", s => BugRoom(s, false, true)),                             // 손님의 신고 쪽
             Screen("bug-title", s => BugTitle(s, false)),                                       // 타이틀 설정: 아래 줄 [뒤로] [버그 신고]
             Screen("bug-title-open", s => BugTitle(s, true)),                                   // 타이틀 설정에서 연 신고 창
-            Screen("bug-web", s => BugLocked(s, false)),                                        // 창구 없는 화면(웹 손님판): 메뉴의 흐린 「버그 신고(PC판에서만)」 + 이유
-            Screen("bug-web-title", s => BugLocked(s, true)),                                   // 같은 것 — 타이틀 설정
+            Screen("bug-locked", s => BugLocked(s, false)),                                     // 창구 없는 화면(에디터): 메뉴의 흐린 「버그 신고(PC판에서만)」 + 이유
+            Screen("bug-locked-title", s => BugLocked(s, true)),                                   // 같은 것 — 타이틀 설정
         };
 
         const string BugText = "배틀에서 [가방]을 누른 뒤 화면이 멈췄습니다.\nEsc도 듣지 않습니다.";

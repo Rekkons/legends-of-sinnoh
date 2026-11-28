@@ -27,6 +27,6 @@
 {"tab":"program","title":{"ko":"프로그램","en":"Software"},"entries":[
 {"who":"Unity Technologies","role":{"ko":"Unity 엔진 · 네트워크 · 온라인 방","en":"Unity engine, networking and online rooms"},"from":["unity","ngo","ugs"],"links":["https://unity.com/"],"terms":{"ko":"Unity 이용 약관 · Unity Companion License","en":"Unity Terms of Service · Unity Companion License"}},
 {"who":"James Newton-King","role":{"ko":"Json.NET","en":"Json.NET"},"from":["newtonsoft"],"links":["https://github.com/JamesNK/Newtonsoft.Json"],"terms":"MIT License"},
-{"who":"Cloudflare, Inc.","role":{"ko":"cloudflared (웹 손님 연결)","en":"cloudflared (web guest links)"},"from":["cloudflared"],"links":["https://github.com/cloudflare/cloudflared"],"terms":"Apache License 2.0"}
+{"who":"Cloudflare, Inc.","role":{"ko":"cloudflared (인터넷 방 예비 연결)","en":"cloudflared (backup link for internet rooms)"},"from":["cloudflared"],"links":["https://github.com/cloudflare/cloudflared"],"terms":"Apache License 2.0"}
 ]}
 ]}

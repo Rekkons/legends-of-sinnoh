@@ -7,7 +7,7 @@ namespace Sinnoh.Data
     {
         /// <summary>ws:// IPv4 또는 호스트 이름 + 포트(직접 연결 — 같은 공유기 · Tailscale, 02 §2-1).</summary>
         Direct,
-        /// <summary>wss://호스트 이름[:포트](터널처럼 TLS를 앞에서 끝내는 곳, 02 §2-1 두 번째 터널).</summary>
+        /// <summary>wss://호스트 이름[:포트](터널처럼 TLS를 앞에서 끝내는 곳, 02 §2-1 Relay 실패 때의 터널).</summary>
         Secure,
         /// <summary>Unity Relay 참가 코드(인터넷 방 — Net ②).</summary>
         Relay,
@@ -15,7 +15,7 @@ namespace Sinnoh.Data
 
     /// <summary>
     /// 참가 칸 입력 하나를 접속 대상으로 읽는다(02 §2-1 「참가 칸 하나」, isekai Net/Online/JoinTarget을 옮김 — 엔진 무관이라 Data [가정 M7-28]). 받는 것:
-    /// <c>https://페이지/?code=참가 코드</c> · <c>https://페이지/?join=게임 터널 호스트</c> 링크, <c>wss://호스트[:포트][/]</c>, 참가 코드(영숫자 6자),
+    /// <c>wss://호스트[:포트][/]</c>, 참가 코드(영숫자 6자),
     /// IPv4 또는 <c>IPv4:포트</c>(<see cref="TryParseAddress"/>), 호스트 이름 또는 <c>호스트 이름:포트</c>.
     /// 포트를 빼면 직접 연결은 <see cref="DefaultPort"/>, wss는 443. <c>*.trycloudflare.com</c>은 포트를 적지 않으면 wss로 본다. 영숫자 6자 한 단어는 호스트 이름이 아니라 참가 코드로 본다.
     /// </summary>
@@ -59,7 +59,6 @@ namespace Sinnoh.Data
             target = null;
             var s = input?.Trim();
             if (string.IsNullOrEmpty(s)) return false;
-            if (StartsWith(s, "https://") || StartsWith(s, "http://")) return TryParseLink(s, out target);
             if (StartsWith(s, "wss://")) return TryParseSecure(s.Substring(6), out target);
             if (IsCode(s))
             {
@@ -107,27 +106,6 @@ namespace Sinnoh.Data
             return true;
         }
 
-        /// <summary>
-        /// 웹 손님판이 시작할 때 페이지 주소로 참가 칸을 채운다(02 §2-1 · §8): <c>?code=</c> · <c>?join=</c> 링크는 그 대상,
-        /// http 페이지(직접 연결 — <c>http://주소:8080/</c>)는 같은 주소의 <c>ws://주소:7777</c>(<c>?port=</c>가 있으면 그 포트). https 페이지(터널)에 코드가 없거나 읽을 수 없으면 null.
-        /// </summary>
-        public static JoinTarget FromPage(string absoluteUrl)
-        {
-            if (string.IsNullOrEmpty(absoluteUrl) || !Uri.TryCreate(absoluteUrl, UriKind.Absolute, out var uri)) return null;
-            if (Query(uri.Query, "code") != null || Query(uri.Query, "join") != null)
-                return TryParseLink(absoluteUrl, out var t) ? t : null;
-            if (uri.Scheme != Uri.UriSchemeHttp) return null;   // https 페이지에서 ws://는 막힌다(섞인 내용)
-            ushort port = DefaultPort;
-            var p = Query(uri.Query, "port");
-            if (p != null)
-            {
-                if (!int.TryParse(p, NumberStyles.None, CultureInfo.InvariantCulture, out int n) || n < 1 || n > 65535) return null;
-                port = (ushort)n;
-            }
-            if (TryParseAddress(uri.Host, out var ip, out _)) return Direct(ip, port);
-            return SplitHostPort(uri.Host, out var host, out _) ? Direct(host, port) : null;
-        }
-
         /// <summary>참가 코드 모양인가: 영숫자 6자.</summary>
         public static bool IsCode(string s)
         {
@@ -135,25 +113,6 @@ namespace Sinnoh.Data
             foreach (char c in s)
                 if (!(c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c >= '0' && c <= '9')) return false;
             return true;
-        }
-
-        // https://페이지/?code=… 또는 ?join=…(둘 다 있으면 code)
-        static bool TryParseLink(string s, out JoinTarget target)
-        {
-            target = null;
-            if (!Uri.TryCreate(s, UriKind.Absolute, out var uri)) return false;
-            var code = Query(uri.Query, "code");
-            if (code != null)
-            {
-                if (!IsCode(code)) return false;
-                target = Relay(code.ToUpperInvariant());
-                return true;
-            }
-            var join = Query(uri.Query, "join");
-            if (join == null) return false;
-            if (StartsWith(join, "wss://")) join = join.Substring(6);
-            else if (StartsWith(join, "https://")) join = join.Substring(8);
-            return TryParseSecure(join, out target);
         }
 
         // wss:// 뒤: 호스트[:포트][/] — 경로는 받지 않는다(NGO WebSocket 경로는 "/")
@@ -193,19 +152,6 @@ namespace Sinnoh.Data
             if (allNumeric) return false;
             host = h.ToLowerInvariant();
             return true;
-        }
-
-        static string Query(string query, string key)
-        {
-            if (string.IsNullOrEmpty(query)) return null;
-            foreach (var pair in query.TrimStart('?').Split('&'))
-            {
-                int eq = pair.IndexOf('=');
-                if (eq < 0 || !string.Equals(pair.Substring(0, eq), key, StringComparison.OrdinalIgnoreCase)) continue;
-                var v = Uri.UnescapeDataString(pair.Substring(eq + 1).Replace('+', ' ')).Trim();
-                return v.Length == 0 ? null : v;
-            }
-            return null;
         }
 
         static bool StartsWith(string s, string prefix) => s.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);

@@ -2,7 +2,7 @@
 
 # Pokémon: Legends of Sinnoh — 디지털판
 
-Levatius의 Tabletop Simulator 보드게임 「Pokémon: Legends of Sinnoh」(v1.4a)를 PC와 웹에서 할 수 있게 옮긴 **비공식 · 비영리 팬 게임**입니다. 포켓몬 공식과는 관계없습니다.
+Levatius의 Tabletop Simulator 보드게임 「Pokémon: Legends of Sinnoh」(v1.4a)를 PC에서 할 수 있게 옮긴 **비공식 · 비영리 팬 게임**입니다. 포켓몬 공식과는 관계없습니다.
 
 만든 사람: Rekkons
 

@@ -12,7 +12,7 @@ namespace Sinnoh.Client
     /// 포켓몬 마우스 오버 카드(M9 다듬기 P22 — 결정 116 · 결정 169 · 결정 206 ①): 이름만 적힌 목록(사당 교환 · 버림 더미 · 고향 마을 고르기 · 공개 정보 카드의 명단 줄)과
     /// 배틀 독의 포켓몬 칸(내 포켓몬 · 무리 · 명단)에 마우스를 올리면 뜨는 카드. 원작 TTS 카드(<see cref="CardStack"/>)로 그린다 —
     /// 야생 카드 = 카드 앞면 + 카드에 없는 포획률 칩(목업 B-wild), 판의 포켓몬 = 옆으로 펼친 짜임(<see cref="CardLayout.Spread"/> — 카드 + 오른쪽 기둥의 띠 · 지닌물건 글, 목업 B-battle).
-    /// 마우스를 받지 않는 카드라 효과 글은 띠(구운 글)와 지닌물건 글 상자가 다 보인다. 카드 그림이 없으면(웹 손님판 · 짝 없는 카드) 도트 카드(도감 상세 쪽과 같은 값 · 같은 글 키).
+    /// 마우스를 받지 않는 카드라 효과 글은 띠(구운 글)와 지닌물건 글 상자가 다 보인다. 카드 그림이 없으면(짝 없는 카드) 도트 카드(도감 상세 쪽과 같은 값 · 같은 글 키).
     /// 공개 정보 카드(<see cref="InfoCard"/>)와 같은 순서로 선다: 무대 뿌리에 붙고, 크기가 정해지면 대상 옆에 자리를 잡아 보인다(화면에 넘치면 카드를 줄여 다시 그린다).
     /// 요소 이름: <c>mon-tip</c>(떠 있는 상자)·<c>mon-tip-rate</c>(야생 카드의 포획률) — 카드 안은 <see cref="CardStack"/>의 이름, 도트 카드는 <c>mon-tip-dot</c>·<c>mon-tip-name</c>·<c>mon-tip-move</c>·<c>mon-tip-move-n</c>.
     /// </summary>
@@ -172,7 +172,7 @@ namespace Sinnoh.Client
             card.RemoveFromHierarchy();
         }
 
-        /// <summary>띄우지 않고 내 포켓몬 도트 카드 요소만(원작 카드 그림이 없을 때 <see cref="CardStack"/>가 대신 쓴다 — 웹 손님판 · 짝 없는 카드).</summary>
+        /// <summary>띄우지 않고 내 포켓몬 도트 카드 요소만(원작 카드 그림이 없을 때 <see cref="CardStack"/>가 대신 쓴다 — 짝 없는 카드).</summary>
         internal VisualElement Dot(PokemonState pk, int hp, int speed)
         {
             FillMon(pk, hp, speed);

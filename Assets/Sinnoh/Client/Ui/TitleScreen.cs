@@ -14,7 +14,7 @@ namespace Sinnoh.Client
     /// 문구는 문자열 표의 <c>screen.title.*</c>(원본 <c>Tools/data/authored/screens.json</c>, 지침 <c>Docs/Design/ui-text-guide.md</c> — 안내는 합쇼체).
     /// 「혼자 하기」(솔로 설정 S09)·「설정」(S02)은 갈 곳을 받았을 때만 켜진다 — 화면 흐름(<see cref="GameFlow"/>)이 넣는다.
     /// 「이어하기」(저장 목록 S04, 04 §9-12)는 저장이 있을 때만 켜진다: 줄 아래에 가장 최근 판의 요약 한 줄, 저장이 없으면 회색 + 「저장한 게임 없음」이고 설명 둘째 줄에 까닭(「저장한 게임이 없습니다.」)을 적는다.
-    /// 「튜토리얼」(M6.5, 07 §2-2 [가정 T3·T40]): 「혼자 하기」 바로 아래 줄(<c>title-item-tutorial</c>). 본편 마지막 장을 끝까지 보기 전까지 「처음이라면!」 딱지(<c>title-tutorial-first</c>). 웹 손님판에는 없다(웹 손님 입구는 M7).
+    /// 「튜토리얼」(M6.5, 07 §2-2 [가정 T3·T40]): 「혼자 하기」 바로 아래 줄(<c>title-item-tutorial</c>). 본편 마지막 장을 끝까지 보기 전까지 「처음이라면!」 딱지(<c>title-tutorial-first</c>).
     /// </summary>
     public sealed class TitleScreen : IUiScreen, IOverBoard
     {
@@ -23,17 +23,10 @@ namespace Sinnoh.Client
             /// <summary>줄 이름. 글은 문자열 표의 <c>screen.title.&lt;Id&gt;</c>(+ <c>.desc1</c>·<c>.desc2</c>).</summary>
             public readonly string Id;
 
-            /// <summary>웹 손님판에서도 보인다 — 웹은 참가 전용이라 「참가하기」·「튜토리얼」(결정 112 Q18)·「도감」·「설정」만(02 §8 · plan M7 「웹 손님」 [가정 M7-62]: 방 만들기 · 이어하기 · 혼자 하기 · 크레딧 · 종료를 숨긴다).</summary>
-            public readonly bool OnWeb;
-
-            public Item(string id, bool onWeb = true)
-            {
-                Id = id;
-                OnWeb = onWeb;
-            }
+            public Item(string id) => Id = id;
         }
 
-        public const string Continue = "continue", Host = "host", Join = "join", Solo = "solo", Tutorial = "tutorial", Dex = "dex", Rulebook = "rulebook", Settings = "settings", Credits = "credits", Quit = "quit";
+        public const string Continue = "continue", Host = "host", Join = "join", Solo = "solo", Tutorial = "tutorial", Dex = "dex", Rulebook = "rulebook", Rulings = "rulings", Settings = "settings", Credits = "credits", Quit = "quit";
 
         /// <summary>영문 원제·판(두 언어 화면에 같은 글이라 문자열 표에 두지 않는다).</summary>
         public const string LogoEn = "Pokémon: Legends of Sinnoh · v1.4a";
@@ -41,7 +34,7 @@ namespace Sinnoh.Client
         /// <summary>메뉴 줄(04 §1 순서). 요소 이름은 <c>title-item-&lt;Id&gt;</c>.</summary>
         public static readonly Item[] Items =
         {
-            new Item(Continue, onWeb: false), new Item(Host, onWeb: false), new Item(Join), new Item(Solo, onWeb: false), new Item(Tutorial), new Item(Dex), new Item(Rulebook), new Item(Settings), new Item(Credits, onWeb: false), new Item(Quit, onWeb: false),
+            new Item(Continue), new Item(Host), new Item(Join), new Item(Solo), new Item(Tutorial), new Item(Dex), new Item(Rulebook), new Item(Rulings), new Item(Settings), new Item(Credits), new Item(Quit),
         };
 
         /// <summary>메뉴 판 오른쪽 변(720 토큰 px — <c>Sinnoh.uss</c> <c>sn-title-menu</c>의 left 60 + width 230)과, 보드를 거기서 띄우는 틈 [가정].</summary>
@@ -56,6 +49,7 @@ namespace Sinnoh.Client
         public static Vector3 BoardTarget(int width, int height) => BoardBackdrop.Target(width, height, MenuRight);
 
         readonly Action quit, solo, settings, saves, tutorial, host, join, dex;
+        readonly Action rulings;   // 「규칙 판정」(결정 213 — GameFlow.OpenTitleRulings). null이면 그 줄은 아직 없는 화면이다
         readonly Action rulebook, credits;   // 「룰 설명서」 S43 · 「크레딧」 S03(M9 — GameFlow.OpenTitleRulebook · OpenCredits). null이면 그 줄은 아직 없는 화면이다
         readonly Action<bool> notice;   // 첫 실행 플레이 기록 알림의 답(결정 126 ④ — GameFlow.AnswerPlayNotice: false = [확인] · true = [설정 열기]). null이면 알림이 없다
         UpdateView view;   // 새 판 알림(결정 148 ① · 161 — GameFlow.ShowRelease · GameFlow.Update.cs). null이면 알림이 없다
@@ -63,7 +57,7 @@ namespace Sinnoh.Client
         Label updateAmount;
         bool noticeAnswered;
         readonly string saveLine;
-        readonly bool web, firstTime;
+        readonly bool firstTime;
         readonly string startPick;
         readonly List<Item> shown = new List<Item>();
         readonly List<VisualElement> rows = new List<VisualElement>();
@@ -71,7 +65,6 @@ namespace Sinnoh.Client
         Label line1, line2;
 
         /// <param name="quit">「종료」가 하는 일. 기본은 <c>Application.Quit</c>.</param>
-        /// <param name="web">웹 손님판 메뉴(방 만들기·종료 숨김). 기본은 지금 플랫폼.</param>
         /// <param name="pick">처음 고른 줄. 기본은 「혼자 하기」(화면 흐름은 저장이 있으면 「이어하기」를 넣는다 [가정]).</param>
         /// <param name="solo">「혼자 하기」가 하는 일(솔로 설정을 연다). null이면 그 줄은 아직 없는 화면이다.</param>
         /// <param name="settings">「설정」이 하는 일(설정 화면을 연다). null이면 그 줄은 아직 없는 화면이다.</param>
@@ -81,11 +74,12 @@ namespace Sinnoh.Client
         /// <param name="firstTime">「처음이라면!」 딱지를 붙이나(본편 마지막 장을 끝까지 보기 전 — <see cref="TutorialMenu.FirstTime"/>).</param>
         /// <param name="host">「방 만들기」가 하는 일(S05 — <see cref="RoomFlow.OpenCreate"/>, M7 화면 ①). null이면 그 줄은 아직 없는 화면이다.</param>
         /// <param name="join">「참가하기」가 하는 일(S06 — <see cref="RoomFlow.OpenJoin"/>). null이면 그 줄은 아직 없는 화면이다.</param>
-        /// <param name="dex">「포켓몬 도감」이 하는 일(S42 — <see cref="GameFlow.OpenTitleDex"/>, 결정 105 ③ · 웹 손님판에도 있다). null이면 그 줄은 아직 없는 화면이다.</param>
-        public TitleScreen(Action quit = null, bool? web = null, string pick = Solo, Action solo = null, Action settings = null, Action saves = null, string saveLine = null,
+        /// <param name="dex">「포켓몬 도감」이 하는 일(S42 — <see cref="GameFlow.OpenTitleDex"/>, 결정 105 ③). null이면 그 줄은 아직 없는 화면이다.</param>
+        public TitleScreen(Action quit = null, string pick = Solo, Action solo = null, Action settings = null, Action saves = null, string saveLine = null,
             Action tutorial = null, bool firstTime = false, Action host = null, Action join = null, Action dex = null, Action rulebook = null, Action credits = null, Action<bool> notice = null,
-            string update = null, Action download = null, UpdateView updates = null)
+            string update = null, Action download = null, UpdateView updates = null, Action rulings = null)
         {
+            this.rulings = rulings;
             this.notice = notice;
             view = updates ?? (update != null ? new UpdateView { Version = update, Download = download } : null);
             this.rulebook = rulebook;
@@ -98,7 +92,6 @@ namespace Sinnoh.Client
             this.saves = saves;
             this.saveLine = saveLine;
             this.quit = quit ?? Application.Quit;
-            this.web = web ?? Application.platform == RuntimePlatform.WebGLPlayer;
             this.solo = solo;
             this.settings = settings;
             startPick = pick;
@@ -106,7 +99,7 @@ namespace Sinnoh.Client
 
         public string Name => "title";
 
-        /// <summary>보이는 메뉴 줄(웹 손님판은 둘이 빠진다).</summary>
+        /// <summary>보이는 메뉴 줄.</summary>
         public IReadOnlyList<Item> Shown => shown;
 
         /// <summary>고른 줄(<see cref="Shown"/> 색인).</summary>
@@ -115,7 +108,7 @@ namespace Sinnoh.Client
         /// <summary>그 줄이 갈 화면(또는 할 일)이 있나. 지금은 「종료」와, 갈 곳을 받은 「혼자 하기」·「튜토리얼」·「설정」·「이어하기」(저장이 있을 때)·「방 만들기」·「참가하기」(M7).</summary>
         public bool Ready(Item item) => item.Id == Quit || (item.Id == Solo && solo != null) || (item.Id == Tutorial && tutorial != null) || (item.Id == Settings && settings != null) || (item.Id == Continue && saves != null)
             || (item.Id == Host && host != null) || (item.Id == Join && join != null) || (item.Id == Dex && dex != null)
-            || (item.Id == Rulebook && rulebook != null) || (item.Id == Credits && credits != null);
+            || (item.Id == Rulebook && rulebook != null) || (item.Id == Rulings && rulings != null) || (item.Id == Credits && credits != null);
 
         /// <summary>「처음이라면!」 딱지가 붙었나.</summary>
         public bool FirstTimeShown { get; private set; }
@@ -140,7 +133,6 @@ namespace Sinnoh.Client
             var menu = Add(page, Kit.Panel(stage.Skin), "title-menu", "sn-title-menu");
             foreach (var item in Items)
             {
-                if (web && !item.OnWeb) continue;
                 int index = shown.Count;
                 shown.Add(item);
                 var row = Add(menu, new VisualElement(), "title-item-" + item.Id, "sn-title-item");
@@ -176,7 +168,7 @@ namespace Sinnoh.Client
 
             int start = shown.FindIndex(i => i.Id == startPick);
             Pick(start >= 0 ? start : 0);
-            updateBox = view?.Version != null && !web ? Update() : null;
+            updateBox = view?.Version != null ? Update() : null;
             noticeBox = notice != null && !noticeAnswered ? Notice(page) : null;
             return page;
         }
@@ -197,14 +189,14 @@ namespace Sinnoh.Client
         /// <summary>새 판 알림(<c>title-update</c>)이 떠 있나.</summary>
         public bool UpdateShown => updateBox != null && updateBox.parent != null;
 
-        /// <summary>새 판 알림을 띄운다(이미 그린 타이틀 — 판 정보를 늦게 받았을 때). 웹 손님판은 띄우지 않는다. 첫 실행 알림 창이 떠 있으면 그 아래에.</summary>
+        /// <summary>새 판 알림을 띄운다(이미 그린 타이틀 — 판 정보를 늦게 받았을 때). 첫 실행 알림 창이 떠 있으면 그 아래에.</summary>
         public void ShowUpdate(string version, Action download) => ShowUpdate(version == null ? null : new UpdateView { Version = version, Download = download });
 
         /// <summary>알림 상자를 그 단계로 다시 그린다(결정 161 — 흐름이 단계가 바뀔 때마다 부른다). 받는 중에는 메뉴를 막는 덮개가 상자 아래에 깔린다.</summary>
         public void ShowUpdate(UpdateView v)
         {
             view = v;
-            if (page == null || web) return;
+            if (page == null) return;
             updateBlock?.RemoveFromHierarchy();
             updateBox?.RemoveFromHierarchy();
             updateBlock = null;
@@ -380,6 +372,7 @@ namespace Sinnoh.Client
             else if (item.Id == Join) join();
             else if (item.Id == Dex) dex();
             else if (item.Id == Rulebook) rulebook();
+            else if (item.Id == Rulings) rulings();
             else if (item.Id == Credits) credits();
             else settings();
             return true;

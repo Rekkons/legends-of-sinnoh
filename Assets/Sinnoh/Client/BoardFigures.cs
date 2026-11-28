@@ -250,11 +250,10 @@ namespace Sinnoh.Client
 
         bool warned;
 
-        // 웹 손님판의 나눠 받기 전(그 번들을 아직 받는 중 — M8 · M9 마감 감사 2차 참고 ③)이면 경고하지 않는다: 다 오면 BoardBoot가 다시 세우고(GenMissing), 그때도 없으면 경고한다
         void Missing(string key)
         {
             GenMissing = true;
-            if (warned || GenAssets.Pending(key)) return;
+            if (warned) return;
             Debug.LogWarning("[BoardFigures] Gen 없음(" + key + "): 피규어를 세우지 않는다. rebuild-all 먼저(03 §4-3)");
             warned = true;
         }

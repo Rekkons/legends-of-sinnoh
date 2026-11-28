@@ -10,7 +10,10 @@ namespace Sinnoh.Data
     /// </summary>
     public static class InstallPath
     {
-        /// <summary>지워도 되는 자리(Inno <c>[InstallDelete]</c>와 같은 넷) — 그 아래에서 새 manifest에 없는 파일만 지운다. 맨 위 파일은 지우지 않는다.</summary>
+        /// <summary>
+        /// 지워도 되는 자리(Inno <c>[InstallDelete]</c>와 같은 넷) — 그 아래에서 새 manifest에 없는 파일만 지운다. 맨 위 파일은 지우지 않는다.
+        /// <c>WebGL/</c>은 옛 판(0.2.2까지)이 깔아 둔 웹 손님판 폴더 — 결정 210으로 뺀 뒤에도 남겨 두어 자동 업데이트가 그 안 파일을 지운다(도우미 SinnohUpdater와 같은 표).
+        /// </summary>
         public static readonly string[] Roots = { "Sinnoh_Data/", "MonoBleedingEdge/", "D3D12/", "WebGL/" };
 
         /// <summary>설치 폴더 안 대기 자리(K3) — 견주기 · 지우기 · 포장은 늘 뺀다.</summary>

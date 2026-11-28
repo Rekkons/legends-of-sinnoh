@@ -31,8 +31,6 @@ namespace Sinnoh.Client
         public RulebookSide(GameFlow flow)
         {
             this.flow = flow ?? throw new ArgumentNullException(nameof(flow));
-            // 웹 손님판: 설명서 그림 번들이 왔다 — 펼친 절의 자리표시를 그림으로
-            GenAssets.Arrived += bundle => { if (bundle == GenAssets.RulebookBundle && IsOpen && view != null && view.Waiting > 0) Paint(); };
         }
 
         /// <summary>열려 있나(보드에 있을 때 보인다).</summary>

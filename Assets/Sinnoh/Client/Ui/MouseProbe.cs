@@ -1584,6 +1584,26 @@ namespace Sinnoh.Client
             bool back = stage.Current is TitleScreen;
             Step("rulebook-key-esc", "ok", back, "screen", stage.Current != null ? stage.Current.Name : "");
             if (!Check("룰 설명서 닫기", back, "Esc를 눌렀는데 큰 창이 닫히지 않았다")) yield break;
+            // 「규칙 판정」(결정 213): 타이틀 줄 → 묶음 → 출처 단추 → Esc
+            yield return Click(Px(Q("title-item-" + TitleScreen.Rulings)));
+            var rulings = stage.Current as RulingsScreen;
+            Step("title-click-rulings", "ok", rulings != null, "at", at, "screen", stage.Current != null ? stage.Current.Name : "");
+            if (!Check("규칙 판정", rulings != null, "「규칙 판정」을 눌렀는데 화면이 열리지 않았다")) yield break;
+            yield return Frames(3);
+            int allRulings = rulings.Shown.Count;
+            yield return Click(Px(Q("rulings-group-battle")));
+            bool group = rulings.Group == "battle" && rulings.Shown.Count < allRulings;
+            yield return Frames(3);
+            int inGroup = rulings.Shown.Count;
+            yield return Click(Px(Q("rulings-source-house")));
+            bool source = !rulings.On(Sinnoh.Data.RulingSource.House) && rulings.Shown.Count < inGroup;
+            yield return Snap("17b2-rulings");
+            Step("rulings-click", "ok", group && source, "at", at, "group", rulings.Group ?? "", "shown", rulings.Shown.Count);
+            Check("규칙 판정 조작", group && source, "묶음 · 출처 단추를 눌렀는데 목록이 바뀌지 않았다");
+            yield return Tap(Key.Escape);
+            bool rulingsBack = stage.Current is TitleScreen;
+            Step("rulings-key-esc", "ok", rulingsBack, "screen", stage.Current != null ? stage.Current.Name : "");
+            if (!Check("규칙 판정 닫기", rulingsBack, "Esc를 눌렀는데 「규칙 판정」이 닫히지 않았다")) yield break;
             yield return Click(Px(Q("title-item-" + TitleScreen.Credits)));
             var credits = stage.Current as CreditsScreen;
             if (!Check("크레딧", credits != null, "「크레딧」을 눌렀는데 크레딧이 열리지 않았다")) yield break;
@@ -2214,7 +2234,7 @@ namespace Sinnoh.Client
             // ① 끌다 빛나지 않는 곳(판의 제목 줄)에서 뗀다 → 제자리
             yield return Drag(Px(Q("board-party-pool-1")), Px(Q("board-party-title")), 6);
             yield return Frames(2);
-            bool dragging = party.Dragging && party.Held == PartyScreen.Hold.Move && ghost != null && ghost.resolvedStyle.display == DisplayStyle.Flex && (Laid(ghost.Q(className: "sn-pcard-ghost")) || Laid(ghost.Q(className: "sn-enc-move")));   // 결정 73 ④ · 206 ③: 기술 띠 그림(웹 손님판은 기술 줄)이 따라온다
+            bool dragging = party.Dragging && party.Held == PartyScreen.Hold.Move && ghost != null && ghost.resolvedStyle.display == DisplayStyle.Flex && (Laid(ghost.Q(className: "sn-pcard-ghost")) || Laid(ghost.Q(className: "sn-enc-move")));   // 결정 73 ④ · 206 ③: 기술 띠 그림(카드 그림이 없으면 기술 줄)이 따라온다
             bool lit = Q("board-party-slot-0-1") != null && Q("board-party-slot-0-1").ClassListContains("sn-party-ok");
             yield return Snap("24-party-drag");
             Queue(at, false);

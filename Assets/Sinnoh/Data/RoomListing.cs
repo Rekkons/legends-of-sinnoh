@@ -13,15 +13,13 @@ namespace Sinnoh.Data
         public bool Public = true;
         /// <summary>방장 닉네임(목록의 방 이름 — 02 §3-1 ①).</summary>
         public string HostName;
-        /// <summary>웹 손님 페이지가 없는 방(PC판 전용 표시, 웹 손님 묶음이 정한다).</summary>
-        public bool PcOnly;
         /// <summary>빌드 표지(<see cref="RoomListingModel.Stamp"/> — 방장 Hello로 만든다). 다르면 목록에서 「버전 다름」.</summary>
         public string Stamp;
     }
 
     /// <summary>
     /// UGS Lobby 데이터(공개, 짧은 키 — isekai RoomListingModel의 ListingData를 고쳐 옮김): h 방장 닉네임 · n 찬 자리 · m 자리 수 · k 캠페인 · c 제한 시간 프리셋 ·
-    /// w PC판 전용 0/1 · s 상태(lobby / game) · v 빌드 표지 · j Relay 참가 코드. 토큰·좌석 닉네임은 싣지 않는다.
+    /// s 상태(lobby / game) · v 빌드 표지 · j Relay 참가 코드. 토큰·좌석 닉네임은 싣지 않는다.
     /// </summary>
     public sealed class ListingData
     {
@@ -32,7 +30,6 @@ namespace Sinnoh.Data
         public int Seats;
         public Campaign Campaign;
         public ClockPreset Clock;
-        public bool PcOnly;
         public string State = Lobby;
         public string Stamp = "";
         public string JoinCode = "";
@@ -44,7 +41,6 @@ namespace Sinnoh.Data
             ["m"] = Seats.ToString(CultureInfo.InvariantCulture),
             ["k"] = ((int)Campaign).ToString(CultureInfo.InvariantCulture),
             ["c"] = ((int)Clock).ToString(CultureInfo.InvariantCulture),
-            ["w"] = PcOnly ? "1" : "0",
             ["s"] = State ?? "",
             ["v"] = Stamp ?? "",
             ["j"] = JoinCode ?? "",
@@ -61,7 +57,7 @@ namespace Sinnoh.Data
                 Host = S("h"), Members = I("n"), Seats = I("m"),
                 Campaign = Enum.IsDefined(typeof(Campaign), k0) ? (Campaign)k0 : Campaign.HeartOfSinnoh,
                 Clock = Enum.IsDefined(typeof(ClockPreset), c0) ? (ClockPreset)c0 : ClockPreset.Off,
-                PcOnly = S("w") == "1", State = S("s"), Stamp = S("v"), JoinCode = S("j"),
+                State = S("s"), Stamp = S("v"), JoinCode = S("j"),
             };
         }
 
@@ -93,7 +89,6 @@ namespace Sinnoh.Data
         public int Seats;
         public Campaign Campaign;
         public ClockPreset Clock;
-        public bool PcOnly;
         /// <summary>로비 단계가 아님(게임 중·결과·이어하기 대기) — 목록에 보이지 않는다.</summary>
         public bool InGame;
         public string Stamp;
@@ -110,7 +105,7 @@ namespace Sinnoh.Data
             var d = ListingData.FromDictionary(row?.Data);
             return new ListedRoom
             {
-                Id = row?.Id, Host = d.Host, Members = d.Members, Seats = d.Seats, Campaign = d.Campaign, Clock = d.Clock, PcOnly = d.PcOnly,
+                Id = row?.Id, Host = d.Host, Members = d.Members, Seats = d.Seats, Campaign = d.Campaign, Clock = d.Clock,
                 InGame = d.State != ListingData.Lobby, Stamp = d.Stamp, JoinCode = JoinTarget.IsCode(d.JoinCode) ? d.JoinCode.ToUpperInvariant() : null,
                 CreatedMs = row?.CreatedMs ?? 0,
             };
@@ -167,7 +162,6 @@ namespace Sinnoh.Data
                 Seats = s?.Seats ?? 0,
                 Campaign = s?.Campaign ?? Campaign.HeartOfSinnoh,
                 Clock = s?.Clock ?? ClockPreset.Off,
-                PcOnly = options?.PcOnly ?? false,
                 State = room == null || room.Phase == RoomPhase.Lobby ? ListingData.Lobby : ListingData.Game,
                 Stamp = options?.Stamp ?? "",
                 JoinCode = joinCode ?? "",
@@ -341,7 +335,6 @@ namespace Sinnoh.Data
         public static readonly string[] Codes =
         {
             "NET_BAD_ADDRESS", "NET_UNREACHABLE", "NET_LOST", "NET_PORT_BUSY", "NET_HOST_SAVED", ResumeFail, OnlineFail.RelayAuth, OnlineFail.RelayCode, OnlineFail.ListFail,
-            WebFail.Tunnel, WebFail.NoWebGl, WebFail.NoCloudflared,
             NetCode.Version, NetCode.Content, NetCode.Kicked, NetCode.Duplicate, NetCode.Full, NetCode.InGame, NetCode.BadHello, NetCode.HostClosed, NetCode.SeatRefused,
         };
 

@@ -119,14 +119,14 @@ namespace Sinnoh.Tests.EditMode
         };
 
         [Test]
-        public void M7_방목록_로비데이터는짧은키9개로왕복하고_방상태에서만든다_게임중은game_빌드표지는판이다르면다르다()
+        public void M7_방목록_로비데이터는짧은키8개로왕복하고_방상태에서만든다_게임중은game_빌드표지는판이다르면다르다()
         {
-            var opts = new ListingOptions { HostName = "예비", PcOnly = true, Stamp = Stamp };
+            var opts = new ListingOptions { HostName = "예비", Stamp = Stamp };
             var d = RoomListingModel.Build(opts, Room(RoomPhase.Lobby, 3, 4), "Q7K2MZ");
             var dict = d.ToDictionary();
-            CollectionAssert.AreEquivalent(new[] { "h", "n", "m", "k", "c", "w", "s", "v", "j" }, dict.Keys, "토큰·좌석 닉네임은 싣지 않는다");
-            Assert.AreEqual(("방장", 3, 4, Campaign.UltraBurst, ClockPreset.Normal, true, ListingData.Lobby, Stamp, "Q7K2MZ"),
-                (d.Host, d.Members, d.Seats, d.Campaign, d.Clock, d.PcOnly, d.State, d.Stamp, d.JoinCode), "방장 닉네임은 1번 자리");
+            CollectionAssert.AreEquivalent(new[] { "h", "n", "m", "k", "c", "s", "v", "j" }, dict.Keys, "토큰·좌석 닉네임은 싣지 않는다");
+            Assert.AreEqual(("방장", 3, 4, Campaign.UltraBurst, ClockPreset.Normal, ListingData.Lobby, Stamp, "Q7K2MZ"),
+                (d.Host, d.Members, d.Seats, d.Campaign, d.Clock, d.State, d.Stamp, d.JoinCode), "방장 닉네임은 1번 자리");
             var back = ListingData.FromDictionary(dict);
             Assert.IsTrue(back.SameAs(d), "왕복");
             Assert.AreEqual(ListingData.Game, RoomListingModel.Build(opts, Room(RoomPhase.InGame, 3, 4), "Q7K2MZ").State);
@@ -399,7 +399,7 @@ namespace Sinnoh.Tests.EditMode
 
             var ko = TestData.LoadStrings("ko");
             var en = TestData.LoadStrings("en");
-            Assert.AreEqual(21, NetFailText.Codes.Length, "M7 웹 손님: NET_TUNNEL · NET_NO_WEBGL · NET_NO_CLOUDFLARED");
+            Assert.AreEqual(18, NetFailText.Codes.Length, "결정 210: 웹 손님판 코드 셋(NET_TUNNEL · NET_NO_WEBGL · NET_NO_CLOUDFLARED)을 뺐다");
             foreach (var code in NetFailText.Codes.Append("E_SOMETHING_NEW").Append(null))
             {
                 string key = NetFailText.Key(code);

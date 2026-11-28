@@ -16,7 +16,7 @@ namespace Sinnoh.Net
 
     /// <summary>
     /// UGS Cloud Save 「Player Files」에 올린다: 익명 로그인(<see cref="UgsBoot"/> — 솔로는 여기서 처음 로그인한다) → 파일 저장.
-    /// 플레이어당 파일 200개 한도에 닿으면 가장 오래된 기록 하나를 먼저 지운다. 웹(WebGL)에서는 만들지 않는다(조립 지점 ScreenBoot).
+    /// 플레이어당 파일 200개 한도에 닿으면 가장 오래된 기록 하나를 먼저 지운다. 에디터에서는 만들지 않는다(조립 지점 ScreenBoot).
     /// </summary>
     public sealed class UgsPlayUploader : IPlayUploader
     {

@@ -48,13 +48,13 @@
     },
     "strings.en": {
       "file": "strings.en.json",
-      "rows": 4323,
-      "sha256": "ea439fc416fe4e3d66b82c850cfce35aabc7da5687314d38ca3a6024c4ab41fa"
+      "rows": 4327,
+      "sha256": "c346f1af7b5aae7a46fe2e374f198771a17a233ba7846097f6fbe53203b2c471"
     },
     "strings.ko": {
       "file": "strings.ko.json",
-      "rows": 4323,
-      "sha256": "c40e88ed8c702cdf3bfb583d078c1faef91942eee00c1fa04ea3d81a1383ec29"
+      "rows": 4327,
+      "sha256": "28d6e58c1782b6034402a72a7e66a46a7894895cce79daacbae1138ea893bc0a"
     },
     "tutorial.e01": {
       "file": "tutorial/e01.json",
@@ -161,10 +161,20 @@
       "rows": 81,
       "sha256": "c2530cf5b31d3910f9352642b26b173af67508d707ff61f9fe84bb492f28de8e"
     },
+    "rulings.ko": {
+      "file": "rulings.ko.json",
+      "rows": 448,
+      "sha256": "71fb50aa2a28e74a78dfbbb966d7f4894ca5fcb4db0199ab69f579ae594282f7"
+    },
+    "rulings.en": {
+      "file": "rulings.en.json",
+      "rows": 448,
+      "sha256": "a490e8780145ff503ebd2ffcf3b82ec77656741f53f642057d1a4ade237f5e00"
+    },
     "credits": {
       "file": "credits.json",
       "rows": 5,
-      "sha256": "194e7201783bcfa178abd4a84a2c7d1e073f0a0ef21080543946e73b454789a8"
+      "sha256": "ece067c7f52083c4c391d46c5194c1eed45b644463aff3f74822c86375d9fe78"
     }
   },
   "contentTables": [

@@ -12,18 +12,16 @@ using UnityEngine;
 
 namespace Sinnoh.Editor
 {
-    // 보드 플레이어 빌드(M4-2e, d3-3 §2-4·§2-5·§4-2~§4-4): Gen 번들 + Win64·WebGL 플레이어. 배치로만 돌린다(창을 띄우지 않는다).
+    // 보드 플레이어 빌드(M4-2e, d3-3 §2-4·§2-5·§4-2~§4-4): Gen 번들 + Win64 플레이어. 배치로만 돌린다(창을 띄우지 않는다).
     //   Unity.exe -batchmode -projectPath . -executeMethod Sinnoh.Editor.BoardBuild.Win64 -logFile <log>   (-quit 없이, 끝나면 종료 코드 0/1)
-    //   Unity.exe -batchmode -projectPath . -executeMethod Sinnoh.Editor.BoardBuild.WebGL -logFile <log>   (WebGL로 바꿔 빌드하고 원래 대상으로 되돌린다)
     // 번들(03 §5 「나눠 받기」를 M4-2 측정용으로 먼저, d3-3 §4-2 [가정]): 키 → 번들 이름은 GenAssets.BundleFor 한 곳(board·trainers·figures·fig_<폴더>·ui·sprites·cards·stage·audio) + 피규어 URP 셰이더 공용 fig_shaders.
     //   LZ4(ChunkBasedCompression), 주소 이름 = Gen 키. Builds/bundles/<대상>/content/에 만들고 플레이어 출력의 StreamingAssets/content/에 복사한다(.manifest 글은 뺀다).
-    // 출력 Builds/(git 밖): Win64/Sinnoh.exe(+ Sinnoh_Data/StreamingAssets/content/), WebGL/(Build/·StreamingAssets/content/).
-    // M7 웹 손님(02 §2-2 · 03 §5): WebGL 번들은 전송용 <번들>.gz(gzip 9 — 서버가 Content-Encoding: gzip으로 보낸다)만 두고, 템플릿은 Assets/WebGLTemplates/Sinnoh(창을 채우는 캔버스 · 받기 막대).
-    //   Win64 빌드는 끝에 Builds/WebGL(먼저 WebGL을 빌드해 둔 것)을 실행 파일 옆 WebGL/로, Tools/bin/cloudflared.exe(node Tools/fetch-cloudflared.mjs — 결정 91)를 실행 파일 옆으로 복사한다(없으면 경고만 — 웹 링크가 없는 방).
-    //   두 빌드 모두 끝에 LICENSE.md · LICENSE.ko.md · THIRD-PARTY-NOTICES.md · THIRD-PARTY-NOTICES.ko.md · CREDITS.md · CREDITS.ko.md · PRIVACY.md · PRIVACY.ko.md를 출력 폴더에 복사한다(CopyNotices — Win64는 Sinnoh.exe 옆 + 그 옆 WebGL/, WebGL은 index.html 옆).
-    // 설정(03 §5·d3-3 §2-4·§2-5): Frame Timing Stats 켬, 스플래시 끔, WebGL 압축 gzip·압축 해제 대체 끔, 게임 아이콘(ApplyIcons — 결정 159 ①) — 프로젝트 설정에 남는다.
+    // 출력 Builds/(git 밖): Win64/Sinnoh.exe(+ Sinnoh_Data/StreamingAssets/content/).
+    //   끝에 Tools/bin/cloudflared.exe(node Tools/fetch-cloudflared.mjs — 결정 91)를 실행 파일 옆으로 복사한다(없으면 경고만 — 인터넷 방의 Relay 실패 때 터널이 없다).
+    //   끝에 LICENSE.md · LICENSE.ko.md · THIRD-PARTY-NOTICES.md · THIRD-PARTY-NOTICES.ko.md · CREDITS.md · CREDITS.ko.md · PRIVACY.md · PRIVACY.ko.md를 Sinnoh.exe 옆에 복사한다(CopyNotices).
+    // 설정(03 §5·d3-3 §2-4·§2-5): Frame Timing Stats 켬, 스플래시 끔, 게임 아이콘(ApplyIcons — 결정 159 ①) — 프로젝트 설정에 남는다.
     //   아이콘만 넣기: Unity.exe -batchmode -projectPath . -executeMethod Sinnoh.Editor.BoardBuild.Icons -logFile <log>
-    // 결과 한 줄 [BoardBuild] + Logs/BoardShots/build-<win64|webgl>.json(시간·크기·설정·번들 크기). WebGL gzip 크기 견줌은 node Tools/assets/webgl-size.mjs.
+    // 결과 한 줄 [BoardBuild] + Logs/BoardShots/build-win64.json(시간·크기·설정·번들 크기).
     public static class BoardBuild
     {
         public const string OutRoot = "Builds";
@@ -35,12 +33,7 @@ namespace Sinnoh.Editor
         [MenuItem("Sinnoh/Build/Win64 Board")]
         static void MenuWin64() => BuildWin64();
 
-        [MenuItem("Sinnoh/Build/WebGL Board")]
-        static void MenuWebGL() => BuildWebGL();
-
         public static void Win64() => Batch(BuildWin64);
-
-        public static void WebGL() => Batch(BuildWebGL);
 
         public static void Icons() => Batch(() => { ApplyIcons(); SavePlayerSettings(); return true; });
 
@@ -56,10 +49,7 @@ namespace Sinnoh.Editor
         /// 플레이어 번들 목록: 보드가 읽는 Gen 키(Board/**, Trainers/trainers.json·Front/**, Figures/figures.json·폴더마다 프리팹)와 PC 층 겉모양(UiSkin의 글꼴·창틀 키 셋 → ui), 셋업 화면 그림(정지 도트 아틀라스 → sprites, 마을 카드 그림·체력·스피드 아이콘 → cards)을 GenAssets.BundleFor로 묶는다.
         /// 피규어 재질의 셰이더는 fig_shaders 하나로 뺀다(피규어마다 겹치지 않게, FigureImport 크기 재기와 같다). 디스크 순서가 아니라 서수 정렬(결정적).
         /// </summary>
-        public static List<AssetBundleBuild> Plan() => Plan(false);
-
-        /// <summary>그 대상의 번들 목록 — 웹 손님판(web)은 <see cref="GenAssets.WebSkips"/> 번들(포켓몬 카드 그림 — 결정 206 [가정])을 뺀다.</summary>
-        public static List<AssetBundleBuild> Plan(bool web)
+        public static List<AssetBundleBuild> Plan()
         {
             var byBundle = new SortedDictionary<string, SortedSet<string>>(StringComparer.Ordinal);
             void Add(string key)
@@ -112,15 +102,14 @@ namespace Sinnoh.Editor
                 }
             }
             foreach (var k in Keys("Audio/Se", true)) Add(k);
-            foreach (var k in Keys("Audio/Cry", true)) Add(k);   // 울음 표 + 울음(M9 소리 ③ — 번들 cries, 웹은 나눠 받기)
+            foreach (var k in Keys("Audio/Cry", true)) Add(k);   // 울음 표 + 울음(M9 소리 ③ — 번들 cries)
             // 튜토리얼 안내 마박사(M6.5, 결정 90 Q2 가): 소개 전신 도트 + 목차 얼굴
             foreach (var k in Keys("Tutorial", true)) Add(k);
-            // 설명서 그림(M9 「설명서 그림」, 결정 35): 원작 룰북에서 자른 그림 + 표 — 나눠 받기 번들 rulebook
+            // 설명서 그림(M9 「설명서 그림」, 결정 35): 원작 룰북에서 자른 그림 + 표 — 번들 rulebook
             foreach (var k in Keys("Rulebook", true)) Add(k);
-            // 포켓몬 카드(결정 206): 구운 앞면 · 띠 · 숫자 글자 + 카드에 얹는 상태 주사위 · 상자 · 타입 그림 · 지닌물건 토큰 — PC만(웹은 도트 카드로 대신 [가정])
-            if (!web)
-                foreach (var dir in new[] { "Cards/Faces", "Cards/Moves", "Cards/Strips", "Cards/Digits", "Cards/Dice", "Cards/Generator/stats_bases", "Cards/Generator/types", "Cards/Tokens/item_tokens" })
-                    foreach (var k in Keys(dir, true).Where(k => GenAssets.WebSkips(GenAssets.BundleFor(k)))) Add(k);
+            // 포켓몬 카드(결정 206): 구운 앞면 · 띠 · 숫자 글자 + 카드에 얹는 상태 주사위 · 상자 · 타입 그림 · 지닌물건 토큰 — pokecards · pokecards_*
+            foreach (var dir in new[] { "Cards/Faces", "Cards/Moves", "Cards/Strips", "Cards/Digits", "Cards/Dice", "Cards/Generator/stats_bases", "Cards/Generator/types", "Cards/Tokens/item_tokens" })
+                foreach (var k in Keys(dir, true).Where(k => IsCardBundle(GenAssets.BundleFor(k)))) Add(k);
             var shaders = new SortedSet<string>(StringComparer.Ordinal);
             string figRoot = GenAssets.Root + "Figures";
             if (Directory.Exists(figRoot))
@@ -228,9 +217,6 @@ namespace Sinnoh.Editor
                 CopyNotices(".", exeDir);
                 // 판 번호(결정 148 — 정본 bundleVersion): 포장 도구 Tools/release/pack.mjs가 읽는다(빌드한 판 = 포장할 판)
                 File.WriteAllText(Path.Combine(exeDir, VersionFile), Application.version + "\n");
-                // 먼저 빌드해 둔 웹 손님판이 옛것이어도 문서는 지금 것으로
-                string web = Path.Combine(exeDir, Sinnoh.Data.WebFiles.FolderName);
-                if (Directory.Exists(web)) CopyNotices(".", web);
             }
             return ok;
         }
@@ -239,7 +225,7 @@ namespace Sinnoh.Editor
         public static readonly string[] NoticeFiles = { "LICENSE.md", "LICENSE.ko.md", "THIRD-PARTY-NOTICES.md", "THIRD-PARTY-NOTICES.ko.md", "CREDITS.md", "CREDITS.ko.md", "PRIVACY.md", "PRIVACY.ko.md" };   // PRIVACY = 개인 정보 처리 고지(결정 126 ④ — 플레이 기록 보내기). LICENSE · THIRD-PARTY-NOTICES · CREDITS · PRIVACY는 영어 *.md + 한국어 *.ko.md(결정 138 · 152)
 
         /// <summary>
-        /// 라이선스 · 고지 · 크레딧 · 개인 정보 처리 문서(NoticeFiles)를 srcRoot(프로젝트 뿌리)에서 dstDir로 복사한다: Win64는 실행 파일 옆, 웹 손님판은 index.html 옆 정적 파일(첫 받기 크기에 들지 않는다 — size-report는 뿌리의 다른 파일을 세지 않는다).
+        /// 라이선스 · 고지 · 크레딧 · 개인 정보 처리 문서(NoticeFiles)를 srcRoot(프로젝트 뿌리)에서 dstDir(실행 파일 옆)로 복사한다.
         /// 하나라도 없으면 예외(문서 없는 배포본을 만들지 않는다 — 빌드 실패).
         /// </summary>
         public static void CopyNotices(string srcRoot, string dstDir)
@@ -251,73 +237,33 @@ namespace Sinnoh.Editor
             Debug.Log("[BoardBuild] 배포 문서 " + NoticeFiles.Length + "개 → " + dstDir);
         }
 
-        /// <summary>호스트 실행 파일 옆에 웹 손님판(WebGL/)과 cloudflared.exe를 둔다(02 §2-2). 없으면 경고만.</summary>
+        /// <summary>
+        /// 호스트 실행 파일 옆에 cloudflared.exe를 둔다(02 §2-1 — 인터넷 방의 Relay 실패 때 터널). 없으면 경고만.
+        /// 같은 출력 폴더에 예전 빌드가 남긴 웹 손님판 폴더(<c>WebGL/</c> — 결정 210으로 뺐다)가 있으면 지운다(포장에 섞이지 않게).
+        /// </summary>
         public static void CopyHostExtras(string exeDir)
         {
-            string web = Path.Combine(OutRoot, "WebGL"), dst = Path.Combine(exeDir, Sinnoh.Data.WebFiles.FolderName);
-            if (Directory.Exists(dst)) Directory.Delete(dst, true);
-            if (File.Exists(Path.Combine(web, "index.html")))
+            string stale = Path.Combine(exeDir, "WebGL");
+            if (Directory.Exists(stale))
             {
-                foreach (var f in Directory.GetFiles(web, "*", SearchOption.AllDirectories))
-                {
-                    string to = Path.Combine(dst, f.Substring(web.Length + 1));
-                    Directory.CreateDirectory(Path.GetDirectoryName(to));
-                    File.Copy(f, to, true);
-                }
-                Debug.Log("[BoardBuild] 웹 손님판 복사 → " + dst);
+                Directory.Delete(stale, true);
+                Debug.Log("[BoardBuild] 예전 웹 손님판 폴더를 지웠다 → " + stale);
             }
-            else Debug.LogWarning("[BoardBuild] Builds/WebGL이 없어 웹 손님판을 싣지 않았다(WebGL을 먼저 빌드) — 방은 NET_NO_WEBGL");
             string cf = Path.Combine("Tools", "bin", "cloudflared.exe");
             if (File.Exists(cf)) File.Copy(cf, Path.Combine(exeDir, "cloudflared.exe"), true);
-            else Debug.LogWarning("[BoardBuild] Tools/bin/cloudflared.exe가 없다(node Tools/fetch-cloudflared.mjs) — 인터넷 방은 NET_NO_CLOUDFLARED");
+            else Debug.LogWarning("[BoardBuild] Tools/bin/cloudflared.exe가 없다(node Tools/fetch-cloudflared.mjs) — 인터넷 방은 Relay가 실패하면 터널 없이 실패한다");
         }
 
-        /// <summary>웹 손님판 템플릿(Assets/WebGLTemplates/Sinnoh).</summary>
-        public const string WebTemplate = "PROJECT:Sinnoh";
-
-        public static bool BuildWebGL()
-        {
-            var prev = EditorUserBuildSettings.activeBuildTarget;
-            var prevGroup = BuildPipeline.GetBuildTargetGroup(prev);
-            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip; // 03 §5 [가정]: http 직접 연결에서도 받게
-            PlayerSettings.WebGL.decompressionFallback = false;
-            PlayerSettings.WebGL.template = WebTemplate;   // 창을 채우는 캔버스 · Gen 번들 받기 막대(M7 웹 손님)
-            PlayerSettings.SplashScreen.show = false;
-            EnsureFilterShaders();                         // 카드 블럭 그림자(결정 206 — 웹은 도트 카드지만 같은 USS)
-            ApplyIcons();                                  // 결정 159 ① (웹 탭 아이콘은 템플릿의 favicon.ico)
-            SavePlayerSettings();
-            if (prev != BuildTarget.WebGL && !EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL))
-            {
-                Debug.LogError("[BoardBuild] WebGL로 바꾸지 못함(모듈 설치 확인)");
-                return false;
-            }
-            try
-            {
-                bool ok = Build(BuildTarget.WebGL, "webgl", Path.Combine(OutRoot, "WebGL"), Path.Combine(OutRoot, "WebGL", "StreamingAssets"));
-                if (ok) CopyNotices(".", Path.Combine(OutRoot, "WebGL"));
-                return ok;
-            }
-            finally
-            {
-                if (prev != BuildTarget.WebGL) EditorUserBuildSettings.SwitchActiveBuildTarget(prevGroup, prev);
-            }
-        }
+        /// <summary>포켓몬 카드 번들(<see cref="GenAssets.CardBundle"/>와 그 나눈 묶음 <c>pokecards_*</c>)인가.</summary>
+        public static bool IsCardBundle(string bundle) => bundle != null && (bundle == GenAssets.CardBundle || bundle.StartsWith(GenAssets.CardBundle + "_", StringComparison.Ordinal));
 
         /// <summary>
         /// 바꾼 Player Settings만 디스크에 쓴다(AssetDatabase.SaveAssets는 다른 더러운 설정 자산까지 쓴다).
-        /// 플레이어 빌드 자체도 URP 설정 자산(DefaultVolumeProfile·URP 전역 설정·GraphicsSettings, WebGL이면 Mobile_RPAsset)을 다시 쓴다 — 커밋 전에 되돌린다(plan §4 M4-2e).
+        /// 플레이어 빌드 자체도 URP 설정 자산(DefaultVolumeProfile·URP 전역 설정·GraphicsSettings)을 다시 쓴다 — 커밋 전에 되돌린다(plan §4 M4-2e).
         /// </summary>
         static void SavePlayerSettings()
         {
             foreach (var ps in Resources.FindObjectsOfTypeAll<PlayerSettings>()) AssetDatabase.SaveAssetIfDirty(ps);
-        }
-
-        static void GzipTo(string src, string dst)
-        {
-            using (var input = File.OpenRead(src))
-            using (var output = File.Create(dst))
-            using (var gz = new System.IO.Compression.GZipStream(output, System.IO.Compression.CompressionLevel.Optimal))
-                input.CopyTo(gz);
         }
 
         static bool Build(BuildTarget target, string tag, string location, string streamingAssets)
@@ -327,7 +273,7 @@ namespace Sinnoh.Editor
             string bundleDir = Path.Combine(OutRoot, "bundles", target.ToString(), GenAssets.ContentFolder);
             if (Directory.Exists(bundleDir)) Directory.Delete(bundleDir, true);
             Directory.CreateDirectory(bundleDir);
-            var plan = Plan(target == BuildTarget.WebGL);
+            var plan = Plan();
             if (plan.Count == 0) { Debug.LogError("[BoardBuild] Gen 없음: rebuild-all 먼저"); return false; }
             var manifest = BuildPipeline.BuildAssetBundles(bundleDir, plan.ToArray(), BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.StrictMode, target);
             if (manifest == null) { Debug.LogError("[BoardBuild] 번들 만들기 실패"); return false; }
@@ -345,8 +291,7 @@ namespace Sinnoh.Editor
                 Directory.CreateDirectory(dst);
                 foreach (var f in Directory.GetFiles(bundleDir).Where(f => !f.EndsWith(".manifest", StringComparison.Ordinal)).OrderBy(f => f, StringComparer.Ordinal))
                 {
-                    if (target == BuildTarget.WebGL) GzipTo(f, Path.Combine(dst, Path.GetFileName(f) + ".gz"));   // 웹은 전송용 .gz만(WebContent가 받는다)
-                    else File.Copy(f, Path.Combine(dst, Path.GetFileName(f)), true);
+                    File.Copy(f, Path.Combine(dst, Path.GetFileName(f)), true);
                     bundles.Add((Path.GetFileName(f), new FileInfo(f).Length));
                 }
             }
@@ -368,12 +313,6 @@ namespace Sinnoh.Editor
               .Append(",\"il2cppCodeGeneration\":\"").Append(PlayerSettings.GetIl2CppCodeGeneration(nt)).Append('"')
               .Append(",\"frameTimingStats\":").Append(PlayerSettings.enableFrameTimingStats ? "true" : "false")
               .Append(",\"splash\":").Append(PlayerSettings.SplashScreen.show ? "true" : "false");
-            if (target == BuildTarget.WebGL)
-                sb.Append(",\"webglCompression\":\"").Append(PlayerSettings.WebGL.compressionFormat).Append('"')
-                  .Append(",\"decompressionFallback\":").Append(PlayerSettings.WebGL.decompressionFallback ? "true" : "false")
-                  .Append(",\"exceptionSupport\":\"").Append(PlayerSettings.WebGL.exceptionSupport).Append('"')
-                  .Append(",\"codeOptimization\":\"").Append(EditorUserBuildSettings.GetPlatformSettings("WebGL", "CodeOptimization")).Append('"')
-                  .Append(",\"dataCaching\":").Append(PlayerSettings.WebGL.dataCaching ? "true" : "false");
             sb.Append("},\"bundles\":[");
             for (int i = 0; i < bundles.Count; i++)
                 sb.Append(i > 0 ? "," : "").Append("{\"name\":\"").Append(bundles[i].name).Append("\",\"bytes\":").Append(bundles[i].bytes).Append('}');

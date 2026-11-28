@@ -20,12 +20,14 @@ namespace Sinnoh.Client
             {
                 readBook = value;
                 books.Clear();
+                rulings.Clear();
                 credits = null;
             }
         }
 
         Func<string, string> readBook;
         readonly Dictionary<string, Rulebook> books = new Dictionary<string, Rulebook>(StringComparer.Ordinal);
+        readonly Dictionary<string, Rulings> rulings = new Dictionary<string, Rulings>(StringComparer.Ordinal);
         CreditsTable credits;
         string bookLast;
         RulebookSide bookSide;
@@ -111,6 +113,59 @@ namespace Sinnoh.Client
             Sync();
         }
 
+        /// <summary>그 언어의 「규칙 판정」 표(결정 213 — <c>rulings.&lt;언어&gt;.json</c>, 한 번 읽어 둔다). 데이터가 없으면 null.</summary>
+        public Rulings RulingsOf(string lang)
+        {
+            if (rulings.TryGetValue(lang, out var t)) return t;
+            string file = "rulings." + lang + ".json";
+            string json = ReadBook(file);
+            t = json != null ? Rulings.Load(json, file) : null;
+            rulings[lang] = t;
+            return t;
+        }
+
+        /// <summary>타이틀의 「규칙 판정」 줄: 화면을 연다(하던 게임은 떠난다). [뒤로]는 타이틀의 그 줄로.</summary>
+        public void OpenTitleRulings()
+        {
+            var table = RulingsOf(BookLang);
+            if (table == null) return;
+            Leave();
+            Stage.Open(new RulingsScreen(table, CloseRulings, false));
+            Restage();
+        }
+
+        /// <summary>게임 중 「규칙 판정」(게임 메뉴 [규칙 판정]): 룰 설명서 큰 창과 같은 길 — 보드에 있으면 언제든, 화면 대기열은 멈추지 않는다.</summary>
+        public bool OpenGameRulings()
+        {
+            var table = RulingsOf(BookLang);
+            if (table == null || !CanPeek) return false;
+            if (Front is RulingsScreen) return true;
+            ShowInfo(new RulingsScreen(table, CloseRulings, true), Stage.Current == null);
+            return true;
+        }
+
+        /// <summary>게임 메뉴의 [규칙 판정]: 메뉴를 닫고 화면을 연다.</summary>
+        public bool OpenMenuRulings()
+        {
+            if (!(MenuLayer is BoardMenuScreen)) return false;
+            CloseMenu();
+            return OpenGameRulings();
+        }
+
+        /// <summary>「규칙 판정」의 [닫기]·[뒤로](= Esc): 게임 중이면 보드로, 타이틀에서 열었으면 타이틀의 그 줄로.</summary>
+        public void CloseRulings()
+        {
+            if (ShutInfo(Stage.Info is RulingsScreen)) return;
+            if (!(Stage.Current is RulingsScreen r)) return;
+            if (!r.InGame)
+            {
+                OpenTitle(TitleScreen.Rulings);
+                return;
+            }
+            Stage.Shut();
+            Sync();
+        }
+
         /// <summary>타이틀의 「크레딧」 줄: 크레딧 화면을 연다. [뒤로]는 타이틀의 그 줄로.</summary>
         public void OpenCredits()
         {
@@ -161,6 +216,11 @@ namespace Sinnoh.Client
             if (Stage.Current is RulebookScreen || Stage.Info is RulebookScreen)
             {
                 CloseRulebook();
+                return true;
+            }
+            if (Stage.Current is RulingsScreen || Stage.Info is RulingsScreen)
+            {
+                CloseRulings();
                 return true;
             }
             if (Stage.Current is CreditsScreen)

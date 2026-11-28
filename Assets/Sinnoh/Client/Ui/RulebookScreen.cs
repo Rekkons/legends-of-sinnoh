@@ -125,22 +125,11 @@ namespace Sinnoh.Client
             next = RulebookView.Add(foot, Kit.Button("", KitButtonKind.Normal, () => Step(1)), "rulebook-next", null);
 
             open.Add(Current.Chapter);
-            GenAssets.Arrived += OnArrived;
             Paint();
             return page;
         }
 
-        public void Close()
-        {
-            GenAssets.Arrived -= OnArrived;
-            stage = null;
-        }
-
-        // 웹 손님판: 설명서 그림 번들이 왔다 — 자리표시를 그림으로
-        void OnArrived(string bundle)
-        {
-            if (stage != null && bundle == GenAssets.RulebookBundle && view.Waiting > 0) PaintRead(false);
-        }
+        public void Close() => stage = null;
 
         /// <summary>
         /// 휠로 굴리는 칸(엔진 스크롤 막대를 숨긴다 — L1) + 오른쪽 얇은 위치 막대. 안쪽 칸을 돌려준다.

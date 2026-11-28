@@ -125,6 +125,10 @@ namespace Sinnoh.Tests.EditMode
                 }
             }
             Check("Rulebook.Ellipsis", Rulebook.Ellipsis);
+            // 「규칙 판정」 화면(결정 213): 묶음 · 절 제목 · 물음 · 답
+            foreach (var lang in new[] { "ko", "en" })
+                foreach (var r in Rulings.Load(TestData.ReadText("rulings." + lang + ".json"), "rulings." + lang + ".json").Items)
+                    foreach (string t in new[] { r.GroupTitle, r.SectionTitle, r.Q, r.A }) Check("rulings." + lang + " " + r.Id, t);
             foreach (var section in CreditsTable.Load(TestData.ReadText("credits.json")).Sections)
             {
                 Check("credits.json " + section.Id, section.Title);

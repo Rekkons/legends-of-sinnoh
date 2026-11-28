@@ -187,7 +187,7 @@ namespace Sinnoh.Tests.PlayMode
             Assert.That(errors, Is.Empty, string.Join("\n", errors));
         }
 
-        // 결정 146 ④ [가정]: 저장한 언어가 없으면 OS 언어(웹은 브라우저 언어) — 한국어만 ko, 그 밖은 en. 저장한 값이 먼저, 모르는 저장값은 고르지 않은 것과 같다
+        // 결정 146 ④ [가정]: 저장한 언어가 없으면 OS 언어 — 한국어만 ko, 그 밖은 en. 저장한 값이 먼저, 모르는 저장값은 고르지 않은 것과 같다
         [Test]
         public void M10_저장한언어가없으면OS언어로고르고한국어밖은영어()
         {

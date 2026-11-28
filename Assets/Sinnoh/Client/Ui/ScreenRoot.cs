@@ -107,8 +107,7 @@ namespace Sinnoh.Client
         }
 
         /// <summary>
-        /// 프레임 재기(plan M7 완료 조건 6 「웹 손님에서 연출 중 프레임이 유휴값으로 떨어지지 않는다」): 바쁜 구간 · 유휴 구간이 끝날 때 그 구간의 평균 fps를 쥔다(<see cref="MeterMinMs"/> 이상인 구간만).
-        /// 웹 손님판은 로그 한 줄(<c>[Frame] busy 2412ms 144f 59.7fps</c>)도 남긴다 — 헤드리스 브라우저 확인이 콘솔에서 읽는다.
+        /// 프레임 재기(plan M7 완료 조건 6 「연출 중 프레임이 유휴값으로 떨어지지 않는다」): 바쁜 구간 · 유휴 구간이 끝날 때 그 구간의 평균 fps를 쥔다(<see cref="MeterMinMs"/> 이상인 구간만).
         /// </summary>
         public float LastBusyFps { get; private set; }
         public float LastIdleFps { get; private set; }
@@ -133,26 +132,14 @@ namespace Sinnoh.Client
                         LastBusyFps = fps;
                         if (MinBusyFps <= 0 || fps < MinBusyFps) MinBusyFps = fps;
                     }
-                    if (Application.platform == RuntimePlatform.WebGLPlayer)
-                        Debug.Log(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[Frame] {0} {1:0}ms {2}f {3:0.0}fps", meterIdle ? "idle" : "busy", meterMs, meterFrames, fps));
                 }
                 meterIdle = idle;
                 meterFrames = 0;
                 meterMs = 0;
-                meterNoted = false;
             }
             meterFrames++;
             meterMs += frameMs;
-            // 웹: 긴 구간은 5초에 닿을 때도 한 줄(끝나지 않는 유휴 구간 — 연출 없는 화면 — 도 읽히게)
-            if (!meterNoted && meterMs >= MeterNoteMs && Application.platform == RuntimePlatform.WebGLPlayer)
-            {
-                meterNoted = true;
-                Debug.Log(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[Frame] {0} {1:0}ms+ {2}f {3:0.0}fps", meterIdle ? "idle" : "busy", meterMs, meterFrames, meterFrames * 1000.0 / meterMs));
-            }
         }
-
-        const double MeterNoteMs = 5000;
-        bool meterNoted;
 
         // 유휴면 수직 동기를 끄고 프레임 제한을 건다(수직 동기가 켜져 있으면 targetFrameRate가 듣지 않는다). 바쁘면 처음 값으로 되돌린다.
         void Pace(bool idle)

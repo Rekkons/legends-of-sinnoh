@@ -28,7 +28,7 @@ namespace Sinnoh.Client
     }
 
     // 자동 업데이트 2단계(결정 161 — 설계 4-2): 서명된 판 정보 → 설치 견주기(다른 스레드) → 받기 계획 → 받기(UpdateFetch · UpdateQueue) → 도우미 넘기기(plan.json · run/) → 「다시 시작합니다」 → 게임 끄기.
-    // 사람이 하는 PC 플레이어의 타이틀에서만(InstallDir이 「우리 설치」일 때 — 에디터 · 웹 손님판은 null). 쓰기가 안 되거나 판이 자동을 허락하지 않으면 지금처럼 [받기].
+    // 사람이 하는 PC 플레이어의 타이틀에서만(InstallDir이 「우리 설치」일 때 — 에디터는 null). 쓰기가 안 되거나 판이 자동을 허락하지 않으면 지금처럼 [받기].
     public sealed partial class GameFlow
     {
         /// <summary>지금 단계.</summary>
@@ -122,7 +122,7 @@ namespace Sinnoh.Client
         void TakeManifest(ReleaseManifest m)
         {
             release = m;
-            string why = WebGuest ? "web" : InstallDir == null ? "install" : UpdatePlan.Refuse(m, Application.version, FeedLoopback) ?? (UpdateHandoff.CanWrite(InstallDir) ? null : "write");
+            string why = InstallDir == null ? "install" : UpdatePlan.Refuse(m, Application.version, FeedLoopback) ?? (UpdateHandoff.CanWrite(InstallDir) ? null : "write");
             AutoUpdate = why == null;
             Debug.Log(AutoUpdate ? "[Update] 자동 업데이트 가능 " + m.Version : "[Update] 자동 업데이트 안 함 — " + why);
         }

@@ -13,13 +13,13 @@ namespace Sinnoh.Tests.PlayMode
 {
     /// <summary>
     /// 새 판 알림(결정 148 ① — 자동 업데이트 1단계)을 화면 흐름으로: 판 정보가 없으면 알림이 없고, 서명이 틀리거나 꼴이 아닌 글은 조용히 넘기고,
-    /// 확인을 마친 새 판은 열린 타이틀에 바로 「새 버전 x.y.z — [받기]」(받기 = GitHub Releases), 타이틀을 다시 열어도 남는다. 웹 손님판 타이틀에는 없다.
+    /// 확인을 마친 새 판은 열린 타이틀에 바로 「새 버전 x.y.z — [받기]」(받기 = GitHub Releases), 타이틀을 다시 열어도 남는다.
     /// 서명 확인 · 판 견주기는 EditMode <c>ReleaseFeedTests</c>.
     /// </summary>
     public sealed class ReleaseNoticeFlowTests
     {
         [UnityTest]
-        public IEnumerator M10_새판알림_타이틀에뜨고_받기는GitHub_다시열어도남고_틀린글은조용히_웹손님판은없음()
+        public IEnumerator M10_새판알림_타이틀에뜨고_받기는GitHub_다시열어도남고_틀린글은조용히()
         {
             var errors = new List<string>();
             void Grab(string msg, string stack, LogType type)
@@ -80,16 +80,6 @@ namespace Sinnoh.Tests.PlayMode
                 flow.OpenSettings();
                 flow.OpenTitle();
                 Assert.That(((TitleScreen)flow.Stage.Current).UpdateShown, Is.True, "다시 연 타이틀에도");
-
-                // 웹 손님판 타이틀에는 없다(방장이 웹 손님판을 내준다)
-                var web = new TitleScreen(web: true, update: "99.0.0", download: () => opened.Add("web"));
-                flow.Stage.Open(web);
-                web.ShowUpdate("99.0.0", () => opened.Add("web"));
-                Assert.That(web.UpdateShown, Is.False);
-                Assert.That(root.Q("title-update"), Is.Null);
-                Assert.That(web.PressUpdate(), Is.False);
-                Assert.That(opened.Count, Is.EqualTo(1));
-                flow.OpenTitle();
             }
             finally
             {

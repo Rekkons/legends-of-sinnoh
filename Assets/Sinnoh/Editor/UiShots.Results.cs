@@ -32,7 +32,8 @@ namespace Sinnoh.Editor
             foreach (var kv in PlayFeedback2Screens) OverBoard.Add(kv.Key); // 결정 104·105·106 해 보기 피드백 2(UiShots.PlayFeedback2.cs)
             foreach (var kv in DexScreens) OverBoard.Add(kv.Key);   // 포켓몬 도감 S42(UiShots.Dex.cs — 결정 105 ③)
             foreach (var kv in EnIconScreens) OverBoard.Add(kv.Key);   // M9 영문 아이콘(UiShots.EnIcons.cs — 결정 115) — 도감 · 배틀 화면(보드 위)
-            foreach (var kv in RulebookScreens) OverBoard.Add(kv.Key);   // 룰 설명서 S43 · 크레딧 S03(UiShots.Rulebook.cs — M9)
+            foreach (var kv in RulebookScreens) OverBoard.Add(kv.Key);
+            foreach (var kv in RulingsScreens) OverBoard.Add(kv.Key);   // 「규칙 판정」(UiShots.Rulings.cs — 결정 213)   // 룰 설명서 S43 · 크레딧 S03(UiShots.Rulebook.cs — M9)
             foreach (var kv in UnlockScreens) OverBoard.Add(kv.Key);   // M6 「트레이너 카드 해금 연출」(UiShots.Unlock.cs) — 결과 창 · 보드 위 카드 뒤집기 · 꼬리표 · 작은 카드 · 날씨 배지
             foreach (var kv in TutorialMenuScreens) OverBoard.Add(kv.Key);   // M6.5 「화면 ② 목차·입구」(UiShots.TutorialMenu.cs) — 타이틀 · 목차 · 튜토리얼 판의 창(모두 보드 위)
             foreach (var kv in RoomScreens) OverBoard.Add(kv.Key);   // M7 「화면 ①」(UiShots.Room.cs) — 방 만들기 · 참가하기 · 로비 · 방 설정(모두 보드 위)
@@ -97,6 +98,7 @@ namespace Sinnoh.Editor
                 foreach (var s in PlayFeedback2Screens) yield return s;
                 foreach (var s in DexScreens) yield return s;
                 foreach (var s in RulebookScreens) yield return s;
+                foreach (var s in RulingsScreens) yield return s;
                 foreach (var s in Polish8Screens) yield return s;
                 foreach (var s in M8Screens) yield return s;
                 foreach (var s in EnIconScreens) yield return s;

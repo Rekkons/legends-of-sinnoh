@@ -17,7 +17,7 @@
 //          (commit-task·--verify-head도 거기서는 가지 영수증으로 받는다 — 전체 관문은 main에 합칠 때 본 폴더에서 한 번). 본 폴더에서는 --branch로만.
 //          --playmode "<필터>" · --editorassets "<필터>": 그 묶음이 건드린 시험 클래스(이름 조각, 「;」·「,」·공백으로 여럿, all = 그 어셈블리 전부)를
 //          Unity 배치로 돈다(Sinnoh.Tests.PlayMode / Sinnoh.Tests.EditorAssets, 필터마다 배치 하나). 둘 다 없으면 Unity를 띄우지 않는다.
-//          실제 UGS·바깥 프로세스가 필요한 [Explicit] 시험(NetOnlineTests·WebGuestLiveTests·M7_Online_·M9_Online_, Category Online)은 필터로 짚어도 돌지 않는다
+//          실제 UGS·바깥 프로세스가 필요한 [Explicit] 시험(NetOnlineTests·M7_Online_·M9_Online_, Category Online)은 필터로 짚어도 돌지 않는다
 //          (이름을 짚으면 사용법 오류, 조각이 걸려도 정규식·-testCategory "!Online"으로 빼고, 그래도 돌았으면 실패). 맞는 시험이 0개면 실패.
 //          고른 시험의 수는 영수증 selected에만 적는다(counts에 넣지 않는다 — 래칫은 dotnet 몫으로 돈다). 새 사본 dotnet·전체 EditMode/PlayMode·플레이어 컴파일은 없다.
 //          작업 폴더에서는 본 폴더의 영수증도 읽는다(readAllReceipts — 래칫 기준·키트 HEAD 지문·verify-head의 아래 커밋). 키트 지문을 본 full 영수증이
@@ -257,7 +257,7 @@ export function scanTestDiff(diff) {
 /** 가지 층이 고른 Unity 시험(--playmode·--editorassets): 종류 → [어셈블리, -testPlatform]. */
 export const SELECT = { playmode: ['Sinnoh.Tests.PlayMode', 'PlayMode'], editorassets: ['Sinnoh.Tests.EditorAssets', 'EditMode'] }
 /** 관문에서 돌리지 않는 [Explicit] 시험(실제 UGS·바깥 프로세스·인터넷, Category Online): 필터로 짚어도 뺀다. */
-export const ONLINE_NAMES = ['NetOnlineTests', 'WebGuestLiveTests', 'M7_Online_', 'M9_Online_']
+export const ONLINE_NAMES = ['NetOnlineTests', 'M7_Online_', 'M9_Online_']
 const ONLINE_RE = new RegExp(ONLINE_NAMES.join('|'), 'i')
 
 /** 필터 글 → Unity -testFilter 정규식(전체 이름에 대고 본다 — UTF는 -testFilter를 「;」로 나눠 정규식 FullNameFilter로 쓴다).
@@ -554,7 +554,7 @@ async function playerStep() {
   const r = await unityRun('player', ['-executeMethod', 'Sinnoh.Editor.PlayerCompileCheck.Run', '-quit'])
   const log = `${GATE_DIR}/player.log`
   if (!r.ok) return { ok: false, label: 'player', failures: r.failures, log }
-  if (r.text.includes('[PlayerCompileCheck] Win64 · WebGL 플레이어 스크립트 컴파일 통과')) return { ok: true, label: 'player' }
+  if (r.text.includes('[PlayerCompileCheck] Win64 플레이어 스크립트 컴파일 통과')) return { ok: true, label: 'player' }
   const ce = compileErrors(r.text)
   const lines = r.text.split(/\r?\n/).filter(l => l.includes('[PlayerCompileCheck]'))
   return { ok: false, label: 'player', failures: ce.length ? ce : lines.length ? lines : [`[PlayerCompileCheck] 줄 없음(Unity 종료 코드 ${r.code})`, ...tailLines(r.text, 5)], log }
@@ -1276,12 +1276,12 @@ at Sinnoh.Tests.EditMode.BarTests.M4_나 () [0x00001] in <PROJECT>\\Assets\\Sinn
   eq('돌 층: 작업 폴더는 full 대신 branch(문서만·Tools만은 그대로, 키트가 새 지문이어도 올리지 않음, --full은 full)', [pt({}, true, 'full'), pt({}, true, 'tools'), pt({}, true, 'md'), pt({}, true, 'full', { unproven: true }), pt({ full: true }, true, 'full'), pt({ fast: true }, true, 'full'), pt({}, true, 'tools', { selects: true })],
     ['branch', 'tools', 'md', 'branch', 'full', 'fast', 'branch'])
   const uf = unityFilter('RoomFlowTests; M7_Ping,RoomFlowTests')
-  eq('필터: 이름 조각 여럿 → 그 어셈블리 이름 공간 뒤에서만 찾는 정규식(「;」 없음)', [uf.names, uf.regex], [['RoomFlowTests', 'M7_Ping'], '^(?!.*(?:NetOnlineTests|WebGuestLiveTests|M7_Online_|M9_Online_))Sinnoh\\.Tests\\.PlayMode\\..*(?:RoomFlowTests|M7_Ping)'])
+  eq('필터: 이름 조각 여럿 → 그 어셈블리 이름 공간 뒤에서만 찾는 정규식(「;」 없음)', [uf.names, uf.regex], [['RoomFlowTests', 'M7_Ping'], '^(?!.*(?:NetOnlineTests|M7_Online_|M9_Online_))Sinnoh\\.Tests\\.PlayMode\\..*(?:RoomFlowTests|M7_Ping)'])
   const ure = new RegExp(unityFilter('Net;Room').regex), inPlay = n => 'Sinnoh.Tests.PlayMode.' + n
-  eq('필터: 조각이 온라인 시험에 걸려도 뺀다 · 이름 공간·dll 경로(위 묶음)는 안 걸린다', [inPlay('NetLoopTests.M7_가'), inPlay('RoomFlowTests.M5_나'), inPlay('NetOnlineTests.M7_Online_익명'), inPlay('NetOnlineTests.M7_다'), inPlay('WebGuestLiveTests.M7_Online_웹'), 'Sinnoh.Tests.PlayMode', 'D:/x/RoomNet/Library/ScriptAssemblies/Sinnoh.Tests.PlayMode.dll', 'Sinnoh.Tests.EditMode.NetTests.A1'].map(n => ure.test(n)),
+  eq('필터: 조각이 온라인 시험에 걸려도 뺀다 · 이름 공간·dll 경로(위 묶음)는 안 걸린다', [inPlay('NetLoopTests.M7_가'), inPlay('RoomFlowTests.M5_나'), inPlay('NetOnlineTests.M7_Online_익명'), inPlay('NetOnlineTests.M7_다'), inPlay('NetLoopTests.M9_Online_올리기'), 'Sinnoh.Tests.PlayMode', 'D:/x/RoomNet/Library/ScriptAssemblies/Sinnoh.Tests.PlayMode.dll', 'Sinnoh.Tests.EditMode.NetTests.A1'].map(n => ure.test(n)),
     [true, true, false, false, false, false, false, false])
   eq('필터: all = 정규식 없이 어셈블리만 · EditorAssets는 자기 이름 공간', [unityFilter('ALL', 'editorassets'), unityFilter('GenTests', 'editorassets').regex.includes('Sinnoh\\.Tests\\.EditorAssets\\.')], [{ names: ['all'], regex: null }, true])
-  eq('필터: 온라인 시험 이름·정규식 글자·빈 것은 오류', ['NetOnlineTests', 'RoomFlowTests;m7_online_x', 'WebGuestLiveTests', 'a|b', '.*', ' ; '].map(t => !!unityFilter(t).error), [true, true, true, true, true, true])
+  eq('필터: 온라인 시험 이름·정규식 글자·빈 것은 오류', ['NetOnlineTests', 'RoomFlowTests;m7_online_x', 'M9_Online_', 'a|b', '.*', ' ; '].map(t => !!unityFilter(t).error), [true, true, true, true, true, true])
   eq('명령줄: 가지 층 선택', [code(['--branch', '--full']), code(['--branch', '--fast']), code(['--playmode', 'NetOnlineTests']), code(['--playmode', 'X', '--full']), code(['--editorassets', 'a(b']), code(['--verify-head', '--branch'])], [2, 2, 2, 2, 2, 2])
   const wb = mkdtempSync(path.join(os.tmpdir(), 'sinnoh-gate-selftest-wt-'))
   try {
@@ -1364,7 +1364,7 @@ const USAGE = `사용: node Tools/gate.mjs [--fast | --branch | --full] [--playm
   층: 기본은 바뀐 경로로(문서만 → precheck, Tools/만(Tools/assets·sources.json 빼고) → fast + 진입점 연기 검사, 그 밖 → full)
   가지 층(branch, 결정 103): 형제 작업 폴더(git worktree)에서는 「그 밖」의 기본이 full 대신 가지 층 = fast(+ Tools/가 바뀌었으면 연기 검사) + 고른 Unity 시험.
     --playmode "RoomFlowTests;M7_Ping" · --editorassets "<필터>": 건드린 시험 클래스·이름 조각만 Unity 배치로(all = 그 어셈블리 전부). 없으면 Unity를 띄우지 않는다.
-    실제 UGS 시험(NetOnlineTests·WebGuestLiveTests·M7_Online_·M9_Online_)은 필터에 걸려도 돌지 않는다. 작업 폴더의 commit-task·--verify-head는 가지 영수증으로 받고,
+    실제 UGS 시험(NetOnlineTests·M7_Online_·M9_Online_)은 필터에 걸려도 돌지 않는다. 작업 폴더의 commit-task·--verify-head는 가지 영수증으로 받고,
     본 폴더(main)는 그대로 full 영수증 — 합칠 때 본 폴더에서 full 한 번. 본 폴더에서 가지 층은 --branch, 작업 폴더에서 전체는 --full
   연결된 패키지 저장소(공용 UI 키트 ../uikit): 작업 트리 지문을 영수증에 함께 적는다. 그 지문을 본 full 영수증이 없으면(키트 코드가 바뀜) full.
     커밋은 키트 → 프로젝트 순서(commit-task 입력에 "repo":"com.rekkon.uikit"). 저장소가 그 자리에 없으면 종료 2

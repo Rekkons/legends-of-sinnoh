@@ -104,20 +104,12 @@ namespace Sinnoh.Tests.PlayMode
         // ── ① 참가 화면 → 튜토리얼 → 돌아오기 ──
 
         [UnityTest, NUnit.Framework.Timeout(120000)]
-        public IEnumerator M7_입구_참가화면의튜토리얼로들어갔다가_돌아가기와목차뒤로가참가화면으로돌아온다_참가칸글은그대로_웹타이틀에도튜토리얼줄()
+        public IEnumerator M7_입구_참가화면의튜토리얼로들어갔다가_돌아가기와목차뒤로가참가화면으로돌아온다_참가칸글은그대로()
         {
             yield return Boot();
             var flow = boot.Flow;
             var stage = flow.Stage;
             flow.Room.Board = RoomFlow.NoRooms;
-
-            // 웹 손님판 타이틀: 「참가하기」·「튜토리얼」(결정 112 Q18)·「도감」·「설정」 — 방 만들기 · 혼자 하기 · 이어하기는 없다
-            stage.Open(new TitleScreen(web: true, pick: TitleScreen.Join, tutorial: () => { }, join: () => { }));
-            yield return null;
-            Assert.IsNotNull(stage.Root.Q("title-item-tutorial"), "웹 타이틀에도 튜토리얼 줄");
-            Assert.IsNotNull(stage.Root.Q("title-item-join"));
-            Assert.IsNull(stage.Root.Q("title-item-solo"), "웹 타이틀에 혼자 하기는 없다");
-            Assert.IsNull(stage.Root.Q("title-item-host"), "웹 타이틀에 방 만들기는 없다");
 
             flow.Room.OpenJoin();
             var join = (RoomJoinScreen)stage.Current;

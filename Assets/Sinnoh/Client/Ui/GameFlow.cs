@@ -53,7 +53,6 @@ namespace Sinnoh.Client
         readonly BoardCameraRig rig;
         readonly Func<ulong> entropy;
         readonly Action quit;
-        readonly bool? web;
         readonly WindowControl window;
         readonly string saves;
         readonly Func<long> clock;
@@ -367,7 +366,7 @@ namespace Sinnoh.Client
         /// <param name="clock">저장 시각을 주는 시계(UTC, 1970년부터의 ms). 기본은 시스템 시계 — 캡처·시험은 고정 값.</param>
         /// <param name="contentHash">게임 데이터의 묶음 해시(세이브 머리의 ContentHash, 01 §10). 기본은 보드의 것(<see cref="BoardBoot.ContentHash"/>) — 보드 없이 도는 흐름은 null(해시를 적지도 견주지도 않는다).</param>
         /// <param name="sound">음량 설정(S02 「배경음악」·「효과음」). 기본은 실행하는 동안만 쥐는 값(캡처·시험) — 플레이어는 <see cref="ScreenBoot"/>가 저장하는 것(<see cref="StoredSoundPrefs"/>)을 넘긴다.</param>
-        public GameFlow(UiStage stage, Ctx ctx, BoardBoot board = null, BoardCameraRig rig = null, Func<ulong> entropy = null, Action quit = null, bool? web = null, WindowControl window = null,
+        public GameFlow(UiStage stage, Ctx ctx, BoardBoot board = null, BoardCameraRig rig = null, Func<ulong> entropy = null, Action quit = null, WindowControl window = null,
             DiceLibrary dice = null, string saves = null, Func<long> clock = null, string contentHash = null, SoundPrefs sound = null)
         {
             SoundPrefs = sound ?? new SoundPrefs();
@@ -382,7 +381,6 @@ namespace Sinnoh.Client
             this.rig = rig;
             this.entropy = entropy ?? SystemEntropy;
             this.quit = quit;
-            this.web = web;
             this.window = window ?? new WindowControl();
             Tutorial = new TutorialMenu(this);
             Room = new RoomFlow(this);
@@ -516,10 +514,10 @@ namespace Sinnoh.Client
             }
             var latest = list.Find(CanResume);
             string line = latest != null ? SaveLine(latest.Head) : list.Count > 0 ? Stage.T("screen.title.continue.unreadable") : null;
-            Stage.Open(new TitleScreen(quit, web, pick ?? (list.Count > 0 ? TitleScreen.Continue : TitleScreen.Solo), Ctx != null ? OpenSolo : (Action)null, OpenSettings,
+            Stage.Open(new TitleScreen(quit, pick ?? (list.Count > 0 ? TitleScreen.Continue : TitleScreen.Solo), Ctx != null ? OpenSolo : (Action)null, OpenSettings,
                 list.Count > 0 ? OpenSaves : (Action)null, line, Tutorial.Available ? Tutorial.Open : (Action)null, Tutorial.FirstTime,
                 Ctx != null ? Room.OpenCreate : (Action)null, Ctx != null ? Room.OpenJoin : (Action)null, Ctx != null ? OpenTitleDex : (Action)null,
-                rulebook: OpenTitleRulebook, credits: OpenCredits, notice: PlayNoticeDue ? AnswerPlayNotice : (Action<bool>)null,
+                rulebook: OpenTitleRulebook, rulings: OpenTitleRulings, credits: OpenCredits, notice: PlayNoticeDue ? AnswerPlayNotice : (Action<bool>)null,
                 updates: UpdateViewOrNull));
             Restage();
         }
@@ -1129,7 +1127,7 @@ namespace Sinnoh.Client
 
         // ── 플레이 기록 올리기(02 §12) ──
 
-        /// <summary>플레이 기록을 올리는 곳(null = 올리지 않는다 — 캡처·시험의 기본 · 웹). 플레이어는 <see cref="ScreenBoot"/>가 넣는다. 설정이 꺼져 있으면 받은 폴더를 버린다.</summary>
+        /// <summary>플레이 기록을 올리는 곳(null = 올리지 않는다 — 캡처·시험의 기본). 플레이어는 <see cref="ScreenBoot"/>가 넣는다. 설정이 꺼져 있으면 받은 폴더를 버린다.</summary>
         public PlayUploads Uploads { get; set; }
 
         /// <summary>첫 실행의 플레이 기록 알림을 타이틀 위에 띄울 때인가(결정 126 ④ — 올리는 창구가 있는 PC 플레이어 · 아직 알림을 보지 않았다).</summary>
@@ -2617,7 +2615,7 @@ namespace Sinnoh.Client
 
         /// <summary>
         /// 결정 123: 전설 장소 피규어는 <see cref="LegendRules.SiteFigureShown"/>(누가 조건 유물을 가졌고 아직 만날 수 있음)일 때만 선다. 보기가 바뀌어도 앞 연출(유물 얻기 · 배틀 결과)이 다 보인 뒤
-        /// (대기열이 빈 때) 바꾸고, 나타날 때는 커지며 · 사라질 때는 빛으로 흩어진다(연출 「끄기」면 곧바로). 이어하기 · 관전 · 웹 손님도 같은 보기라 같다.
+        /// (대기열이 빈 때) 바꾸고, 나타날 때는 커지며 · 사라질 때는 빛으로 흩어진다(연출 「끄기」면 곧바로). 이어하기 · 관전 · 손님도 같은 보기라 같다.
         /// </summary>
         void PlaceSite(BoardFigures.Figure f, GameState view, FxSequencer seq)
         {
@@ -4711,7 +4709,7 @@ namespace Sinnoh.Client
 
         /// <summary>
         /// 글 칸에 글을 치는 중인가(M9 다듬기 P22 · 결정 175): 그동안 글쇠가 단축키(카메라 Q · E · 정비 T · 상성 Y · 스페이스 바 · Ctrl+Z · 배틀 독 1~3 · Q · E)로 새지 않는다.
-        /// 한 곳에서 본다 — 무대 패널의 포커스가 글 칸(<see cref="TextField"/> 안)에 있거나 웹 손님판의 HTML 입력이 떠 있으면(<see cref="WebTextInput.Current"/>) 참이라 새 글 칸이 따로 걸지 않아도 된다.
+        /// 한 곳에서 본다 — 무대 패널의 포커스가 글 칸(<see cref="TextField"/> 안)에 있으면 참이라 새 글 칸이 따로 걸지 않아도 된다.
         /// 넣는 값은 확인용 · 옛 길(채팅 · 사당 찾기 · 버그 신고의 포커스 알림)이 켜는 표시다. 카메라는 프레임마다 <see cref="Tick"/>이 맞춘다.
         /// </summary>
         public bool Typing
@@ -4725,12 +4723,11 @@ namespace Sinnoh.Client
         }
         bool typing;
 
-        /// <summary>무대 패널의 포커스가 패널에 붙은 글 칸 안에 있나 · 웹 손님판의 HTML 입력이 떠 있나(결정 175).</summary>
+        /// <summary>무대 패널의 포커스가 패널에 붙은 글 칸 안에 있나(결정 175).</summary>
         bool TextFocused
         {
             get
             {
-                if (WebTextInput.Current != null) return true;
                 var focused = Stage.Root?.panel?.focusController?.focusedElement as VisualElement;
                 for (var v = focused; v != null; v = v.parent)
                     if (v is TextField) return v.panel != null;

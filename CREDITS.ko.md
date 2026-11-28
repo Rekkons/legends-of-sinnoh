@@ -66,7 +66,7 @@
 - **James Newton-King** — Json.NET
   - 출처: https://github.com/JamesNK/Newtonsoft.Json
   - 조건: MIT License
-- **Cloudflare, Inc.** — cloudflared (웹 손님 연결)
+- **Cloudflare, Inc.** — cloudflared (인터넷 방 예비 연결)
   - 출처: https://github.com/cloudflare/cloudflared
   - 조건: Apache License 2.0
 

@@ -30,7 +30,7 @@ namespace Sinnoh.Editor
             })),
             Screen("consent-settings-off", s => ConsentSettings(s, set => set.PickUpload(false))),   // 끔을 고른 모습
             Screen("consent-lobby-guest", s => ConsentLobby(s, FakeLobby.Guest())),            // 방장이 켠 방의 손님 로비: 알림 줄
-            Screen("consent-lobby-host", s => ConsentLobby(s, FakeLobby.Internet())),          // 방장 로비(6명 · 참가 코드 · 웹 링크): 알림 줄
+            Screen("consent-lobby-host", s => ConsentLobby(s, FakeLobby.Internet())),          // 방장 로비(6명 · 참가 코드): 알림 줄
             Screen("consent-lobby-tip", s =>                                                   // 알림 줄에 마우스를 올린 모습
             {
                 var flow = ConsentLobby(s, FakeLobby.Guest());

@@ -11,6 +11,7 @@
 //                                       authored/tutorial/<id>.json + tutorial-ko.json → Data/Json/tutorial/<id>.json + 문자열 tutorial.*(lib/tutorial.mjs, M6.5),
 //                                       authored/tutorial-chapters.json(목차의 장 머리) → Data/Json/tutorial_chapters.json(lib/tutorial.mjs, M6.5),
 //                                       authored/rulebook/(장 순서 · <lang>/<장>.json · <lang>-terms.json) → Data/Json/rulebook.<lang>.json(lib/rulebook.mjs, M9),
+//                                       authored/rulings/<lang>.json(rulings-import.mjs가 만든다) → Data/Json/rulings.<lang>.json(lib/rulings.mjs, 결정 213),
 //                                       Tools/assets/credits/*.json(CREDITS.md의 손 표) → Data/Json/credits.json(크레딧 화면 S03 — ../assets/lib/credits.mjs creditsTable, M9),
 //                                       + manifest.json → Assets/Sinnoh/Data/Json, 보고서 → Tools/data/reports
 //   node Tools/data/build.mjs --self-test  손 파일 겹친 키 검사(lib/dupkeys.mjs)·두 언어 짝 검사(lib/strings.mjs checkLanguagePair)의 자기 시험 — 입력을 읽지 않는다
@@ -31,6 +32,7 @@ import { readCards, mergeCards, cardStrings, mergeItems } from './lib/authored.m
 import { checkDuplicateKeys, selfTestDuplicateKeys } from './lib/dupkeys.mjs';
 import { buildTutorial } from './lib/tutorial.mjs';
 import { buildRulebook } from './lib/rulebook.mjs';
+import { buildRulings } from './lib/rulings.mjs';
 import { selfTestRetranslate } from './lib/retranslate.mjs';
 import { creditsTable } from '../assets/lib/credits.mjs';
 import { srcPath } from '../sources.mjs';
@@ -164,6 +166,8 @@ function buildAll() {
   if (errors.length) fail(errors);
   const rulebook = buildRulebook(ROOT, table, { strings, items: itemTable.rows, trainerCards: cube.trainerCards }, errors);
   if (errors.length) fail(errors);
+  const rulings = buildRulings(ROOT, table, errors);
+  if (errors.length) fail(errors);
 
   const rowsOf = {
     board, cards, decks: decks.decks, effects: effects.rows, fixtures: fixtures.rows, items: itemTable.rows,
@@ -195,6 +199,12 @@ function buildAll() {
     files[file] = text;
     tables[name] = { file, rows: rulebook.rows[name.slice('rulebook.'.length)], sha256: sha('sha256', text) };
   }
+  // 「규칙 판정」 화면(화면이 읽는다 — contentTables 밖, 결정 213). rows = 항목 수
+  for (const [file, text] of Object.entries(rulings.files)) {
+    const name = file.replace(/.json$/, '');
+    files[file] = text;
+    tables[name] = { file, rows: rulings.rows[name.slice('rulings.'.length)], sha256: sha('sha256', text) };
+  }
   // 크레딧 화면 S03(화면이 읽는다 — contentTables 밖, M9). 원천 = Tools/assets/credits/*.json(CREDITS.md와 같은 손 표 — 검사는 assets build의 credits 묶음). rows = 묶음 수
   const credits = creditsTable(ROOT);
   files['credits.json'] = table(credits);
@@ -213,6 +223,7 @@ function buildAll() {
   console.log(strings.moveNamesSummary);
   console.log(strings.retranslateSummary);
   console.log(rulebook.summary);
+  console.log(rulings.summary);
   console.log(`이미지 전용 카드 ${cards.length}면 verified ${cards.filter(r => r.verified).length}, 아이템 ${itemTable.rows.length}행(레시피 ${itemTable.rows.filter(r => r.recipe).length})`);
   console.log(`기술 효과 ${effects.implemented}/${cube.moves.length}종(절 ${effects.rows.length}), 미구현 ${cube.moves.length - effects.implemented}종 → reports/effects-todo.tsv`);
   return [

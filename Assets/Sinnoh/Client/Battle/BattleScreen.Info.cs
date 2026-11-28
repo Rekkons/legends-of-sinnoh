@@ -292,7 +292,7 @@ namespace Sinnoh.Client
             var face = root.Q("card-face");
             if (face == null)
             {
-                // 도트 카드(웹 손님판 — 카드 그림 없음): 같은 이름을 도트 카드의 칸에 붙인다(튜토리얼 앵커 e05 S013 · e06 S012 — battle-me-hp · battle-foe-alpha 등)
+                // 도트 카드(카드 그림 없음): 같은 이름을 도트 카드의 칸에 붙인다(튜토리얼 앵커 e05 S013 · e06 S012 — battle-me-hp · battle-foe-alpha 등)
                 if (root.childCount == 0) return;
                 var dot = root[0];
                 dot.name = name + "-art";

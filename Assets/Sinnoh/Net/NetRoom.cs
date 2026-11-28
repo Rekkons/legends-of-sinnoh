@@ -73,49 +73,28 @@ namespace Sinnoh.Net
         internal Unity.Netcode.NetworkManager Manager => runner ? runner.GetComponent<Unity.Netcode.NetworkManager>() : null;
 
         /// <summary>[직접 연결](결정 92): 그 포트로 연다(listen 기본 0.0.0.0 — 시험은 127.0.0.1). false = 포트를 열 수 없음(Seat.FailCode = NET_PORT_BUSY) 또는 호스트 자리 승인 실패.</summary>
-        /// <remarks>webRoot(웹 손님판 폴더 — null = 없음)가 있으면 같은 수신 주소에 웹 손님 페이지 서버도 연다(02 §2-2 — 포트 8080~8089, <see cref="WebPort"/>). 없거나 못 열면 <see cref="WebNotice"/>.</remarks>
-        public bool StartDirect(ushort port = NetBootstrap.DefaultPort, string listen = NetBootstrap.ListenAll, string webRoot = null)
+        public bool StartDirect(ushort port = NetBootstrap.DefaultPort, string listen = NetBootstrap.ListenAll)
         {
             if (Host == null) throw new InvalidOperationException("손님 접속은 열 수 없다");
             bool ok = Host.Start(port, listen);
             Port = ok ? port : 0;
-#if !UNITY_WEBGL || UNITY_EDITOR
-            if (ok)
-            {
-                web?.Dispose();
-                web = webRoot != null ? WebGuestServer.Start(webRoot, listen) : null;
-                WebPort = web != null ? web.Port : 0;
-                WebNotice = webRoot == null ? WebFail.NoWebGl : web == null ? WebFail.Tunnel : null;
-            }
-#endif
             return ok;
         }
 
-#if !UNITY_WEBGL || UNITY_EDITOR
-        WebGuestServer web;
-#endif
-
-        /// <summary>[직접 연결] 웹 손님 페이지 서버의 포트(없으면 0 — 웹 링크는 <see cref="OnlineLinks.DirectPage"/>).</summary>
-        public int WebPort { get; private set; }
-        /// <summary>[직접 연결] 웹 링크가 없는 까닭(<see cref="WebFail"/>). 있으면 null.</summary>
-        public string WebNotice { get; private set; }
-
         /// <summary>
-        /// [인터넷]: (웹 손님 페이지 + 터널) → Relay → 참가 코드 → 공개면 방 목록(<see cref="NetRunner.OpenInternet"/>). Relay가 실패하고 cloudflared가 있으면 게임을 127.0.0.1에 열고 두 번째 터널(02 §2-1).
-        /// 결과는 돌려받은 방의 State. relay·board·web은 시험용(null = UGS · webRoot/cloudflared로 만든 <see cref="GuestWeb"/>).
+        /// [인터넷]: Relay → 참가 코드 → 공개면 방 목록(<see cref="NetRunner.OpenInternet"/>). Relay가 실패하고 cloudflared가 있으면 게임을 127.0.0.1에 열고 그 앞에 터널(02 §2-1).
+        /// 결과는 돌려받은 방의 State. relay·board·tunnel은 시험용(null = UGS · cloudflared로 만든 <see cref="GameTunnel"/>).
         /// </summary>
-        public InternetRoom StartInternet(ListingOptions listing, IRelayHost relay = null, ILobbyBoard board = null, string webRoot = null, string cloudflared = null,
-            ushort port = NetBootstrap.DefaultPort, IGuestWeb web = null)
+        public InternetRoom StartInternet(ListingOptions listing, IRelayHost relay = null, ILobbyBoard board = null, string cloudflared = null,
+            ushort port = NetBootstrap.DefaultPort, IGameTunnel tunnel = null)
         {
             if (Host == null) throw new InvalidOperationException("손님 접속은 열 수 없다");
-#if !UNITY_WEBGL || UNITY_EDITOR
-            if (web == null)
+            if (tunnel == null)
             {
                 var host = Host;
-                web = new GuestWeb(webRoot, cloudflared, () => host.Start(port, "127.0.0.1") ? null : host.Local.FailCode ?? NetFail.PortBusy, port);
+                tunnel = new GameTunnel(cloudflared, () => host.Start(port, "127.0.0.1") ? null : host.Local.FailCode ?? NetFail.PortBusy, port);
             }
-#endif
-            return runner.OpenInternet(Host, listing, relay, board, web);
+            return runner.OpenInternet(Host, listing, relay, board, tunnel);
         }
 
         /// <summary>손님: 참가 칸의 대상으로 붙는다. before = Connect 전에 접속을 손보는 곳(시험의 가짜 Relay 참가). 결과는 Seat.Status.</summary>
@@ -152,30 +131,16 @@ namespace Sinnoh.Net
             if (disposed) return;
             disposed = true;
             if (Host == null && Seat != null && Seat.Status == NetStatus.Connected) Seat.Leave();
-#if !UNITY_WEBGL || UNITY_EDITOR
-            web?.Dispose();
-            web = null;
-#endif
             if (runner) runner.Release();
         }
 
         /// <summary>
-        /// 이 PC의 웹 손님판 폴더 · cloudflared(02 §2-2): 플레이어는 실행 파일 옆(<c>WebGL/</c> · <c>cloudflared.exe</c>, 개발은 <c>Tools/bin</c>도) — 없으면 null.
-        /// 에디터(플레이 시험)는 null — 시험이 그 PC의 빌드 · 도구 유무에 따라 달라지지 않게(시험은 임시 폴더 · 가짜를 넣는다) [가정 M7-61].
+        /// 이 PC의 cloudflared(02 §2-1 — 인터넷 방의 Relay 실패 때 터널): 플레이어는 실행 파일 옆 <c>cloudflared.exe</c>(개발은 <c>Tools/bin</c>도) — 없으면 null.
+        /// 에디터(플레이 시험)는 null — 시험이 그 PC의 도구 유무에 따라 달라지지 않게(시험은 가짜를 넣는다) [가정 M7-61].
         /// </summary>
-        public static string DefaultWebRoot()
-        {
-#if UNITY_EDITOR || UNITY_WEBGL
-            return null;
-#else
-            return WebFiles.FindRoot(System.IO.Path.GetDirectoryName(Application.dataPath), false);
-#endif
-        }
-
-        /// <inheritdoc cref="DefaultWebRoot"/>
         public static string DefaultCloudflared()
         {
-#if UNITY_EDITOR || UNITY_WEBGL
+#if UNITY_EDITOR
             return null;
 #else
             return CloudflaredTunnel.FindExe(System.IO.Path.GetDirectoryName(Application.dataPath));

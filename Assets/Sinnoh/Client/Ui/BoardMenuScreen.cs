@@ -91,6 +91,7 @@ namespace Sinnoh.Client
                 SaveText = null;
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.resume"), KitButtonKind.Main, Resume), "board-menu-resume"));
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.rulebook"), KitButtonKind.Normal, () => flow.OpenMenuRulebook()), "board-menu-rulebook"));   // 룰 설명서 S43(M9)
+                panel.Add(Named(Kit.Button(stage.T("screen.board.menu.rulings"), KitButtonKind.Normal, () => flow.OpenMenuRulings()), "board-menu-rulings"));   // 규칙 판정(결정 213)
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.settings"), KitButtonKind.Normal, OpenSettings), "board-menu-settings"));
                 AddBug();
                 panel.Add(Named(Kit.Button(stage.T("screen.tutorial.menu.quit"), KitButtonKind.Normal, AskQuit), "board-menu-quit"));
@@ -108,6 +109,7 @@ namespace Sinnoh.Client
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.resume"), KitButtonKind.Main, Resume), "board-menu-resume"));
                 AddUndo();
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.rulebook"), KitButtonKind.Normal, () => flow.OpenMenuRulebook()), "board-menu-rulebook"));   // 룰 설명서 S43(M9)
+                panel.Add(Named(Kit.Button(stage.T("screen.board.menu.rulings"), KitButtonKind.Normal, () => flow.OpenMenuRulings()), "board-menu-rulings"));   // 규칙 판정(결정 213)
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.settings"), KitButtonKind.Normal, OpenSettings), "board-menu-settings"));
                 AddBug();
                 panel.Add(Named(Kit.Button(stage.T("screen.board.menu.quit"), KitButtonKind.Normal, AskQuit), "board-menu-quit"));
@@ -168,7 +170,7 @@ namespace Sinnoh.Client
         /// <summary>신고 쪽이 열려 있으면 그 몸(아니면 null).</summary>
         public BugReportPanel Bug => Page == BugPage ? bug : null;
 
-        // [버그 신고]: 보낼 창구가 없는 화면(웹 손님판 · 에디터)은 흐린 단추 「버그 신고(PC판에서만)」 + 이유 툴팁(누르면 아무 일도 없다)
+        // [버그 신고]: 보낼 창구가 없는 화면(에디터)은 흐린 단추 「버그 신고(PC판에서만)」 + 이유 툴팁(누르면 아무 일도 없다)
         void AddBug()
         {
             bool ready = flow.BugReady;
@@ -468,6 +470,7 @@ namespace Sinnoh.Client
             panel.Add(v);
             panel.Add(Named(Kit.Button(stage.T("screen.room.menu.room_set"), KitButtonKind.Normal, () => Show(SetPage)), "board-menu-room-set"));
             panel.Add(Named(Kit.Button(stage.T("screen.board.menu.rulebook"), KitButtonKind.Normal, () => flow.OpenMenuRulebook()), "board-menu-rulebook"));   // 룰 설명서 S43(M9)
+            panel.Add(Named(Kit.Button(stage.T("screen.board.menu.rulings"), KitButtonKind.Normal, () => flow.OpenMenuRulings()), "board-menu-rulings"));   // 규칙 판정(결정 213)
             panel.Add(Named(Kit.Button(stage.T("screen.board.menu.settings"), KitButtonKind.Normal, OpenSettings), "board-menu-settings"));
             AddBug();
             panel.Add(Named(Kit.Button(stage.T(live.IsHost ? "screen.room.lobby.close" : "screen.room.menu.leave"), KitButtonKind.Normal, AskQuit), "board-menu-quit"));

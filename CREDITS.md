@@ -66,7 +66,7 @@
 - **James Newton-King** — Json.NET
   - Source: https://github.com/JamesNK/Newtonsoft.Json
   - Terms: MIT License
-- **Cloudflare, Inc.** — cloudflared (web guest links)
+- **Cloudflare, Inc.** — cloudflared (backup link for internet rooms)
   - Source: https://github.com/cloudflare/cloudflared
   - Terms: Apache License 2.0
 

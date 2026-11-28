@@ -59,7 +59,7 @@ namespace Sinnoh.Tests.PlayMode
                 var page = stage.Root.Q("title");
                 Assert.That(page, Is.Not.Null);
                 Assert.That(page.layout.width, Is.EqualTo(1600f).Within(0.01f), "화면 요소가 패널을 덮는다");
-                Assert.That(title.Shown.Count, Is.EqualTo(10), "「튜토리얼」 줄(M6.5) · 「포켓몬 도감」 줄(결정 105 ③) · 「룰 설명서」 줄(M9 S43)까지 열");
+                Assert.That(title.Shown.Count, Is.EqualTo(11), "「튜토리얼」 줄(M6.5) · 「포켓몬 도감」 줄(결정 105 ③) · 「룰 설명서」 줄(M9 S43) · 「규칙 판정」 줄(결정 213)까지 열하나");
                 foreach (var item in title.Shown) Assert.That(stage.Root.Q("title-item-" + item.Id), Is.Not.Null, item.Id);
                 Assert.That(title.Shown[title.Picked].Id, Is.EqualTo(TitleScreen.Solo));
                 var foot = stage.Root.Q("title-foot").worldBound;
@@ -157,7 +157,7 @@ namespace Sinnoh.Tests.PlayMode
 
                 // 고르기·누르기: 없는 화면은 아무 일도 없고, 종료만 듣는다
                 int quits = 0;
-                var mine = new TitleScreen(() => quits++, web: false);
+                var mine = new TitleScreen(() => quits++);
                 stage.Open(mine);
                 yield return null;
                 Assert.That(stage.Root.Query("title").ToList().Count, Is.EqualTo(1), "화면은 한 번에 하나");
@@ -169,19 +169,11 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(quits, Is.EqualTo(0));
                 Assert.That(mine.Activate(quit), Is.True);
                 Assert.That(quits, Is.EqualTo(1));
-                var web = new TitleScreen(() => { }, web: true);
-                stage.Open(web);
-                Assert.That(web.Shown.Count, Is.EqualTo(5), "웹 손님판은 참가 전용 — 「참가하기」·「튜토리얼」(결정 112 Q18)·「포켓몬 도감」(결정 105 ③)·「룰 설명서」(M9 S43)·「설정」만(02 §8 [가정 M7-62])");
-                Assert.That(web.Shown[0].Id, Is.EqualTo(TitleScreen.Join));
-                Assert.That(web.Shown[1].Id, Is.EqualTo(TitleScreen.Tutorial));
-                Assert.That(web.Shown[2].Id, Is.EqualTo(TitleScreen.Dex));
-                Assert.That(web.Shown[3].Id, Is.EqualTo(TitleScreen.Rulebook));
-                Assert.That(web.Shown[4].Id, Is.EqualTo(TitleScreen.Settings));
 
                 // 설정(S02, 결정 59): 갈 곳을 받은 「설정」은 듣는다. 화면 크기 = 모니터 안에 드는 것 + 전체 화면, 누르면 바로 바뀐다(창은 고정 값으로 — 엔진의 창을 건드리지 않는다)
                 Assert.That(mine.Activate(IndexOf(mine, TitleScreen.Settings)), Is.False, "갈 곳을 받지 않은 「설정」");
                 int opened = 0;
-                var withSettings = new TitleScreen(() => { }, web: false, settings: () => opened++);
+                var withSettings = new TitleScreen(() => { }, settings: () => opened++);
                 stage.Open(withSettings);
                 Assert.That(withSettings.Activate(IndexOf(withSettings, TitleScreen.Settings)), Is.True);
                 Assert.That(opened, Is.EqualTo(1));
@@ -209,7 +201,7 @@ namespace Sinnoh.Tests.PlayMode
                 Assert.That(new SettingsScreen(window, () => { }).Picked, Is.EqualTo(SettingsScreen.Full), "다시 열면 지금 상태가 골라져 있다");
                 Assert.That(new SettingsScreen(new FixedWindow(new Vector2Int(1920, 1080), new Vector2Int(1902, 1008)), () => { }).Picked, Is.Null, "목록에 없는 창 크기면 고른 값 없음");
                 Assert.That(backs, Is.EqualTo(0));
-                stage.Open(web);
+                stage.Open(new TitleScreen(() => { }));
 
                 // 유휴: 실행기에 걸린 것이 없으면 프레임을 내린다. 걸리면 처음 값으로
                 yield return null;

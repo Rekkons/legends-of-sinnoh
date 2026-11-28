@@ -21,7 +21,7 @@ namespace Sinnoh.Rules.Session
         public const int Version = 14;
     }
 
-    /// <summary>접속한 기기(02 §3-1 줄의 PC/웹).</summary>
+    /// <summary>접속한 기기(02 §3-1). Web = 옛 웹 손님판(결정 210으로 뺌) — 인사 · 세이브 꼴을 바꾸지 않으려 값은 남긴다(지금 판은 늘 Pc).</summary>
     public enum Platform { Pc, Web }
 
     /// <summary>

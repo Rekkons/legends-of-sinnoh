@@ -86,16 +86,16 @@ namespace Sinnoh.Net
         /// [인터넷] 방(02 §2-1, 결정 95): <see cref="OpenHost"/>로 만든 방을 Relay로 연다 — 할당(maxConnections = 자리 수 6 − 1 [가정 M7-35]) → StartHost → 참가 코드,
         /// listing.Public이면 UGS Lobby 방 목록에 올린다(비공개·null = 코드로만). 결과는 돌려받은 <see cref="InternetRoom"/>의 State·Changed(실패면 SuggestDirect — [직접 연결] 안내, 결정 92).
         /// 매 프레임 Tick(터널 · 방 목록 갱신·하트비트)과 끝낼 때 목록 지우기 · 터널 끄기는 이 컴포넌트가 한다. relay·board는 시험용(null = UGS).
-        /// web = 웹 손님 페이지 · 터널(02 §2-2 — <see cref="GuestWeb"/>, 시험은 가짜). null = 웹 링크 없음 · Relay가 실패하면 바로 Failed.
+        /// tunnel = Relay 실패 때의 게임 터널(<see cref="GameTunnel"/>, 시험은 가짜). null = 터널 없음 · Relay가 실패하면 바로 Failed.
         /// </summary>
-        public InternetRoom OpenInternet(NetHostSession host, ListingOptions listing, IRelayHost relay = null, ILobbyBoard board = null, IGuestWeb web = null)
+        public InternetRoom OpenInternet(NetHostSession host, ListingOptions listing, IRelayHost relay = null, ILobbyBoard board = null, IGameTunnel tunnel = null)
         {
             if (host == null) throw new ArgumentNullException(nameof(host));
             if (internet != null) throw new InvalidOperationException("이미 인터넷 방을 열었다");
             var manager = GetComponent<NetworkManager>();
             internet = new InternetRoom(relay ?? RelayLink.HostFor(manager),
                 () => host.Start() ? null : host.Local.FailCode ?? OnlineFail.RelayAuth,
-                () => host.Host.Room, listing, board ?? (listing != null && listing.Public ? RoomListing.Ugs : null), SeatId.MaxSeats, web);
+                () => host.Host.Room, listing, board ?? (listing != null && listing.Public ? RoomListing.Ugs : null), SeatId.MaxSeats, tunnel);
             owned.Add(internet);
             internet.Open();
             return internet;

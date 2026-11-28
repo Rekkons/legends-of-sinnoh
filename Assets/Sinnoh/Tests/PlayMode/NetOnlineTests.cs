@@ -31,9 +31,9 @@ namespace Sinnoh.Tests.PlayMode
                 r.Session = c;
                 string asked = null;
                 c.FakeRelayJoin((joinCode, fail) => { asked = joinCode; fail(code); });
-                Assert.IsTrue(JoinTarget.TryParse("https://x.trycloudflare.com/?code=q7k2mz", out var target));
+                Assert.IsTrue(JoinTarget.TryParse("q7k2mz", out var target));
                 Assert.IsTrue(c.Connect(target, Hi("relay-" + code)), "참가 시도는 시작된다(결과는 Status)");
-                Assert.AreEqual("Q7K2MZ", asked, "링크의 코드로 참가");
+                Assert.AreEqual("Q7K2MZ", asked, "참가 코드로 참가(대문자로)");
                 Assert.AreEqual((NetStatus.Failed, code, 1), (c.Status, c.FailCode, c.RelayTries));
                 Assert.AreEqual(code == OnlineFail.RelayAuth, OnlineFail.SuggestDirect(c.FailCode), "Unity 서버 실패면 [직접 연결] 안내(결정 92)");
                 Assert.IsFalse(r.GetComponent<NetworkManager>().IsListening, "NGO를 시작하지 않았다");

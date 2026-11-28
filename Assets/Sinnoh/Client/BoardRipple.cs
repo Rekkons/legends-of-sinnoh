@@ -4,7 +4,7 @@ namespace Sinnoh.Client
 {
     /// <summary>
     /// 보드의 공간 일그러짐(M9 다듬기 P39): 보드 셰이더(BoardHex · BoardIcon)의 꼭짓점 단계가 읽는 전역 값 둘을 넣는다 — 가운데에서 닿는 거리 안의 칸 · 아이콘이 물결로 밀린다.
-    /// 화면을 긁어 오지 않는다(URP 불투명 텍스처에는 투명 대기열의 아이콘 · 말이 없고 WebGL 품질에는 그 텍스처가 꺼져 있다) — 꼭짓점의 sin뿐이라 어느 플랫폼 · 캡처에서도 같은 그림이다.
+    /// 화면을 긁어 오지 않는다(URP 불투명 텍스처에는 투명 대기열의 아이콘 · 말이 없다) — 꼭짓점의 sin뿐이라 어느 플랫폼 · 캡처에서도 같은 그림이다.
     /// 값은 <see cref="GameFlow"/>가 순수 박자 <c>RippleBeats.Board</c>에서 셈해 넣고, 꺼질 때 <see cref="Clear"/>.
     /// </summary>
     public static class BoardRipple

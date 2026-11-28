@@ -517,7 +517,7 @@ namespace Sinnoh.Client
                     retribution = info.Q("battle-foe-cards")?.Q("card-retribution");
                     if (retribution == null)
                     {
-                        // 도트 카드(웹 손님판 — 띠 · 주사위가 없다)는 예전처럼 칩(튜토리얼 앵커 e06 S006도 같은 이름)
+                        // 도트 카드(카드 그림이 없을 때 — 띠 · 주사위가 없다)는 예전처럼 칩(튜토리얼 앵커 e06 S006도 같은 이름)
                         retribution = Add(line, Kit.Badge(stage.T("screen.battle.retribution.chip").Replace("{n}", stored.ToString(inv)), KitBadgeKind.Red, Kit.F2), "battle-foe-retribution", null);
                         FxUi.OriginLeft(retribution);
                         stage.Tips.Hook(retribution, stage.T("screen.battle.retribution"), stage.T("screen.battle.retribution.tip"), TipSide.Below, reading: true);

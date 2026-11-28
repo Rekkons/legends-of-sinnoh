@@ -60,21 +60,13 @@ namespace Sinnoh.Editor
             }),
             Screen("room-lobby-host", s => RoomLobby(s, FakeLobby.Internet())),                // S07·S08 방장(인터넷 방): 참가 코드 · 목록에 올림 · 4명(둘 준비) · [게임 시작] 꺼짐
             Screen("room-lobby-direct", s => RoomLobby(s, FakeLobby.Direct())),                // 방장(직접 연결): 주소 둘 · 포트 · 6명 모두 준비 → [게임 시작] 켜짐
-            Screen("room-lobby-tunnel", s =>                                                   // M7 웹 손님: Relay 실패 → 두 번째 터널(참가 주소 wss:// + [복사]) · 웹 링크 ?join=
+            Screen("room-lobby-tunnel", s =>                                                   // Relay 실패 → 터널(참가 주소 wss:// + [복사])
             {
                 var l = FakeLobby.Internet();
                 l.Tunneled = true; l.Listed = false;
                 l.JoinCode = "wss://lazy-dog-sleeps-well.trycloudflare.com";
-                l.WebLinks = new[] { "https://quick-brown-fox-jumps.trycloudflare.com/?join=lazy-dog-sleeps-well.trycloudflare.com" };
                 var flow = RoomLobby(s, l);
-                if (flow.Stage.Root.Q("lobby-code-copy") == null || flow.Stage.Root.Q("lobby-web-copy") == null) throw new InvalidOperationException("[복사] 단추가 없다");
-            }),
-            Screen("room-lobby-noweb", s =>                                                    // 웹 손님판 폴더가 없는 방: 「웹 손님판이 없습니다.」(NET_NO_WEBGL) — 방은 그대로
-            {
-                var l = FakeLobby.Internet();
-                l.WebLinks = new string[0]; l.WebNotice = WebFail.NoWebGl;
-                var flow = RoomLobby(s, l);
-                if (flow.Stage.Root.Q("lobby-web-fail") == null) throw new InvalidOperationException("웹 링크 알림 칸이 없다");
+                if (flow.Stage.Root.Q("lobby-code-copy") == null) throw new InvalidOperationException("[복사] 단추가 없다");
             }),
             Screen("room-lobby-guest", s => RoomLobby(s, FakeLobby.Guest())),                  // 손님(3번 자리 · 준비 안 함): 「○○의 방」 · 울트라 버스트 방 설정 읽기만
             Screen("room-lobby-proto", s =>                                                    // M9 다듬기 P06: 손님이 「내 주인공」에서 다른 인물을 누른다 → 방에 보냄 · 방이 돌려준 값으로 줄 · 금색 칸
@@ -229,7 +221,7 @@ namespace Sinnoh.Editor
         {
             var b = new FakeBoard();
             b.Add("lb-1", 5, new ListingData { Host = "빛나", Members = 2, Seats = 4, Campaign = Campaign.HeartOfSinnoh, Clock = ClockPreset.Relaxed });
-            b.Add("lb-2", 4, new ListingData { Host = "열두글자방장닉네임입니다", Members = 3, Seats = 6, Campaign = Campaign.UltraBurst, Clock = ClockPreset.Normal, PcOnly = true });
+            b.Add("lb-2", 4, new ListingData { Host = "열두글자방장닉네임입니다", Members = 3, Seats = 6, Campaign = Campaign.UltraBurst, Clock = ClockPreset.Normal });
             b.Add("lb-3", 3, new ListingData { Host = "Dawn", Members = 3, Seats = 3, Campaign = Campaign.HeartOfSinnoh, Clock = ClockPreset.Off });
             b.Add("lb-4", 6, new ListingData { Host = "뽀뽀라", Members = 1, Seats = 6, Campaign = Campaign.HeartOfSinnoh, Clock = ClockPreset.Relaxed }, otherVersion: true);
             b.Add("lb-5", 7, new ListingData { Host = "게임 중", Members = 2, Seats = 2, State = ListingData.Game });
@@ -289,14 +281,11 @@ namespace Sinnoh.Editor
             public IReadOnlyList<KeyValuePair<string, string>> Addresses { get; set; } = new KeyValuePair<string, string>[0];
             public int Port { get; set; }
             public bool Tunneled { get; set; }
-            public IReadOnlyList<string> WebLinks { get; set; } = new string[0];
-            public string WebNotice { get; set; }
-            public bool WebPending { get; set; }
             public readonly List<RoomMsg> Sent = new List<RoomMsg>();
             public void Send(RoomMsg msg) => Sent.Add(msg);
 
-            static RoomSeat Member(string nick, bool host = false, bool ready = false, Platform platform = Platform.Pc) =>
-                new RoomSeat { Nickname = nick, Host = host, Ready = ready, Connected = true, Platform = platform };
+            static RoomSeat Member(string nick, bool host = false, bool ready = false) =>
+                new RoomSeat { Nickname = nick, Host = host, Ready = ready, Connected = true, Platform = Platform.Pc };
 
             // 좌석의 주인공(M9 다듬기 P06): 자리마다 다른 인물 — 3번 · 4번 자리는 같은 인물(겹쳐 고르기)
             static readonly string[] Heroes = { "pt_player_male", "pt_player_female", "bw_001_hilda", "bw_001_hilda", "hgss_000_ethan", "b2w2_001_rosa" };
@@ -310,24 +299,24 @@ namespace Sinnoh.Editor
 
             public static FakeLobby Internet() => Dress(new FakeLobby
             {
-                IsHost = true, Seat = 0, JoinCode = "Q7K2MZ", Listed = true, WebLinks = new[] { "https://quick-brown-fox-jumps.trycloudflare.com/?code=Q7K2MZ" },
+                IsHost = true, Seat = 0, JoinCode = "Q7K2MZ", Listed = true,
                 Room = new RoomState
                 {
                     Phase = RoomPhase.Lobby, RoomId = "room-shot", Settings = new RoomSettings { Seats = 5 },
-                    Seats = new List<RoomSeat> { Member("방장트레이너", host: true), Member("빛나", ready: true), Member("용식"), Member("Barry", ready: true, platform: Platform.Web), null, null },
+                    Seats = new List<RoomSeat> { Member("방장트레이너", host: true), Member("빛나", ready: true), Member("용식"), Member("Barry", ready: true), null, null },
                 },
             });
 
             public static FakeLobby Direct() => Dress(new FakeLobby
             {
-                IsHost = true, Seat = 0, Port = 7777, WebLinks = new[] { "http://100.101.102.103:8080/", "http://192.168.0.10:8080/" },
+                IsHost = true, Seat = 0, Port = 7777,
                 Addresses = new[] { new KeyValuePair<string, string>("100.101.102.103", "Tailscale"), new KeyValuePair<string, string>("192.168.0.10", "LAN") },
                 Room = new RoomState
                 {
                     Phase = RoomPhase.Lobby, RoomId = "room-shot", CanStart = true, Settings = new RoomSettings { Seats = 6, Clock = ClockPreset.Normal, Galactic = Control.Human },
                     Seats = new List<RoomSeat>
                     {
-                        Member("방장트레이너", host: true), Member("빛나", ready: true), Member("용식", ready: true), Member("Barry", ready: true), Member("열두글자닉네임입니다요요", ready: true), Member("Lucas", ready: true, platform: Platform.Web),
+                        Member("방장트레이너", host: true), Member("빛나", ready: true), Member("용식", ready: true), Member("Barry", ready: true), Member("열두글자닉네임입니다요요", ready: true), Member("Lucas", ready: true),
                     },
                 },
             });

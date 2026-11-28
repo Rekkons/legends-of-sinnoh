@@ -1,5 +1,5 @@
 <!-- 로더의 private 중첩 행 클래스(TableJson.TableFile·BoardLoader.CellRow·CardDbLoader.PokemonRow 등)는 Newtonsoft가 반사로만 만들고 채운다(TableJson은 필드 형도 반사로 본다).
-     IL2CPP·WebGL 코드 줄이기에서 생성자·필드가 잘리지 않게 둔다(Sinnoh.Data는 엔진을 참조하지 않아 [Preserve]를 쓸 수 없다).
+     IL2CPP 코드 줄이기에서 생성자·필드가 잘리지 않게 둔다(Sinnoh.Data는 엔진을 참조하지 않아 [Preserve]를 쓸 수 없다).
      세이브(SaveStore, M3-g)는 Sinnoh.Rules 상태 클래스(GameState·Command·SaveHead …)를 반사로 만들고 채운다 — 그래서 Sinnoh.Rules도 둔다. -->
 <linker>
   <assembly fullname="Sinnoh.Data" preserve="all"/>

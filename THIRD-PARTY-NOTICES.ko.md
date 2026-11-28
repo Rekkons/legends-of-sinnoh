@@ -15,7 +15,7 @@
 | 5 | Json.NET (Newtonsoft.Json) — Unity 패키지 3.2.2 | James Newton-King 외 | MIT | 플레이어 코드 |
 | 6 | PokeAPI 데이터(공식 한국어 기술 이름) | Paul Hallett · PokéAPI contributors | BSD 3-Clause | 한국어 문자열 표 |
 | 7 | PokeAPI/sprites · PokeAPI/cries | 저장소 = CC0 1.0 · 내용물 = The Pokémon Company | CC0 1.0(저장소) | 포켓몬 도트 일부 · 울음소리 |
-| 8 | Unity 엔진 6000.6.3f1 · Unity 패키지 | Unity Technologies | Unity 이용 약관 · Unity Companion License | 플레이어(Win64 · WebGL) |
+| 8 | Unity 엔진 6000.6.3f1 · Unity 패키지 | Unity Technologies | Unity 이용 약관 · Unity Companion License | 플레이어(Win64) |
 | 9 | Unity Gaming Services 패키지(Multiplayer Services 등) | Unity Technologies | Unity Terms of Service | 플레이어 코드(온라인 방) |
 | 10 | Pretendard SemiBold 글꼴 v1.3.9 | Kil Hyung-jin (orioncactus) | SIL Open Font License 1.1 | 포켓몬 카드 그림의 한국어 글(글꼴 파일은 없음) |
 | 11 | Barlow Regular 글꼴 1.408 | The Barlow Project Authors (Jeremy Tribby) | SIL Open Font License 1.1 | 포켓몬 카드 그림의 영어 글(글꼴 파일은 없음) |
@@ -210,7 +210,7 @@ The engine and tooling code is MIT licensed, see LICENSE.
 
 ## 4. cloudflared — Apache License 2.0
 
-출처 https://github.com/cloudflare/cloudflared. 공식 실행 파일을 고치지 않고 게임 실행 파일 옆에 둡니다(웹 손님 링크용 임시 터널). 전문: 그 저장소의 `LICENSE`. cloudflared에 묶인 Go 라이브러리의 고지는 그 저장소를 따릅니다.
+출처 https://github.com/cloudflare/cloudflared. 공식 실행 파일을 고치지 않고 게임 실행 파일 옆에 둡니다(인터넷 방이 Unity Relay를 쓸 수 없을 때 쓰는 임시 터널). 전문: 그 저장소의 `LICENSE`. cloudflared에 묶인 Go 라이브러리의 고지는 그 저장소를 따릅니다.
 
 Copyright Cloudflare, Inc.
 

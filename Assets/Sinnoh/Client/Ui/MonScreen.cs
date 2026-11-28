@@ -12,7 +12,7 @@ namespace Sinnoh.Client
     /// S38 포켓몬 카드 확대(04 §3-3 「누름 — 확대 S38(카드 고정 값)·기술 효과」): 정비 판(<see cref="PartyScreen"/>)의 포켓몬 카드를 누르면 뜨는 큰 보기.
     /// 결정 206 ①(목업 B-party): 원작 TTS 카드를 크게 — 카드(<see cref="CardStack"/> 옆으로 펼친 짜임: 지금 체력/최대 · 스피드 · 상태 주사위 · 토큰) + 오른쪽 기둥(배운 기술 · 균열 · 전술 판 띠 ·
     /// 지닌물건 글 상자) + 카드에 없는 값(진화할 포켓몬 · 잡은 볼)과 [닫기]. 카드의 자리(★ 고유 기술 · 띠 · 토큰 · 상태)에 마우스를 올리면 효과 글. 화면 높이에 넘치면 카드를 줄인다.
-    /// 카드 그림이 없으면(웹 손님판 · 짝 없는 카드) 예전 판(도트 + 사실 줄 + 기술 줄 — 효과 문구를 줄로 다 적는다)으로 그린다.
+    /// 카드 그림이 없으면(짝 없는 카드) 예전 판(도트 + 사실 줄 + 기술 줄 — 효과 문구를 줄로 다 적는다)으로 그린다.
     /// 모두 보기에 있는 공개 정보라 남 좌석의 포켓몬도 같은 화면이다. 고치는 것은 없다. [닫기]·창 밖 누르기는 그 좌석의 정비 판으로 돌아간다(카드를 눌러서는 닫히지 않는다).
     /// 요소 이름: <c>mon-detail</c>·<c>mon-detail-panel</c>·<c>mon-detail-move-0</c>(★ 고유 기술 자리)·<c>mon-detail-evolve</c>·<c>mon-detail-ball</c>·<c>mon-detail-close</c> — 카드 안은 <see cref="CardStack"/>의 이름.
     /// 예전 판은 그 밖에 <c>mon-detail-name</c>·<c>mon-detail-move-&lt;1|2&gt;</c>·<c>mon-detail-item</c>.
@@ -169,7 +169,7 @@ namespace Sinnoh.Client
             return row;
         }
 
-        // 예전 판(카드 그림이 없을 때 — 웹 손님판 · 짝 없는 카드)
+        // 예전 판(카드 그림이 없을 때 — 짝 없는 카드)
         void Plain()
         {
             var ctx = flow.Ctx;

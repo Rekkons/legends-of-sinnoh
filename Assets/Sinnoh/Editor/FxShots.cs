@@ -668,7 +668,7 @@ namespace Sinnoh.Editor
         {
             var stage = new UiStage(skin, UiShots.Strings());
             stage.Bind(root, grade);
-            var flow = new GameFlow(stage, LoadCtx(), null, null, () => UiShots.Seed, () => { }, web: false,
+            var flow = new GameFlow(stage, LoadCtx(), null, null, () => UiShots.Seed, () => { },
                 window: new FixedWindow(new Vector2Int(3840, 2160), new Vector2Int(grade.Width, grade.Height)), dice: LoadDiceLibrary());
             BattleFlow = flow;
             // 소리 단서(04 §8-4): 한 번에 보낸 것과 나눠 보낸 것의 소리 목록을 견준다(시퀀서 시각 · 행 · 키)

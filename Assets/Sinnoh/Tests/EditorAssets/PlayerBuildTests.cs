@@ -167,29 +167,25 @@ namespace Sinnoh.Tests.EditorAssets
             int romFonts = Directory.GetFiles(Gen + "Fonts", "pt_*").Count(f => !f.EndsWith(".meta"));
             Assert.AreEqual(stageFiles + romFonts, byName["stage"].assetNames.Length, "stage = Gen/Stage 전부(창틀 둘 빼고) + 원작 자산 글꼴 pt_*");
             Assert.AreEqual("ui", GenAssets.BundleFor(UiSkin.PanelFrameKey), "PC 층 창틀은 ui 번들 그대로(Stage/ 아래지만 stage가 아니다)");
-            Assert.AreEqual(1 + 1 + Sinnoh.Fx.SoundKeys.All.Length, byName["audio"].assetNames.Length, "audio = 상황 곡 표 + 효과음 표 + 클립(곡은 곡마다 번들 — M7 웹 손님 나눠 받기, 03 §5)");
+            Assert.AreEqual(1 + 1 + Sinnoh.Fx.SoundKeys.All.Length, byName["audio"].assetNames.Length, "audio = 상황 곡 표 + 효과음 표 + 클립(곡은 곡마다 번들 — 03 §5)");
             foreach (var song in songs)
             {
                 StringAssert.StartsWith(GenAssets.MusicBundlePrefix, GenAssets.BundleFor(song), song);
                 Assert.AreEqual(1 + intros.Count(i => GenAssets.BundleFor(i) == GenAssets.BundleFor(song)), byName[GenAssets.BundleFor(song)].assetNames.Length, song + " — 곡 하나 = 번들 하나(반복 클립 + 앞부분 클립)");
-                Assert.That(GenAssets.Split(GenAssets.BundleFor(song)), song + " — 나눠 받기");
             }
-            Assert.That(GenAssets.Split(GenAssets.BundleFor(figures[0])) && GenAssets.Split(GenAssets.FigureShadersBundle) && !GenAssets.Split("audio") && !GenAssets.Split("board"), "웹 첫 받기 = 피규어 · 곡 밖 번들");
             foreach (var intro in intros) Assert.That(songs.Select(GenAssets.BundleFor), Does.Contain(GenAssets.BundleFor(intro)), intro + " — 앞부분 클립은 그 곡의 번들");
             Assert.That(intros.Count, Is.GreaterThan(0).And.LessThanOrEqualTo(songs.Count), "앞부분 클립(M9 소리 ②)");
-            // 울음(M9 소리 ③): 표 + 종 322 = 번들 cries 하나 · 웹은 나눠 받기
+            // 울음(M9 소리 ③): 표 + 종 322 = 번들 cries 하나
             Assert.AreEqual(GenAssets.CryBundle, GenAssets.BundleFor(SoundPlayer.CryTableKey));
             Assert.AreEqual(1 + 322 + 3, byName[GenAssets.CryBundle].assetNames.Length, "cries = 울음 표 + pokemon.json의 종 322 + 폼 울음 3(네크로즈마 — 결정 143 ④)");
-            Assert.That(GenAssets.Split(GenAssets.CryBundle), "울음은 나눠 받기(웹 첫 받기 문턱 — 03 §5)");
             Assert.AreEqual(2, byName["tutorial"].assetNames.Length, "tutorial = 마박사 전신 도트 + 목차 얼굴(M6.5)");
             Assert.AreEqual(71, rulebook.Count(), "설명서 그림 자리 71(M9 「설명서 글 ①②」 66 − 상태 아이콘 띠 1 + 상태 표 줄 머리 아이콘 6 — 결정 143 ③)");
             Assert.AreEqual(1 + figureFiles.Count, byName[GenAssets.RulebookBundle].assetNames.Length, "rulebook = 표 + 그림(한 벌 + 언어마다)");
-            Assert.That(GenAssets.Split(GenAssets.RulebookBundle), "설명서 그림은 나눠 받기(웹 첫 받기 40 MB 밖)");
-            // 포켓몬 카드(결정 206 1단계): 구운 앞면 · 띠 · 숫자 글자 + 카드에 얹는 상태 주사위 · ♥ · ≫ 상자 · 생성기 타입 그림 · 지닌물건 토큰 = pokecards — PC만(웹 손님판 목록에는 없다)
+            // 포켓몬 카드(결정 206 1단계): 구운 앞면 · 띠 · 숫자 글자 + 카드에 얹는 상태 주사위 · ♥ · ≫ 상자 · 생성기 타입 그림 · 지닌물건 토큰 = pokecards
             int cardArt = new[] { "Faces", "Moves", "Strips", "Digits" }.Sum(d => Directory.GetFiles(Gen + "Cards/" + d, "*.png", SearchOption.AllDirectories).Length);
             Assert.Greater(cardArt, 1000, "포켓몬 카드 그림: node Tools/assets/build.mjs --only cardfaces");
             // 나눈 카드 번들(자동 업데이트는 파일 단위): 앞면 = 언어 × 도감 번호 백 단위, 띠 = 언어마다 하나, 나머지 = pokecards
-            var cardBundles = plan.Where(b => GenAssets.WebSkips(b.assetBundleName)).ToList();
+            var cardBundles = plan.Where(b => BoardBuild.IsCardBundle(b.assetBundleName)).ToList();
             Assert.AreEqual(cardArt + 6 + 2 + 19 + GenAssets.HeldTokens.Length, cardBundles.Sum(b => b.assetNames.Length), "카드 번들 합 = 카드 그림 + 상태 주사위 6 + ♥ · ≫ 상자 2 + 생성기 타입 그림 19 + 지닌물건 토큰");
             var faceGroups = Directory.GetFiles(Gen + "Cards/Faces", "*.png", SearchOption.AllDirectories)
                 .Select(f => f.Replace('\\', '/').Substring((Gen + "Cards/Faces/").Length)).Select(f => f.Split('/')[0] + "_" + (int.Parse(new string(f.Split('/')[1].TakeWhile(char.IsDigit).ToArray())) / 100 * 100).ToString("000")).Distinct().ToList();
@@ -201,10 +197,6 @@ namespace Sinnoh.Tests.EditorAssets
             Assert.AreEqual(GenAssets.CardBundle + "_en_000", GenAssets.BundleFor(GenAssets.CardFaces + "en/41_0@female_grunt.png"));
             Assert.AreEqual(GenAssets.CardBundle, GenAssets.BundleFor(GenAssets.CardDigits + "num_0.png"), "숫자 글자는 언어 없이 공용");
             foreach (string held in GenAssets.HeldTokens) Assert.AreEqual(GenAssets.CardBundle, where[GenAssets.ItemTokens + held + ".png"], held);
-            var web = BoardBuild.Plan(true);
-            Assert.That(web.All(b => !GenAssets.WebSkips(b.assetBundleName)), "웹 손님판에는 카드 번들을 싣지 않는다([가정] 결정 206 — 도트 카드로 대신)");
-            Assert.AreEqual(plan.Count - cardBundles.Count, web.Count, "웹 = PC − 카드 번들");
-            Assert.That(cardBundles.All(b => !GenAssets.Split(b.assetBundleName)));
             Assert.AreEqual(11 + cardBundles.Count + figures.Count + 1 + songs.Count, plan.Count, "번들 수 = board·trainers·figures·ui·sprites·cards·stage·audio·tutorial·rulebook·cries + 카드 묶음 + 피규어 + fig_shaders + 곡");
             Assert.IsNull(GenAssets.BundleFor("Sprites/Anim/front.png"), "화면이 아직 읽지 않는 키는 번들에 넣지 않는다(그 화면을 만들 때·M7)");
         }
@@ -295,7 +287,6 @@ namespace Sinnoh.Tests.EditorAssets
         public void M4_모든품질의렌더배율은1()
         {
             // 말은 화면 공간 정수배로 그린다(d3-3 §2-3 ③). 렌더 배율이 1이 아니면 줄인 타깃에 그린 뒤 바이리니어로 늘려 정수배·최근접이 깨진다
-            // — WebGL 기본 품질(Mobile_RPAsset)이 0.8이던 것을 1로(M4-2 검토 반영, 웹 프레임은 M7에서 잰다)
             var names = UnityEngine.QualitySettings.names;
             Assert.Greater(names.Length, 0);
             for (int i = 0; i < names.Length; i++)
@@ -350,7 +341,6 @@ namespace Sinnoh.Tests.EditorAssets
                 Assert.AreEqual(TextureImporterCompression.Uncompressed, ti.textureCompression, path);
                 Assert.IsFalse(ti.mipmapEnabled, path);
             }
-            Assert.That(File.Exists("Assets/WebGLTemplates/Sinnoh/favicon.ico"), "웹 손님판 탭 아이콘");
         }
     }
 }

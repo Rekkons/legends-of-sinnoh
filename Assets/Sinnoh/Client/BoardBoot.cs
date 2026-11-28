@@ -157,39 +157,7 @@ namespace Sinnoh.Client
             }
         }
 
-        /// <summary>
-        /// 웹 손님판(M7 [가정 M7-63]): Gen 번들을 받은 뒤에 세운다(<see cref="GenAssets.WhenReady"/>) — 에디터 · Win64는 그 자리에서. 피규어 번들은 나중에 와서(나눠 받기),
-        /// 다 오면 빠졌던 피규어를 다시 세운다 — 판이 도는 중이면(<see cref="MayRefill"/> false) 타이틀로 돌아올 때(<see cref="ShowDemoSeats"/>).
-        /// </summary>
-        void Awake()
-        {
-            GenAssets.Arrived += OnArrived;
-            if (GenAssets.Ready) Build();
-            else GenAssets.WhenReady(() => { if (this) Build(); });
-        }
-
-        void OnDestroy() => GenAssets.Arrived -= OnArrived;
-
-        /// <summary>피규어를 지금 다시 세워도 되나(판이 돌지 않는다 — ScreenBoot가 넣는다). null = 늘.</summary>
-        public System.Func<bool> MayRefill { get; set; }
-
-        bool refillWanted;
-
-        void OnArrived(string bundle)
-        {
-            if (!bundle.StartsWith("fig_", System.StringComparison.Ordinal) || WebContent.PendingFigures || Figures == null || !Figures.GenMissing) return;
-            refillWanted = true;
-            if (MayRefill == null || MayRefill()) Refill();
-        }
-
-        // 빠졌던 피규어를 다시 세우고 말을 그 자리에 맞춘다
-        void Refill()
-        {
-            refillWanted = false;
-            Figures.Build(Board, Looks, Fixtures, Cards);
-            DistortionWorldVisible = DistortionWorldVisible;
-            if (lastSeats != null) SetSeats(lastSeats, lastCells);
-        }
+        void Awake() => Build();
 
         /// <summary>
         /// 읽고 칸 메시를 (다시) 만든다. 피규어·아이콘은 처음 한 번만 만든다(칸 반투명 비교 그림은 칸만 다시 만든다).
@@ -228,7 +196,6 @@ namespace Sinnoh.Client
         /// <summary>시험 판 말 6(타이틀 뒤 전경): 좌석 i = trainer_cards i번째 직업 · fixtures i번째 마을 · i번째 주인공.</summary>
         public void ShowDemoSeats()
         {
-            if (refillWanted && Figures != null) Refill();
             var homes = PieceLayout.DemoHomes(Fixtures, PieceLayout.MaxSeats);
             var seats = new List<BoardPieces.SeatLook>();
             var cells = new List<int>();

@@ -291,8 +291,8 @@ namespace Sinnoh.Tests.PlayMode
                 var en = Put(0);
                 Assert.That(en.Art, Is.True);
                 StringAssert.EndsWith("/en/389_1.png", en.FaceKey, "영어 화면 = en 카드");
-                // 웹 손님판 · 짝 없는 카드: 카드 그림이 없으면 지금 도트 카드(MonTip 짜임)로 대신
-                GenAssets.Withheld = key => key.StartsWith(GenAssets.CardFaces) ? false : (bool?)null;
+                // 짝 없는 카드: 카드 그림이 없으면 지금 도트 카드(MonTip 짜임)로 대신
+                GenAssets.Withheld = key => key.StartsWith(GenAssets.CardFaces);
                 var dot = Put(4);
                 yield return null;
                 Assert.That(dot.Art, Is.False, "카드 그림 없음");

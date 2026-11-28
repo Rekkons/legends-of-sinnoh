@@ -141,7 +141,7 @@ namespace Sinnoh.Client
         /// 내가 메뉴에서 한 무르기 · 되돌리기는 메뉴를 먼저 닫고 보낸다(<see cref="BoardMenuScreen.PressUndo"/> · <see cref="BoardMenuScreen.ConfirmRewind"/>).
         /// </summary>
         public static bool KeptOnRewind(IUiScreen screen) =>
-            screen is BoardMenuScreen || screen is SettingsScreen || screen is RulebookScreen || screen is DexScreen || screen is TypeChartScreen || screen is DiscardScreen || screen is LogScreen;
+            screen is BoardMenuScreen || screen is SettingsScreen || screen is RulebookScreen || screen is RulingsScreen || screen is DexScreen || screen is TypeChartScreen || screen is DiscardScreen || screen is LogScreen;
 
         /// <summary>
         /// 되돌림 표지가 실린 갱신(undo.md §3-5): 연출 대기열 · 창 · 배틀 화면을 걷고 보기에서 다시 세운다(이어하기와 같은 <see cref="Rebuild"/>). 판과 무관한 보기 창은 남긴다(<see cref="KeptOnRewind"/>).

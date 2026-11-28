@@ -8,14 +8,10 @@ namespace Sinnoh.Client
     /// 창이 비활성일 때 내 차례 · 응답 요청 알림(04 §5 ① 「차례 알림」, isekai Client/Platform/AttentionFlash를 옮김 — S02 「차례 알림」으로 끈다 — 결정 112 Q17, 기본 켬 · <see cref="SoundPrefs.Alert"/>).
     /// - 언제: 방 판에서 내 좌석에 새 선택(PendingChoice Id)이 열렸을 때(<see cref="RoomFlow"/>.Tick이 <see cref="Changed"/>로 한 번씩 거른다). 솔로 · 튜토리얼은 부르지 않는다.
     /// - Windows 빌드: user32 FlashWindowEx(작업 표시줄 깜빡임, FLASHW_TIMERNOFG — 창이 앞으로 오면 Windows가 멈춘다). 창이 활성이면 하지 않는다. 포커스를 가져가지 않는다.
-    /// - WebGL: Client/Web/SinnohWeb.jslib가 탭 제목을 「● 내 차례 — 원래 제목」과 번갈아 바꾼다(페이지에 포커스가 오면 멈춤).
     /// - 에디터: 아무것도 하지 않는다(<see cref="Sink"/>가 있으면 그것을 부른다 — 시험).
     /// </summary>
     public static class AttentionFlash
     {
-        /// <summary>웹 탭 제목 앞에 붙는 글자(화면 글이 아니라 브라우저 탭 — 언어 고르기 전까지 한국어 고정).</summary>
-        public const string TitlePrefix = "● 내 차례 — ";
-
         static int lastChoice = -1;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -43,9 +39,6 @@ namespace Sinnoh.Client
             if (Sink != null) { Sink(); return true; }
 #if UNITY_EDITOR
             return false;
-#elif UNITY_WEBGL
-            SinnohAttentionStart(TitlePrefix);
-            return true;
 #elif UNITY_STANDALONE_WIN
             if (Application.isFocused) return false;
             FlashTaskbar();
@@ -54,10 +47,6 @@ namespace Sinnoh.Client
             return false;
 #endif
         }
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-        [DllImport("__Internal")] static extern void SinnohAttentionStart(string prefix);
-#endif
 
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
         [StructLayout(LayoutKind.Sequential)]

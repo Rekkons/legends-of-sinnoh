@@ -272,9 +272,6 @@ namespace Sinnoh.Tests.PlayMode
             public IReadOnlyList<KeyValuePair<string, string>> Addresses { get; } = new KeyValuePair<string, string>[0];
             public int Port => 0;
             public bool Tunneled => false;
-            public IReadOnlyList<string> WebLinks { get; } = new string[0];
-            public string WebNotice => null;
-            public bool WebPending => false;
             public readonly List<RoomMsg> Sent = new List<RoomMsg>();
             public void Send(RoomMsg msg) => Sent.Add(msg);
 

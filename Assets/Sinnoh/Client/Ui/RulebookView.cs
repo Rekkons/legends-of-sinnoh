@@ -14,7 +14,7 @@ namespace Sinnoh.Client
 {
     /// <summary>
     /// 룰 설명서(S43 — 결정 100 · 111 ①) 절 하나를 그리는 부품: 큰 창(<see cref="RulebookScreen"/>, B안)과 게임 중 옆 판(<see cref="RulebookSide"/>, C안)이 같이 쓴다.
-    /// 블록(<see cref="RulebookBlockKind"/>)마다: 문단 · 작은 제목 · 목록(두 단계) · 번호 목록 · 표 · 그림(Gen <c>Rulebook/</c> — 웹 손님판은 나눠 받기라 오기 전에는 자리표시, 오면 다시 그린다) ·
+    /// 블록(<see cref="RulebookBlockKind"/>)마다: 문단 · 작은 제목 · 목록(두 단계) · 번호 목록 · 표 · 그림(Gen <c>Rulebook/</c> — 없으면 자리표시) ·
     /// 묻고 답 · 「디지털판」 꼬리표(배지 + 글 — plan §5 #307) · cards 블록(게임 문자열 표의 이름 · 문구 · 아이템 그림 · 레시피 규토리 — #315).
     /// 글 안 링크 <c>[[절 키|글]]</c>는 원본처럼 「[글]」에 밑줄을 그어 누르면 그 절로 간다(UI Toolkit 링크 태그 — <c>UnityEngine.UIElements.Experimental.PointerUpLinkTagEvent</c>).
     /// 찾는 말은 칠한다(#303).
@@ -54,9 +54,8 @@ namespace Sinnoh.Client
         /// <summary>마지막으로 그린 절의 링크(절 키, 나온 순서).</summary>
         public List<string> Links { get; } = new List<string>();
 
-        /// <summary>마지막으로 그린 절의 그림 칸(그림 키 → 칸)과 아직 그림이 없는 칸 수(웹 손님판의 나눠 받기 — 오면 다시 그린다).</summary>
+        /// <summary>마지막으로 그린 절의 그림 칸(그림 키 → 칸).</summary>
         public Dictionary<string, VisualElement> Figures { get; } = new Dictionary<string, VisualElement>();
-        public int Waiting { get; private set; }
 
         /// <summary>
         /// 색을 읽을 요소(<c>sn-book</c> 클래스)를 건다: 스타일이 풀리면 링크 · 칠하기 색을 읽고 <paramref name="repaint"/>를 부른다(처음 그릴 때는 아직 색이 없을 수 있다).
@@ -80,7 +79,6 @@ namespace Sinnoh.Client
         {
             Links.Clear();
             Figures.Clear();
-            Waiting = 0;
             foreach (var b in s.Blocks) Block(into, s, b);
         }
 
@@ -197,12 +195,11 @@ namespace Sinnoh.Client
             }
         }
 
-        // 표 줄 머리 아이콘(그림 키 — 그림이 아직 없으면 자리만, 웹 손님판의 나눠 받기는 오면 다시 그린다)
+        // 표 줄 머리 아이콘(그림 키 — 그림이 없으면 자리만)
         void Icon(VisualElement cell, string figure)
         {
             var img = Add(cell, new VisualElement(), "rulebook-icon-" + figure, "sn-book-td-icon");
             Figures[figure] = img;
-            bool pending = false;
             foreach (string key in FigureKeys(figure, Lang))
             {
                 var tex = GenAssets.Load<Texture2D>(key);
@@ -211,9 +208,7 @@ namespace Sinnoh.Client
                     img.style.backgroundImage = new StyleBackground(tex);
                     return;
                 }
-                pending |= GenAssets.Pending(key);
             }
-            if (pending) Waiting++;
         }
 
         /// <summary>그림 키 → Gen 키(그림 속 글이 언어마다 다르면 <c>.&lt;언어&gt;</c> 꼬리가 붙은 것을 먼저 — 「설명서 그림」 묶음, plan §5 #340).</summary>
@@ -225,12 +220,10 @@ namespace Sinnoh.Client
             var box = Add(into, new VisualElement(), "rulebook-figure-" + b.Figure, "sn-book-figure");
             Figures[b.Figure] = box;
             Texture2D tex = null;
-            bool pending = false;
             foreach (string key in FigureKeys(b.Figure, Lang))
             {
                 tex = GenAssets.Load<Texture2D>(key);
                 if (tex != null) break;
-                pending |= GenAssets.Pending(key);
             }
             if (tex != null)
             {
@@ -247,9 +240,8 @@ namespace Sinnoh.Client
             }
             else
             {
-                if (pending) Waiting++;
                 var ph = Add(box, new VisualElement(), null, "sn-book-figure-ph");
-                Add(ph, Kit.Text(stage.T(pending ? "screen.rulebook.figure.wait" : "screen.rulebook.figure.none"), Kit.F2), null, "kit-muted");
+                Add(ph, Kit.Text(stage.T("screen.rulebook.figure.none"), Kit.F2), null, "kit-muted");
             }
             if (!string.IsNullOrEmpty(b.Text)) Add(box, Kit.Wrapped(Rich(b.Text), Kit.F2), null, "sn-book-caption").AddToClassList("kit-muted");
         }

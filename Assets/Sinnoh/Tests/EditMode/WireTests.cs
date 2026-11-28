@@ -288,20 +288,18 @@ namespace Sinnoh.Tests.EditMode
         }
 
         [Test]
-        public void M7_참가칸_IP포트와코드링크wss호스트이름을읽고_틀린주소는거절()
+        public void M7_참가칸_IP포트와코드wss호스트이름을읽고_틀린주소는거절()
         {
             string Read(string s) => JoinTarget.TryParse(s, out var t) ? t.Kind + " " + t.Text : null;
             Assert.AreEqual("Direct 100.101.102.103:7777", Read(" 100.101.102.103 "), "포트를 빼면 7777");
             Assert.AreEqual("Direct 127.0.0.1:47791", Read("127.0.0.1:47791"));
             Assert.AreEqual("Direct 10.0.0.7:7777", Read("010.000.000.007"), "앞 0은 지운다");
             Assert.AreEqual("Relay Q7K2MZ", Read("q7k2mz"), "영숫자 6자 = 참가 코드(대문자로)");
-            Assert.AreEqual("Relay Q7K2MZ", Read("https://abc.trycloudflare.com/?code=q7k2mz"));
-            Assert.AreEqual("Secure wss://game-x.trycloudflare.com", Read("https://abc.trycloudflare.com/?join=wss://game-x.trycloudflare.com"));
             Assert.AreEqual("Secure wss://host.example:8443", Read("wss://Host.Example:8443/"));
             Assert.AreEqual("Secure wss://t.trycloudflare.com", Read("t.trycloudflare.com"), "터널 이름은 포트가 없으면 wss");
             Assert.AreEqual("Direct my-pc.tail1234.ts.net:7777", Read("My-PC.tail1234.ts.net"));
             Assert.AreEqual("Direct my-pc:9000", Read("my-pc:9000"));
-            foreach (var bad in new[] { "", "   ", "1.2.3", "1.2.3.256", "1.2.3.4:0", "1.2.3.4:65536", "1.2.3.4:x", "999.1.1.1", "-bad.host", "wss://a/b", "https://x/?code=12", "http://x/", "a b" })
+            foreach (var bad in new[] { "", "   ", "1.2.3", "1.2.3.256", "1.2.3.4:0", "1.2.3.4:65536", "1.2.3.4:x", "999.1.1.1", "-bad.host", "wss://a/b", "https://x/?code=12", "https://abc.trycloudflare.com/?code=q7k2mz", "http://x/", "a b" })
                 Assert.IsNull(Read(bad), $"「{bad}」는 거절");
             Assert.IsTrue(JoinTarget.TryParseAddress("192.168.0.5:7778", out var ip, out var port));
             Assert.AreEqual(("192.168.0.5", (ushort)7778), (ip, port));

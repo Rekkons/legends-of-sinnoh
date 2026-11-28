@@ -9,7 +9,7 @@ namespace Sinnoh.Client
     /// - 언제: 방장은 방을 연 뒤 닫을 때까지, 손님은 접속 시도부터 끊김(Failed)·나감(Closed)까지. 재접속 중에도 막는다(<see cref="Wanted"/>).
     /// - 호출: <see cref="RoomFlow"/>.Tick이 매 프레임 <see cref="Set"/>(Wanted(...)), 방을 버릴 때 Set(false). 앱이 끝날 때도 끈다.
     /// - Windows 독립 실행만: kernel32 SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED), 끝나면 ES_CONTINUOUS만으로 되돌린다.
-    ///   화면 끄기(ES_DISPLAY_REQUIRED)는 막지 않는다. 에디터·WebGL은 OS에 알리지 않는다(<see cref="On"/>만 바뀐다).
+    ///   화면 끄기(ES_DISPLAY_REQUIRED)는 막지 않는다. 에디터는 OS에 알리지 않는다(<see cref="On"/>만 바뀐다).
     /// </summary>
     public static class KeepAwake
     {

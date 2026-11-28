@@ -183,7 +183,7 @@ namespace Sinnoh.Client
         /// <summary>내 차례 알림(결정 112 Q17 — 흐름 없이 연 화면이면 켬).</summary>
         public bool Alert => flow == null || flow.SoundPrefs.Alert;
 
-        /// <summary>차례 알림을 켜고 끈다(방 판에서 창이 비활성일 때의 작업 표시줄 깜빡임 · 웹 탭 제목 — 음량과 같은 곳에 저장).</summary>
+        /// <summary>차례 알림을 켜고 끈다(방 판에서 창이 비활성일 때의 작업 표시줄 깜빡임 — 음량과 같은 곳에 저장).</summary>
         public void PickAlert(bool on)
         {
             if (flow == null) return;
@@ -333,7 +333,7 @@ namespace Sinnoh.Client
             Add(foot, Kit.Button(stage.T("screen.common.back"), KitButtonKind.Normal, back), "settings-back", null);
             if (flow != null && !InGame)
             {
-                // 버그 신고(M9 — 결정 132 ①): 타이틀 설정에서도 — 게임 중에는 게임 메뉴의 [버그 신고]. 보낼 창구가 없는 화면(웹 손님판 · 에디터)은 흐린 단추 + 「PC판에서만」 이유 툴팁
+                // 버그 신고(M9 — 결정 132 ①): 타이틀 설정에서도 — 게임 중에는 게임 메뉴의 [버그 신고]. 보낼 창구가 없는 화면(에디터)은 흐린 단추 + 「PC판에서만」 이유 툴팁
                 bool ready = flow.BugReady;
                 var bug = Add(foot, Kit.Button(stage.T(ready ? "screen.bug.button" : "screen.bug.button.pc"), KitButtonKind.Normal, () => flow.OpenTitleBug()), "settings-bug", null);
                 if (!ready) bug.AddToClassList(UiStage.OffClass);

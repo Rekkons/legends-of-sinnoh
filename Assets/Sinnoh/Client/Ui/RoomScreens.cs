@@ -48,7 +48,6 @@ namespace Sinnoh.Client
             var field = new TextField { value = value ?? "", maxLength = max, isDelayed = false };
             field.AddToClassList("sn-field");
             if (wide) field.AddToClassList("sn-field-wide");
-            WebTextInput.Attach(field);   // 웹 손님판: 한글 입력은 HTML 입력칸을 겹쳐 받는다(02 §8)
             return Add(parent, field, name, null);
         }
 
@@ -134,7 +133,7 @@ namespace Sinnoh.Client
                 var reButtons = RoomUi.Add(foot, new VisualElement(), "room-create-foot", "sn-foot-row");
                 RoomUi.Add(reButtons, Kit.Button(stage.T("screen.common.back"), KitButtonKind.Normal, Back), "room-create-back", null);
                 var reopen = RoomUi.Add(reButtons, Kit.Button(stage.T("screen.room.reopen.start"), KitButtonKind.Main, () => Start()), "room-create-start", null);
-                reopen.SetEnabled(!busy && NetCanHost);
+                reopen.SetEnabled(!busy);
                 return;
             }
             o = RoomUi.Row(rows, stage, "room-create-row-list", "screen.room.create.list");
@@ -163,7 +162,7 @@ namespace Sinnoh.Client
             var buttons = RoomUi.Add(foot, new VisualElement(), "room-create-foot", "sn-foot-row");
             RoomUi.Add(buttons, Kit.Button(stage.T("screen.common.back"), KitButtonKind.Normal, Back), "room-create-back", null);
             var start = RoomUi.Add(buttons, Kit.Button(stage.T("screen.room.create.start"), KitButtonKind.Main, () => Start()), "room-create-start", null);
-            start.SetEnabled(!busy && NetCanHost);
+            start.SetEnabled(!busy);
         }
 
         // 여는 중 · 실패 칸(Unity 서버를 쓸 수 없으면 [직접 연결로] — 결정 92)
@@ -174,7 +173,7 @@ namespace Sinnoh.Client
             else if (Room.FailCode != null)
             {
                 var fail = RoomUi.Fail(foot, stage, "room-create-fail", Room.FailCode, Room.FailDetail, Room.Port);
-                if (Room.SuggestDirect && NetCanHost)
+                if (Room.SuggestDirect)
                 {
                     var to = RoomUi.Add(fail, Kit.Button(stage.T("screen.room.to_direct"), KitButtonKind.Main, () => ToDirect()), "room-create-to-direct", null);
                     stage.Tips.Hook(to, stage.T("screen.room.to_direct"), stage.T("screen.room.to_direct.tip"), TipSide.Below, reading: true);
@@ -183,8 +182,6 @@ namespace Sinnoh.Client
         }
 
         const int RoomSettingsMin = Sinnoh.Rules.Session.RoomSettings.MinSeats;
-
-        static bool NetCanHost => Sinnoh.Net.NetBootstrap.CanHost;
 
         /// <summary>연결 방식(true = [인터넷]).</summary>
         public void SetInternet(bool on)
@@ -288,7 +285,7 @@ namespace Sinnoh.Client
             list = RoomUi.Add(col, Kit.Panel(stage.Skin), "room-join-list", "sn-room-list");
             var buttons = RoomUi.Add(col, new VisualElement(), "room-join-foot", "sn-foot-row");
             RoomUi.Add(buttons, Kit.Button(stage.T("screen.common.back"), KitButtonKind.Normal, Back), "room-join-back", null);
-            // 튜토리얼 입구(결정 38 [가정 M7-71]): 웹 손님판은 타이틀에 튜토리얼 줄이 없다 — 여기서 들어갔다가 이 화면으로 돌아온다(PC판도 같은 단추)
+            // 튜토리얼 입구(결정 38 [가정 M7-71]): 여기서 들어갔다가 이 화면으로 돌아온다
             if (flow.Tutorial.Available)
             {
                 tutorial = RoomUi.Add(buttons, Kit.Button(stage.T("screen.room.tutorial"), KitButtonKind.Normal, () => Tutorial()), "room-join-tutorial", null);
@@ -300,12 +297,6 @@ namespace Sinnoh.Client
 
         // 참가 칸의 글은 화면을 다시 세워도(접속 중 · 실패) 그대로 남는다 — 실행하는 동안만
         static string lastText = "";
-
-        /// <summary>참가 칸을 이 글로 채운다(웹 손님판 시작 — 페이지 주소의 <c>?code=</c> · <c>?join=</c> · 직접 연결 주소, <see cref="JoinTarget.FromPage"/>).</summary>
-        public static void Prefill(string text)
-        {
-            if (!string.IsNullOrEmpty(text)) lastText = text;
-        }
 
         /// <summary>지금 참가 칸 글(시험).</summary>
         public string TargetText => target != null ? target.value : lastText;
@@ -359,7 +350,6 @@ namespace Sinnoh.Client
             string sub = people + " · " + stage.T(r.Campaign == Campaign.UltraBurst ? "screen.solo.campaign.ub" : "screen.solo.campaign.hos") + " · " + stage.T(LobbyScreen.ClockKey(r.Clock));
             RoomUi.Add(row, Kit.Text(sub, Kit.F1), "room-join-row-" + index + "-sub", "kit-muted");
             var tags = RoomUi.Add(top, new VisualElement(), null, "sn-room-tags");
-            if (r.PcOnly) tags.Add(Kit.Badge(stage.T("screen.room.join.pc_only"), KitBadgeKind.Silver));
             string tip = stage.T("screen.room.join.row.tip");
             if (r.OtherVersion(stamp))
             {

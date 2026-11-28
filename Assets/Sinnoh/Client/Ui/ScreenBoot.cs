@@ -60,7 +60,7 @@ namespace Sinnoh.Client
 
         /// <summary>
         /// 첫 화면의 언어(결정 146 ④ [가정]): 저장한 언어(S02 「언어」 — <see cref="SoundPrefs.Lang"/>)가 있으면 그것, 없으면 OS 언어 — 한국어면 <c>ko</c>, 그 밖은 <c>en</c>.
-        /// 웹 손님판은 <see cref="Application.systemLanguage"/>가 브라우저 언어(<c>navigator.language</c>)다. 고른 값은 저장하지 않는다(설정에서 바꿀 때만 — <see cref="GameFlow.Lang"/>).
+        /// 고른 값은 저장하지 않는다(설정에서 바꿀 때만 — <see cref="GameFlow.Lang"/>).
         /// </summary>
         public static string LangOf(SystemLanguage os, string saved) => SoundPrefs.ClampLang(saved) ?? (os == SystemLanguage.Korean ? "ko" : "en");
 
@@ -138,14 +138,14 @@ namespace Sinnoh.Client
         /// <summary>플레이 기록 올리기(02 §12)를 이 실행에만 알림 없이 켜는 플레이어 인자(저장하지 않는다). 설정 값은 <see cref="SoundPrefs.PlayUpload"/>(기본 켜짐 · 첫 실행 알림 뒤부터 — 결정 126 ④).</summary>
         public const string PlayUploadArg = "-sinnohPlayUpload";
 
-        /// <summary>올리는 창구(플레이 기록 · 버그 신고)를 만드나: PC 플레이어만 — 웹 손님판(WebGL)과 에디터는 만들지 않는다(창구가 없으면 첫 실행 알림 · 설정 줄이 없고 버그 신고는 「PC판에서만」).</summary>
-        public static bool MakesUploads(bool editor, RuntimePlatform platform) => !editor && platform != RuntimePlatform.WebGLPlayer;
+        /// <summary>올리는 창구(플레이 기록 · 버그 신고)를 만드나: 플레이어만 — 에디터는 만들지 않는다(창구가 없으면 첫 실행 알림 · 설정 줄이 없고 버그 신고는 「PC판에서만」).</summary>
+        public static bool MakesUploads(bool editor) => !editor;
 
         GameFlow MakeFlow(string saves, Func<long> clock)
         {
             var flow = new GameFlow(Root.Stage, madeBoard != null ? madeBoard.Ctx : null, madeBoard, madeRig, Entropy, dice: madeDice, saves: saves, clock: clock, sound: soundPrefs);
-            // 플레이 기록 올리기: 플레이어(PC)만 — 웹 손님 · 에디터(플레이 시험)는 창구를 만들지 않는다. 설정이 꺼져 있거나 첫 실행 알림을 보기 전이면 UGS를 부르지 않는다
-            if (MakesUploads(Application.isEditor, Application.platform))
+            // 플레이 기록 올리기: 플레이어만 — 에디터(플레이 시험)는 창구를 만들지 않는다. 설정이 꺼져 있거나 첫 실행 알림을 보기 전이면 UGS를 부르지 않는다
+            if (MakesUploads(Application.isEditor))
             {
                 var prefs = soundPrefs;
                 var args = Environment.GetCommandLineArgs();
@@ -167,7 +167,7 @@ namespace Sinnoh.Client
             {
                 var sound = Sound;
                 flow.Sound += call => sound.Play(call);
-                flow.CryForm = key => sound.Cries.Form(key);   // 폼 울음(결정 143 ④) — 웹은 울음 번들이 온 뒤의 표
+                flow.CryForm = key => sound.Cries.Form(key);   // 폼 울음(결정 143 ④)
                 sound.Use(flow.SoundPrefs);
             }
             return flow;
@@ -180,14 +180,7 @@ namespace Sinnoh.Client
         Sinnoh.Fx.DiceLibrary madeDice;
         double carryMs;
 
-        // 웹 손님판은 Gen 첫 받기 번들(글꼴 · 창틀 …)이 다 온 뒤에 화면을 연다(WebContent — 그동안 페이지의 받기 막대). 에디터 · Win64는 그 자리에서
-        System.Collections.IEnumerator Start()
-        {
-            while (!GenAssets.Ready) yield return null;
-            Open();
-        }
-
-        void Open()
+        void Start()
         {
             if (Array.IndexOf(Environment.GetCommandLineArgs(), FrameProbe.Arg) >= 0) return;
             if (stringsJson == null)
@@ -220,9 +213,8 @@ namespace Sinnoh.Client
             if (HumanPlayer) Root.Stage.UseLang(LangOf(Application.systemLanguage, soundPrefs.Lang));
             Sound = SoundPlayer.Create(transform);
             Flow = MakeFlow(SaveFolder ?? DefaultSaves(), null);
-            if (board != null) board.MayRefill = () => Flow == null || (Flow.Session == null && !Flow.InRoomGame);
             // 자동 업데이트(결정 161): 사람이 하는 PC 플레이어만 — 도우미가 바꾸는 중이면 바로 끝, 도우미 결과(result.json)를 읽어 정리 · 실패면 타이틀에 알림
-            bool pc = HumanPlayer && Application.platform != RuntimePlatform.WebGLPlayer;
+            bool pc = HumanPlayer;
             var probe = pc ? UpdateProbe.Open(out bool refused) : null;
             if (pc && probe == null && UpdateProbe.On)
             {
@@ -233,7 +225,7 @@ namespace Sinnoh.Client
             if (pc && !UpdateBoot(probe, out result)) return;
             Flow.OpenTitle();
             if (result != null && !(result.Ok && result.Version == Application.version)) Flow.UpdateFailedBefore(result);
-            // 새 판 알림(결정 148 ①): 사람이 하는 PC 플레이어만(에디터 · 확인용 프로브 · 웹 손님판은 안 함), 판 정보 주소가 정해졌을 때 한 번 — 실패는 조용히
+            // 새 판 알림(결정 148 ①): 사람이 하는 PC 플레이어만(에디터 · 확인용 프로브는 안 함), 판 정보 주소가 정해졌을 때 한 번 — 실패는 조용히
             // 끝에서 끝 프로브(4-4)는 -sinnohFeed의 loopback 주소 + 시험 키로 읽는다
             string feed = probe != null ? UpdateProbe.Feed() ?? Sinnoh.Data.ReleaseFeed.Url : Sinnoh.Data.ReleaseFeed.Url;
             if (probe != null)
@@ -247,13 +239,6 @@ namespace Sinnoh.Client
             }
             Flow.FeedUrl = feed;
             if (pc && !string.IsNullOrEmpty(feed)) StartCoroutine(CheckRelease(feed, probe));
-            // 웹 손님판(02 §8): 페이지 주소가 참가 대상(?code= · ?join= · 직접 연결 주소)이면 참가 칸을 채운 S06으로
-            if (Application.platform == RuntimePlatform.WebGLPlayer)
-            {
-                // http 페이지(직접 연결)에서는 UGS를 쓸 수 없다(https만) — 방 목록을 묻지 않고 빈 목록으로 둔다(「Unity 서버를 쓸 수 없습니다.」가 뜨지 않게)
-                if (!Application.absoluteURL.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) Flow.Room.Board = RoomFlow.NoRooms;
-                Flow.Room.OpenFromPage(Application.absoluteURL);
-            }
         }
 
         // 판 정보 파일(latest.json)을 받아 흐름에 넘긴다 — 서명 · 판 견주기는 GameFlow.TakeRelease(ReleaseFeed). 받지 못하면 로그 한 줄

@@ -30,7 +30,7 @@ namespace Sinnoh.Client
         /// <summary>저장된 값을 언어로(모르는 값은 null — 고르지 않은 것과 같다).</summary>
         public static string ClampLang(string value) => value == "ko" || value == "en" ? value : null;
 
-        /// <summary>내 차례 알림(S02 「차례 알림」 — 결정 112 Q17, 기본 켬): 방 판에서 창이 비활성일 때 작업 표시줄 깜빡임 · 웹 탭 제목(<see cref="AttentionFlash"/>).</summary>
+        /// <summary>내 차례 알림(S02 「차례 알림」 — 결정 112 Q17, 기본 켬): 방 판에서 창이 비활성일 때 작업 표시줄 깜빡임(<see cref="AttentionFlash"/>).</summary>
         public virtual bool Alert
         {
             get => alert;
@@ -226,7 +226,7 @@ namespace Sinnoh.Client
         public MusicBook Music { get; private set; } = new MusicBook();
         public SoundBook Effects { get; private set; } = new SoundBook();
 
-        /// <summary>울음 표(M9 소리 ③ — Gen <c>Audio/Cry/cry.json</c>, 웹은 나눠 받는 번들 cries). 없으면 빈 표(울음 없이 돈다).</summary>
+        /// <summary>울음 표(M9 소리 ③ — Gen <c>Audio/Cry/cry.json</c> — 번들 cries). 없으면 빈 표(울음 없이 돈다).</summary>
         public CryBook Cries { get; private set; } = new CryBook();
 
         /// <summary>재생 층 시각(ms) — <see cref="Tick"/>으로 흐른 시간.</summary>
@@ -291,7 +291,7 @@ namespace Sinnoh.Client
             return src;
         }
 
-        // 곡 벌에 곡을 걸고 튼다: 앞부분 클립이 있으면 앞부분 → (그 길이 뒤) 반복 클립을 예약으로 잇고, 없으면 반복 클립부터. 곡 클립이 아직 없으면(웹 나눠 받기) false
+        // 곡 벌에 곡을 걸고 튼다: 앞부분 클립이 있으면 앞부분 → (그 길이 뒤) 반복 클립을 예약으로 잇고, 없으면 반복 클립부터. 곡 클립이 없으면 false
         bool StartDeck(Deck deck, MusicScene scene)
         {
             string file = Music.File(scene), intro = Music.Intro(scene);
@@ -313,15 +313,11 @@ namespace Sinnoh.Client
             return true;
         }
 
-        // 울음 표: 웹 손님판은 나눠 받는 번들(cries)이라 처음에는 없을 수 있다 — 오면 OnArrived가 다시 읽는다
+        // 울음 표
         void LoadCries()
         {
             var table = GenAssets.Load<TextAsset>(CryTableKey);
-            if (table == null)
-            {
-                if (GenAssets.Pending(CryTableKey)) WebContent.Want(GenAssets.BundleFor(CryTableKey));
-                return;
-            }
+            if (table == null) return;
             try { Cries = CryBook.Parse(table.text); }
             catch (FormatException e) { Debug.LogWarning("[Sound] " + e.Message); }
         }
@@ -330,8 +326,8 @@ namespace Sinnoh.Client
         public int Preloaded { get; private set; }
 
         /// <summary>
-        /// 효과음 · 징글 클립을 모두 미리 연다(04 §8-6 · 02 §8 — plan M7 「연출 실접속」): 웹 오디오는 클립을 처음 읽을 때 뒤에서 디코드해서, 처음 낼 때 읽으면 그 첫 효과음이 빠진다.
-        /// 첫 화면(재생 층을 만들 때 — 웹 손님판은 첫 받기 번들이 다 온 뒤)에서 표의 클립을 다 읽어 두고 소리 데이터를 올린다. 곡(BGM)은 열지 않는다(나눠 받기 · 스트리밍).
+        /// 효과음 · 징글 클립을 모두 미리 연다(04 §8-6 · 02 §8 — plan M7 「연출 실접속」): 클립을 처음 낼 때 읽으면 그 첫 효과음이 늦을 수 있다.
+        /// 첫 화면(재생 층을 만들 때)에서 표의 클립을 다 읽어 두고 소리 데이터를 올린다. 곡(BGM)은 열지 않는다(스트리밍).
         /// </summary>
         public int Preload()
         {
@@ -344,7 +340,6 @@ namespace Sinnoh.Client
                 n++;
             }
             Preloaded = n;
-            if (Application.platform == RuntimePlatform.WebGLPlayer) Debug.Log("[Sound] 효과음 미리 열기 " + n + "/" + Effects.Count);
             return n;
         }
 
@@ -364,22 +359,9 @@ namespace Sinnoh.Client
             front = 1 - front;
             var deck = music[front];
             deck.Volume = 0f;
-            if (!StartDeck(deck, scene) && file != null) WebContent.Want(GenAssets.BundleFor(MusicKey(file)));   // 웹 손님판: 아직 오지 않은 곡은 나눠 받기의 다음 차례로(결정 112 Q18 — 오면 OnArrived가 튼다)
+            StartDeck(deck, scene);
             Note("bgm", scene.ToString(), deck.Loop.clip != null ? deck.Loop.clip.name : null, 0f, "scene");
         }
-
-        /// <summary>웹 손님판: 지금 곡이 아직 오지 않아 비어 있었으면(나눠 받기) 곡 번들이 온 때 그 곡을 튼다.</summary>
-        void OnArrived(string bundle)
-        {
-            if (bundle == GenAssets.CryBundle && Cries.Count == 0) LoadCries();
-            if (!sceneSet || !Scene.HasValue || Music == null || !bundle.StartsWith(GenAssets.MusicBundlePrefix, StringComparison.Ordinal)) return;
-            if (Music.File(Scene.Value) == null || music[front].Loop.clip != null) return;
-            StartDeck(music[front], Scene.Value);
-        }
-
-        void OnEnable() => GenAssets.Arrived += OnArrived;
-
-        void OnDisable() => GenAssets.Arrived -= OnArrived;
 
         /// <summary>
         /// 효과음 하나를 낸다(연출 단서 · 즉시 소리). 같은 키가 이 프레임에 이미 났으면 내지 않는다(false). 표에 없는 키·클립이 없는 키도 false(경고는 키마다 한 번).
@@ -401,7 +383,7 @@ namespace Sinnoh.Client
         }
 
         /// <summary>
-        /// 울음 하나(소리 표 층 Cry — M9 소리 ③): 큰 순간 무리 음량 · 기절이면 높이 <see cref="CryBook.LowPitch"/>. 표에 없는 종 · 아직 오지 않은 번들(웹 나눠 받기)이면 내지 않는다(false — 04 §8-6 「늦으면 대표 SE」 대신 무음 [가정 plan §5 #352]).
+        /// 울음 하나(소리 표 층 Cry — M9 소리 ③): 큰 순간 무리 음량 · 기절이면 높이 <see cref="CryBook.LowPitch"/>. 표에 없는 종이면 내지 않는다(false — 04 §8-6 「늦으면 대표 SE」 대신 무음 [가정 plan §5 #352]).
         /// </summary>
         bool PlayCry(SoundCall call, int dex, bool low)
         {
@@ -436,7 +418,6 @@ namespace Sinnoh.Client
         {
             if (clips.TryGetValue(key, out var c)) return c;
             c = GenAssets.Load<AudioClip>(key);
-            if (c == null && GenAssets.Pending(key)) return null;   // 웹 손님판의 곡은 나중에 온다(나눠 받기) — 없음으로 기억하지 않는다
             if (c == null) Warn("클립 없음 " + key);
             clips[key] = c;
             return c;

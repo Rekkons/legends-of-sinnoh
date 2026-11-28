@@ -47,13 +47,6 @@ namespace Sinnoh.Editor
             Screen("kit-gallery-tip-speed", Gallery("gallery-pill-speed")),
             Screen("kit-gallery-tip-heart", Gallery("gallery-pill-heart-low")),
             Screen("title", s => s.Flow().OpenTitle(TitleScreen.Solo)),
-            Screen("title-web", s =>                                          // 웹 손님판 타이틀(결정 112 Q18): 참가하기 · 튜토리얼 · 도감 · 설정
-            {
-                var flow = s.Flow();
-                flow.OpenTitle();
-                flow.Stage.Open(new TitleScreen(web: true, pick: TitleScreen.Join, tutorial: () => { }, join: () => { }, settings: () => { }, dex: () => { }));
-                if (flow.Stage.Root.Q("title-item-tutorial") == null || flow.Stage.Root.Q("title-item-solo") != null) throw new System.InvalidOperationException("웹 타이틀 줄이 맞지 않다");
-            }),
             Screen("title-host", s => s.Flow().OpenTitle(TitleScreen.Host)),   // 목업 r3 title-1080과 같은 상태(「방 만들기」를 고름)
             Screen("title-update", s =>                                       // 새 판 알림(결정 148 ①): 아래 띠 위 오른쪽 「새 버전 x.y.z」 + [받기], 아래 띠 오른쪽 끝 판 번호
             {
@@ -3033,7 +3026,7 @@ namespace Sinnoh.Editor
         /// <summary>보드 위에 얹히는 화면(패널 바탕이 투명): 보드 씬을 같은 크기로 그린 그림 위에 겹쳐 찍는다 — 실행 중에는 같은 씬의 3D 보드가 패널 아래에 보인다.</summary>
         public static readonly HashSet<string> OverBoard = new HashSet<string>
         {
-            "title", "title-web", "title-host", "title-update", "title-update-auto", "title-update-progress", "title-update-fail", "solo", "solo-overwrite", "solo-tip", "settings", "solo-protagonist", "settings-job", "settings-lang", "menu-settings-lang", "board-hud-job", "board-hud-walk-job", "board-hud-nocards", "setup-village", "setup-village-picked", "setup-pick", "setup-pick-picked", "setup-pick-long", "game-board",
+            "title", "title-host", "title-update", "title-update-auto", "title-update-progress", "title-update-fail", "solo", "solo-overwrite", "solo-tip", "settings", "solo-protagonist", "settings-job", "settings-lang", "menu-settings-lang", "board-hud-job", "board-hud-walk-job", "board-hud-nocards", "setup-village", "setup-village-picked", "setup-pick", "setup-pick-picked", "setup-pick-long", "game-board",
             "setup-village-glide", "setup-village-drop", "setup-village-landed", "setup-deal", "setup-pick-locked", "setup-card-locked", "setup-starter-open", "setup-starter-shown", "setup-card-reveal", "board-spots-drop", "board-spots-placed",
             "board-hud-myturn", "board-hud", "board-hud-hover", "board-hud-tip", "board-hud-walk", "board-hud-walked", "board-hud-band", "board-hud-cut", "board-hud-round2", "board-hud-tip-end",
             "board-menu", "board-menu-ask", "board-menu-unsaved", "board-menu-ask-unsaved", "board-menu-failed", "board-menu-ask-failed", "board-resumed", "title-continue", "save-list", "save-delete-ask", "save-list-empty",
@@ -3709,7 +3702,7 @@ namespace Sinnoh.Editor
         {
             var stage = new UiStage(Skin, UiShots.Strings()) { Tables = UiShots.Strings };
             stage.Bind(Panel.Root, Grade);
-            Made = new GameFlow(stage, Board != null ? Board.Ctx : null, Board, Rig, () => UiShots.Seed, () => { }, web: false, window: new FixedWindow(new Vector2Int(3840, 2160), new Vector2Int(Width, Height)),
+            Made = new GameFlow(stage, Board != null ? Board.Ctx : null, Board, Rig, () => UiShots.Seed, () => { }, window: new FixedWindow(new Vector2Int(3840, 2160), new Vector2Int(Width, Height)),
                 dice: FxShots.LoadDiceLibrary(), saves: saves, clock: clock);
             return Made;
         }

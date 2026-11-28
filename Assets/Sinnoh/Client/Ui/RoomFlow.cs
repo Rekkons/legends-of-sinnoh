@@ -43,13 +43,8 @@ namespace Sinnoh.Client
         IReadOnlyList<KeyValuePair<string, string>> Addresses { get; }
         /// <summary>[직접 연결] 포트(아니면 0).</summary>
         int Port { get; }
-        /// <summary>[인터넷] 방이 Relay 대신 두 번째 터널로 열렸다 — <see cref="JoinCode"/>는 <c>wss://터널</c>(02 §2-1).</summary>
+        /// <summary>[인터넷] 방이 Relay 대신 터널로 열렸다 — <see cref="JoinCode"/>는 <c>wss://터널</c>(02 §2-1).</summary>
         bool Tunneled { get; }
-        /// <summary>방장 화면의 웹 손님 링크(인터넷 = 터널 페이지 하나 · 직접 연결 = 주소마다). 없으면 빈 목록.</summary>
-        IReadOnlyList<string> WebLinks { get; }
-        /// <summary>웹 링크가 없는 까닭(<see cref="WebFail"/>) · 아직 만드는 중(터널 주소를 기다림).</summary>
-        string WebNotice { get; }
-        bool WebPending { get; }
         void Send(RoomMsg msg);
     }
 
@@ -92,12 +87,10 @@ namespace Sinnoh.Client
         public Func<long> Clock { get; set; }
         /// <summary>손님 접속을 Connect 전에 손본다(시험의 가짜 Relay 참가 — <c>NetClientSession.FakeRelayJoin</c>).</summary>
         public Action<NetClientSession> PrepareGuest { get; set; }
-        /// <summary>웹 손님판 폴더(02 §2-2 — 직접 연결 페이지 서버 · 인터넷 페이지 터널). 기본 = 실행 파일 옆 WebGL/(에디터는 null — <see cref="NetRoom.DefaultWebRoot"/>). 시험은 임시 폴더.</summary>
-        public string WebRoot { get; set; } = NetRoom.DefaultWebRoot();
-        /// <summary>cloudflared.exe(인터넷 방 웹 링크 · Relay 실패 때 두 번째 터널). 기본 = <see cref="NetRoom.DefaultCloudflared"/>(에디터는 null).</summary>
+        /// <summary>cloudflared.exe(인터넷 방의 Relay 실패 때 터널). 기본 = <see cref="NetRoom.DefaultCloudflared"/>(에디터는 null).</summary>
         public string Cloudflared { get; set; } = NetRoom.DefaultCloudflared();
-        /// <summary>[인터넷] 방의 웹 손님 몫을 바꾼다(시험의 가짜 터널 — null = WebRoot · Cloudflared로 만든 것).</summary>
-        public IGuestWeb Web { get; set; }
+        /// <summary>[인터넷] 방의 Relay 실패 때 터널을 바꾼다(시험의 가짜 터널 — null = Cloudflared로 만든 것).</summary>
+        public IGameTunnel Tunnel { get; set; }
 
         // ── 상태 ──
 
@@ -147,7 +140,7 @@ namespace Sinnoh.Client
         public Hello HelloFor(string token, string nick) => new Hello
         {
             BuildId = Application.version, ContentHash = flow.ContentHash ?? "", Token = token, Nickname = nick,
-            Platform = Application.platform == RuntimePlatform.WebGLPlayer ? Platform.Web : Platform.Pc,
+            Platform = Platform.Pc,
             Protagonist = RoomIdentity.Protagonist,
         };
 
@@ -257,22 +250,6 @@ namespace Sinnoh.Client
         }
 
         /// <summary>S06 참가하기(타이틀 「참가하기」): 화면을 열 때 방 목록을 한 번 받는다(빈도 막기 안이면 받지 않는다). 하던 게임·방은 떠난다.</summary>
-        public void OpenJoin(string prefill)
-        {
-            RoomJoinScreen.Prefill(prefill);
-            OpenJoin();
-        }
-
-        /// <summary>웹 손님판이 켜질 때(02 §8): 페이지 주소가 참가 대상을 담고 있으면(<see cref="JoinTarget.FromPage"/>) 참가 칸을 채운 S06을 연다. 열었으면 true.</summary>
-        public bool OpenFromPage(string pageUrl)
-        {
-            var target = JoinTarget.FromPage(pageUrl);
-            if (target == null) return false;
-            OpenJoin(target.Text);
-            return true;
-        }
-
-        /// <summary>S06 참가하기(타이틀 「참가하기」).</summary>
         public void OpenJoin()
         {
             Close();
@@ -298,7 +275,7 @@ namespace Sinnoh.Client
         public bool InTutorial => away != Away.None;
 
         /// <summary>
-        /// 참가 화면 · 로비의 [튜토리얼](웹 손님판은 타이틀에 튜토리얼 줄이 없다 — 여기가 입구, PC판도 같은 단추): 타이틀의 [튜토리얼]과 같은 길(<see cref="TutorialMenu.Open"/> — 기록이 없으면 본편 첫 장, 있으면 목차)로 연다.
+        /// 참가 화면 · 로비의 [튜토리얼]: 타이틀의 [튜토리얼]과 같은 길(<see cref="TutorialMenu.Open"/> — 기록이 없으면 본편 첫 장, 있으면 목차)로 연다.
         /// 참가 화면에서는 방이 없으니 그대로 가고(참가 칸 글은 남는다), 로비에서는 **연결을 유지한다** — 자리는 그대로 · 준비는 푼다(방장이 나 없이 시작하지 못하게). 튜토리얼의 [타이틀로] · 목차 [뒤로]가
         /// 들어온 곳으로 돌아오고(<see cref="BackFromTutorial"/>), 그 사이 방이 닫히거나 내보내지면 참가 화면에 그 이유를 보인다(<see cref="Watch"/>). 열지 못하면 false.
         /// </summary>
@@ -363,11 +340,11 @@ namespace Sinnoh.Client
 
         /// <summary>
         /// S05 [방 만들기]: 고른 값으로 이 PC에서 방을 연다. [직접 연결]은 그 자리에서 열고 로비로, [인터넷]은 Relay 할당이 끝나면 로비로(그동안 S05에 「방을 여는 중」).
-        /// 실패하면 S05에 문구(포트 사용 중 · Unity 서버를 쓸 수 없음 → [직접 연결로]) — 그 자리에서 실패하면 false. 웹 손님판은 방을 열 수 없다(false).
+        /// 실패하면 S05에 문구(포트 사용 중 · Unity 서버를 쓸 수 없음 → [직접 연결로]) — 그 자리에서 실패하면 false.
         /// </summary>
         public bool Host()
         {
-            if (!NetBootstrap.CanHost || flow.Ctx == null || Busy) return false;
+            if (flow.Ctx == null || Busy) return false;
             Close();
             ClearFail();
             var resume = ResumeFrom;
@@ -400,7 +377,7 @@ namespace Sinnoh.Client
             entered = false;
             if (!Create.Internet)
             {
-                if (!room.StartDirect(Port, Listen, WebRoot))
+                if (!room.StartDirect(Port, Listen))
                 {
                     Failed(room.Seat.FailCode ?? NetFail.PortBusy, null, true);
                     return false;
@@ -410,7 +387,7 @@ namespace Sinnoh.Client
             }
             step = Step.Opening;
             // 이어 연 방은 방 목록에 올리지 않는다(돌아올 사람만 — 참가 코드로) [가정 M7-53]
-            var net = room.StartInternet(new ListingOptions { Public = Create.Public && resume == null, HostName = nick, Stamp = RoomListingModel.Stamp(hello) }, Relay, Board, WebRoot, Cloudflared, Port, Web);
+            var net = room.StartInternet(new ListingOptions { Public = Create.Public && resume == null, HostName = nick, Stamp = RoomListingModel.Stamp(hello) }, Relay, Board, Cloudflared, Port, Tunnel);
             flow.ShowRoomScreen(new RoomCreateScreen(flow));
             Opened(net);   // 가짜 Relay는 그 자리에서 끝난다
             return room != null;   // 그 자리에서 실패했으면(Relay 할당 실패) 버렸다
@@ -571,7 +548,7 @@ namespace Sinnoh.Client
             (flow.Stage.Current as RoomJoinScreen)?.TickRefresh();   // [새로 고침]의 남은 초
             KeepAwake.Set(room != null && KeepAwake.Wanted(room.IsHost, room.Seat.Status));   // 방이 열린 동안 PC 절전 막기
             if (room == null) return;
-            // 창이 비활성일 때 내 차례 알림(작업 표시줄 · 웹 탭 제목) — 방 판에서 내 좌석에 새 선택이 열리면 한 번
+            // 창이 비활성일 때 내 차례 알림(작업 표시줄) — 방 판에서 내 좌석에 새 선택이 열리면 한 번
             if (entered && flow.InRoomGame && AttentionFlash.Changed(flow.Client?.FirstChoice()?.Id ?? -1) && flow.SoundPrefs.Alert) AttentionFlash.Now();   // 설정에서 끌 수 있다(결정 112 Q17)
             if (step == Step.Opening)
             {

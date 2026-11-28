@@ -71,11 +71,10 @@ namespace Sinnoh.Data
     /// <summary>
     /// [인터넷] 방 열기의 방장 쪽 흐름(02 §2-1 · §2-2 · §3-1, isekai Net/Online/InternetRoom을 고쳐 옮김 — 엔진 무관이라 Data):
     /// Relay 할당(<see cref="IRelayHost"/>, maxConnections = 자리 수 − 1) → 방 열기(startHost — NGO StartHost) → 참가 코드 → 공개 방이면 방 목록에 올림(<see cref="ListingPublisher"/>).
-    /// 웹 손님 몫(<see cref="IGuestWeb"/>, 없으면 웹 링크 없음): 열 때 페이지 서버 + 페이지 터널 → 받으면 <see cref="GuestLink"/>(<c>https://…/?code=</c>). 페이지를 못 내면 <see cref="Notice"/>(NET_NO_WEBGL · NET_NO_CLOUDFLARED · NET_TUNNEL) — 방은 그대로 연다.
-    /// Relay가 실패하면: 터널 도구가 있으면 게임을 루프백에 열고 두 번째 터널(wss — <see cref="Route"/> = Tunnel, PC판 손님 = <c>wss://터널</c>, 웹 = <c>?join=</c>),
+    /// Relay가 실패하면: 터널 도구(<see cref="IGameTunnel"/>)가 있으면 게임을 루프백에 열고 그 앞에 터널(wss — <see cref="Route"/> = Tunnel, PC판 손님 = <c>wss://터널</c>),
     /// 없거나 그 터널도 실패하면 Failed + FailCode(Relay 실패 코드) — <see cref="SuggestDirect"/>로 [직접 연결] 안내(결정 92).
     /// 목록 실패는 방을 실패시키지 않는다(<see cref="ListFail"/>, 코드는 그대로 된다). <see cref="Tick"/>이 터널 상태를 옮기고, 방 상태를 1초에 한 번 읽어 목록을 갱신하고, 방이 닫히면 목록에서 지운다.
-    /// 방(NetHostSession)은 만든 쪽이 닫는다 — <see cref="Dispose"/>는 목록 · 터널 · 페이지 서버만 끝낸다.
+    /// 방(NetHostSession)은 만든 쪽이 닫는다 — <see cref="Dispose"/>는 목록 · 터널만 끝낸다.
     /// </summary>
     public sealed class InternetRoom : IDisposable
     {
@@ -87,9 +86,9 @@ namespace Sinnoh.Data
         readonly Func<RoomState> room;
         readonly ListingOptions listing;
         readonly ILobbyBoard board;
-        readonly IGuestWeb web;
+        readonly IGameTunnel tunnel;
         readonly int seats;
-        ITunnel page, game;
+        ITunnel game;
         long? lastRead;
         bool opened;
 
@@ -97,15 +96,15 @@ namespace Sinnoh.Data
         /// <param name="room">지금 방 상태(HostSession.Room). 목록 갱신에만 쓴다.</param>
         /// <param name="listing">null이거나 Public = false면 비공개(목록에 없음, 코드로만).</param>
         /// <param name="seats">Relay를 할당할 자리 수 — 로비에서 자리 수를 늘릴 수 있어 방의 최대(6)를 준다 [가정 M7-35].</param>
-        /// <param name="web">웹 손님 페이지 · 터널(null = 웹 링크 없음 · Relay 실패면 바로 Failed).</param>
-        public InternetRoom(IRelayHost relay, Func<string> startHost, Func<RoomState> room, ListingOptions listing, ILobbyBoard board, int seats = SeatId.MaxSeats, IGuestWeb web = null)
+        /// <param name="tunnel">Relay 실패 때의 게임 터널(null = 없음 · Relay 실패면 바로 Failed).</param>
+        public InternetRoom(IRelayHost relay, Func<string> startHost, Func<RoomState> room, ListingOptions listing, ILobbyBoard board, int seats = SeatId.MaxSeats, IGameTunnel tunnel = null)
         {
             this.relay = relay ?? throw new ArgumentNullException(nameof(relay));
             this.startHost = startHost ?? throw new ArgumentNullException(nameof(startHost));
             this.room = room ?? throw new ArgumentNullException(nameof(room));
             this.listing = listing;
             this.board = board;
-            this.web = web;
+            this.tunnel = tunnel;
             if (seats < RoomSettings.MinSeats || seats > SeatId.MaxSeats) throw new ArgumentOutOfRangeException(nameof(seats));
             this.seats = seats;
             if (Public && board == null) throw new ArgumentNullException(nameof(board), "공개 방은 목록 서비스가 있어야 한다");
@@ -122,12 +121,6 @@ namespace Sinnoh.Data
         public string FailCode { get; private set; }
         /// <summary>Relay가 실패해 터널로 바꿨으면 그 이유(아니면 null).</summary>
         public string RelayFailCode { get; private set; }
-        /// <summary>웹 손님 페이지 <c>https://….trycloudflare.com</c>(받은 뒤).</summary>
-        public string PageUrl { get; private set; }
-        /// <summary>웹 손님에게 줄 링크(페이지 + code/join). 없으면 null.</summary>
-        public string GuestLink { get; private set; }
-        /// <summary>웹 링크가 없는 까닭(실패는 아님 — <see cref="WebFail"/>). 없으면 null.</summary>
-        public string Notice { get; private set; }
         public bool Public => listing != null && listing.Public;
         /// <summary>공개 방의 목록(비공개 · 터널 방이면 null).</summary>
         public ListingPublisher Listing { get; private set; }
@@ -137,26 +130,16 @@ namespace Sinnoh.Data
         public bool SuggestDirect => State == Phase.Failed && OnlineFail.SuggestDirect(FailCode);
         public event Action Changed;
 
-        /// <summary>(웹 몫이 있으면 페이지 서버 · 터널) → Relay 할당 → 방 열기 → 코드 → (공개면) 목록. 결과는 State·Changed.</summary>
+        /// <summary>Relay 할당 → 방 열기 → 코드 → (공개면) 목록. 결과는 State·Changed.</summary>
         public void Open()
         {
             if (opened) throw new InvalidOperationException("이미 열었다");
             opened = true;
-            StartPage();
             relay.Allocate(MaxConnections(seats), Allocated, RelayFailed);
         }
 
         /// <summary>Relay maxConnections = 자리 수 − 1(방장은 할당 주인이라 세지 않는다, 02 §2-1).</summary>
         public static int MaxConnections(int seats) => Math.Max(1, Math.Min(SeatId.MaxSeats, seats) - 1);
-
-        void StartPage()
-        {
-            if (web == null) return;
-            Notice = web.PageMissing;
-            if (Notice != null) return;
-            page = web.OpenPage();
-            if (page.State == TunnelState.Failed) Notice = WebFail.Tunnel;
-        }
 
         void Allocated(string code)
         {
@@ -171,19 +154,19 @@ namespace Sinnoh.Data
                 Listing = new ListingPublisher(board);
                 Listing.Publish(RoomListingModel.Build(listing, room(), JoinCode));
             }
-            Refresh();
+            Changed?.Invoke();
         }
 
-        // Relay 실패: 터널 도구가 있으면 게임을 루프백에 열고 두 번째 터널(02 §2-1) — 받으면 Ready. 없으면 Failed(결정 92 — [직접 연결] 안내)
+        // Relay 실패: 터널 도구가 있으면 게임을 루프백에 열고 그 앞에 터널(02 §2-1) — 받으면 Ready. 없으면 Failed(결정 92 — [직접 연결] 안내)
         void RelayFailed(string code)
         {
             if (State != Phase.Starting) return;
             RelayFailCode = code ?? OnlineFail.RelayAuth;
-            if (web == null || !web.CanTunnel) { Fail(RelayFailCode); return; }
-            var fail = web.StartGameLoopback();
+            if (tunnel == null || !tunnel.CanTunnel) { Fail(RelayFailCode); return; }
+            var fail = tunnel.StartGameLoopback();
             if (fail != null) { Fail(fail); return; }
             Route = GameRoute.Tunnel;
-            game = web.OpenGame();
+            game = tunnel.OpenGame();
             if (game.State == TunnelState.Failed) Fail(RelayFailCode);
             else Changed?.Invoke();
         }
@@ -194,17 +177,7 @@ namespace Sinnoh.Data
             FailCode = code;
             State = Phase.Failed;
             Stop();
-            JoinCode = GameHost = PageUrl = GuestLink = null;
-            Changed?.Invoke();
-        }
-
-        // 받은 주소로 웹 링크를 다시 만든다
-        void Refresh()
-        {
-            GuestLink = PageUrl == null ? null
-                : Route == GameRoute.Relay && JoinCode != null ? OnlineLinks.CodeLink(PageUrl, JoinCode)
-                : Route == GameRoute.Tunnel && GameHost != null ? OnlineLinks.JoinLink(PageUrl, GameHost)
-                : null;
+            JoinCode = GameHost = null;
             Changed?.Invoke();
         }
 
@@ -212,17 +185,6 @@ namespace Sinnoh.Data
         public void Tick(long nowMs)
         {
             if (State == Phase.Failed || State == Phase.Closed) return;
-            if (page != null)
-            {
-                var before = page.State;
-                page.Tick(nowMs);
-                if (page.State != before)
-                {
-                    if (page.State == TunnelState.Ready) PageUrl = page.Url;
-                    else { PageUrl = null; Notice = WebFail.Tunnel; }
-                    Refresh();
-                }
-            }
             if (game != null)
             {
                 var before = game.State;
@@ -231,12 +193,12 @@ namespace Sinnoh.Data
                 {
                     if (game.State == TunnelState.Ready)
                     {
-                        GameHost = OnlineLinks.HostOf(game.Url);
+                        GameHost = Uri.TryCreate(game.Url, UriKind.Absolute, out var uri) ? uri.Host : null;
                         State = Phase.Ready;
                     }
                     else if (State == Phase.Starting) { Fail(RelayFailCode); return; }
                     else GameHost = null;   // 연 뒤 게임 터널이 끊김: 손님이 닿을 길이 없다(방은 방장이 닫는다) [가정 M7-60]
-                    Refresh();
+                    Changed?.Invoke();
                 }
             }
             if (State != Phase.Ready || Listing == null) return;
@@ -259,20 +221,19 @@ namespace Sinnoh.Data
 
         void Stop()
         {
-            page?.Dispose();
             game?.Dispose();
-            web?.Dispose();
-            page = game = null;
+            tunnel?.Dispose();
+            game = null;
         }
 
-        /// <summary>목록에서 지우고 터널 · 페이지 서버를 끝낸다(방 닫기 · 앱 종료). 방은 닫지 않는다.</summary>
+        /// <summary>목록에서 지우고 터널을 끝낸다(방 닫기 · 앱 종료). 방은 닫지 않는다.</summary>
         public void Dispose()
         {
             if (State == Phase.Closed) return;
             State = Phase.Closed;
             Listing?.Close();
             Stop();
-            JoinCode = GameHost = PageUrl = GuestLink = null;
+            JoinCode = GameHost = null;
             Changed?.Invoke();
         }
     }

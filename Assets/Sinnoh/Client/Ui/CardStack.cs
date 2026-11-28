@@ -133,7 +133,7 @@ namespace Sinnoh.Client
     /// 카드 위에 지닌물건 · 우두머리 토큰(그림 판 왼쪽 아래 동그라미, 둘째는 반 겹침) · 상태 주사위 · ♥ · ≫ 상자 덧칠(지금/최대 + ±증감 꼬리표 — 원작 상자 · 숫자 글꼴 그림) ·
     /// 응징 주사위 · 기절(회색 + 배지)을 얹는다. 크기는 부모가 준 폭(<c>width</c> = 카드 16 cm)으로 — 모든 자리는 cm × 폭/16.
     /// 겹침(목업 9 · 10차): 위 블럭(카드 · 앞 띠)의 아래 끝 = 뒤 띠 뒷면의 18.75 cm(끼우는 홈 바로 위), 숨는 몫 <see cref="HideCm"/>, 위 블럭마다 실루엣을 따라가는 짙은 테 + 그림자(USS 색 · 코드 크기).
-    /// 카드 그림이 없으면(웹 손님판 — 카드 번들을 싣지 않는다 · 짝 없는 카드) 지금 도트 카드(<see cref="MonTip"/> 짜임)로 대신한다(<see cref="Art"/> 거짓).
+    /// 카드 그림이 없으면(짝 없는 카드) 지금 도트 카드(<see cref="MonTip"/> 짜임)로 대신한다(<see cref="Art"/> 거짓).
     /// 마우스를 받지 않는다 — 쓰는 화면이 <see cref="HookTips"/>(기술 · 균열 · 전술 · 지닌물건 · 상태 효과 글)를 부른다.
     /// 요소 이름: <c>card-stack</c> · <c>card-face</c> · <c>card-strip-n</c> · <c>card-item-n</c> · <c>card-status-n</c> · <c>card-hp</c>(·<c>-tag</c>) · <c>card-speed</c>(·<c>-tag</c>) · <c>card-retribution</c> · <c>card-fainted</c> · <c>card-emblem</c> ·
     /// <c>card-alpha-type-n</c> — 숫자 칸의 <c>userData</c>는 그린 글(「10/12」 · 「+4」).
@@ -181,17 +181,11 @@ namespace Sinnoh.Client
         /// <summary>그 카드를 원작 카드 그림으로 그릴 수 있나(앞면 · 띠 · 숫자 글자가 모두 있다 — 거짓이면 <see cref="Build"/>가 도트 카드로 대신한다).</summary>
         public static bool CanDraw(UiStage stage, Ctx ctx, CardMon mon) => Textures(ctx, mon, stage.Lang == "en" ? "en" : "ko", out _, out _, out _);
 
-        /// <summary>확인용: 참이면 카드 그림이 없는 길(웹 손님판 — 카드 번들을 싣지 않는다)을 에디터 · PC에서 지난다(<see cref="CanDraw"/> 거짓 · 도트 카드). 시험이 켜고 끈다.</summary>
-        public static bool NoArt;
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetNoArt() => NoArt = false;
-
         static bool Textures(Ctx ctx, CardMon mon, string lang, out string faceKey, out Texture2D face, out List<Texture2D> strips)
         {
             faceKey = GenAssets.CardFaces + lang + "/" + ctx.Cards.Pokemon[mon.Def].Key.Replace(':', '_') + ".png";
             strips = new List<Texture2D>();
-            face = NoArt ? null : GenAssets.Load<Texture2D>(faceKey);
+            face = GenAssets.Load<Texture2D>(faceKey);
             if (face == null || GenAssets.Load<Texture2D>(Digit("num", '0')) == null) return false;
             foreach (var slot in mon.Slots)
             {
@@ -727,7 +721,7 @@ namespace Sinnoh.Client
             var tip = new MonTip(stage, ctx);
             var card = mon.Pk != null ? tip.Dot(mon.Pk, mon.Hp, mon.Speed) : tip.DotWild(mon.Def);
             // 좁은 자리(배틀 기둥 · 엔트리 판 — 카드 폭 ≈ 기둥 반)의 도트 카드: 도트 위 · 값 아래로 세우고 기술 글은 뺀다(글은 카드 글 판이 맡는다) —
-            // 체력 · 지닌물건 칸이 카드 밖으로 나가 옆 카드 밑에 깔리지 않게(웹 손님판 — 검토 지적 21)
+            // 체력 · 지닌물건 칸이 카드 밖으로 나가 옆 카드 밑에 깔리지 않게(검토 지적 21)
             if (slim) card.AddToClassList("sn-card-dotslim");
             card.style.width = Mathf.Round(width);
             Root.style.width = Mathf.Round(width);

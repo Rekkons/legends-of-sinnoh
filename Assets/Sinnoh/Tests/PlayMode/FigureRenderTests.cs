@@ -181,47 +181,6 @@ namespace Sinnoh.Tests.PlayMode
             yield return null;
         }
 
-        // M8 · M9 마감 감사 2차 참고 ③: 웹 손님판은 시작 직후(나눠 받기 전) 「[BoardFigures] Gen 없음(793_0)」 경고를 남겼다 — 피규어 번들은 뒤에서 오고 다 오면 BoardBoot가 다시 세운다.
-        // 받는 중이면 경고하지 않고(다시 세울 표시는 남긴다), 받은 뒤에도 없을 때만 경고한다(나눠 받기는 GenAssets.Withheld로 흉내)
-        [UnityTest]
-        public IEnumerator M10_감사메모_나눠받기전의피규어는경고하지않고_받은뒤에도없으면경고한다()
-        {
-            var figs = boot.Figures;
-            if (figs.GenMissing) Assert.Ignore("Gen 없음: rebuild-all 먼저 — 피규어 확인 건너뜀(03 §7)");
-            var warns = new List<string>();
-            void Grab(string msg, string stack, LogType type)
-            {
-                if (type == LogType.Warning && msg.StartsWith("[BoardFigures]")) warns.Add(msg);
-            }
-            bool? held = true;
-            Application.logMessageReceived += Grab;
-            GenAssets.Withheld = key => key.StartsWith("Figures/") && key.EndsWith(".prefab") ? held : null;
-            try
-            {
-                figs.Build(boot.Board, boot.Looks, boot.Fixtures, boot.Cards);
-                Assert.That(figs.GenMissing, Is.True, "받는 중인 피규어는 아직 세우지 않는다 — 받으면 다시 세울 표시");
-                Assert.That(figs.Figures, Is.Empty);
-                Assert.That(warns, Is.Empty, "나눠 받기 전에는 경고하지 않는다");
-
-                held = false;   // 다 받았는데 그 프리팹이 없다 = 진짜 없음
-                figs.Build(boot.Board, boot.Looks, boot.Fixtures, boot.Cards);
-                Assert.That(warns.Count, Is.EqualTo(1), "받은 뒤에도 없으면 경고 한 번: " + string.Join(" | ", warns));
-                StringAssert.Contains("Gen 없음(Figures/", warns[0]);
-
-                GenAssets.Withheld = null;
-                figs.Build(boot.Board, boot.Looks, boot.Fixtures, boot.Cards);
-                Assert.That(figs.GenMissing, Is.False, "다 오면 그대로 선다");
-                Assert.That(figs.Figures.Count, Is.EqualTo(33));
-                Assert.That(warns.Count, Is.EqualTo(1));
-            }
-            finally
-            {
-                GenAssets.Withheld = null;
-                Application.logMessageReceived -= Grab;
-            }
-            yield return null;
-        }
-
         static string AssetNameOf(Texture t) => t == null ? null : "Board/Icons/" + t.name + ".png";
     }
 }

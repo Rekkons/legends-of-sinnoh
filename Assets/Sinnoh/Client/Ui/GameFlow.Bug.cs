@@ -12,7 +12,7 @@ namespace Sinnoh.Client
     public sealed partial class GameFlow
     {
         /// <summary>
-        /// 버그 신고를 보낼 수 있나 — 올리는 창구가 있는 PC 플레이어만(<see cref="Uploads"/>). 웹 손님판 · 에디터는 창구가 없어 [버그 신고]가 「PC판에서만」으로 잠긴다.
+        /// 버그 신고를 보낼 수 있나 — 올리는 창구가 있는 PC 플레이어만(<see cref="Uploads"/>). 에디터는 창구가 없어 [버그 신고]가 「PC판에서만」으로 잠긴다.
         /// 플레이 기록 설정이 꺼져 있어도 보낸다(사람이 직접 누른 것 [가정 plan §5 #680]).
         /// </summary>
         public bool BugReady => Uploads != null;
@@ -85,7 +85,7 @@ namespace Sinnoh.Client
         /// <summary>타이틀 설정의 [버그 신고]: 설정 자리에 신고 창을 연다([취소] · [닫기] · Esc = 설정으로). 창구가 없으면 아무 일도 없다.</summary>
         public void OpenTitleBug()
         {
-            if (!BugReady || !(Stage.Current is SettingsScreen set) || set.InGame) return;   // 창구가 없으면(웹 · 에디터) 열지 않는다
+            if (!BugReady || !(Stage.Current is SettingsScreen set) || set.InGame) return;   // 창구가 없으면(에디터) 열지 않는다
             Stage.Open(new BugReportScreen(this, OpenSettings));
             Restage();
         }

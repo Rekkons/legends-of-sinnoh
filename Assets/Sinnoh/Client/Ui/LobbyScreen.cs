@@ -11,7 +11,7 @@ namespace Sinnoh.Client
 {
     /// <summary>
     /// S07 로비 + S08 방 설정(02 §3-1·§3-2, 04 §1 · §10-5, 목업 r4/lobby — 결정 95): 왼쪽에 초대 칸(방장 — [인터넷] 참가 코드 · 목록에 올림 / [직접 연결] 내 주소·포트,
-    /// 손님 — 「○○의 방」) · 자리 6줄(번호 · 닉네임 · 방장 · 나 · PC판/웹 · 준비 완료/준비 중 · 방장의 [내보내기] · 빈 자리 · 닫힌 자리) · 안내 한 줄 ·
+    /// 손님 — 「○○의 방」) · 자리 6줄(번호 · 닉네임 · 방장 · 나 · 준비 완료/준비 중 · 방장의 [내보내기] · 빈 자리 · 닫힌 자리) · 안내 한 줄 ·
     /// 단추(방장 [게임 시작](2명 이상이 모두 준비하면 켜짐) [방 닫기] / 손님 [준비 완료]·[준비 취소] [나가기]). 오른쪽에 방 설정 판(<see cref="RoomSettingsPanel"/> — 방장 편집 / 손님 읽기).
     /// 방 상태는 <see cref="ILobbySource"/>에서만 읽고 바뀌면(<see cref="Sync"/> — RoomFlow.Tick이 매 프레임) 다시 세운다.
     /// 좌석의 주인공(M9 다듬기 P06 — 결정 112 Q4): 자리 줄마다 그 좌석 주인공의 필드 도트(<c>lobby-seat-&lt;n&gt;-proto</c>), 자리 판 아래 「내 주인공」 여덟 칸(<c>lobby-proto</c> · <c>lobby-proto-&lt;키&gt;</c> —
@@ -33,9 +33,6 @@ namespace Sinnoh.Client
         string shownCode;
         bool shownListed;
         string shownListFail;
-        IReadOnlyList<string> shownWeb;
-        string shownNotice;
-        bool shownPending;
 
         public LobbyScreen(GameFlow flow, ILobbySource source)
         {
@@ -80,8 +77,7 @@ namespace Sinnoh.Client
         {
             if (stage == null) return;
             chat?.Tick();
-            if (ReferenceEquals(shown, source.Room) && shownCode == source.JoinCode && shownListed == source.Listed && shownListFail == source.ListFail
-                && ReferenceEquals(shownWeb, source.WebLinks) && shownNotice == source.WebNotice && shownPending == source.WebPending) return;
+            if (ReferenceEquals(shown, source.Room) && shownCode == source.JoinCode && shownListed == source.Listed && shownListFail == source.ListFail) return;
             Rebuild();
         }
 
@@ -94,9 +90,6 @@ namespace Sinnoh.Client
             shownCode = source.JoinCode;
             shownListed = source.Listed;
             shownListFail = source.ListFail;
-            shownWeb = source.WebLinks;
-            shownNotice = source.WebNotice;
-            shownPending = source.WebPending;
             copies.Clear();
             left.Clear();
             RoomUi.Add(left, Kit.Text(stage.T(Waiting ? "screen.room.wait.title" : "screen.room.lobby.title"), Kit.FTitle), "lobby-head", "sn-head");
@@ -129,7 +122,7 @@ namespace Sinnoh.Client
 
         // ── 이어하기 대기실(S10 [가정 M7-52]) ──
 
-        // 저장된 좌석 줄: 번호 · 닉네임 · 방장 · 나 · PC판/웹 · 돌아옴/기다리는 중/내보냄
+        // 저장된 좌석 줄: 번호 · 닉네임 · 방장 · 나 · 돌아옴/기다리는 중/내보냄
         void WaitSeats()
         {
             var box = RoomUi.Add(left, Kit.Panel(stage.Skin), "lobby-seats", null);
@@ -148,7 +141,6 @@ namespace Sinnoh.Client
                 var badges = RoomUi.Add(row, new VisualElement(), null, "sn-lobby-badges");
                 if (seat.Host) RoomUi.Add(badges, Kit.Badge(stage.T("screen.room.lobby.host"), KitBadgeKind.Gold), "lobby-seat-" + i + "-host", null);
                 if (me) RoomUi.Add(badges, Kit.Badge(stage.T("screen.room.lobby.me"), KitBadgeKind.Silver), "lobby-seat-" + i + "-me", null);
-                badges.Add(Kit.Badge(stage.T(seat.Platform == Platform.Web ? "screen.room.lobby.web" : "screen.room.lobby.pc"), KitBadgeKind.Plain));
                 string state = seat.Kicked ? "screen.room.wait.kicked" : seat.Connected ? "screen.room.wait.back" : "screen.room.wait.waiting";
                 RoomUi.Add(row, Kit.Badge(stage.T(state), seat.Connected && !seat.Kicked ? KitBadgeKind.Ok : KitBadgeKind.Plain), "lobby-seat-" + i + "-state", null);
             }
@@ -165,12 +157,10 @@ namespace Sinnoh.Client
             {
                 var c = shown.Claims[i];
                 int seat = ClaimSeat(c);
-                // 두 줄: 닉네임 + PC판/웹 / [n번 자리에 앉히기] [들이지 않기]
+                // 두 줄: 닉네임 / [n번 자리에 앉히기] [들이지 않기]
                 var item = RoomUi.Add(box, new VisualElement(), "room-wait-claim-" + i, null);
                 var row = RoomUi.Add(item, new VisualElement(), null, "sn-lobby-seat");
                 RoomUi.Add(row, Kit.Text(c.Nickname ?? "", Kit.F2), "room-wait-claim-" + i + "-name", "sn-lobby-name");
-                var badges = RoomUi.Add(row, new VisualElement(), null, "sn-lobby-badges");
-                badges.Add(Kit.Badge(stage.T(c.Platform == Platform.Web ? "screen.room.lobby.web" : "screen.room.lobby.pc"), KitBadgeKind.Plain));
                 var buttons = RoomUi.Add(item, new VisualElement(), null, "sn-foot-row");
                 int id = c.Id;
                 if (seat >= 0)
@@ -238,7 +228,7 @@ namespace Sinnoh.Client
             }
             if (source.JoinCode != null)
             {
-                // 참가 코드(Relay) 또는 두 번째 터널의 wss 주소(Relay 실패 — 02 §2-1)
+                // 참가 코드(Relay) 또는 터널의 wss 주소(Relay 실패 — 02 §2-1)
                 string key = source.Tunneled ? "screen.room.lobby.tunnel" : "screen.room.lobby.code";
                 var label = RoomUi.Add(box, Kit.Text(stage.T(key), Kit.F2), "lobby-code-label", null);
                 stage.Tips.Hook(label, stage.T(key), stage.T(key + ".tip"), TipSide.Below, reading: true);
@@ -251,7 +241,6 @@ namespace Sinnoh.Client
                 }
                 else if (source.ListFail != null) RoomUi.Fail(box, stage, "lobby-list-fail", source.ListFail, null, 0);
                 else RoomUi.Add(row, Kit.Badge(stage.T(source.Listed ? "screen.room.lobby.listed" : "screen.room.lobby.unlisted"), source.Listed ? KitBadgeKind.Ok : KitBadgeKind.Plain), "lobby-listed", null);
-                WebLink(box);
                 return;
             }
             var head = RoomUi.Add(box, Kit.Text(stage.T("screen.room.lobby.direct"), Kit.F2), "lobby-direct-label", null);
@@ -262,27 +251,6 @@ namespace Sinnoh.Client
             for (int i = 0; i < list.Count && i < 3; i++)
                 RoomUi.Add(box, Kit.Text(list[i].Key + ":" + port + " · " + list[i].Value, Kit.F2), "lobby-address-" + i, null);
             RoomUi.Add(box, Kit.Text(stage.T("screen.room.lobby.port").Replace("{p}", port), Kit.F1), "lobby-port", "kit-muted");
-            if (source.Port > 0) WebLink(box);
-        }
-
-        // 웹 손님 링크(02 §2-2): 첫 링크 + [복사](주소가 여럿이면 나머지는 마우스 오버) · 만드는 중 · 없는 까닭(짧은 줄 + 마우스 오버)
-        void WebLink(VisualElement box)
-        {
-            var links = source.WebLinks;
-            if (links.Count == 0 && source.WebNotice == null && !source.WebPending) return;
-            var head = RoomUi.Add(box, Kit.Text(stage.T("screen.room.lobby.weblink"), Kit.F2), "lobby-web-label", "kit-mt2");
-            string tip = stage.T("screen.room.lobby.weblink.tip");
-            if (links.Count > 1) tip += "\n" + string.Join("\n", links);
-            stage.Tips.Hook(head, stage.T("screen.room.lobby.weblink"), tip, TipSide.Below, reading: true);
-            if (links.Count > 0)
-            {
-                var row = RoomUi.Add(box, new VisualElement(), "lobby-web-row", "sn-lobby-code-row");
-                var link = RoomUi.Add(row, Kit.Text(ShortLink(links[0]), Kit.F1), "lobby-web-link", "sn-lobby-link");
-                stage.Tips.Hook(link, null, links[0], TipSide.Below, reading: true);
-                Copy(row, "lobby-web-copy", links[0]);
-            }
-            else if (source.WebPending) RoomUi.Add(box, Kit.Text(stage.T("screen.room.lobby.weblink.wait"), Kit.F1), "lobby-web-wait", "kit-muted");
-            else RoomUi.Fail(box, stage, "lobby-web-fail", source.WebNotice, null, 0);
         }
 
         /// <summary>링크 · 주소의 화면 글: 주소의 호스트[:포트]만(긴 링크는 칸을 넘는다 — 전체는 [복사]와 마우스 오버). <see cref="ShortMax"/>자를 넘으면 뒤를 「…」로.</summary>
@@ -300,7 +268,7 @@ namespace Sinnoh.Client
         /// <summary>링크 화면 글의 최대 글자 수(720 초대 칸 한 줄 [가정 M7-66]).</summary>
         public const int ShortMax = 44;
 
-        // [복사]: 클립보드에 넣고 단추 글을 「복사함」으로(방장은 PC판 — 웹에는 이 칸이 없다, 02 §8)
+        // [복사]: 클립보드에 넣고 단추 글을 「복사함」으로
         void Copy(VisualElement row, string name, string text)
         {
             Button b = null;
@@ -316,7 +284,7 @@ namespace Sinnoh.Client
 
         readonly Dictionary<string, Action> copies = new Dictionary<string, Action>();
 
-        /// <summary>그 [복사] 단추(<c>lobby-web-copy</c> · <c>lobby-code-copy</c>)를 누른다. 없으면 false.</summary>
+        /// <summary>그 [복사] 단추(<c>lobby-code-copy</c>)를 누른다. 없으면 false.</summary>
         public bool PressCopy(string name)
         {
             if (!copies.TryGetValue(name, out var press)) return false;
@@ -366,7 +334,6 @@ namespace Sinnoh.Client
                 var badges = RoomUi.Add(row, new VisualElement(), null, "sn-lobby-badges");
                 if (seat.Host) RoomUi.Add(badges, Kit.Badge(stage.T("screen.room.lobby.host"), KitBadgeKind.Gold), "lobby-seat-" + i + "-host", null);
                 if (me) RoomUi.Add(badges, Kit.Badge(stage.T("screen.room.lobby.me"), KitBadgeKind.Silver), "lobby-seat-" + i + "-me", null);
-                badges.Add(Kit.Badge(stage.T(seat.Platform == Platform.Web ? "screen.room.lobby.web" : "screen.room.lobby.pc"), KitBadgeKind.Plain));
                 // 방장은 준비가 없다(02 §3-1)
                 if (!seat.Host)
                     RoomUi.Add(row, Kit.Badge(stage.T(seat.Ready ? "screen.room.lobby.ready" : "screen.room.lobby.waiting"), seat.Ready ? KitBadgeKind.Ok : KitBadgeKind.Plain), "lobby-seat-" + i + "-state", null);

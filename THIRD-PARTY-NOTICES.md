@@ -15,7 +15,7 @@ Each full text is reproduced unchanged from the source file named in its section
 | 5 | Json.NET (Newtonsoft.Json) — Unity package 3.2.2 | James Newton-King and others | MIT | Player code |
 | 6 | PokeAPI data (official Korean move names) | Paul Hallett · PokéAPI contributors | BSD 3-Clause | Korean string table |
 | 7 | PokeAPI/sprites · PokeAPI/cries | Repositories: CC0 1.0 · contents: The Pokémon Company | CC0 1.0 (repositories) | Some Pokémon sprites · cries |
-| 8 | Unity engine 6000.6.3f1 · Unity packages | Unity Technologies | Unity Terms of Service · Unity Companion License | Player (Win64 · WebGL) |
+| 8 | Unity engine 6000.6.3f1 · Unity packages | Unity Technologies | Unity Terms of Service · Unity Companion License | Player (Win64) |
 | 9 | Unity Gaming Services packages (Multiplayer Services and others) | Unity Technologies | Unity Terms of Service | Player code (online rooms) |
 | 10 | Pretendard SemiBold font v1.3.9 | Kil Hyung-jin (orioncactus) | SIL Open Font License 1.1 | Korean text in the Pokémon card images (font file not included) |
 | 11 | Barlow Regular font 1.408 | The Barlow Project Authors (Jeremy Tribby) | SIL Open Font License 1.1 | English text in the Pokémon card images (font file not included) |
@@ -210,7 +210,7 @@ The engine and tooling code is MIT licensed, see LICENSE.
 
 ## 4. cloudflared — Apache License 2.0
 
-Source: https://github.com/cloudflare/cloudflared. The official executable is placed, unmodified, next to the game executable (a temporary tunnel for web guest links). Full text: `LICENSE` in that repository. Notices for the Go libraries bundled with cloudflared are in that repository.
+Source: https://github.com/cloudflare/cloudflared. The official executable is placed, unmodified, next to the game executable (a temporary tunnel used when an internet room cannot use Unity Relay). Full text: `LICENSE` in that repository. Notices for the Go libraries bundled with cloudflared are in that repository.
 
 Copyright Cloudflare, Inc.
 

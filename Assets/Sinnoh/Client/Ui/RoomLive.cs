@@ -112,9 +112,6 @@ namespace Sinnoh.Client
         public IReadOnlyList<KeyValuePair<string, string>> Addresses { get; set; } = new KeyValuePair<string, string>[0];
         public int Port { get; set; }
         public bool Tunneled { get; set; }
-        public IReadOnlyList<string> WebLinks { get; set; } = new string[0];
-        public string WebNotice { get; set; }
-        public bool WebPending { get; set; }
 
         /// <summary>보낸 방 메시지(가짜만 적는다 — 시험·캡처가 본다).</summary>
         public readonly List<RoomMsg> Sent = new List<RoomMsg>();
@@ -511,24 +508,6 @@ namespace Sinnoh.Client
             var internet = net.Internet;
             JoinCode = internet != null ? internet.JoinText : null;
             Tunneled = internet != null && internet.Route == InternetRoom.GameRoute.Tunnel;
-            if (internet != null)
-            {
-                WebNotice = internet.Notice;
-                WebPending = internet.GuestLink == null && internet.Notice == null;
-                if (internet.GuestLink == null) { if (WebLinks.Count > 0) WebLinks = new string[0]; }
-                else if (WebLinks.Count != 1 || WebLinks[0] != internet.GuestLink) WebLinks = new[] { internet.GuestLink };
-            }
-            else if (net.IsHost && net.Port > 0)
-            {
-                WebNotice = net.WebNotice;
-                WebPending = false;
-                if (net.WebPort > 0 && WebLinks.Count == 0)
-                {
-                    var links = new List<string>();
-                    foreach (var a in Addresses) links.Add(OnlineLinks.DirectPage(a.Key, net.WebPort, net.Port));
-                    WebLinks = links;
-                }
-            }
             Listed = net.Internet != null && net.Internet.Listing != null && net.Internet.Listing.Published;
             ListFail = net.Internet != null ? net.Internet.ListFail : null;
             Port = net.Port;

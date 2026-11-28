@@ -10,7 +10,7 @@ namespace Sinnoh.Client
     /// 방 채팅 창(결정 140 ② — 로비 S07 · 방 판): 로비는 오른쪽 설정 판 오른쪽에 펼친 판(<see cref="LobbyScreen"/>), 방 판은 덮개 층의 접는 작은 창(<see cref="RoomLayer"/> — 왼쪽 아래, 자원 줄 위).
     /// 몸: 머리(「채팅」 + 방 판의 [접기]) · 기록(높이 고정 ScrollView — 휠 · 막대, 끝에 있으면 새 줄을 따라간다) · 글 칸(<see cref="Rekkon.UiKit"/> 밖 엔진 TextField, 200자) + [보내기].
     /// 줄 = 보낸 사람이 바뀔 때만 머리(작은 얼굴 상자 — 좌석 색 테두리 · 주인공 얼굴 + 이름) + 글. 이름 · 글은 받을 때 적어 둔 것(<see cref="RoomChatLine"/>), 서식 태그는 글자 그대로 보인다.
-    /// 글 칸: 포커스 = <see cref="GameFlow.Typing"/>(카메라 · 단축키가 글쇠를 받지 않는다) · 웹 손님판은 HTML 입력을 겹친다(<see cref="WebTextInput.Attach"/>) · Enter = 보내기(다음 프레임 — 한글 조합이 칸에 들어간 뒤) · Esc = 포커스를 놓고 접는다.
+    /// 글 칸: 포커스 = <see cref="GameFlow.Typing"/>(카메라 · 단축키가 글쇠를 받지 않는다) · Enter = 보내기(다음 프레임 — 한글 조합이 칸에 들어간 뒤) · Esc = 포커스를 놓고 접는다.
     /// 접힌 창: [채팅] 단추 + 안 읽은 수 배지 + 남의 새 줄 미리 보기(<see cref="PreviewMs"/>). 방 설정에서 끄면 창이 사라진다. 기록 칸 · 글 칸은 한 번만 만든다(다시 만들면 포커스 · 조합이 끊긴다).
     /// 요소 이름: <c>chat-tab</c>(+ <c>chat-open</c> · <c>chat-unread</c> · <c>chat-preview</c>) · <c>chat-panel</c> · <c>chat-head</c> · <c>chat-fold</c> · <c>chat-list</c> · <c>chat-empty</c> · <c>chat-line-&lt;n&gt;</c>(+ <c>-who</c> · <c>-name</c> · <c>-text</c>) ·
     /// <c>chat-foot</c> · <c>chat-field</c> · <c>chat-send</c> · <c>chat-wait</c>.
@@ -113,7 +113,6 @@ namespace Sinnoh.Client
             field.RegisterCallback<FocusInEvent>(e => { focused = true; flow.Typing = true; });
             field.RegisterCallback<FocusOutEvent>(e => { focused = false; flow.Typing = false; });
             field.RegisterCallback<KeyDownEvent>(OnKey, TrickleDown.TrickleDown);
-            WebTextInput.Attach(field, () => Submit());   // 웹 손님판: 한글 입력은 HTML 입력칸을 겹쳐 받는다(02 §8) — Enter 확정 = 보내기
             Add(foot, Kit.Button(stage.T("screen.room.chat.send"), KitButtonKind.Main, () => Submit()), "chat-send", null);
             drawnSeen = live.ChatSeen - live.Chat.Count;   // 기억하는 줄은 모두 그린다(안 읽은 수는 지금부터)
             readSeen = live.ChatSeen;

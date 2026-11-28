@@ -2,7 +2,7 @@
 
 # Pokémon: Legends of Sinnoh — Digital Edition
 
-An **unofficial, non-profit fan game** that brings Levatius's Tabletop Simulator board game "Pokémon: Legends of Sinnoh" (v1.4a) to PC and the web. It is not affiliated with the official Pokémon brand.
+An **unofficial, non-profit fan game** that brings Levatius's Tabletop Simulator board game "Pokémon: Legends of Sinnoh" (v1.4a) to PC. It is not affiliated with the official Pokémon brand.
 
 Made by Rekkons.
 

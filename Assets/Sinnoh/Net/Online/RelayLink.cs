@@ -11,7 +11,7 @@ using Debug = UnityEngine.Debug;
 namespace Sinnoh.Net
 {
     /// <summary>
-    /// Unity Relay 연결(02 §2-1 [인터넷], isekai Net/Online/RelayLink를 옮김). 통신은 늘 WebSocket이라 Relay 접속 종류도 "wss"(웹 손님과 같은 길).
+    /// Unity Relay 연결(02 §2-1 [인터넷], isekai Net/Online/RelayLink를 옮김). 통신은 늘 WebSocket이라 Relay 접속 종류도 "wss".
     /// - 방장(<see cref="HostFor"/> · <see cref="HostAsync"/>): 익명 로그인 → CreateAllocation(maxConnections, 지역 asia-northeast1 — 실패하면 기본 지역) → GetJoinCode → UnityTransport에 Relay(wss).
     ///   그 뒤 NetHostSession.Start가 StartHost한다(NetBootstrap.StartHost가 Relay 설정을 덮지 않는다).
     /// - 손님(<see cref="Joiner"/>): 익명 로그인 → JoinAllocation(코드) → wss 연결 정보. NetClientSession이 시도마다(재접속도 같은 코드) 부른다.

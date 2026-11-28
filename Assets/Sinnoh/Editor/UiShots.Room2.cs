@@ -339,7 +339,7 @@ namespace Sinnoh.Editor
                     {
                         new RoomSeat { Nickname = "방장트레이너", Host = true, Connected = true },
                         new RoomSeat { Nickname = "빛나", Connected = true },
-                        new RoomSeat { Nickname = "용식", Connected = false, Platform = Platform.Web },
+                        new RoomSeat { Nickname = "용식", Connected = false, Platform = Platform.Pc },
                     },
                 },
                 Clock = new ClockState { Preset = ClockPreset.Relaxed, Seats = new List<SeatClock> { new SeatClock { BankMs = 120000 }, new SeatClock { BankMs = 120000 }, new SeatClock { BankMs = 90000, Connected = false } } },
@@ -350,7 +350,7 @@ namespace Sinnoh.Editor
         // 6인 방 판(셋업부터 이 흐름이 본다 — 다른 좌석의 답은 AnswerSeat) + 가짜 방 닉네임 여섯: 모두 고향 마을을 고른 뒤 여섯째 좌석의 말이 떨어지는 순간
         static GameFlow Arrive6(UiShot s)
         {
-            string[] nicks = { "방장트레이너", "빛나", "용식", "웹으로온손님열두글자", "Dawn", "여섯째" };
+            string[] nicks = { "방장트레이너", "빛나", "용식", "멀리서온손님열두글자", "Dawn", "여섯째" };
             var flow = s.Flow();
             flow.StartSeats(new SoloSettings(), 6, Seed, AiSeed, null, liveSetup: true);
             var live = FakeGame(flow, true);
@@ -359,7 +359,7 @@ namespace Sinnoh.Editor
             live.Clock.Seats.Clear();
             for (int i = 0; i < 6; i++)
             {
-                live.Room.Seats.Add(new RoomSeat { Nickname = nicks[i], Host = i == 0, Connected = true, Platform = i == 3 ? Platform.Web : Platform.Pc });
+                live.Room.Seats.Add(new RoomSeat { Nickname = nicks[i], Host = i == 0, Connected = true, Platform = Platform.Pc });
                 live.Clock.Seats.Add(new SeatClock { BankMs = 120000 });
             }
             flow.Room.ShowGame(live);
@@ -405,7 +405,7 @@ namespace Sinnoh.Editor
         // 이름은 칩 밖으로 나가지 않고 한글 6자 폭(결정 112 Q15 — 넘으면 「…」 · 마우스 오버 = 전체 이름). clock = 좌석 2의 응답 시계를 흐르게(결정 112 Q5 — 좌석 넷 이하면 위 띠 안, 다섯 이상이면 가운데 줄)
         static void SeatsLong(UiShot s, int count, bool clock)
         {
-            string[] all = { "열두글자방장닉네임입니다", "WWWWWWMMMMMM", "빛나는포켓몬트레이너다요", "Sinnoh한국어Mix", "LegendsOfSin", "웹손님Guest열두자다" };
+            string[] all = { "열두글자방장닉네임입니다", "WWWWWWMMMMMM", "빛나는포켓몬트레이너다요", "Sinnoh한국어Mix", "LegendsOfSin", "먼손님Guest열두자다" };
             var nicks = new string[count];
             Array.Copy(all, nicks, count);
             foreach (var n in nicks)
@@ -420,7 +420,7 @@ namespace Sinnoh.Editor
             live.Clock.Seats.Clear();
             for (int i = 0; i < count; i++)
             {
-                live.Room.Seats.Add(new RoomSeat { Nickname = nicks[i], Host = i == 0, Connected = true, Platform = i == 5 ? Platform.Web : Platform.Pc });
+                live.Room.Seats.Add(new RoomSeat { Nickname = nicks[i], Host = i == 0, Connected = true, Platform = Platform.Pc });
                 live.Clock.Seats.Add(new SeatClock { BankMs = 120000 });
             }
             if (clock) RunClock(live, 1, ClockKind.MapTurn, 83000, 120000, 0);
@@ -788,12 +788,12 @@ namespace Sinnoh.Editor
                     {
                         new RoomSeat { Nickname = "방장트레이너", Host = true, Connected = true },
                         new RoomSeat { Nickname = "빛나", Connected = true },
-                        new RoomSeat { Nickname = "열두글자닉네임입니다요요", Platform = Platform.Web },
+                        new RoomSeat { Nickname = "열두글자닉네임입니다요요", Platform = Platform.Pc },
                         new RoomSeat { Nickname = "Barry", Kicked = true },
                     },
                 },
             };
-            if (host) lobby.Room.Claims.Add(new RoomClaim { Id = 1, Nickname = "열두글자닉네임입니다요요", Platform = Platform.Web, Suggested = 2 });
+            if (host) lobby.Room.Claims.Add(new RoomClaim { Id = 1, Nickname = "열두글자닉네임입니다요요", Platform = Platform.Pc, Suggested = 2 });
             flow.Room.ShowLobby(lobby);
             var screen = flow.Stage.Current as LobbyScreen ?? throw new InvalidOperationException("대기실이 열리지 않았다");
             if (!screen.Waiting) throw new InvalidOperationException("이어하기 대기실 모양이 아니다");

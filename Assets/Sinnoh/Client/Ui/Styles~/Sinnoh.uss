@@ -1673,7 +1673,7 @@
 .sn-lobby-invite { margin-bottom: 8px; }
 .sn-lobby-code-row { flex-direction: row; align-items: center; margin-top: 2px; }
 .kit-root .sn-lobby-code { margin-right: 10px; color: var(--sn-ink); }
-/* 웹 손님 링크 · 터널 주소(긴 글 — 줄이 넘치면 줄여 「…」, 전체는 [복사]) */
+/* 터널 주소(긴 글 — 줄이 넘치면 줄여 「…」, 전체는 [복사]) */
 .kit-root .sn-lobby-link { flex-grow: 1; flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 6px; color: var(--sn-ink); }
 .sn-lobby-copy { flex-shrink: 0; }
 .sn-lobby-seat { flex-direction: row; align-items: center; height: T(36px!, 68px!); padding: 0 4px; border-bottom-width: 1px; border-color: var(--sn-line); }
@@ -1874,6 +1874,20 @@
 .sn-book-fold:hover { background-color: var(--sn-fill); }
 .kit-root .sn-book-fold-name { flex-grow: 1; flex-shrink: 1; flex-basis: 0; margin-right: 6px; }
 .sn-book-fold-open { padding: 2px 4px 6px 8px; border-width: 0 1px 1px 1px; border-color: var(--sn-line); background-color: var(--sn-book-paper); flex-shrink: 0; }
+/* 「규칙 판정」 화면(결정 213 — RulingsScreen): 판 · 목차 · 위치 막대는 룰 설명서의 것(sn-book-*)을 같이 쓴다. 위 줄 = 찾기 칸 + 출처 단추 셋 + 찾은 수, 목록 = 엔진 ListView(기본 테마의 줄 바탕 · 스크롤 막대는 끈다) */
+.sn-rule-bar { flex-direction: row; align-items: center; flex-wrap: wrap; margin-bottom: 6px; flex-shrink: 0; }
+.sn-rule-find { width: 220px; margin-right: 8px; }
+.kit-root .kit-btn.sn-rule-src { margin: 0 4px 0 0; }
+.sn-rule-src-off { opacity: 0.4; }
+.kit-root .sn-rule-none { margin-top: 12px; -unity-text-align: middle-center; }
+.sn-rule-list { flex-grow: 1; flex-shrink: 1; min-height: 0; background-color: var(--sn-clear); }
+.sn-rule-list .unity-scroller { display: none; }
+.sn-rule-list .unity-collection-view__item, .sn-rule-list .unity-collection-view__item:hover { background-color: var(--sn-clear); }
+.sn-rule-item { padding: 5px 10px 6px 0; border-bottom-width: 1px; border-color: var(--sn-line); }
+.sn-rule-item-top { flex-direction: row; align-items: flex-start; }
+.kit-root .sn-rule-q { flex-grow: 1; flex-shrink: 1; flex-basis: 0; margin-right: 8px; }
+.kit-root .sn-rule-badge { flex-shrink: 0; }
+.kit-root .sn-rule-a { margin-top: 2px; }
 /* S03 크레딧 */
 .kit-root .sn-credits-notice { margin-bottom: 6px; flex-shrink: 0; }
 .sn-credits-tab { justify-content: space-between; min-height: 22px; margin-bottom: 2px; }
@@ -1889,7 +1903,7 @@
 .sn-card-statpad { background-color: var(--sn-card-note-bg); }
 .sn-card-die { background-color: var(--sn-card-ink); border-color: var(--sn-card-die-edge); flex-direction: row; justify-content: center; align-items: center; }
 .sn-card-dot { width: 340px; }
-/* 좁은 자리의 도트 카드(웹 손님판 배틀 기둥 · 엔트리 — CardStack.Dot): 도트 위 · 값 아래, 기술 줄 · 머리 글은 뺀다 */
+/* 좁은 자리의 도트 카드(카드 그림이 없을 때 배틀 기둥 · 엔트리 — CardStack.Dot): 도트 위 · 값 아래, 기술 줄 · 머리 글은 뺀다 */
 .sn-card-dotslim .sn-mon-tip-head { flex-direction: column; align-items: center; }
 .sn-card-dotslim .sn-mon-tip-info { margin-left: 0; align-self: stretch; }
 .sn-card-dotslim > .sn-mon-move, .sn-card-dotslim > .kit-muted { display: none; }
